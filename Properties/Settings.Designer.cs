@@ -117,5 +117,40 @@ namespace ffmpeg_command_builder.Properties {
                 this["resizeHD"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection ffmpeg {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ffmpeg"]));
+            }
+            set {
+                this["ffmpeg"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool resizeNum {
+            get {
+                return ((bool)(this["resizeNum"]));
+            }
+            set {
+                this["resizeNum"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("320")]
+        public decimal resize {
+            get {
+                return ((decimal)(this["resize"]));
+            }
+            set {
+                this["resize"] = value;
+            }
+        }
     }
 }

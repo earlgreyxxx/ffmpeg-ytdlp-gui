@@ -1,10 +1,12 @@
 ﻿using ffmpeg_command_builder.Properties;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ffmpeg_command_builder
@@ -12,16 +14,48 @@ namespace ffmpeg_command_builder
   public partial class Form1 : Form
   {
     private ffmpeg_command currentCommand;
+    Dictionary<string, string[]> Presets;
+    Dictionary<string, bool> HardwareEncoders;
 
     public Form1()
     {
       InitializeComponent();
       InitializeMembers();
+
+      Presets = new Dictionary<string, string[]>()
+      {
+        { "h264_nvenc", new string[] { "default","slow","medium","fast","p1","p2","p3","p4","p5","p6","p7" } },
+        { "hevc_nvenc", new string[] { "default","slow","medium","fast","p1","p2","p3","p4","p5","p6","p7" } },
+        { "h264_qsv",new string[] { "veryfast","faster","fast","medium","slow","slower","veryslow" } },
+        { "hevc_qsv",new string[] { "veryfast","faster","fast","medium","slow","slower","veryslow" } },
+      };
+
+      HardwareEncoders = new Dictionary<string,bool>()
+      {
+        { "hevc_nvenc",false},
+        { "hevc_qsv",false},
+        { "h264_nvenc",false},
+        { "h264_qsv",false}
+      };
+
+      foreach (string name in cbDevices.Items)
+      {
+        if (Regex.IsMatch(name,"^intel",RegexOptions.IgnoreCase))
+        {
+          HardwareEncoders["hevc_qsv"] = true;
+          HardwareEncoders["h264_qsv"] = true;
+        }
+        else if (Regex.IsMatch(name,"^nvidia",RegexOptions.IgnoreCase))
+        {
+          HardwareEncoders["hevc_nvenc"] = true;
+          HardwareEncoders["h264_nvenc"] = true;
+        }
+      }
     }
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      ActiveControl = this.Commandlines;
+      ActiveControl = null;
       var folders = Settings.Default.outputFolders;
       if(folders != null && folders.Count > 0)
       {
@@ -34,21 +68,38 @@ namespace ffmpeg_command_builder
         }
       }
 
+      if (Settings.Default.ffmpeg?.Count > 0)
+      {
+        foreach (string item in Settings.Default.ffmpeg)
+          ffmpeg.Items.Add(item);
+
+        ffmpeg.SelectedIndex = 0;
+      }
+
       chkConstantQuality.Checked = Settings.Default.cq;
       rbResizeNone.Checked = Settings.Default.resizeNone;
       rbResizeFullHD.Checked = Settings.Default.resizeFullHD;
       rbResizeHD.Checked = Settings.Default.resizeHD; 
+      rbResizeNum.Checked = Settings.Default.resizeNum;
 
       Unit.Text = chkConstantQuality.Checked ? "" : "Kbps";
+
+      var encoderNames = HardwareEncoders.Where(kv => kv.Value).Select(kv => kv.Key);
+      foreach (string encoderName in encoderNames)
+        UseVideoEncoder.Items.Add(encoderName);
+
       UseVideoEncoder.SelectedIndex = 0;
       UseAudioEncoder.SelectedIndex = 0;
 
       UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
+
+      CurrentFileName.Text = string.Empty;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Settings.Default.outputFolders = new System.Collections.Specialized.StringCollection();
+      Settings.Default.outputFolders = new StringCollection();
+      Settings.Default.ffmpeg = new StringCollection();
 
       foreach (string item in cbOutputDir.Items)
         Settings.Default.outputFolders.Add(item);
@@ -57,6 +108,13 @@ namespace ffmpeg_command_builder
       Settings.Default.resizeNone = rbResizeNone.Checked;
       Settings.Default.resizeFullHD = rbResizeFullHD.Checked;
       Settings.Default.resizeHD = rbResizeHD.Checked;
+      Settings.Default.resizeNum = rbResizeNum.Checked;
+
+      foreach (string item in ffmpeg.Items)
+      {
+        if (!string.IsNullOrEmpty(item))
+          Settings.Default.ffmpeg.Add(item);
+      }
 
       Settings.Default.Save();
     }
@@ -83,6 +141,8 @@ namespace ffmpeg_command_builder
         currentCommand = CreateCommand(chkAudioOnly.Checked);
 
         btnStop.Enabled = btnStopAll.Enabled = true;
+        OpenLogFile.Enabled = false;
+        OpenLogWriter();
         BeginFFmpegProcess();
       }
     }
@@ -233,6 +293,65 @@ namespace ffmpeg_command_builder
     {
       FileList.Items.Clear();
       StopProcess(true);
+    }
+
+    private void UseVideoEncoder_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      InitPresetAndDevice();
+    }
+
+    private void btnFFmpeg_Click(object sender, EventArgs e)
+    {
+      if (DialogResult.Cancel == openFFMpegFileDlg.ShowDialog())
+        return;
+
+      ffmpeg.Text = openFFMpegFileDlg.FileName;
+      if(!ffmpeg.Items.Contains(ffmpeg.Text))
+        ffmpeg.Items.Add(ffmpeg.Text);
+    }
+
+    private void btnFindInPath_Click(object sender, EventArgs e)
+    {
+      foreach (var path in ffmpeg.Items.Cast<string>().Where(item => !File.Exists(item)))
+        ffmpeg.Items.Remove(path);
+
+        string[] ffmpegPathes = FindInPath("ffmpeg");
+      if (ffmpegPathes.Length == 0)
+      {
+        MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。");
+        ffmpeg.Text = string.Empty;
+      }
+      else
+      {
+        foreach (var ffmpegPath in ffmpegPathes.Reverse())
+        {
+          if(!ffmpeg.Items.Contains(ffmpegPath))
+            ffmpeg.Items.Insert(0, ffmpegPath);
+        }
+
+        ffmpeg.SelectedIndex = 0;
+      }
+    }
+
+    private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      Process.Start("https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax");
+    }
+
+    private void rbResizeNum_CheckedChanged(object sender, EventArgs e)
+    {
+      resizeTo.Enabled = rbResizeNum.Checked;
+    }
+
+    private void OpenLogFile_Click(object sender, EventArgs e)
+    {
+      Process.Start(GetLogFileName());
+    }
+
+    private void ClearFileList_Click(object sender, EventArgs e)
+    {
+      inputFileList.Clear();
+      FileList.Items.Clear();
     }
   }
 }
