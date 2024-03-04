@@ -94,6 +94,8 @@ namespace ffmpeg_command_builder
       UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
 
       CurrentFileName.Text = string.Empty;
+
+      cbDeinterlaceAlg.SelectedIndex = 0;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -352,6 +354,11 @@ namespace ffmpeg_command_builder
     {
       inputFileList.Clear();
       FileList.Items.Clear();
+    }
+
+    private void chkFilterDeInterlace_CheckedChanged(object sender, EventArgs e)
+    {
+      cbDeinterlaceAlg.Enabled = chkFilterDeInterlace.Checked;
     }
   }
 }

@@ -61,10 +61,15 @@ namespace ffmpeg_command_builder
             strFilters.Add("hwdownload,format=nv12");
             strFilters.Add("bwdif=" + filters["bwdif"]);
           }
+          else if(filters.ContainsKey("yadif"))
+          {
+            strFilters.Add("hwdownload,format=nv12");
+            strFilters.Add("yadif=" + filters["yadif"]);
+          }
 
           if (filters.ContainsKey("scale_qsv"))
           {
-            if (filters.ContainsKey("bwdif"))
+            if (filters.ContainsKey("bwdif") || filters.ContainsKey("yadif"))
               strFilters.Add("hwupload=extra_hw_frames=64");
             strFilters.Add("scale_qsv=" + filters["scale_qsv"]);
           }

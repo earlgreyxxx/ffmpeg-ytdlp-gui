@@ -103,16 +103,29 @@ namespace ffmpeg_command_builder
 
       ffcommand.outputPath(cbOutputDir.Text);
 
+      var deinterlaces = new List<string>() { "bwdif","bwdif_cuda","yadif","yadif_cuda" };
+
       if (chkFilterDeInterlace.Checked)
       {
-        if (UseVideoEncoder.Text.EndsWith("_nvenc"))
-          ffcommand.setFilter("bwdif_cuda", "0:-1:0");
-        else if(UseVideoEncoder.Text.EndsWith("_qsv"))
-          ffcommand.setFilter("bwdif", "0:-1:0");
+        if (cbDeinterlaceAlg.SelectedIndex == 0)
+        {
+          if (UseVideoEncoder.Text.EndsWith("_nvenc"))
+            ffcommand.setFilter("bwdif_cuda", "0:-1:0");
+          else if (UseVideoEncoder.Text.EndsWith("_qsv"))
+            ffcommand.setFilter("bwdif", "0:-1:0");
+        }
+        else if(cbDeinterlaceAlg.SelectedIndex == 1)
+        {
+          if (UseVideoEncoder.Text.EndsWith("_nvenc"))
+            ffcommand.setFilter("yadif_cuda", "2:-1:0");
+          else if (UseVideoEncoder.Text.EndsWith("_qsv"))
+            ffcommand.setFilter("yadif", "2:-1:0");
+        }
       }
       else
       {
-        ffcommand.removeFilter("bwdif_cuda").removeFilter("bwdif");
+        foreach (var name in deinterlaces)
+          ffcommand.removeFilter(name);
       }
 
       var tag = int.Parse(GetCheckedRadioButton(ResizeBox).Tag as string);

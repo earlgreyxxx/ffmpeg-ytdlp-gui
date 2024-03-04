@@ -58,6 +58,9 @@ namespace ffmpeg_command_builder
           var strFilters = new List<string>();
           if (filters.ContainsKey("bwdif_cuda"))
             strFilters.Add("bwdif_cuda=" + filters["bwdif_cuda"]);
+          else if (filters.ContainsKey("yadif_cuda"))
+            strFilters.Add("yadif_cuda=" + filters["yadif_cuda"]);
+
           if (filters.ContainsKey("scale_cuda"))
             strFilters.Add("scale_cuda=" + filters["scale_cuda"]);
           if (filters.ContainsKey("transpose"))

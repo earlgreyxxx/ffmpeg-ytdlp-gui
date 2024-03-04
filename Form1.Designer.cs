@@ -40,6 +40,8 @@
       this.btnClearTo = new System.Windows.Forms.Button();
       this.findSaveBatchFile = new System.Windows.Forms.OpenFileDialog();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.cbDeinterlaceAlg = new System.Windows.Forms.ComboBox();
+      this.chkFilterDeInterlace = new System.Windows.Forms.CheckBox();
       this.label5 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.UseAudioEncoder = new System.Windows.Forms.ComboBox();
@@ -76,7 +78,6 @@
       this.chkConstantQuality = new System.Windows.Forms.CheckBox();
       this.Unit = new System.Windows.Forms.Label();
       this.btnApply = new System.Windows.Forms.Button();
-      this.chkFilterDeInterlace = new System.Windows.Forms.CheckBox();
       this.openInputFile = new System.Windows.Forms.OpenFileDialog();
       this.OutputProcess = new System.Windows.Forms.TextBox();
       this.FileList = new System.Windows.Forms.ListBox();
@@ -208,6 +209,7 @@
       // 
       // groupBox2
       // 
+      this.groupBox2.Controls.Add(this.cbDeinterlaceAlg);
       this.groupBox2.Controls.Add(this.chkFilterDeInterlace);
       this.groupBox2.Controls.Add(this.label5);
       this.groupBox2.Controls.Add(this.label4);
@@ -220,6 +222,29 @@
       this.groupBox2.TabIndex = 7;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "その他";
+      // 
+      // cbDeinterlaceAlg
+      // 
+      this.cbDeinterlaceAlg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbDeinterlaceAlg.Enabled = false;
+      this.cbDeinterlaceAlg.FormattingEnabled = true;
+      this.cbDeinterlaceAlg.Items.AddRange(new object[] {
+            "bwdif=1:-1:0",
+            "yadif=2:-1:0"});
+      this.cbDeinterlaceAlg.Location = new System.Drawing.Point(11, 129);
+      this.cbDeinterlaceAlg.Name = "cbDeinterlaceAlg";
+      this.cbDeinterlaceAlg.Size = new System.Drawing.Size(119, 20);
+      this.cbDeinterlaceAlg.TabIndex = 27;
+      // 
+      // chkFilterDeInterlace
+      // 
+      this.chkFilterDeInterlace.AutoSize = true;
+      this.chkFilterDeInterlace.Location = new System.Drawing.Point(11, 106);
+      this.chkFilterDeInterlace.Name = "chkFilterDeInterlace";
+      this.chkFilterDeInterlace.Size = new System.Drawing.Size(122, 16);
+      this.chkFilterDeInterlace.TabIndex = 21;
+      this.chkFilterDeInterlace.Text = "デインターレース処理";
+      this.chkFilterDeInterlace.CheckedChanged += new System.EventHandler(this.chkFilterDeInterlace_CheckedChanged);
       // 
       // label5
       // 
@@ -637,15 +662,6 @@
       this.btnApply.UseVisualStyleBackColor = true;
       this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
       // 
-      // chkFilterDeInterlace
-      // 
-      this.chkFilterDeInterlace.AutoSize = true;
-      this.chkFilterDeInterlace.Location = new System.Drawing.Point(11, 111);
-      this.chkFilterDeInterlace.Name = "chkFilterDeInterlace";
-      this.chkFilterDeInterlace.Size = new System.Drawing.Size(122, 16);
-      this.chkFilterDeInterlace.TabIndex = 21;
-      this.chkFilterDeInterlace.Text = "デインターレース処理";
-      // 
       // openInputFile
       // 
       this.openInputFile.DefaultExt = "mp4";
@@ -924,6 +940,7 @@
     private System.Windows.Forms.RadioButton rbResizeNum;
     private System.Windows.Forms.Button OpenLogFile;
     private System.Windows.Forms.Button ClearFileList;
+    private System.Windows.Forms.ComboBox cbDeinterlaceAlg;
   }
 }
 
