@@ -347,7 +347,14 @@ namespace ffmpeg_command_builder
 
     private void OpenLogFile_Click(object sender, EventArgs e)
     {
-      Process.Start(GetLogFileName());
+      var filename = GetLogFileName();
+      if (!File.Exists(filename))
+      {
+        MessageBox.Show("ログファイルが存在しません。");
+        return;
+      }
+
+      Process.Start(filename);
     }
 
     private void ClearFileList_Click(object sender, EventArgs e)
