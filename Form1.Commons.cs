@@ -64,6 +64,11 @@ namespace ffmpeg_command_builder
     {
       var ffcommand = CreateFFMpegCommandInstance().audioOnly(true);
 
+      ffcommand
+        .audioOnly(true)
+        .OutputPrefix(FilePrefix.Text)
+        .OutputSuffix(FileSuffix.Text);
+
       if (chkEncodeAudio.Checked)
         ffcommand.acodec(UseAudioEncoder.Text).aBitrate(192);
       else
@@ -92,9 +97,11 @@ namespace ffmpeg_command_builder
         ffcommand.To(txtTo.Text);
 
       ffcommand
-        .vcodec(UseVideoEncoder.Text,cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
+        .vcodec(UseVideoEncoder.Text, cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
         .vBitrate((int)bitrate.Value, chkConstantQuality.Checked)
-        .preset(cbPreset.Text);
+        .preset(cbPreset.Text)
+        .OutputPrefix(FilePrefix.Text)
+        .OutputSuffix(FileSuffix.Text);
 
       if (chkEncodeAudio.Checked)
         ffcommand.acodec(UseAudioEncoder.Text).aBitrate(192);

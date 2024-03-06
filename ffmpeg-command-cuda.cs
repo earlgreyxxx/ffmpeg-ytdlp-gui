@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
 {
@@ -81,29 +80,7 @@ namespace ffmpeg_command_builder
       if (options.ContainsKey("b:a") && !string.IsNullOrEmpty(options["b:a"]))
         args.Add(options["b:a"]);
 
-      string strOutputFileName = Path.GetFileName(strInputPath);
-      string basename = Path.GetFileNameWithoutExtension(strInputPath);
-      if (bAudioOnly)
-      {
-        var m = Regex.Match(options["acodec"], @"(\w+)$");
-        if (m.Success)
-        {
-          switch (m.Captures[0].Value)
-          {
-            case "aac":
-              strOutputFileName = basename + ".aac";
-              break;
-            case "libmp3lame":
-              strOutputFileName = basename + ".mp3";
-              break;
-          }
-        }
-      }
-      else
-      {
-        strOutputFileName = basename + ".mp4";
-      }
-
+      string strOutputFileName = CreateOutputFileName(strInputPath);
       string strOutputFilePath = Path.Combine(OutputPath, strOutputFileName);
       if(strOutputFilePath == strInputPath)
         throw new Exception("入力ファイルと出力ファイルが同じです。");

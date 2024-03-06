@@ -152,5 +152,29 @@ namespace ffmpeg_command_builder.Properties {
                 this["resize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string prefix {
+            get {
+                return ((string)(this["prefix"]));
+            }
+            set {
+                this["prefix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string suffix {
+            get {
+                return ((string)(this["suffix"]));
+            }
+            set {
+                this["suffix"] = value;
+            }
+        }
     }
 }

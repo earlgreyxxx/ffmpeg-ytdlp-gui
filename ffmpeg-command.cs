@@ -19,6 +19,8 @@ namespace ffmpeg_command_builder
     protected bool bAudioOnly = false;
     protected string EncoderType = "hevc";
     protected int IndexOfGpuDevice = 0;
+    protected string FilePrefix = "";
+    protected string FileSuffix = "";
 
     protected void Initialize(string ffmpegPath)
     {
@@ -35,6 +37,34 @@ namespace ffmpeg_command_builder
 
       if (!String.IsNullOrEmpty(ffmpegPath) && File.Exists(ffmpegPath))
         this.ffmpegPath = ffmpegPath;
+    }
+
+    protected string CreateOutputFileName(string strInputPath)
+    {
+      string strOutputFileName = Path.GetFileName(strInputPath);
+      string basename = Path.GetFileNameWithoutExtension(strInputPath);
+      if (bAudioOnly)
+      {
+        var m = Regex.Match(options["acodec"], @"(\w+)$");
+        if (m.Success)
+        {
+          switch (m.Captures[0].Value)
+          {
+            case "aac":
+              strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.aac";
+              break;
+            case "libmp3lame":
+              strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.mp3";
+              break;
+          }
+        }
+      }
+      else
+      {
+        strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.mp4";
+      }
+
+      return strOutputFileName;
     }
 
     public ffmpeg_command Starts(string strTime)
@@ -129,6 +159,18 @@ namespace ffmpeg_command_builder
     public ffmpeg_command outputPath(string path)
     {
       OutputPath = string.IsNullOrEmpty(path) ? "." : path;
+      return this;
+    }
+
+    public ffmpeg_command OutputPrefix(string prefix = "")
+    {
+      FilePrefix = prefix;
+      return this;
+    }
+
+    public ffmpeg_command OutputSuffix(string suffix = "")
+    {
+      FileSuffix = suffix;
       return this;
     }
 

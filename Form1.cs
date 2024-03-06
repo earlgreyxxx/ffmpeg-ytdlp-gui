@@ -317,10 +317,12 @@ namespace ffmpeg_command_builder
       foreach (var path in ffmpeg.Items.Cast<string>().Where(item => !File.Exists(item)))
         ffmpeg.Items.Remove(path);
 
-        string[] ffmpegPathes = FindInPath("ffmpeg");
+      string[] ffmpegPathes = FindInPath("ffmpeg");
       if (ffmpegPathes.Length == 0)
       {
-        MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。");
+        if (DialogResult.Yes == MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。\nWingetコマンドを利用してffmpegをインストールしますか？", "警告", MessageBoxButtons.YesNo))
+          Process.Start("winget install -id Gyan.FFmpeg");
+
         ffmpeg.Text = string.Empty;
       }
       else

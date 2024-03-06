@@ -59,6 +59,11 @@
       this.rbRotateRight = new System.Windows.Forms.RadioButton();
       this.cbOutputDir = new System.Windows.Forms.ComboBox();
       this.groupBox5 = new System.Windows.Forms.GroupBox();
+      this.label11 = new System.Windows.Forms.Label();
+      this.label10 = new System.Windows.Forms.Label();
+      this.label9 = new System.Windows.Forms.Label();
+      this.FilePrefix = new System.Windows.Forms.TextBox();
+      this.FileSuffix = new System.Windows.Forms.TextBox();
       this.OpenLogFile = new System.Windows.Forms.Button();
       this.btnClearDirs = new System.Windows.Forms.Button();
       this.OpenFolder = new System.Windows.Forms.Button();
@@ -87,13 +92,13 @@
       this.groupBox4 = new System.Windows.Forms.GroupBox();
       this.cbDevices = new System.Windows.Forms.ComboBox();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.ClearFileList = new System.Windows.Forms.Button();
       this.label7 = new System.Windows.Forms.Label();
       this.btnFFmpeg = new System.Windows.Forms.Button();
       this.label8 = new System.Windows.Forms.Label();
       this.openFFMpegFileDlg = new System.Windows.Forms.OpenFileDialog();
       this.btnFindInPath = new System.Windows.Forms.Button();
       this.ffmpeg = new System.Windows.Forms.ComboBox();
-      this.ClearFileList = new System.Windows.Forms.Button();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.ResizeBox.SuspendLayout();
@@ -218,7 +223,7 @@
       this.groupBox2.Controls.Add(this.chkAudioOnly);
       this.groupBox2.Location = new System.Drawing.Point(653, 213);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(145, 161);
+      this.groupBox2.Size = new System.Drawing.Size(145, 190);
       this.groupBox2.TabIndex = 7;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "その他";
@@ -231,7 +236,7 @@
       this.cbDeinterlaceAlg.Items.AddRange(new object[] {
             "bwdif=1:-1:0",
             "yadif=2:-1:0"});
-      this.cbDeinterlaceAlg.Location = new System.Drawing.Point(11, 129);
+      this.cbDeinterlaceAlg.Location = new System.Drawing.Point(11, 137);
       this.cbDeinterlaceAlg.Name = "cbDeinterlaceAlg";
       this.cbDeinterlaceAlg.Size = new System.Drawing.Size(119, 20);
       this.cbDeinterlaceAlg.TabIndex = 27;
@@ -239,7 +244,7 @@
       // chkFilterDeInterlace
       // 
       this.chkFilterDeInterlace.AutoSize = true;
-      this.chkFilterDeInterlace.Location = new System.Drawing.Point(11, 106);
+      this.chkFilterDeInterlace.Location = new System.Drawing.Point(11, 114);
       this.chkFilterDeInterlace.Name = "chkFilterDeInterlace";
       this.chkFilterDeInterlace.Size = new System.Drawing.Size(122, 16);
       this.chkFilterDeInterlace.TabIndex = 21;
@@ -308,7 +313,7 @@
       this.ResizeBox.Controls.Add(this.rbResizeNone);
       this.ResizeBox.Location = new System.Drawing.Point(335, 213);
       this.ResizeBox.Name = "ResizeBox";
-      this.ResizeBox.Size = new System.Drawing.Size(312, 51);
+      this.ResizeBox.Size = new System.Drawing.Size(312, 66);
       this.ResizeBox.TabIndex = 8;
       this.ResizeBox.TabStop = false;
       this.ResizeBox.Text = "リサイズ：短辺指定";
@@ -316,7 +321,7 @@
       // rbResizeNum
       // 
       this.rbResizeNum.AutoSize = true;
-      this.rbResizeNum.Location = new System.Drawing.Point(187, 22);
+      this.rbResizeNum.Location = new System.Drawing.Point(187, 31);
       this.rbResizeNum.Name = "rbResizeNum";
       this.rbResizeNum.Size = new System.Drawing.Size(59, 16);
       this.rbResizeNum.TabIndex = 15;
@@ -335,7 +340,7 @@
             0,
             0,
             0});
-      this.resizeTo.Location = new System.Drawing.Point(250, 21);
+      this.resizeTo.Location = new System.Drawing.Point(250, 30);
       this.resizeTo.Maximum = new decimal(new int[] {
             4320,
             0,
@@ -355,7 +360,7 @@
       // rbResizeHD
       // 
       this.rbResizeHD.AutoSize = true;
-      this.rbResizeHD.Location = new System.Drawing.Point(128, 22);
+      this.rbResizeHD.Location = new System.Drawing.Point(128, 31);
       this.rbResizeHD.Name = "rbResizeHD";
       this.rbResizeHD.Size = new System.Drawing.Size(53, 16);
       this.rbResizeHD.TabIndex = 13;
@@ -366,7 +371,7 @@
       // rbResizeFullHD
       // 
       this.rbResizeFullHD.AutoSize = true;
-      this.rbResizeFullHD.Location = new System.Drawing.Point(63, 22);
+      this.rbResizeFullHD.Location = new System.Drawing.Point(63, 31);
       this.rbResizeFullHD.Name = "rbResizeFullHD";
       this.rbResizeFullHD.Size = new System.Drawing.Size(59, 16);
       this.rbResizeFullHD.TabIndex = 12;
@@ -378,7 +383,7 @@
       // 
       this.rbResizeNone.AutoSize = true;
       this.rbResizeNone.Checked = true;
-      this.rbResizeNone.Location = new System.Drawing.Point(14, 22);
+      this.rbResizeNone.Location = new System.Drawing.Point(14, 31);
       this.rbResizeNone.Name = "rbResizeNone";
       this.rbResizeNone.Size = new System.Drawing.Size(42, 16);
       this.rbResizeNone.TabIndex = 11;
@@ -391,9 +396,9 @@
       this.RotateBox.Controls.Add(this.rbRotateNone);
       this.RotateBox.Controls.Add(this.rbRotateLeft);
       this.RotateBox.Controls.Add(this.rbRotateRight);
-      this.RotateBox.Location = new System.Drawing.Point(335, 268);
+      this.RotateBox.Location = new System.Drawing.Point(335, 285);
       this.RotateBox.Name = "RotateBox";
-      this.RotateBox.Size = new System.Drawing.Size(311, 48);
+      this.RotateBox.Size = new System.Drawing.Size(311, 58);
       this.RotateBox.TabIndex = 9;
       this.RotateBox.TabStop = false;
       this.RotateBox.Text = "回転：90°";
@@ -402,7 +407,7 @@
       // 
       this.rbRotateNone.AutoSize = true;
       this.rbRotateNone.Checked = true;
-      this.rbRotateNone.Location = new System.Drawing.Point(13, 21);
+      this.rbRotateNone.Location = new System.Drawing.Point(14, 27);
       this.rbRotateNone.Name = "rbRotateNone";
       this.rbRotateNone.Size = new System.Drawing.Size(42, 16);
       this.rbRotateNone.TabIndex = 16;
@@ -413,7 +418,7 @@
       // rbRotateLeft
       // 
       this.rbRotateLeft.AutoSize = true;
-      this.rbRotateLeft.Location = new System.Drawing.Point(132, 21);
+      this.rbRotateLeft.Location = new System.Drawing.Point(133, 27);
       this.rbRotateLeft.Name = "rbRotateLeft";
       this.rbRotateLeft.Size = new System.Drawing.Size(79, 16);
       this.rbRotateLeft.TabIndex = 18;
@@ -424,7 +429,7 @@
       // rbRotateRight
       // 
       this.rbRotateRight.AutoSize = true;
-      this.rbRotateRight.Location = new System.Drawing.Point(61, 21);
+      this.rbRotateRight.Location = new System.Drawing.Point(62, 27);
       this.rbRotateRight.Name = "rbRotateRight";
       this.rbRotateRight.Size = new System.Drawing.Size(67, 16);
       this.rbRotateRight.TabIndex = 17;
@@ -434,7 +439,7 @@
       // 
       // cbOutputDir
       // 
-      this.cbOutputDir.Location = new System.Drawing.Point(11, 26);
+      this.cbOutputDir.Location = new System.Drawing.Point(11, 66);
       this.cbOutputDir.Name = "cbOutputDir";
       this.cbOutputDir.Size = new System.Drawing.Size(225, 20);
       this.cbOutputDir.Sorted = true;
@@ -442,6 +447,11 @@
       // 
       // groupBox5
       // 
+      this.groupBox5.Controls.Add(this.label11);
+      this.groupBox5.Controls.Add(this.label10);
+      this.groupBox5.Controls.Add(this.label9);
+      this.groupBox5.Controls.Add(this.FilePrefix);
+      this.groupBox5.Controls.Add(this.FileSuffix);
       this.groupBox5.Controls.Add(this.OpenLogFile);
       this.groupBox5.Controls.Add(this.btnClearDirs);
       this.groupBox5.Controls.Add(this.OpenFolder);
@@ -450,14 +460,61 @@
       this.groupBox5.Controls.Add(this.btnSubmitSaveToFile);
       this.groupBox5.Location = new System.Drawing.Point(8, 213);
       this.groupBox5.Name = "groupBox5";
-      this.groupBox5.Size = new System.Drawing.Size(321, 103);
+      this.groupBox5.Size = new System.Drawing.Size(321, 130);
       this.groupBox5.TabIndex = 11;
       this.groupBox5.TabStop = false;
-      this.groupBox5.Text = "出力フォルダー";
+      this.groupBox5.Text = "出力";
+      // 
+      // label11
+      // 
+      this.label11.AutoSize = true;
+      this.label11.Location = new System.Drawing.Point(11, 51);
+      this.label11.Name = "label11";
+      this.label11.Size = new System.Drawing.Size(74, 12);
+      this.label11.TabIndex = 28;
+      this.label11.Text = "保存フォルダー";
+      // 
+      // label10
+      // 
+      this.label10.AutoSize = true;
+      this.label10.Location = new System.Drawing.Point(146, 27);
+      this.label10.Name = "label10";
+      this.label10.Size = new System.Drawing.Size(95, 12);
+      this.label10.TabIndex = 27;
+      this.label10.Text = "＋ 元ファイル名 ＋";
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(11, 27);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(51, 12);
+      this.label9.TabIndex = 26;
+      this.label9.Text = "ファイル名";
+      // 
+      // FilePrefix
+      // 
+      this.FilePrefix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ffmpeg_command_builder.Properties.Settings.Default, "prefix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.FilePrefix.Location = new System.Drawing.Point(78, 23);
+      this.FilePrefix.Name = "FilePrefix";
+      this.FilePrefix.Size = new System.Drawing.Size(62, 19);
+      this.FilePrefix.TabIndex = 25;
+      this.FilePrefix.Text = global::ffmpeg_command_builder.Properties.Settings.Default.prefix;
+      this.FilePrefix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      // 
+      // FileSuffix
+      // 
+      this.FileSuffix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ffmpeg_command_builder.Properties.Settings.Default, "suffix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.FileSuffix.Location = new System.Drawing.Point(247, 23);
+      this.FileSuffix.Name = "FileSuffix";
+      this.FileSuffix.Size = new System.Drawing.Size(62, 19);
+      this.FileSuffix.TabIndex = 25;
+      this.FileSuffix.Text = global::ffmpeg_command_builder.Properties.Settings.Default.suffix;
+      this.FileSuffix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
       // 
       // OpenLogFile
       // 
-      this.OpenLogFile.Location = new System.Drawing.Point(12, 58);
+      this.OpenLogFile.Location = new System.Drawing.Point(12, 92);
       this.OpenLogFile.Name = "OpenLogFile";
       this.OpenLogFile.Size = new System.Drawing.Size(62, 23);
       this.OpenLogFile.TabIndex = 24;
@@ -467,7 +524,7 @@
       // 
       // btnClearDirs
       // 
-      this.btnClearDirs.Location = new System.Drawing.Point(280, 26);
+      this.btnClearDirs.Location = new System.Drawing.Point(280, 66);
       this.btnClearDirs.Name = "btnClearDirs";
       this.btnClearDirs.Size = new System.Drawing.Size(29, 20);
       this.btnClearDirs.TabIndex = 8;
@@ -477,17 +534,17 @@
       // 
       // OpenFolder
       // 
-      this.OpenFolder.Location = new System.Drawing.Point(75, 58);
+      this.OpenFolder.Location = new System.Drawing.Point(75, 92);
       this.OpenFolder.Name = "OpenFolder";
       this.OpenFolder.Size = new System.Drawing.Size(109, 23);
       this.OpenFolder.TabIndex = 10;
-      this.OpenFolder.Text = "出力フォルダーを開く";
+      this.OpenFolder.Text = "保存フォルダーを開く";
       this.OpenFolder.UseVisualStyleBackColor = true;
       this.OpenFolder.Click += new System.EventHandler(this.OpenFolder_Click);
       // 
       // btnSubmitOpenDlg
       // 
-      this.btnSubmitOpenDlg.Location = new System.Drawing.Point(242, 26);
+      this.btnSubmitOpenDlg.Location = new System.Drawing.Point(242, 66);
       this.btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
       this.btnSubmitOpenDlg.Size = new System.Drawing.Size(37, 20);
       this.btnSubmitOpenDlg.TabIndex = 9;
@@ -497,7 +554,7 @@
       // 
       // btnSubmitSaveToFile
       // 
-      this.btnSubmitSaveToFile.Location = new System.Drawing.Point(185, 58);
+      this.btnSubmitSaveToFile.Location = new System.Drawing.Point(185, 92);
       this.btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
       this.btnSubmitSaveToFile.Size = new System.Drawing.Size(124, 23);
       this.btnSubmitSaveToFile.TabIndex = 23;
@@ -508,7 +565,7 @@
       // btnSubmitInvoke
       // 
       this.btnSubmitInvoke.Enabled = false;
-      this.btnSubmitInvoke.Location = new System.Drawing.Point(612, 135);
+      this.btnSubmitInvoke.Location = new System.Drawing.Point(612, 148);
       this.btnSubmitInvoke.Name = "btnSubmitInvoke";
       this.btnSubmitInvoke.Size = new System.Drawing.Size(54, 23);
       this.btnSubmitInvoke.TabIndex = 1;
@@ -520,9 +577,9 @@
       // 
       this.LayoutBox.Controls.Add(this.rbPortrait);
       this.LayoutBox.Controls.Add(this.rbLandscape);
-      this.LayoutBox.Location = new System.Drawing.Point(335, 325);
+      this.LayoutBox.Location = new System.Drawing.Point(335, 349);
       this.LayoutBox.Name = "LayoutBox";
-      this.LayoutBox.Size = new System.Drawing.Size(311, 49);
+      this.LayoutBox.Size = new System.Drawing.Size(311, 54);
       this.LayoutBox.TabIndex = 12;
       this.LayoutBox.TabStop = false;
       this.LayoutBox.Text = "元動画の向き(リサイズ時のヒント情報)";
@@ -542,7 +599,7 @@
       // 
       this.rbLandscape.AutoSize = true;
       this.rbLandscape.Checked = true;
-      this.rbLandscape.Location = new System.Drawing.Point(13, 23);
+      this.rbLandscape.Location = new System.Drawing.Point(14, 23);
       this.rbLandscape.Name = "rbLandscape";
       this.rbLandscape.Size = new System.Drawing.Size(74, 16);
       this.rbLandscape.TabIndex = 14;
@@ -563,7 +620,7 @@
       // label3
       // 
       this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(0, 0);
+      this.label3.Location = new System.Drawing.Point(3, 16);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(344, 12);
       this.label3.TabIndex = 0;
@@ -672,7 +729,7 @@
       // OutputProcess
       // 
       this.OutputProcess.BackColor = System.Drawing.SystemColors.Window;
-      this.OutputProcess.Location = new System.Drawing.Point(0, 137);
+      this.OutputProcess.Location = new System.Drawing.Point(0, 150);
       this.OutputProcess.Name = "OutputProcess";
       this.OutputProcess.ReadOnly = true;
       this.OutputProcess.Size = new System.Drawing.Size(606, 19);
@@ -683,7 +740,7 @@
       this.FileList.AllowDrop = true;
       this.FileList.FormattingEnabled = true;
       this.FileList.ItemHeight = 12;
-      this.FileList.Location = new System.Drawing.Point(0, 18);
+      this.FileList.Location = new System.Drawing.Point(0, 31);
       this.FileList.Name = "FileList";
       this.FileList.Size = new System.Drawing.Size(790, 88);
       this.FileList.TabIndex = 29;
@@ -693,7 +750,7 @@
       // 
       // CurrentFileName
       // 
-      this.CurrentFileName.Location = new System.Drawing.Point(91, 118);
+      this.CurrentFileName.Location = new System.Drawing.Point(91, 131);
       this.CurrentFileName.Name = "CurrentFileName";
       this.CurrentFileName.Size = new System.Drawing.Size(699, 14);
       this.CurrentFileName.TabIndex = 30;
@@ -702,7 +759,7 @@
       // btnStop
       // 
       this.btnStop.Enabled = false;
-      this.btnStop.Location = new System.Drawing.Point(668, 135);
+      this.btnStop.Location = new System.Drawing.Point(668, 148);
       this.btnStop.Name = "btnStop";
       this.btnStop.Size = new System.Drawing.Size(56, 23);
       this.btnStop.TabIndex = 31;
@@ -713,7 +770,7 @@
       // btnStopAll
       // 
       this.btnStopAll.Enabled = false;
-      this.btnStopAll.Location = new System.Drawing.Point(726, 135);
+      this.btnStopAll.Location = new System.Drawing.Point(726, 148);
       this.btnStopAll.Name = "btnStopAll";
       this.btnStopAll.Size = new System.Drawing.Size(64, 23);
       this.btnStopAll.TabIndex = 32;
@@ -724,9 +781,9 @@
       // groupBox4
       // 
       this.groupBox4.Controls.Add(this.cbDevices);
-      this.groupBox4.Location = new System.Drawing.Point(8, 324);
+      this.groupBox4.Location = new System.Drawing.Point(8, 349);
       this.groupBox4.Name = "groupBox4";
-      this.groupBox4.Size = new System.Drawing.Size(321, 50);
+      this.groupBox4.Size = new System.Drawing.Size(321, 56);
       this.groupBox4.TabIndex = 33;
       this.groupBox4.TabStop = false;
       this.groupBox4.Text = "GPUデバイス";
@@ -742,6 +799,7 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.ClearFileList);
       this.panel1.Controls.Add(this.label7);
       this.panel1.Controls.Add(this.label3);
       this.panel1.Controls.Add(this.FileList);
@@ -750,15 +808,25 @@
       this.panel1.Controls.Add(this.btnSubmitInvoke);
       this.panel1.Controls.Add(this.CurrentFileName);
       this.panel1.Controls.Add(this.OutputProcess);
-      this.panel1.Location = new System.Drawing.Point(8, 393);
+      this.panel1.Location = new System.Drawing.Point(8, 409);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(790, 158);
+      this.panel1.Size = new System.Drawing.Size(790, 174);
       this.panel1.TabIndex = 34;
+      // 
+      // ClearFileList
+      // 
+      this.ClearFileList.Location = new System.Drawing.Point(715, 5);
+      this.ClearFileList.Name = "ClearFileList";
+      this.ClearFileList.Size = new System.Drawing.Size(75, 23);
+      this.ClearFileList.TabIndex = 34;
+      this.ClearFileList.Text = "クリア";
+      this.ClearFileList.UseVisualStyleBackColor = true;
+      this.ClearFileList.Click += new System.EventHandler(this.ClearFileList_Click);
       // 
       // label7
       // 
       this.label7.AutoSize = true;
-      this.label7.Location = new System.Drawing.Point(0, 118);
+      this.label7.Location = new System.Drawing.Point(0, 131);
       this.label7.Name = "label7";
       this.label7.Size = new System.Drawing.Size(91, 12);
       this.label7.TabIndex = 33;
@@ -808,23 +876,12 @@
       this.ffmpeg.Size = new System.Drawing.Size(404, 20);
       this.ffmpeg.TabIndex = 39;
       // 
-      // ClearFileList
-      // 
-      this.ClearFileList.Location = new System.Drawing.Point(723, 385);
-      this.ClearFileList.Name = "ClearFileList";
-      this.ClearFileList.Size = new System.Drawing.Size(75, 23);
-      this.ClearFileList.TabIndex = 34;
-      this.ClearFileList.Text = "クリア";
-      this.ClearFileList.UseVisualStyleBackColor = true;
-      this.ClearFileList.Click += new System.EventHandler(this.ClearFileList_Click);
-      // 
       // Form1
       // 
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(806, 561);
-      this.Controls.Add(this.ClearFileList);
+      this.ClientSize = new System.Drawing.Size(806, 594);
       this.Controls.Add(this.ffmpeg);
       this.Controls.Add(this.btnFindInPath);
       this.Controls.Add(this.label8);
@@ -860,6 +917,7 @@
       this.RotateBox.ResumeLayout(false);
       this.RotateBox.PerformLayout();
       this.groupBox5.ResumeLayout(false);
+      this.groupBox5.PerformLayout();
       this.LayoutBox.ResumeLayout(false);
       this.LayoutBox.PerformLayout();
       this.BitrateBox.ResumeLayout(false);
@@ -941,6 +999,11 @@
     private System.Windows.Forms.Button OpenLogFile;
     private System.Windows.Forms.Button ClearFileList;
     private System.Windows.Forms.ComboBox cbDeinterlaceAlg;
+    private System.Windows.Forms.TextBox FilePrefix;
+    private System.Windows.Forms.TextBox FileSuffix;
+    private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.Label label10;
+    private System.Windows.Forms.Label label9;
   }
 }
 
