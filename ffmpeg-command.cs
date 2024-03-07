@@ -117,12 +117,12 @@ namespace ffmpeg_command_builder
     {
       if (value <= 0)
       {
-        options["b:v"] = EncoderType == "hevc" ? "-b:v 0 -cq 25" : "-crf 23";
+        options["b:v"] = EncoderType.EndsWith("_nvenc") ? "-b:v 0 -cq 25" : "-crf 23";
         return this;
       }
 
       if (bCQ)
-        options["b:v"] = EncoderType == "hevc" ? $"-b:v 0 -cq {value}" : $"-crf {value}";
+        options["b:v"] = EncoderType.EndsWith("_nvenc") ? $"-b:v 0 -cq {value}" : $"-crf {value}";
       else
         options["b:v"] = $"-b:v {value}K";
 
