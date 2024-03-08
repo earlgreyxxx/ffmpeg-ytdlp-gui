@@ -70,7 +70,7 @@ namespace ffmpeg_command_builder
         .OutputSuffix(FileSuffix.Text);
 
       if (chkEncodeAudio.Checked)
-        ffcommand.acodec(UseAudioEncoder.Text).aBitrate(192);
+        ffcommand.acodec(UseAudioEncoder.Text).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
@@ -98,13 +98,13 @@ namespace ffmpeg_command_builder
 
       ffcommand
         .vcodec(UseVideoEncoder.Text, cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
-        .vBitrate((int)bitrate.Value, chkConstantQuality.Checked)
+        .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
         .preset(cbPreset.Text)
         .OutputPrefix(FilePrefix.Text)
         .OutputSuffix(FileSuffix.Text);
 
       if (chkEncodeAudio.Checked)
-        ffcommand.acodec(UseAudioEncoder.Text).aBitrate(192);
+        ffcommand.acodec(UseAudioEncoder.Text).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
@@ -267,16 +267,10 @@ namespace ffmpeg_command_builder
       foreach (var item in Presets[UseVideoEncoder.Text])
         cbPreset.Items.Add(item);
 
-      var m = Regex.Match(UseVideoEncoder.Text, @"^(\w+)_(nvenc|qsv)$");
+      var m = Regex.Match(UseVideoEncoder.Text, @"^(?:\w+)_(nvenc|qsv)$");
       if (m.Success)
       {
-        string encodeTo = m.Groups[1].Value;
-        if(encodeTo == "hevc")
-          chkConstantQuality.Text = "固定品質(-cq)";
-        else if(encodeTo == "h264")
-          chkConstantQuality.Text = "固定品質(-crf)";
-
-        string hardware = m.Groups[2].Value;
+        string hardware = m.Groups[1].Value;
         string hardwareName = "";
         if (hardware == "nvenc")
         {
@@ -290,6 +284,9 @@ namespace ffmpeg_command_builder
         }
 
         cbDevices.SelectedIndex = cbDevices.FindString(hardwareName);
+
+        if(chkConstantQuality.Checked)
+          vQualityLabel.Text = hardware == "qsv" ? "ICQ" : "-cq";
       }
     }
 

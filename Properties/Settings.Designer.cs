@@ -176,5 +176,17 @@ namespace ffmpeg_command_builder.Properties {
                 this["suffix"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("192")]
+        public decimal ab {
+            get {
+                return ((decimal)(this["ab"]));
+            }
+            set {
+                this["ab"] = value;
+            }
+        }
     }
 }

@@ -26,6 +26,16 @@ namespace ffmpeg_command_builder
       return this;
     }
 
+    public override ffmpeg_command vBitrate(int value, bool bCQ = false)
+    {
+      if (value <= 0)
+        options["b:v"] = "-global_quality 23";
+      else
+        options["b:v"] = bCQ ? $"-global_quality {value}" : $"-b:v {value}K";
+
+      return this;
+    }
+
     public override string GetCommandLineArguments(string strInputPath)
     {
       var args = new List<string> { options["default"] };

@@ -10,6 +10,7 @@ namespace ffmpeg_command_builder
   {
     public abstract string GetCommandLineArguments(string strInputPath);
     public abstract ffmpeg_command vcodec(string strCodec, int indexOfGpuDevice = 0);
+    public abstract ffmpeg_command vBitrate(int value, bool bCQ = false);
 
     // instances
     protected Dictionary<string,string> filters;
@@ -109,22 +110,6 @@ namespace ffmpeg_command_builder
     {
       if (!String.IsNullOrEmpty(strCodec))
         this.options["acodec"] = $"-c:a {strCodec}";
-
-      return this;
-    }
-
-    public ffmpeg_command vBitrate(int value,bool bCQ = false)
-    {
-      if (value <= 0)
-      {
-        options["b:v"] = EncoderType.EndsWith("_nvenc") ? "-b:v 0 -cq 25" : "-crf 23";
-        return this;
-      }
-
-      if (bCQ)
-        options["b:v"] = EncoderType.EndsWith("_nvenc") ? $"-b:v 0 -cq {value}" : $"-crf {value}";
-      else
-        options["b:v"] = $"-b:v {value}K";
 
       return this;
     }

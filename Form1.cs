@@ -76,13 +76,12 @@ namespace ffmpeg_command_builder
         ffmpeg.SelectedIndex = 0;
       }
 
-      chkConstantQuality.Checked = Settings.Default.cq;
       rbResizeNone.Checked = Settings.Default.resizeNone;
       rbResizeFullHD.Checked = Settings.Default.resizeFullHD;
       rbResizeHD.Checked = Settings.Default.resizeHD; 
       rbResizeNum.Checked = Settings.Default.resizeNum;
 
-      Unit.Text = chkConstantQuality.Checked ? "" : "Kbps";
+      vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
 
       var encoderNames = HardwareEncoders.Where(kv => kv.Value).Select(kv => kv.Key);
       foreach (string encoderName in encoderNames)
@@ -96,6 +95,9 @@ namespace ffmpeg_command_builder
       CurrentFileName.Text = string.Empty;
 
       cbDeinterlaceAlg.SelectedIndex = 0;
+
+      chkConstantQuality.Checked = Settings.Default.cq;
+      aBitrate.Enabled = chkEncodeAudio.Checked;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -171,12 +173,17 @@ namespace ffmpeg_command_builder
 
     private void chkConstantQuality_CheckedChanged(object sender, EventArgs e)
     {
-      bitrate.Increment = chkConstantQuality.Checked ? 1 : 100;
-      bitrate.Minimum = chkConstantQuality.Checked ? 0 : 100;
-      bitrate.Maximum = chkConstantQuality.Checked ? 100 : 1000000;
-      bitrate.Value = chkConstantQuality.Checked ? 25 : 6000;
+      vBitrate.Increment = chkConstantQuality.Checked ? 1 : 100;
+      vBitrate.Minimum = chkConstantQuality.Checked ? 0 : 100;
+      vBitrate.Maximum = chkConstantQuality.Checked ? 100 : 1000000;
+      vBitrate.Value = chkConstantQuality.Checked ? 25 : 6000;
 
-      Unit.Text = chkConstantQuality.Checked ? "" : "KBps";
+      vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
+
+      if (chkConstantQuality.Checked)
+        vQualityLabel.Text = UseVideoEncoder.Text.EndsWith("_qsv") ? "ICQ" : "-cq";
+      else
+        vQualityLabel.Text = "-b:v";
     }
 
     private void btnClearSS_Click(object sender, EventArgs e)
@@ -199,14 +206,33 @@ namespace ffmpeg_command_builder
       if (chkAudioOnly.Checked)
         return;
 
-      UseAudioEncoder.Enabled = chkEncodeAudio.Checked; 
+      UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
+      aBitrate.Enabled = chkEncodeAudio.Checked;
     }
 
     private void chkAudioOnly_CheckedChanged(object sender, EventArgs e)
     {
-      UseVideoEncoder.Enabled = !chkAudioOnly.Checked;
+      UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !chkAudioOnly.Checked;
+      chkFilterDeInterlace.Enabled = !chkAudioOnly.Checked;
+      ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !chkAudioOnly.Checked;
+
+      if (chkAudioOnly.Checked)
+      {
+        cbDeinterlaceAlg.Enabled = false;
+      }
+      else
+      {
+        if(chkFilterDeInterlace.Checked)
+          cbDeinterlaceAlg.Enabled = true;
+        else
+          cbDeinterlaceAlg.Enabled = false;
+      }
+
       if (chkAudioOnly.Checked && !chkEncodeAudio.Checked)
+      {
         chkEncodeAudio.Checked = true;
+        aBitrate.Enabled = true;
+      }
 
       if(chkAudioOnly.Checked && !UseAudioEncoder.Enabled)
         UseAudioEncoder.Enabled = true;

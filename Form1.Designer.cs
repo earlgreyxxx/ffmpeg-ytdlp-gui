@@ -76,12 +76,16 @@
       this.btnClear = new System.Windows.Forms.Button();
       this.label3 = new System.Windows.Forms.Label();
       this.BitrateBox = new System.Windows.Forms.GroupBox();
+      this.aUnit = new System.Windows.Forms.Label();
+      this.aBitrate = new System.Windows.Forms.NumericUpDown();
+      this.aQualityLabel = new System.Windows.Forms.Label();
+      this.vQualityLabel = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
       this.cbPreset = new System.Windows.Forms.ComboBox();
-      this.bitrate = new System.Windows.Forms.NumericUpDown();
+      this.vBitrate = new System.Windows.Forms.NumericUpDown();
       this.chkEncodeAudio = new System.Windows.Forms.CheckBox();
       this.chkConstantQuality = new System.Windows.Forms.CheckBox();
-      this.Unit = new System.Windows.Forms.Label();
+      this.vUnit = new System.Windows.Forms.Label();
       this.btnApply = new System.Windows.Forms.Button();
       this.openInputFile = new System.Windows.Forms.OpenFileDialog();
       this.OutputProcess = new System.Windows.Forms.TextBox();
@@ -107,7 +111,8 @@
       this.groupBox5.SuspendLayout();
       this.LayoutBox.SuspendLayout();
       this.BitrateBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.bitrate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.aBitrate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.vBitrate)).BeginInit();
       this.groupBox4.SuspendLayout();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
@@ -630,23 +635,74 @@
       // 
       // BitrateBox
       // 
+      this.BitrateBox.Controls.Add(this.aUnit);
+      this.BitrateBox.Controls.Add(this.aBitrate);
+      this.BitrateBox.Controls.Add(this.aQualityLabel);
+      this.BitrateBox.Controls.Add(this.vQualityLabel);
       this.BitrateBox.Controls.Add(this.label6);
       this.BitrateBox.Controls.Add(this.cbPreset);
-      this.BitrateBox.Controls.Add(this.bitrate);
+      this.BitrateBox.Controls.Add(this.vBitrate);
       this.BitrateBox.Controls.Add(this.chkEncodeAudio);
       this.BitrateBox.Controls.Add(this.chkConstantQuality);
-      this.BitrateBox.Controls.Add(this.Unit);
+      this.BitrateBox.Controls.Add(this.vUnit);
       this.BitrateBox.Location = new System.Drawing.Point(366, 127);
       this.BitrateBox.Name = "BitrateBox";
-      this.BitrateBox.Size = new System.Drawing.Size(430, 80);
+      this.BitrateBox.Size = new System.Drawing.Size(432, 80);
       this.BitrateBox.TabIndex = 15;
       this.BitrateBox.TabStop = false;
-      this.BitrateBox.Text = "品質";
+      this.BitrateBox.Text = "出力品質";
+      // 
+      // aUnit
+      // 
+      this.aUnit.AutoSize = true;
+      this.aUnit.Location = new System.Drawing.Point(219, 50);
+      this.aUnit.Name = "aUnit";
+      this.aUnit.Size = new System.Drawing.Size(30, 12);
+      this.aUnit.TabIndex = 26;
+      this.aUnit.Text = "Kbps";
+      // 
+      // aBitrate
+      // 
+      this.aBitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "ab", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.aBitrate.Increment = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+      this.aBitrate.Location = new System.Drawing.Point(148, 46);
+      this.aBitrate.Maximum = new decimal(new int[] {
+            320,
+            0,
+            0,
+            0});
+      this.aBitrate.Name = "aBitrate";
+      this.aBitrate.Size = new System.Drawing.Size(70, 19);
+      this.aBitrate.TabIndex = 25;
+      this.aBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.aBitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.ab;
+      // 
+      // aQualityLabel
+      // 
+      this.aQualityLabel.AutoSize = true;
+      this.aQualityLabel.Location = new System.Drawing.Point(119, 48);
+      this.aQualityLabel.Name = "aQualityLabel";
+      this.aQualityLabel.Size = new System.Drawing.Size(25, 12);
+      this.aQualityLabel.TabIndex = 24;
+      this.aQualityLabel.Text = "-b:a";
+      // 
+      // vQualityLabel
+      // 
+      this.vQualityLabel.Location = new System.Drawing.Point(94, 26);
+      this.vQualityLabel.Name = "vQualityLabel";
+      this.vQualityLabel.Size = new System.Drawing.Size(50, 12);
+      this.vQualityLabel.TabIndex = 23;
+      this.vQualityLabel.Text = "-b:v";
+      this.vQualityLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // label6
       // 
       this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(20, 53);
+      this.label6.Location = new System.Drawing.Point(265, 27);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(43, 12);
       this.label6.TabIndex = 22;
@@ -656,43 +712,43 @@
       // 
       this.cbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbPreset.FormattingEnabled = true;
-      this.cbPreset.Location = new System.Drawing.Point(66, 49);
+      this.cbPreset.Location = new System.Drawing.Point(311, 23);
       this.cbPreset.Name = "cbPreset";
-      this.cbPreset.Size = new System.Drawing.Size(160, 20);
+      this.cbPreset.Size = new System.Drawing.Size(109, 20);
       this.cbPreset.TabIndex = 21;
       // 
-      // bitrate
+      // vBitrate
       // 
-      this.bitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "bitrate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.bitrate.Location = new System.Drawing.Point(156, 22);
-      this.bitrate.Maximum = new decimal(new int[] {
+      this.vBitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "bitrate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.vBitrate.Location = new System.Drawing.Point(148, 22);
+      this.vBitrate.Maximum = new decimal(new int[] {
             1215752191,
             23,
             0,
             0});
-      this.bitrate.Name = "bitrate";
-      this.bitrate.Size = new System.Drawing.Size(70, 19);
-      this.bitrate.TabIndex = 10;
-      this.bitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      this.bitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.bitrate;
+      this.vBitrate.Name = "vBitrate";
+      this.vBitrate.Size = new System.Drawing.Size(70, 19);
+      this.vBitrate.TabIndex = 10;
+      this.vBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.vBitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.bitrate;
       // 
       // chkEncodeAudio
       // 
       this.chkEncodeAudio.AutoSize = true;
       this.chkEncodeAudio.Checked = global::ffmpeg_command_builder.Properties.Settings.Default.acodec;
       this.chkEncodeAudio.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::ffmpeg_command_builder.Properties.Settings.Default, "acodec", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.chkEncodeAudio.Location = new System.Drawing.Point(276, 24);
+      this.chkEncodeAudio.Location = new System.Drawing.Point(14, 47);
       this.chkEncodeAudio.Name = "chkEncodeAudio";
-      this.chkEncodeAudio.Size = new System.Drawing.Size(141, 16);
+      this.chkEncodeAudio.Size = new System.Drawing.Size(93, 16);
       this.chkEncodeAudio.TabIndex = 20;
-      this.chkEncodeAudio.Text = "音声エンコード(192KBit)";
+      this.chkEncodeAudio.Text = "音声エンコード";
       this.chkEncodeAudio.UseVisualStyleBackColor = true;
       this.chkEncodeAudio.CheckedChanged += new System.EventHandler(this.chkEncodeAudio_CheckedChanged);
       // 
       // chkConstantQuality
       // 
       this.chkConstantQuality.AutoSize = true;
-      this.chkConstantQuality.Location = new System.Drawing.Point(22, 24);
+      this.chkConstantQuality.Location = new System.Drawing.Point(14, 24);
       this.chkConstantQuality.Name = "chkConstantQuality";
       this.chkConstantQuality.Size = new System.Drawing.Size(72, 16);
       this.chkConstantQuality.TabIndex = 19;
@@ -700,14 +756,14 @@
       this.chkConstantQuality.Text = "固定品質";
       this.chkConstantQuality.CheckedChanged += new System.EventHandler(this.chkConstantQuality_CheckedChanged);
       // 
-      // Unit
+      // vUnit
       // 
-      this.Unit.AutoSize = true;
-      this.Unit.Location = new System.Drawing.Point(227, 26);
-      this.Unit.Name = "Unit";
-      this.Unit.Size = new System.Drawing.Size(30, 12);
-      this.Unit.TabIndex = 1;
-      this.Unit.Text = "Kbps";
+      this.vUnit.AutoSize = true;
+      this.vUnit.Location = new System.Drawing.Point(219, 26);
+      this.vUnit.Name = "vUnit";
+      this.vUnit.Size = new System.Drawing.Size(30, 12);
+      this.vUnit.TabIndex = 1;
+      this.vUnit.Text = "Kbps";
       // 
       // btnApply
       // 
@@ -922,7 +978,8 @@
       this.LayoutBox.PerformLayout();
       this.BitrateBox.ResumeLayout(false);
       this.BitrateBox.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.bitrate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.aBitrate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.vBitrate)).EndInit();
       this.groupBox4.ResumeLayout(false);
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
@@ -965,8 +1022,8 @@
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.GroupBox BitrateBox;
     private System.Windows.Forms.CheckBox chkConstantQuality;
-    private System.Windows.Forms.Label Unit;
-    private System.Windows.Forms.NumericUpDown bitrate;
+    private System.Windows.Forms.Label vUnit;
+    private System.Windows.Forms.NumericUpDown vBitrate;
     private System.Windows.Forms.Button btnApply;
     private System.Windows.Forms.Button btnClearSS;
     private System.Windows.Forms.Button btnClearTo;
@@ -1004,6 +1061,10 @@
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.Label label9;
+    private System.Windows.Forms.Label vQualityLabel;
+    private System.Windows.Forms.Label aQualityLabel;
+    private System.Windows.Forms.Label aUnit;
+    private System.Windows.Forms.NumericUpDown aBitrate;
   }
 }
 
