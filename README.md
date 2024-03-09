@@ -8,7 +8,7 @@ nvenc(h264_nvenc,hevc_nvenc)専用。
 * Windows11
 
 ## 必須
-ffmpeg.exe (wingetでインストールしたもの)
+ffmpeg.exe (wingetでインストールしたもの、もしくは ver6.1以降)
 ```
 winget install Gyan.FFmpeg
 ```
