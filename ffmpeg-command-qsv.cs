@@ -33,6 +33,9 @@ namespace ffmpeg_command_builder
       else
         options["b:v"] = bCQ ? $"-global_quality {value}" : $"-b:v {value}K";
 
+      if (value <= 0 || bCQ)
+        options["b:v"] += " -look_ahead 1";
+
       return this;
     }
 

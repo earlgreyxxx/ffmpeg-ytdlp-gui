@@ -890,7 +890,7 @@
       // 
       // btnFFmpeg
       // 
-      this.btnFFmpeg.Location = new System.Drawing.Point(523, 9);
+      this.btnFFmpeg.Location = new System.Drawing.Point(598, 9);
       this.btnFFmpeg.Name = "btnFFmpeg";
       this.btnFFmpeg.Size = new System.Drawing.Size(49, 23);
       this.btnFFmpeg.TabIndex = 36;
@@ -916,11 +916,11 @@
       // 
       // btnFindInPath
       // 
-      this.btnFindInPath.Location = new System.Drawing.Point(577, 9);
+      this.btnFindInPath.Location = new System.Drawing.Point(653, 9);
       this.btnFindInPath.Name = "btnFindInPath";
-      this.btnFindInPath.Size = new System.Drawing.Size(220, 23);
+      this.btnFindInPath.Size = new System.Drawing.Size(144, 23);
       this.btnFindInPath.TabIndex = 38;
-      this.btnFindInPath.Text = "ffmpegコマンドを環境変数PATHから探す";
+      this.btnFindInPath.Text = "環境変数PATHから探す";
       this.btnFindInPath.UseVisualStyleBackColor = true;
       this.btnFindInPath.Click += new System.EventHandler(this.btnFindInPath_Click);
       // 
@@ -929,7 +929,7 @@
       this.ffmpeg.FormattingEnabled = true;
       this.ffmpeg.Location = new System.Drawing.Point(112, 11);
       this.ffmpeg.Name = "ffmpeg";
-      this.ffmpeg.Size = new System.Drawing.Size(404, 20);
+      this.ffmpeg.Size = new System.Drawing.Size(480, 20);
       this.ffmpeg.TabIndex = 39;
       // 
       // Form1
@@ -960,7 +960,7 @@
       this.Padding = new System.Windows.Forms.Padding(8);
       this.ShowIcon = false;
       this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-      this.Text = "ffmpeg command builder for Cuda and QSV";
+      this.Text = "ffmpeg command builder for NVENC and QSV : required ffmpeg 6.1 or higher";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
       this.Load += new System.EventHandler(this.Form1_Load);
       this.groupBox1.ResumeLayout(false);

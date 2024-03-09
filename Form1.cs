@@ -24,8 +24,8 @@ namespace ffmpeg_command_builder
 
       Presets = new Dictionary<string, string[]>()
       {
-        { "h264_nvenc", new string[] { "default","slow","medium","fast","p1","p2","p3","p4","p5","p6","p7" } },
-        { "hevc_nvenc", new string[] { "default","slow","medium","fast","p1","p2","p3","p4","p5","p6","p7" } },
+        { "h264_nvenc", new string[] { "default","slow","medium","fast","hp","hq","bd","ll","llhq","llhp","lossless","losslesshp","p1","p2","p3","p4","p5","p6","p7" } },
+        { "hevc_nvenc", new string[] { "default","slow","medium","fast","hp","hq","bd","ll","llhq","llhp","lossless","losslesshp","p1","p2","p3","p4","p5","p6","p7" } },
         { "h264_qsv",new string[] { "veryfast","faster","fast","medium","slow","slower","veryslow" } },
         { "hevc_qsv",new string[] { "veryfast","faster","fast","medium","slow","slower","veryslow" } },
       };

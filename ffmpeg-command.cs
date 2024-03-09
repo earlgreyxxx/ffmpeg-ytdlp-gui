@@ -186,6 +186,8 @@ namespace ffmpeg_command_builder
         CreateNoWindow = true
       };
 
+      psi.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
+
       var process = new Process()
       {
         StartInfo = psi,

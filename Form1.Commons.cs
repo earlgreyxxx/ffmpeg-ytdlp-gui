@@ -274,7 +274,7 @@ namespace ffmpeg_command_builder
         string hardwareName = "";
         if (hardware == "nvenc")
         {
-          cbPreset.SelectedIndex = 8;
+          cbPreset.SelectedIndex = 16;
           hardwareName = "nvidia";
         }
         else if (hardware == "qsv")
