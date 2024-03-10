@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -157,9 +156,7 @@ namespace ffmpeg_command_builder
         findFolder.SelectedPath = cbOutputDir.Text;
 
       if (DialogResult.OK == findFolder.ShowDialog())
-      {
         cbOutputDir.Text = findFolder.SelectedPath;
-      }
     }
 
     private void btnApply_Click(object sender, EventArgs e)
@@ -299,16 +296,7 @@ namespace ffmpeg_command_builder
           return;
 
         currentCommand = CreateCommand(chkAudioOnly.Checked);
-        var commandlines = inputFileList.Select(file => currentCommand.GetCommandLine(file));
-
-        using (var sw = new StreamWriter(findSaveBatchFile.FileName, false, Encoding.GetEncoding(932)))
-        {
-          sw.WriteLine("@ECHO OFF");
-          foreach (var commandline in commandlines)
-            sw.WriteLine(commandline);
-
-          sw.WriteLine("PAUSE");
-        }
+        currentCommand.ToBatchFile(findSaveBatchFile.FileName, inputFileList);
       }
     }
 

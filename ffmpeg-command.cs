@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
@@ -209,6 +211,20 @@ namespace ffmpeg_command_builder
         process.Start();
 
       return process;
+    }
+
+    public void ToBatchFile(string filename,IEnumerable<string> files)
+    {
+      var commandlines = files.Select(file => GetCommandLine(file));
+
+      using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
+      {
+        sw.WriteLine("@ECHO OFF");
+        foreach (var commandline in commandlines)
+          sw.WriteLine(commandline);
+
+        sw.WriteLine("PAUSE");
+      }
     }
   }
 }
