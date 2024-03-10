@@ -82,7 +82,10 @@ namespace ffmpeg_command_builder
         args.Add(options["preset"]);
         args.Add(options["b:v"]);
 
-        if(options.ContainsKey("tag:v"))
+        if(options.ContainsKey("lookahead") && !string.IsNullOrEmpty(options["lookahead"]))
+          args.Add($"-rc-lookahead {options["lookahead"]}");
+
+        if (options.ContainsKey("tag:v"))
           args.Add(options["tag:v"]);
       }
 

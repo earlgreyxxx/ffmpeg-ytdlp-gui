@@ -165,6 +165,17 @@ namespace ffmpeg_command_builder
       return this;
     }
 
+    public ffmpeg_command lookAhead(int frames)
+    {
+      if (frames <= 0 && options.ContainsKey("lookahead"))
+        options.Remove("lookahead");
+
+      if (frames > 0)
+        options["lookahead"] = frames.ToString();
+
+      return this;
+    }
+
     public string GetCommandLine(string strInputPath)
     {
       string command = ffmpegPath;

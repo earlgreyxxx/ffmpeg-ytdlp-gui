@@ -99,6 +99,7 @@ namespace ffmpeg_command_builder
       ffcommand
         .vcodec(UseVideoEncoder.Text, cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
         .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
+        .lookAhead((int)LookAhead.Value)
         .preset(cbPreset.Text)
         .OutputPrefix(FilePrefix.Text)
         .OutputSuffix(FileSuffix.Text);

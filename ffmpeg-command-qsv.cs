@@ -33,9 +33,6 @@ namespace ffmpeg_command_builder
       else
         options["b:v"] = bCQ ? $"-global_quality {value}" : $"-b:v {value}K";
 
-      if (value <= 0 || bCQ)
-        options["b:v"] += " -look_ahead 1";
-
       return this;
     }
 
@@ -94,6 +91,13 @@ namespace ffmpeg_command_builder
         args.Add(options["vcodec"]);
         args.Add(options["preset"]);
         args.Add(options["b:v"]);
+        
+        if(!string.IsNullOrEmpty(options["lookahead"]))
+        {
+          args.Add("-look_ahead 1");
+          args.Add("-extbrc 1");
+          args.Add($"-look_ahead_depth {options["lookahead"]}");
+        }
 
         if (options.ContainsKey("tag:v"))
           args.Add(options["tag:v"]);

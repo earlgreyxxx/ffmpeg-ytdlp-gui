@@ -44,5 +44,8 @@
     <Setting Name="ab" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">192</Value>
     </Setting>
+    <Setting Name="lookAhead" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

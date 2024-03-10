@@ -49,7 +49,6 @@
       this.chkAudioOnly = new System.Windows.Forms.CheckBox();
       this.ResizeBox = new System.Windows.Forms.GroupBox();
       this.rbResizeNum = new System.Windows.Forms.RadioButton();
-      this.resizeTo = new System.Windows.Forms.NumericUpDown();
       this.rbResizeHD = new System.Windows.Forms.RadioButton();
       this.rbResizeFullHD = new System.Windows.Forms.RadioButton();
       this.rbResizeNone = new System.Windows.Forms.RadioButton();
@@ -62,8 +61,6 @@
       this.label11 = new System.Windows.Forms.Label();
       this.label10 = new System.Windows.Forms.Label();
       this.label9 = new System.Windows.Forms.Label();
-      this.FilePrefix = new System.Windows.Forms.TextBox();
-      this.FileSuffix = new System.Windows.Forms.TextBox();
       this.OpenLogFile = new System.Windows.Forms.Button();
       this.btnClearDirs = new System.Windows.Forms.Button();
       this.OpenFolder = new System.Windows.Forms.Button();
@@ -76,14 +73,13 @@
       this.btnClear = new System.Windows.Forms.Button();
       this.label3 = new System.Windows.Forms.Label();
       this.BitrateBox = new System.Windows.Forms.GroupBox();
+      this.label12 = new System.Windows.Forms.Label();
+      this.LookAhead = new System.Windows.Forms.NumericUpDown();
       this.aUnit = new System.Windows.Forms.Label();
-      this.aBitrate = new System.Windows.Forms.NumericUpDown();
       this.aQualityLabel = new System.Windows.Forms.Label();
       this.vQualityLabel = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
       this.cbPreset = new System.Windows.Forms.ComboBox();
-      this.vBitrate = new System.Windows.Forms.NumericUpDown();
-      this.chkEncodeAudio = new System.Windows.Forms.CheckBox();
       this.chkConstantQuality = new System.Windows.Forms.CheckBox();
       this.vUnit = new System.Windows.Forms.Label();
       this.btnApply = new System.Windows.Forms.Button();
@@ -103,18 +99,25 @@
       this.openFFMpegFileDlg = new System.Windows.Forms.OpenFileDialog();
       this.btnFindInPath = new System.Windows.Forms.Button();
       this.ffmpeg = new System.Windows.Forms.ComboBox();
+      this.aBitrate = new System.Windows.Forms.NumericUpDown();
+      this.vBitrate = new System.Windows.Forms.NumericUpDown();
+      this.chkEncodeAudio = new System.Windows.Forms.CheckBox();
+      this.FilePrefix = new System.Windows.Forms.TextBox();
+      this.FileSuffix = new System.Windows.Forms.TextBox();
+      this.resizeTo = new System.Windows.Forms.NumericUpDown();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.ResizeBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.resizeTo)).BeginInit();
       this.RotateBox.SuspendLayout();
       this.groupBox5.SuspendLayout();
       this.LayoutBox.SuspendLayout();
       this.BitrateBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.aBitrate)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.vBitrate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.LookAhead)).BeginInit();
       this.groupBox4.SuspendLayout();
       this.panel1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.aBitrate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.vBitrate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.resizeTo)).BeginInit();
       this.SuspendLayout();
       // 
       // Commandlines
@@ -336,32 +339,6 @@
       this.rbResizeNum.UseVisualStyleBackColor = true;
       this.rbResizeNum.CheckedChanged += new System.EventHandler(this.rbResizeNum_CheckedChanged);
       // 
-      // resizeTo
-      // 
-      this.resizeTo.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "resize", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.resizeTo.Enabled = false;
-      this.resizeTo.Increment = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-      this.resizeTo.Location = new System.Drawing.Point(250, 30);
-      this.resizeTo.Maximum = new decimal(new int[] {
-            4320,
-            0,
-            0,
-            0});
-      this.resizeTo.Minimum = new decimal(new int[] {
-            320,
-            0,
-            0,
-            0});
-      this.resizeTo.Name = "resizeTo";
-      this.resizeTo.Size = new System.Drawing.Size(54, 19);
-      this.resizeTo.TabIndex = 14;
-      this.resizeTo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      this.resizeTo.Value = global::ffmpeg_command_builder.Properties.Settings.Default.resize;
-      // 
       // rbResizeHD
       // 
       this.rbResizeHD.AutoSize = true;
@@ -497,26 +474,6 @@
       this.label9.TabIndex = 26;
       this.label9.Text = "ファイル名";
       // 
-      // FilePrefix
-      // 
-      this.FilePrefix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ffmpeg_command_builder.Properties.Settings.Default, "prefix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.FilePrefix.Location = new System.Drawing.Point(78, 23);
-      this.FilePrefix.Name = "FilePrefix";
-      this.FilePrefix.Size = new System.Drawing.Size(62, 19);
-      this.FilePrefix.TabIndex = 25;
-      this.FilePrefix.Text = global::ffmpeg_command_builder.Properties.Settings.Default.prefix;
-      this.FilePrefix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-      // 
-      // FileSuffix
-      // 
-      this.FileSuffix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ffmpeg_command_builder.Properties.Settings.Default, "suffix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.FileSuffix.Location = new System.Drawing.Point(247, 23);
-      this.FileSuffix.Name = "FileSuffix";
-      this.FileSuffix.Size = new System.Drawing.Size(62, 19);
-      this.FileSuffix.TabIndex = 25;
-      this.FileSuffix.Text = global::ffmpeg_command_builder.Properties.Settings.Default.suffix;
-      this.FileSuffix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-      // 
       // OpenLogFile
       // 
       this.OpenLogFile.Location = new System.Drawing.Point(12, 92);
@@ -635,6 +592,8 @@
       // 
       // BitrateBox
       // 
+      this.BitrateBox.Controls.Add(this.label12);
+      this.BitrateBox.Controls.Add(this.LookAhead);
       this.BitrateBox.Controls.Add(this.aUnit);
       this.BitrateBox.Controls.Add(this.aBitrate);
       this.BitrateBox.Controls.Add(this.aQualityLabel);
@@ -652,6 +611,25 @@
       this.BitrateBox.TabStop = false;
       this.BitrateBox.Text = "出力品質";
       // 
+      // label12
+      // 
+      this.label12.AutoSize = true;
+      this.label12.Location = new System.Drawing.Point(268, 53);
+      this.label12.Name = "label12";
+      this.label12.Size = new System.Drawing.Size(102, 12);
+      this.label12.TabIndex = 28;
+      this.label12.Text = "先行探索フレーム数";
+      // 
+      // LookAhead
+      // 
+      this.LookAhead.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "lookAhead", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.LookAhead.Location = new System.Drawing.Point(371, 49);
+      this.LookAhead.Name = "LookAhead";
+      this.LookAhead.Size = new System.Drawing.Size(51, 19);
+      this.LookAhead.TabIndex = 27;
+      this.LookAhead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.LookAhead.Value = global::ffmpeg_command_builder.Properties.Settings.Default.lookAhead;
+      // 
       // aUnit
       // 
       this.aUnit.AutoSize = true;
@@ -660,26 +638,6 @@
       this.aUnit.Size = new System.Drawing.Size(30, 12);
       this.aUnit.TabIndex = 26;
       this.aUnit.Text = "Kbps";
-      // 
-      // aBitrate
-      // 
-      this.aBitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "ab", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.aBitrate.Increment = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
-      this.aBitrate.Location = new System.Drawing.Point(148, 46);
-      this.aBitrate.Maximum = new decimal(new int[] {
-            320,
-            0,
-            0,
-            0});
-      this.aBitrate.Name = "aBitrate";
-      this.aBitrate.Size = new System.Drawing.Size(70, 19);
-      this.aBitrate.TabIndex = 25;
-      this.aBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      this.aBitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.ab;
       // 
       // aQualityLabel
       // 
@@ -716,34 +674,6 @@
       this.cbPreset.Name = "cbPreset";
       this.cbPreset.Size = new System.Drawing.Size(109, 20);
       this.cbPreset.TabIndex = 21;
-      // 
-      // vBitrate
-      // 
-      this.vBitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "bitrate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.vBitrate.Location = new System.Drawing.Point(148, 22);
-      this.vBitrate.Maximum = new decimal(new int[] {
-            1215752191,
-            23,
-            0,
-            0});
-      this.vBitrate.Name = "vBitrate";
-      this.vBitrate.Size = new System.Drawing.Size(70, 19);
-      this.vBitrate.TabIndex = 10;
-      this.vBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      this.vBitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.bitrate;
-      // 
-      // chkEncodeAudio
-      // 
-      this.chkEncodeAudio.AutoSize = true;
-      this.chkEncodeAudio.Checked = global::ffmpeg_command_builder.Properties.Settings.Default.acodec;
-      this.chkEncodeAudio.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::ffmpeg_command_builder.Properties.Settings.Default, "acodec", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.chkEncodeAudio.Location = new System.Drawing.Point(14, 47);
-      this.chkEncodeAudio.Name = "chkEncodeAudio";
-      this.chkEncodeAudio.Size = new System.Drawing.Size(93, 16);
-      this.chkEncodeAudio.TabIndex = 20;
-      this.chkEncodeAudio.Text = "音声エンコード";
-      this.chkEncodeAudio.UseVisualStyleBackColor = true;
-      this.chkEncodeAudio.CheckedChanged += new System.EventHandler(this.chkEncodeAudio_CheckedChanged);
       // 
       // chkConstantQuality
       // 
@@ -932,6 +862,100 @@
       this.ffmpeg.Size = new System.Drawing.Size(480, 20);
       this.ffmpeg.TabIndex = 39;
       // 
+      // aBitrate
+      // 
+      this.aBitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "ab", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.aBitrate.Increment = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+      this.aBitrate.Location = new System.Drawing.Point(148, 46);
+      this.aBitrate.Maximum = new decimal(new int[] {
+            320,
+            0,
+            0,
+            0});
+      this.aBitrate.Name = "aBitrate";
+      this.aBitrate.Size = new System.Drawing.Size(70, 19);
+      this.aBitrate.TabIndex = 25;
+      this.aBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.aBitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.ab;
+      // 
+      // vBitrate
+      // 
+      this.vBitrate.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "bitrate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.vBitrate.Location = new System.Drawing.Point(148, 22);
+      this.vBitrate.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
+            0,
+            0});
+      this.vBitrate.Name = "vBitrate";
+      this.vBitrate.Size = new System.Drawing.Size(70, 19);
+      this.vBitrate.TabIndex = 10;
+      this.vBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.vBitrate.Value = global::ffmpeg_command_builder.Properties.Settings.Default.bitrate;
+      // 
+      // chkEncodeAudio
+      // 
+      this.chkEncodeAudio.AutoSize = true;
+      this.chkEncodeAudio.Checked = global::ffmpeg_command_builder.Properties.Settings.Default.acodec;
+      this.chkEncodeAudio.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::ffmpeg_command_builder.Properties.Settings.Default, "acodec", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.chkEncodeAudio.Location = new System.Drawing.Point(14, 47);
+      this.chkEncodeAudio.Name = "chkEncodeAudio";
+      this.chkEncodeAudio.Size = new System.Drawing.Size(93, 16);
+      this.chkEncodeAudio.TabIndex = 20;
+      this.chkEncodeAudio.Text = "音声エンコード";
+      this.chkEncodeAudio.UseVisualStyleBackColor = true;
+      this.chkEncodeAudio.CheckedChanged += new System.EventHandler(this.chkEncodeAudio_CheckedChanged);
+      // 
+      // FilePrefix
+      // 
+      this.FilePrefix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ffmpeg_command_builder.Properties.Settings.Default, "prefix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.FilePrefix.Location = new System.Drawing.Point(78, 23);
+      this.FilePrefix.Name = "FilePrefix";
+      this.FilePrefix.Size = new System.Drawing.Size(62, 19);
+      this.FilePrefix.TabIndex = 25;
+      this.FilePrefix.Text = global::ffmpeg_command_builder.Properties.Settings.Default.prefix;
+      this.FilePrefix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      // 
+      // FileSuffix
+      // 
+      this.FileSuffix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ffmpeg_command_builder.Properties.Settings.Default, "suffix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.FileSuffix.Location = new System.Drawing.Point(247, 23);
+      this.FileSuffix.Name = "FileSuffix";
+      this.FileSuffix.Size = new System.Drawing.Size(62, 19);
+      this.FileSuffix.TabIndex = 25;
+      this.FileSuffix.Text = global::ffmpeg_command_builder.Properties.Settings.Default.suffix;
+      this.FileSuffix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      // 
+      // resizeTo
+      // 
+      this.resizeTo.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "resize", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.resizeTo.Enabled = false;
+      this.resizeTo.Increment = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+      this.resizeTo.Location = new System.Drawing.Point(250, 30);
+      this.resizeTo.Maximum = new decimal(new int[] {
+            4320,
+            0,
+            0,
+            0});
+      this.resizeTo.Minimum = new decimal(new int[] {
+            320,
+            0,
+            0,
+            0});
+      this.resizeTo.Name = "resizeTo";
+      this.resizeTo.Size = new System.Drawing.Size(54, 19);
+      this.resizeTo.TabIndex = 14;
+      this.resizeTo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.resizeTo.Value = global::ffmpeg_command_builder.Properties.Settings.Default.resize;
+      // 
       // Form1
       // 
       this.AllowDrop = true;
@@ -969,7 +993,6 @@
       this.groupBox2.PerformLayout();
       this.ResizeBox.ResumeLayout(false);
       this.ResizeBox.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.resizeTo)).EndInit();
       this.RotateBox.ResumeLayout(false);
       this.RotateBox.PerformLayout();
       this.groupBox5.ResumeLayout(false);
@@ -978,11 +1001,13 @@
       this.LayoutBox.PerformLayout();
       this.BitrateBox.ResumeLayout(false);
       this.BitrateBox.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.aBitrate)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.vBitrate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.LookAhead)).EndInit();
       this.groupBox4.ResumeLayout(false);
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.aBitrate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.vBitrate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.resizeTo)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -1065,6 +1090,8 @@
     private System.Windows.Forms.Label aQualityLabel;
     private System.Windows.Forms.Label aUnit;
     private System.Windows.Forms.NumericUpDown aBitrate;
+    private System.Windows.Forms.Label label12;
+    private System.Windows.Forms.NumericUpDown LookAhead;
   }
 }
 
