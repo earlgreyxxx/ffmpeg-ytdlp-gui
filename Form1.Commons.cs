@@ -10,51 +10,48 @@ using System.Windows.Forms;
 
 namespace ffmpeg_command_builder
 {
+  using StringListItem = ListItem<string>;
+  using StringListItems = List<ListItem<string>>;
+
   partial class Form1 : Form
   {
-    private Process CurrentProcess;
-    private Queue<string> inputFileList;
-    Action<string> UpdateControl;
+    private CustomProcess CurrentProcess;
     Action<string> WriteOutput;
+    Action<string> ProcessExit;
     Action ProcessDoneCallback;
     private StreamWriter LogWriter;
     private readonly Encoding CP932 = Encoding.GetEncoding(932);
 
     private void InitializeMembers()
     {
-      inputFileList = new Queue<string>();
-
-      WriteOutput = output => { OutputProcess.Text = output; };
-      UpdateControl = f =>
+      WriteOutput = output => { OutputStderr.Text = output; };
+      ProcessExit = f =>
       {
-        FileList.Items.Remove(f);
-        CurrentFileName.Text = f;
+        var listitem = InputFileList.First(item => item.Value == f);
+        InputFileList.Remove(listitem);
+
+        FileListBindingSource.ResetBindings(false);
       };
       ProcessDoneCallback = () =>
       {
-        CurrentFileName.Text = "";
         btnStop.Enabled = btnStopAll.Enabled = false;
         OpenLogFile.Enabled = true;
 
-        if (inputFileList.Count > 0)
+        if (InputFileList.Count > 0)
           btnSubmitInvoke.Enabled = true;
 
         MessageBox.Show("変換処理が終了しました。");
       };
-
-      foreach(var device in GetGPUDevices())
-        cbDevices.Items.Add(device);
-
-      cbDevices.SelectedIndex = 0;
     }
 
     private ffmpeg_command CreateFFMpegCommandInstance()
     {
       ffmpeg_command ffcommand = null;
-      
-      if(UseVideoEncoder.Text.EndsWith("_nvenc"))
+
+      var codec = UseVideoEncoder.SelectedValue as Codec;
+      if(codec.GpuSuffix == "nvenc")
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
-      else if(UseVideoEncoder.Text.EndsWith("_qsv"))
+      else if(codec.GpuSuffix == "qsv")
         ffcommand = new ffmpeg_command_qsv(ffmpeg.Text);
 
       return ffcommand;
@@ -70,7 +67,7 @@ namespace ffmpeg_command_builder
         .OutputSuffix(FileSuffix.Text);
 
       if (chkEncodeAudio.Checked)
-        ffcommand.acodec(UseAudioEncoder.Text).aBitrate((int)aBitrate.Value);
+        ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
@@ -79,7 +76,7 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.To(txtTo.Text);
 
-      ffcommand.outputPath(cbOutputDir.Text);
+      ffcommand.OutputPath = cbOutputDir.Text;
 
       return ffcommand; 
     }
@@ -92,42 +89,57 @@ namespace ffmpeg_command_builder
       var ffcommand = CreateFFMpegCommandInstance();
 
       if (!string.IsNullOrEmpty(txtSS.Text))
-        ffcommand.Starts(txtSS.Text);
+        ffcommand.Begin = txtSS.Text;
       if (!string.IsNullOrEmpty(txtTo.Text))
-        ffcommand.To(txtTo.Text);
+        ffcommand.End = txtTo.Text;
 
       ffcommand
-        .vcodec(UseVideoEncoder.Text, cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
+        .vcodec(UseVideoEncoder.SelectedValue.ToString(), cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
         .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
         .lookAhead((int)LookAhead.Value)
-        .preset(cbPreset.Text)
+        .preset(cbPreset.SelectedValue.ToString())
         .OutputPrefix(FilePrefix.Text)
         .OutputSuffix(FileSuffix.Text);
 
+      if (chkUseHWDecoder.Checked)
+        ffcommand.hwdecoder(HWDecoder.SelectedValue.ToString());
+
+      if (chkCrop.Checked)
+      {
+        if(chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
+          ffcommand.size(decimal.ToInt32(VideoWidth.Value),decimal.ToInt32(VideoHeight.Value)).crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+        else
+          ffcommand.crop(CropWidth.Value,CropHeight.Value,CropX.Value,CropY.Value);
+      }
+      
+
       if (chkEncodeAudio.Checked)
-        ffcommand.acodec(UseAudioEncoder.Text).aBitrate((int)aBitrate.Value);
+        ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
-      ffcommand.outputPath(cbOutputDir.Text);
+      if(!string.IsNullOrEmpty(cbOutputDir.Text))
+        ffcommand.OutputPath = cbOutputDir.Text;
 
       var deinterlaces = new List<string>() { "bwdif","bwdif_cuda","yadif","yadif_cuda" };
 
       if (chkFilterDeInterlace.Checked)
       {
-        if (cbDeinterlaceAlg.SelectedIndex == 0)
+        string value = cbDeinterlaceAlg.SelectedValue.ToString();
+        var codec = UseVideoEncoder.SelectedValue as Codec;
+        if (cbDeinterlaceAlg.Text == "bwdif")
         {
-          if (UseVideoEncoder.Text.EndsWith("_nvenc"))
-            ffcommand.setFilter("bwdif_cuda", "0:-1:0");
-          else if (UseVideoEncoder.Text.EndsWith("_qsv"))
-            ffcommand.setFilter("bwdif", "0:-1:0");
+          if (codec.GpuSuffix == "nvenc")
+            ffcommand.setFilter("bwdif_cuda",value);
+          else if (codec.GpuSuffix == "qsv")
+            ffcommand.setFilter("bwdif",value);
         }
-        else if(cbDeinterlaceAlg.SelectedIndex == 1)
+        else if(cbDeinterlaceAlg.Text == "yadif")
         {
-          if (UseVideoEncoder.Text.EndsWith("_nvenc"))
-            ffcommand.setFilter("yadif_cuda", "2:-1:0");
-          else if (UseVideoEncoder.Text.EndsWith("_qsv"))
-            ffcommand.setFilter("yadif", "2:-1:0");
+          if (codec.GpuSuffix == "nvenc")
+            ffcommand.setFilter("yadif_cuda",value);
+          else if (codec.GpuSuffix == "qsv")
+            ffcommand.setFilter("yadif",value);
         }
       }
       else
@@ -159,9 +171,10 @@ namespace ffmpeg_command_builder
 
       if (size > 0)
       {
-        if (UseVideoEncoder.Text.EndsWith("_nvenc"))
+        var codec = UseVideoEncoder.SelectedValue as Codec;
+        if (codec.GpuSuffix == "nvenc")
           ffcommand.setFilter("scale_cuda", rbLandscape.Checked ? $"-2:{size}" : $"{size}:-2");
-        else if (UseVideoEncoder.Text.EndsWith("_qsv"))
+        else if (codec.GpuSuffix == "qsv")
           ffcommand.setFilter("scale_qsv", rbLandscape.Checked ? $"-1:{size}" : $"{size}:-1");
       }
       else
@@ -185,12 +198,10 @@ namespace ffmpeg_command_builder
 
     private void BeginFFmpegProcess()
     {
-      string filename = inputFileList.Dequeue();
+      string filename = InputFileList.First().Value;
       try
       {
         var process = currentCommand.InvokeCommand(filename, true);
-
-        Invoke(UpdateControl, new object[] { filename });
 
         process.Exited += Process_Exited;
         process.ErrorDataReceived += new DataReceivedEventHandler(StdErrRead);
@@ -222,7 +233,9 @@ namespace ffmpeg_command_builder
     {
       try
       {
+        string filename = CurrentProcess.CustomFileName;
         CurrentProcess = null;
+        Invoke(ProcessExit,new object[] { filename });
         BeginFFmpegProcess();
       }
       catch (InvalidOperationException) {
@@ -249,8 +262,8 @@ namespace ffmpeg_command_builder
     {
       if (stopAll)
       {
-        inputFileList.Clear();
-        FileList.Items.Clear();
+        InputFileList.Clear();
+        FileListBindingSource.ResetBindings(false);
       }
 
       if (CurrentProcess == null || CurrentProcess.HasExited)
@@ -264,42 +277,44 @@ namespace ffmpeg_command_builder
 
     private void InitPresetAndDevice()
     {
-      cbPreset.Items.Clear();
-      foreach (var item in Presets[UseVideoEncoder.Text])
-        cbPreset.Items.Add(item);
+      var codec = UseVideoEncoder.SelectedValue as Codec;
+      cbPreset.DataSource = PresetList[codec.FullName];
+      string hardwareName = "";
 
-      var m = Regex.Match(UseVideoEncoder.Text, @"^(?:\w+)_(nvenc|qsv)$");
-      if (m.Success)
+      if (codec.GpuSuffix == "nvenc")
       {
-        string hardware = m.Groups[1].Value;
-        string hardwareName = "";
-        if (hardware == "nvenc")
-        {
-          cbPreset.SelectedIndex = 16;
-          hardwareName = "nvidia";
-        }
-        else if (hardware == "qsv")
-        {
-          cbPreset.SelectedIndex = 3;
-          hardwareName = "intel";
-        }
-
-        cbDevices.SelectedIndex = cbDevices.FindString(hardwareName);
-
-        if(chkConstantQuality.Checked)
-          vQualityLabel.Text = hardware == "qsv" ? "ICQ" : "-cq";
+        cbPreset.SelectedIndex = 16;
+        hardwareName = "nvidia";
       }
+      else if (codec.GpuSuffix == "qsv")
+      {
+        cbPreset.SelectedIndex = 3;
+        hardwareName = "intel";
+      }
+
+      cbDevices.SelectedIndex = cbDevices.FindString(hardwareName);
+
+      if(chkConstantQuality.Checked)
+        vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "-cq";
     }
 
-    private IEnumerable<string> GetGPUDevices()
+    private StringListItems GetGPUDeviceList()
     {
       ManagementObjectSearcher videoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
-      var devices = new List<string>();
+
+      var deviceList = new StringListItems();
 
       foreach (ManagementObject device in videoDevices.Get().Cast<ManagementObject>())
-        devices.Add($"{device["Name"]}:{device["DeviceId"]}");
+      {
+        deviceList.Add(
+          new StringListItem(
+            device["AdapterCompatibility"].ToString(),
+            $"{device["Name"]}:{device["DeviceId"]}"
+          )
+        );
+      }
 
-      return devices;
+      return deviceList;
     }
 
     private string[] FindInPath(string CommandName)

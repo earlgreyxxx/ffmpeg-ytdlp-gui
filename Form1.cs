@@ -10,53 +10,141 @@ using System.Windows.Forms;
 
 namespace ffmpeg_command_builder
 {
+  using StringListItem = ListItem<string>;
+  using CodecListItem = ListItem<Codec>;
+  using StringListItems = List<ListItem<string>>;
+  using CodecListItems = List<ListItem<Codec>>;
+
   public partial class Form1 : Form
   {
     private ffmpeg_command currentCommand;
-    Dictionary<string, string[]> Presets;
-    Dictionary<string, bool> HardwareEncoders;
+    private Dictionary<string, StringListItems> PresetList;
+    private Dictionary<string, CodecListItems> HardwareDecoders;
+    private StringListItems DeInterlaces;
+    private CodecListItems HardwareEncoders;
+    private CodecListItems AudioEncoders;
+    private StringListItems InputFileList;
 
     public Form1()
     {
       InitializeComponent();
-      InitializeMembers();
 
-      Presets = new Dictionary<string, string[]>()
+      var nvencPresetList = new StringListItems()
       {
-        { "h264_nvenc", new string[] { "default","slow","medium","fast","hp","hq","bd","ll","llhq","llhp","lossless","losslesshp","p1","p2","p3","p4","p5","p6","p7" } },
-        { "hevc_nvenc", new string[] { "default","slow","medium","fast","hp","hq","bd","ll","llhq","llhp","lossless","losslesshp","p1","p2","p3","p4","p5","p6","p7" } },
-        { "h264_qsv",new string[] { "veryfast","faster","fast","medium","slow","slower","veryslow" } },
-        { "hevc_qsv",new string[] { "veryfast","faster","fast","medium","slow","slower","veryslow" } },
+        new StringListItem("default"),
+        new StringListItem("slow"),
+        new StringListItem("medium"),
+        new StringListItem("fast"),
+        new StringListItem("hp"),
+        new StringListItem("hq"),
+        new StringListItem("bd"),
+        new StringListItem("ll","low latency"),
+        new StringListItem("llhq","low latency hq"),
+        new StringListItem("llhp","low latency hp"),
+        new StringListItem("lossless"),
+        new StringListItem("losslesshp"),
+        new StringListItem("p1","p1:fastest"),
+        new StringListItem("p2","p2:faster"),
+        new StringListItem("p3","p3:fast"),
+        new StringListItem("p4","p4:medium"),
+        new StringListItem("p5","p5:slow"),
+        new StringListItem("p6","p6:slower"),
+        new StringListItem("p7","p7:slowest")
+      };
+      var qsvPresetList = new StringListItems()
+      {
+        new StringListItem("veryfast"),
+        new StringListItem("faster"),
+        new StringListItem("fast"),
+        new StringListItem("medium"),
+        new StringListItem("slow"),
+        new StringListItem("slower"),
+        new StringListItem("veryslow")
       };
 
-      HardwareEncoders = new Dictionary<string,bool>()
+      PresetList = new Dictionary<string, StringListItems>()
       {
-        { "hevc_nvenc",false},
-        { "hevc_qsv",false},
-        { "h264_nvenc",false},
-        { "h264_qsv",false}
+        { "h264_nvenc", nvencPresetList },
+        { "hevc_nvenc", nvencPresetList },
+        { "h264_qsv",qsvPresetList },
+        { "hevc_qsv",qsvPresetList }
       };
 
-      foreach (string name in cbDevices.Items)
+      HardwareDecoders = new Dictionary<string, CodecListItems>()
       {
-        if (Regex.IsMatch(name,"^intel",RegexOptions.IgnoreCase))
+        { 
+          "nvidia",
+          new CodecListItems()
+          {
+            new CodecListItem(new Codec("vp9","cuvid"),"VP9"),
+            new CodecListItem(new Codec("h264","cuvid"),"H264"),
+            new CodecListItem(new Codec("hevc","cuvid"),"HEVC"),
+            new CodecListItem(new Codec("mpeg4","cuvid"),"MPEG4"),
+            new CodecListItem(new Codec("mpeg2","cuvid"),"MPEG2"),
+            new CodecListItem(new Codec("mjpeg","cuvid"),"MJPEG"),
+            new CodecListItem(new Codec("mpeg1","cuvid"),"MPEG1"),
+            new CodecListItem(new Codec("vc1","cuvid"),"VC1"),
+            new CodecListItem(new Codec("vp8","cuvid"),"VP8"),
+            new CodecListItem(new Codec("av1","cuvid"),"AV1")
+          }
+        },
         {
-          HardwareEncoders["hevc_qsv"] = true;
-          HardwareEncoders["h264_qsv"] = true;
+          "intel",
+          new CodecListItems()
+          {
+            new CodecListItem(new Codec("vp9","qsv"),"VP9"),
+            new CodecListItem(new Codec("h264","qsv"),"H264"),
+            new CodecListItem(new Codec("hevc","qsv"),"HEVC"),
+            new CodecListItem(new Codec("mpeg2","qsv"),"MPEG2"),
+            new CodecListItem(new Codec("mjpeg","qsv"),"MJPEG"),
+            new CodecListItem(new Codec("vc1","qsv"),"VC1"),
+            new CodecListItem(new Codec("vp8","qsv"),"VP8"),
+            new CodecListItem(new Codec("av1","qsv"),"AV1")
+          }
         }
-        else if (Regex.IsMatch(name,"^nvidia",RegexOptions.IgnoreCase))
+      };
+
+      DeInterlaces = new StringListItems()
+      {
+        new StringListItem("1:-1:0","bwdif"),
+        new StringListItem("2:-1:0","yadif")
+      };
+
+      AudioEncoders = new CodecListItems()
+      {
+        new CodecListItem(new Codec("aac")),
+        new CodecListItem(new Codec("libmp3lame"))
+      };
+
+      var GpuDeviceList = GetGPUDeviceList();
+
+      cbDevices.DataSource = GpuDeviceList;
+      cbDevices.SelectedIndex = 0;
+
+      HardwareEncoders = new CodecListItems();
+      foreach(var device in GpuDeviceList)
+      {
+        if (Regex.IsMatch(device.Value,"^intel",RegexOptions.IgnoreCase))
         {
-          HardwareEncoders["hevc_nvenc"] = true;
-          HardwareEncoders["h264_nvenc"] = true;
+          HardwareEncoders.Add(new CodecListItem(new Codec("hevc", "qsv")));
+          HardwareEncoders.Add(new CodecListItem(new Codec("h264", "qsv")));
+        }
+        else if (Regex.IsMatch(device.Value,"^nvidia",RegexOptions.IgnoreCase))
+        {
+          HardwareEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc")));
+          HardwareEncoders.Add(new CodecListItem(new Codec("h264", "nvenc")));
         }
       }
+
+      InputFileList = new StringListItems();
+      InitializeMembers();
     }
 
     private void Form1_Load(object sender, EventArgs e)
     {
       ActiveControl = null;
       var folders = Settings.Default.outputFolders;
-      if(folders != null && folders.Count > 0)
+      if (folders != null && folders.Count > 0)
       {
         foreach (string item in folders)
         {
@@ -77,26 +165,31 @@ namespace ffmpeg_command_builder
 
       rbResizeNone.Checked = Settings.Default.resizeNone;
       rbResizeFullHD.Checked = Settings.Default.resizeFullHD;
-      rbResizeHD.Checked = Settings.Default.resizeHD; 
+      rbResizeHD.Checked = Settings.Default.resizeHD;
       rbResizeNum.Checked = Settings.Default.resizeNum;
 
       vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
 
-      var encoderNames = HardwareEncoders.Where(kv => kv.Value).Select(kv => kv.Key);
-      foreach (string encoderName in encoderNames)
-        UseVideoEncoder.Items.Add(encoderName);
-
+      UseVideoEncoder.DataSource = HardwareEncoders;
       UseVideoEncoder.SelectedIndex = 0;
+
+      UseAudioEncoder.DataSource = AudioEncoders;
       UseAudioEncoder.SelectedIndex = 0;
-
       UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
-
-      CurrentFileName.Text = string.Empty;
-
-      cbDeinterlaceAlg.SelectedIndex = 0;
 
       chkConstantQuality.Checked = Settings.Default.cq;
       aBitrate.Enabled = chkEncodeAudio.Checked;
+      OutputStderr.Text = "";
+
+      FileName.SelectedIndex = 0;
+
+      chkCrop_CheckedChanged(null, null);
+      cbDevices_SelectedIndexChanged(null, null);
+
+      cbDeinterlaceAlg.DataSource = DeInterlaces;
+
+      FileListBindingSource.DataSource = InputFileList;
+      FileList.DataSource = FileListBindingSource; 
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -115,7 +208,7 @@ namespace ffmpeg_command_builder
 
       foreach (string item in ffmpeg.Items)
       {
-        if (!string.IsNullOrEmpty(item))
+        if (!string.IsNullOrEmpty(item) && !Settings.Default.ffmpeg.Contains(item))
           Settings.Default.ffmpeg.Add(item);
       }
 
@@ -138,10 +231,19 @@ namespace ffmpeg_command_builder
       if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
         cbOutputDir.Items.Add(cbOutputDir.Text);
 
-      if (inputFileList != null && inputFileList.Count > 0)
+      if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
+      {
+        MessageBox.Show("ハードウェアデコーダーでクロップを行う場合は、動画のサイズを指定する必要があります。");
+        VideoWidth.Focus();
+        return;
+      }
+
+      if (InputFileList != null && InputFileList.Count > 0)
       {
         btnSubmitInvoke.Enabled = false;
         currentCommand = CreateCommand(chkAudioOnly.Checked);
+        if (FileName.Text.Trim() != "元ファイル名")
+          currentCommand.OutputBaseName(FileName.Text);
 
         btnStop.Enabled = btnStopAll.Enabled = true;
         OpenLogFile.Enabled = false;
@@ -161,10 +263,17 @@ namespace ffmpeg_command_builder
 
     private void btnApply_Click(object sender, EventArgs e)
     {
+      if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
+      {
+        MessageBox.Show("ハードウェアデコーダーでクロップを行う場合は、動画のサイズを指定する必要があります。");
+        VideoWidth.Focus();
+        return;
+      }
+
       var ffcommand = CreateCommand(chkAudioOnly.Checked);
       if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text) && !cbOutputDir.Items.Contains(cbOutputDir.Text))
         cbOutputDir.Items.Add(cbOutputDir.Text);
-        
+
       Commandlines.Text = ffcommand.GetCommandLine("sample.mp4");
     }
 
@@ -178,9 +287,14 @@ namespace ffmpeg_command_builder
       vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
 
       if (chkConstantQuality.Checked)
-        vQualityLabel.Text = UseVideoEncoder.Text.EndsWith("_qsv") ? "ICQ" : "-cq";
+      {
+        var codec = UseVideoEncoder.SelectedValue as Codec;
+        vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "-cq";
+      }
       else
+      {
         vQualityLabel.Text = "-b:v";
+      }
     }
 
     private void btnClearSS_Click(object sender, EventArgs e)
@@ -211,7 +325,7 @@ namespace ffmpeg_command_builder
     {
       UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !chkAudioOnly.Checked;
       chkFilterDeInterlace.Enabled = !chkAudioOnly.Checked;
-      ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !chkAudioOnly.Checked;
+      CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !chkAudioOnly.Checked;
 
       if (chkAudioOnly.Checked)
       {
@@ -242,14 +356,12 @@ namespace ffmpeg_command_builder
       if (!e.Data.GetDataPresent(DataFormats.FileDrop))
         return;
 
-      var commandlines = new List<string>();
       string[] dragFilePathArr = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
       foreach (var filePath in dragFilePathArr)
-      {
-        inputFileList.Enqueue(filePath);
-        FileList.Items.Add(filePath);
-      }
+        FileListBindingSource.Add(new StringListItem(filePath));
+
+      FileListBindingSource.ResetBindings(false);
 
       btnSubmitInvoke.Enabled = true;
     }
@@ -271,10 +383,7 @@ namespace ffmpeg_command_builder
         return;
 
       foreach(var filename in openInputFile.FileNames)
-      {
-        inputFileList.Enqueue(filename);
-        FileList.Items.Add(filename);
-      }
+        FileListBindingSource.Add(new StringListItem(filename));
 
       btnSubmitInvoke.Enabled = true;
     }
@@ -290,13 +399,23 @@ namespace ffmpeg_command_builder
       if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
         cbOutputDir.Items.Add(cbOutputDir.Text);
 
-      if (inputFileList != null && inputFileList.Count > 0)
+      if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
+      {
+        MessageBox.Show("ハードウェアデコーダーでクロップを行う場合は、動画のサイズを指定する必要があります。");
+        VideoWidth.Focus();
+        return;
+      }
+
+      if (InputFileList != null && InputFileList.Count > 0)
       {
         if (DialogResult.Cancel == findSaveBatchFile.ShowDialog())
           return;
 
-        currentCommand = CreateCommand(chkAudioOnly.Checked);
-        currentCommand.ToBatchFile(findSaveBatchFile.FileName, inputFileList);
+        var command = CreateCommand(chkAudioOnly.Checked);
+        if (FileName.Text.Trim() != "元ファイル名")
+          command.OutputBaseName(FileName.Text);
+
+        command.ToBatchFile(findSaveBatchFile.FileName, InputFileList.Select(item => item.Value));
       }
     }
 
@@ -328,7 +447,7 @@ namespace ffmpeg_command_builder
 
     private void btnFindInPath_Click(object sender, EventArgs e)
     {
-      foreach (var path in ffmpeg.Items.Cast<string>().Where(item => !File.Exists(item)))
+      foreach (var path in ffmpeg.Items.Cast<string>().Where(item => item != "ffmpeg" && !System.IO.File.Exists(item)))
         ffmpeg.Items.Remove(path);
 
       string[] ffmpegPathes = FindInPath("ffmpeg");
@@ -364,7 +483,7 @@ namespace ffmpeg_command_builder
     private void OpenLogFile_Click(object sender, EventArgs e)
     {
       var filename = GetLogFileName();
-      if (!File.Exists(filename))
+      if (!System.IO.File.Exists(filename))
       {
         MessageBox.Show("ログファイルが存在しません。");
         return;
@@ -375,13 +494,41 @@ namespace ffmpeg_command_builder
 
     private void ClearFileList_Click(object sender, EventArgs e)
     {
-      inputFileList.Clear();
-      FileList.Items.Clear();
+      InputFileList.Clear();
+      FileListBindingSource.ResetBindings(false);
     }
 
     private void chkFilterDeInterlace_CheckedChanged(object sender, EventArgs e)
     {
       cbDeinterlaceAlg.Enabled = chkFilterDeInterlace.Checked;
+    }
+
+    private void chkCrop_CheckedChanged(object sender, EventArgs e)
+    {
+      bool bChecked = chkCrop.Checked;
+      foreach (var control in CropBox.Controls.OfType<NumericUpDown>())
+        control.Enabled = bChecked;
+
+      VideoWidth.Enabled = VideoHeight.Enabled = (bChecked && chkUseHWDecoder.Checked);
+      if (bChecked)
+        CropWidth.Focus();
+    }
+
+    private void cbDevices_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      var m = Regex.Match(cbDevices.Text, "^(Intel|Nvidia)", RegexOptions.IgnoreCase);
+      if(m.Success)
+      {
+        var decodersItems = HardwareDecoders[m.Groups[1].Value.ToLower()];
+        HWDecoder.DataSource = decodersItems;
+      }
+    }
+
+    private void chkUseHWDecoder_CheckedChanged(object sender, EventArgs e)
+    {
+      var codec = HWDecoder.SelectedValue as Codec;
+      VideoWidth.Enabled = VideoHeight.Enabled = chkCrop.Checked && chkUseHWDecoder.Checked && codec.GpuSuffix == "cuvid";
+      HWDecoder.Enabled = chkUseHWDecoder.Checked;
     }
   }
 }
