@@ -142,7 +142,7 @@ namespace ffmpeg_command_builder
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      ActiveControl = null;
+      ActiveControl = ffmpeg;
       var folders = Settings.Default.outputFolders;
       if (folders != null && folders.Count > 0)
       {

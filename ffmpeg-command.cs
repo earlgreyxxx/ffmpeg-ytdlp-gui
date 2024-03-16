@@ -129,7 +129,7 @@ namespace ffmpeg_command_builder
       Width = -1;
       Height = -1;
 
-      if (!String.IsNullOrEmpty(ffmpegPath) && File.Exists(ffmpegPath))
+      if (!String.IsNullOrEmpty(ffmpegpath) && File.Exists(ffmpegpath))
         ffmpegPath = ffmpegpath;
     }
 

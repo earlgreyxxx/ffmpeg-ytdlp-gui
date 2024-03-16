@@ -150,7 +150,6 @@
       // 
       this.Commandlines.BackColor = System.Drawing.SystemColors.Window;
       this.Commandlines.Cursor = System.Windows.Forms.Cursors.Default;
-      this.Commandlines.Enabled = false;
       this.Commandlines.Location = new System.Drawing.Point(8, 47);
       this.Commandlines.Multiline = true;
       this.Commandlines.Name = "Commandlines";
