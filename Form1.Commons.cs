@@ -49,10 +49,14 @@ namespace ffmpeg_command_builder
       ffmpeg_command ffcommand = null;
 
       var codec = UseVideoEncoder.SelectedValue as Codec;
-      if(codec.GpuSuffix == "nvenc")
+      if (codec.GpuSuffix == "nvenc")
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
-      else if(codec.GpuSuffix == "qsv")
+      else if (codec.GpuSuffix == "qsv")
         ffcommand = new ffmpeg_command_qsv(ffmpeg.Text);
+      else if (codec.Name == "copy")
+        ffcommand = new ffmpeg_command_copy(ffmpeg.Text);
+      else
+        throw new Exception("Invalid encoder was given");
 
       return ffcommand;
     }
@@ -93,25 +97,40 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.End = txtTo.Text;
 
+      var codec = UseVideoEncoder.SelectedValue as Codec;
+      if(codec.Name == "copy")
+      {
+        if (!string.IsNullOrEmpty(cbOutputDir.Text))
+          ffcommand.OutputPath = cbOutputDir.Text;
+
+        ffcommand
+          .OutputPrefix(FilePrefix.Text)
+          .OutputSuffix(FileSuffix.Text);
+
+        if (chkEncodeAudio.Checked)
+          ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
+        else
+          ffcommand.acodec("copy").aBitrate(0);
+
+        return ffcommand;
+      }
+
       ffcommand
         .vcodec(UseVideoEncoder.SelectedValue.ToString(), cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
         .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
         .lookAhead((int)LookAhead.Value)
-        .preset(cbPreset.SelectedValue.ToString())
-        .OutputPrefix(FilePrefix.Text)
-        .OutputSuffix(FileSuffix.Text);
+        .preset(cbPreset.SelectedValue.ToString());
 
       if (chkUseHWDecoder.Checked)
         ffcommand.hwdecoder(HWDecoder.SelectedValue.ToString());
 
       if (chkCrop.Checked)
-      {
-        if(chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
-          ffcommand.size(decimal.ToInt32(VideoWidth.Value),decimal.ToInt32(VideoHeight.Value)).crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
-        else
-          ffcommand.crop(CropWidth.Value,CropHeight.Value,CropX.Value,CropY.Value);
-      }
-      
+        {
+          if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
+            ffcommand.size(decimal.ToInt32(VideoWidth.Value), decimal.ToInt32(VideoHeight.Value)).crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+          else
+            ffcommand.crop(CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+        }
 
       if (chkEncodeAudio.Checked)
         ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
@@ -121,12 +140,15 @@ namespace ffmpeg_command_builder
       if(!string.IsNullOrEmpty(cbOutputDir.Text))
         ffcommand.OutputPath = cbOutputDir.Text;
 
-      var deinterlaces = new List<string>() { "bwdif","bwdif_cuda","yadif","yadif_cuda" };
+      ffcommand
+        .OutputPrefix(FilePrefix.Text)
+        .OutputSuffix(FileSuffix.Text);
+
+      var deinterlaces = new List<string>() { "bwdif","bwdif_cuda","yadif","yadif_cuda","bob","adaptive" };
 
       if (chkFilterDeInterlace.Checked)
       {
         string value = cbDeinterlaceAlg.SelectedValue.ToString();
-        var codec = UseVideoEncoder.SelectedValue as Codec;
         if (cbDeinterlaceAlg.Text == "bwdif")
         {
           if (codec.GpuSuffix == "nvenc")
@@ -140,6 +162,10 @@ namespace ffmpeg_command_builder
             ffcommand.setFilter("yadif_cuda",value);
           else if (codec.GpuSuffix == "qsv")
             ffcommand.setFilter("yadif",value);
+        }
+        else if(value == "bob" || value == "adaptive")
+        {
+          ffcommand.setFilter(value, value);
         }
       }
       else
@@ -171,7 +197,6 @@ namespace ffmpeg_command_builder
 
       if (size > 0)
       {
-        var codec = UseVideoEncoder.SelectedValue as Codec;
         if (codec.GpuSuffix == "nvenc")
           ffcommand.setFilter("scale_cuda", rbLandscape.Checked ? $"-2:{size}" : $"{size}:-2");
         else if (codec.GpuSuffix == "qsv")
@@ -201,7 +226,7 @@ namespace ffmpeg_command_builder
       string filename = InputFileList.First().Value;
       try
       {
-        var process = currentCommand.InvokeCommand(filename, true);
+        var process = CurrentCommand.InvokeCommand(filename, true);
 
         process.Exited += Process_Exited;
         process.ErrorDataReceived += new DataReceivedEventHandler(StdErrRead);
@@ -275,9 +300,8 @@ namespace ffmpeg_command_builder
       }
     }
 
-    private void InitPresetAndDevice()
+    private void InitPresetAndDevice(Codec codec)
     {
-      var codec = UseVideoEncoder.SelectedValue as Codec;
       cbPreset.DataSource = PresetList[codec.FullName];
       string hardwareName = "";
 
@@ -291,6 +315,9 @@ namespace ffmpeg_command_builder
         cbPreset.SelectedIndex = 3;
         hardwareName = "intel";
       }
+
+      if (codec.Name == "copy")
+        return;
 
       cbDevices.SelectedIndex = cbDevices.FindString(hardwareName);
 

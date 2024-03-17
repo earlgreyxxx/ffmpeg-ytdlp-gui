@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,13 +9,18 @@ using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
 {
-  internal abstract class ffmpeg_command
+  internal abstract class ffmpeg_command : IEnumerable<string>
   {
-    public abstract IEnumerable<string> GetArguments(string strInputPath);
     public abstract ffmpeg_command vcodec(string strCodec, int indexOfGpuDevice = 0);
     public abstract ffmpeg_command vBitrate(int value, bool bCQ = false);
     public abstract ffmpeg_command crop(decimal width, decimal height, decimal x, decimal y);
     public abstract ffmpeg_command crop(bool hw,decimal width, decimal height, decimal x, decimal y);
+    public abstract IEnumerator<string> GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return (IEnumerator)GetEnumerator();
+    }
 
     // instances
     protected int FileIndex = 1;
@@ -231,6 +237,21 @@ namespace ffmpeg_command_builder
         command = $"\"{ffmpegPath}\"";
 
       return $"{command} {GetCommandLineArguments(strInputPath)}";
+    }
+
+    public IEnumerable<string> GetArguments(string strInputPath)
+    {
+      InputPath = strInputPath;
+      var args = this.ToList();
+
+      string strOutputFileName = CreateOutputFileName(strInputPath);
+      string strOutputFilePath = Path.Combine(OutputPath, strOutputFileName);
+      if (strOutputFilePath == strInputPath)
+        throw new Exception("入力ファイルと出力ファイルが同じです。");
+
+      args.Add($"\"{strOutputFilePath}\"");
+
+      return args;
     }
 
     public CustomProcess InvokeCommand(string strInputPath,bool suspend = false)

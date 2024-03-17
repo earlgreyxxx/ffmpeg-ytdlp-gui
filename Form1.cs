@@ -17,10 +17,11 @@ namespace ffmpeg_command_builder
 
   public partial class Form1 : Form
   {
-    private ffmpeg_command currentCommand;
+    private ffmpeg_command CurrentCommand;
     private Dictionary<string, StringListItems> PresetList;
     private Dictionary<string, CodecListItems> HardwareDecoders;
     private StringListItems DeInterlaces;
+    private StringListItems DeInterlacesCuvid;
     private CodecListItems HardwareEncoders;
     private CodecListItems AudioEncoders;
     private StringListItems InputFileList;
@@ -67,7 +68,8 @@ namespace ffmpeg_command_builder
         { "h264_nvenc", nvencPresetList },
         { "hevc_nvenc", nvencPresetList },
         { "h264_qsv",qsvPresetList },
-        { "hevc_qsv",qsvPresetList }
+        { "hevc_qsv",qsvPresetList },
+        { "copy",new StringListItems() }
       };
 
       HardwareDecoders = new Dictionary<string, CodecListItems>()
@@ -110,6 +112,12 @@ namespace ffmpeg_command_builder
         new StringListItem("2:-1:0","yadif")
       };
 
+      DeInterlacesCuvid = new StringListItems()
+      {
+        new StringListItem("bob","bob:cuvid"),
+        new StringListItem("adaptive","adaptive:cuvid")
+      };
+
       AudioEncoders = new CodecListItems()
       {
         new CodecListItem(new Codec("aac")),
@@ -135,6 +143,7 @@ namespace ffmpeg_command_builder
           HardwareEncoders.Add(new CodecListItem(new Codec("h264", "nvenc")));
         }
       }
+      HardwareEncoders.Add(new CodecListItem(new Codec("copy")));
 
       InputFileList = new StringListItems();
       InitializeMembers();
@@ -186,7 +195,8 @@ namespace ffmpeg_command_builder
       chkCrop_CheckedChanged(null, null);
       cbDevices_SelectedIndexChanged(null, null);
 
-      cbDeinterlaceAlg.DataSource = DeInterlaces;
+      DeInterlaceListBindingSource.DataSource = DeInterlaces;
+      cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
 
       FileListBindingSource.DataSource = InputFileList;
       FileList.DataSource = FileListBindingSource; 
@@ -241,9 +251,9 @@ namespace ffmpeg_command_builder
       if (InputFileList != null && InputFileList.Count > 0)
       {
         btnSubmitInvoke.Enabled = false;
-        currentCommand = CreateCommand(chkAudioOnly.Checked);
+        CurrentCommand = CreateCommand(chkAudioOnly.Checked);
         if (FileName.Text.Trim() != "元ファイル名")
-          currentCommand.OutputBaseName(FileName.Text);
+          CurrentCommand.OutputBaseName(FileName.Text);
 
         btnStop.Enabled = btnStopAll.Enabled = true;
         OpenLogFile.Enabled = false;
@@ -255,10 +265,10 @@ namespace ffmpeg_command_builder
     private void btnSubmitOpenDlg_Click(object sender, EventArgs e)
     {
       if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text))
-        findFolder.SelectedPath = cbOutputDir.Text;
+        FindFolder.SelectedPath = cbOutputDir.Text;
 
-      if (DialogResult.OK == findFolder.ShowDialog())
-        cbOutputDir.Text = findFolder.SelectedPath;
+      if (DialogResult.OK == FindFolder.ShowDialog())
+        cbOutputDir.Text = FindFolder.SelectedPath;
     }
 
     private void btnApply_Click(object sender, EventArgs e)
@@ -323,11 +333,12 @@ namespace ffmpeg_command_builder
 
     private void chkAudioOnly_CheckedChanged(object sender, EventArgs e)
     {
-      UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !chkAudioOnly.Checked;
-      chkFilterDeInterlace.Enabled = !chkAudioOnly.Checked;
-      CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !chkAudioOnly.Checked;
+      bool isChecked = chkAudioOnly.Checked;
+      UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
+      chkFilterDeInterlace.Enabled = !isChecked;
+      CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !isChecked;
 
-      if (chkAudioOnly.Checked)
+      if (isChecked)
       {
         cbDeinterlaceAlg.Enabled = false;
       }
@@ -339,16 +350,19 @@ namespace ffmpeg_command_builder
           cbDeinterlaceAlg.Enabled = false;
       }
 
-      if (chkAudioOnly.Checked && !chkEncodeAudio.Checked)
+      if (isChecked && !chkEncodeAudio.Checked)
       {
         chkEncodeAudio.Checked = true;
         aBitrate.Enabled = true;
       }
 
-      if(chkAudioOnly.Checked && !UseAudioEncoder.Enabled)
+      if(isChecked && !UseAudioEncoder.Enabled)
         UseAudioEncoder.Enabled = true;
-      else if (!chkAudioOnly.Checked && !chkEncodeAudio.Checked)
+      else if (!isChecked && !chkEncodeAudio.Checked)
         UseAudioEncoder.Enabled = false;
+
+      if(!isChecked)
+        UseVideoEncoder_SelectedIndexChanged(null, null);
     }
 
     private void DropArea_DragDrop(object sender, DragEventArgs e)
@@ -379,10 +393,10 @@ namespace ffmpeg_command_builder
 
     private void DropArea_MouseDoubleClick(object sender, MouseEventArgs e)
     {
-      if(DialogResult.Cancel == openInputFile.ShowDialog())
+      if(DialogResult.Cancel == OpenInputFile.ShowDialog())
         return;
 
-      foreach(var filename in openInputFile.FileNames)
+      foreach(var filename in OpenInputFile.FileNames)
         FileListBindingSource.Add(new StringListItem(filename));
 
       btnSubmitInvoke.Enabled = true;
@@ -408,14 +422,14 @@ namespace ffmpeg_command_builder
 
       if (InputFileList != null && InputFileList.Count > 0)
       {
-        if (DialogResult.Cancel == findSaveBatchFile.ShowDialog())
+        if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
           return;
 
         var command = CreateCommand(chkAudioOnly.Checked);
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 
-        command.ToBatchFile(findSaveBatchFile.FileName, InputFileList.Select(item => item.Value));
+        command.ToBatchFile(FindSaveBatchFile.FileName, InputFileList.Select(item => item.Value));
       }
     }
 
@@ -432,15 +446,23 @@ namespace ffmpeg_command_builder
 
     private void UseVideoEncoder_SelectedIndexChanged(object sender, EventArgs e)
     {
-      InitPresetAndDevice();
+      var codec = UseVideoEncoder.SelectedValue as Codec;
+      // copyの場合は、動画品質指定はすべてdisabledにする。
+      bool isCopy = codec.Name == "copy";
+
+      CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
+      cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
+      LookAhead.Enabled = chkUseHWDecoder.Enabled = !isCopy;
+
+      InitPresetAndDevice(codec);
     }
 
     private void btnFFmpeg_Click(object sender, EventArgs e)
     {
-      if (DialogResult.Cancel == openFFMpegFileDlg.ShowDialog())
+      if (DialogResult.Cancel == OpenFFMpegFileDlg.ShowDialog())
         return;
 
-      ffmpeg.Text = openFFMpegFileDlg.FileName;
+      ffmpeg.Text = OpenFFMpegFileDlg.FileName;
       if(!ffmpeg.Items.Contains(ffmpeg.Text))
         ffmpeg.Items.Add(ffmpeg.Text);
     }
@@ -529,6 +551,18 @@ namespace ffmpeg_command_builder
       var codec = HWDecoder.SelectedValue as Codec;
       VideoWidth.Enabled = VideoHeight.Enabled = chkCrop.Checked && chkUseHWDecoder.Checked && codec.GpuSuffix == "cuvid";
       HWDecoder.Enabled = chkUseHWDecoder.Checked;
+
+      if (chkUseHWDecoder.Checked)
+      {
+        foreach (var algo in DeInterlacesCuvid)
+          DeInterlaceListBindingSource.Add(algo);
+      }
+      else
+      {
+        foreach (var algo in DeInterlacesCuvid)
+          DeInterlaceListBindingSource.Remove(algo);
+      }
+      DeInterlaceListBindingSource.ResetBindings(false);
     }
   }
 }

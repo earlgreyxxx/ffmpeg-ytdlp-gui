@@ -76,22 +76,7 @@ namespace ffmpeg_command_builder
       return crop(false,width, height, x, y);
     }
 
-    public override IEnumerable<string> GetArguments(string strInputPath)
-    {
-      InputPath = strInputPath;
-      var args = this.ToList();
-
-      string strOutputFileName = CreateOutputFileName(strInputPath);
-      string strOutputFilePath = Path.Combine(OutputPath, strOutputFileName);
-      if(strOutputFilePath == strInputPath)
-        throw new Exception("入力ファイルと出力ファイルが同じです。");
-
-      args.Add($"\"{strOutputFilePath}\"");
-
-      return args;
-    }
-
-    public IEnumerator<string> GetEnumerator()
+    public override IEnumerator<string> GetEnumerator()
     {
       yield return "-hide_banner";
       yield return "-y";
@@ -108,6 +93,18 @@ namespace ffmpeg_command_builder
       if (options.ContainsKey("hwdecoder") && !string.IsNullOrEmpty(options["hwdecoder"]))
       {
         yield return $"-c:v {options["hwdecoder"]}";
+
+        if (filters.ContainsKey("bob"))
+        {
+          yield return "-deint bob";
+          yield return "-drop_second_field 1";
+        }
+
+        else if (filters.ContainsKey("adaptive"))
+        {
+          yield return "-deint adaptive";
+          yield return "-drop_second_field 1";
+        }
 
         if (HardwareCrop && options.ContainsKey("crop") && !string.IsNullOrEmpty(options["crop"]))
           yield return $"-crop {options["crop"]}";
@@ -198,11 +195,6 @@ namespace ffmpeg_command_builder
       yield return options["acodec"];
       if (options.ContainsKey("b:a") && !string.IsNullOrEmpty(options["b:a"]))
         yield return options["b:a"];
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return (IEnumerator)GetEnumerator();
     }
   }
 }

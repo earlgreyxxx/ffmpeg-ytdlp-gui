@@ -31,7 +31,7 @@
       this.components = new System.ComponentModel.Container();
       this.Commandlines = new System.Windows.Forms.TextBox();
       this.txtSS = new System.Windows.Forms.TextBox();
-      this.findFolder = new System.Windows.Forms.FolderBrowserDialog();
+      this.FindFolder = new System.Windows.Forms.FolderBrowserDialog();
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.txtTo = new System.Windows.Forms.TextBox();
@@ -39,7 +39,7 @@
       this.linkLabel1 = new System.Windows.Forms.LinkLabel();
       this.btnClearSS = new System.Windows.Forms.Button();
       this.btnClearTo = new System.Windows.Forms.Button();
-      this.findSaveBatchFile = new System.Windows.Forms.OpenFileDialog();
+      this.FindSaveBatchFile = new System.Windows.Forms.OpenFileDialog();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this.chkUseHWDecoder = new System.Windows.Forms.CheckBox();
       this.HWDecoder = new System.Windows.Forms.ComboBox();
@@ -96,7 +96,7 @@
       this.chkConstantQuality = new System.Windows.Forms.CheckBox();
       this.vUnit = new System.Windows.Forms.Label();
       this.btnApply = new System.Windows.Forms.Button();
-      this.openInputFile = new System.Windows.Forms.OpenFileDialog();
+      this.OpenInputFile = new System.Windows.Forms.OpenFileDialog();
       this.FileList = new System.Windows.Forms.ListBox();
       this.btnStop = new System.Windows.Forms.Button();
       this.btnStopAll = new System.Windows.Forms.Button();
@@ -106,7 +106,7 @@
       this.ClearFileList = new System.Windows.Forms.Button();
       this.btnFFmpeg = new System.Windows.Forms.Button();
       this.label8 = new System.Windows.Forms.Label();
-      this.openFFMpegFileDlg = new System.Windows.Forms.OpenFileDialog();
+      this.OpenFFMpegFileDlg = new System.Windows.Forms.OpenFileDialog();
       this.btnFindInPath = new System.Windows.Forms.Button();
       this.ffmpeg = new System.Windows.Forms.ComboBox();
       this.StatusBar = new System.Windows.Forms.StatusStrip();
@@ -122,6 +122,7 @@
       this.CropWidth = new System.Windows.Forms.NumericUpDown();
       this.chkCrop = new System.Windows.Forms.CheckBox();
       this.FileListBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      this.DeInterlaceListBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.ResizeBox.SuspendLayout();
@@ -144,6 +145,7 @@
       ((System.ComponentModel.ISupportInitialize)(this.CropHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.CropWidth)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.FileListBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.DeInterlaceListBindingSource)).BeginInit();
       this.SuspendLayout();
       // 
       // Commandlines
@@ -161,12 +163,12 @@
       // 
       this.txtSS.Location = new System.Drawing.Point(13, 42);
       this.txtSS.Name = "txtSS";
-      this.txtSS.Size = new System.Drawing.Size(100, 19);
+      this.txtSS.Size = new System.Drawing.Size(62, 19);
       this.txtSS.TabIndex = 4;
       // 
-      // findFolder
+      // FindFolder
       // 
-      this.findFolder.Description = "出力先フォルダを選択してください。";
+      this.FindFolder.Description = "出力先フォルダを選択してください。";
       // 
       // label1
       // 
@@ -180,7 +182,7 @@
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(183, 27);
+      this.label2.Location = new System.Drawing.Point(140, 27);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(53, 12);
       this.label2.TabIndex = 3;
@@ -188,9 +190,9 @@
       // 
       // txtTo
       // 
-      this.txtTo.Location = new System.Drawing.Point(185, 42);
+      this.txtTo.Location = new System.Drawing.Point(142, 42);
       this.txtTo.Name = "txtTo";
-      this.txtTo.Size = new System.Drawing.Size(100, 19);
+      this.txtTo.Size = new System.Drawing.Size(63, 19);
       this.txtTo.TabIndex = 6;
       // 
       // groupBox1
@@ -204,7 +206,7 @@
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Location = new System.Drawing.Point(8, 127);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(351, 80);
+      this.groupBox1.Size = new System.Drawing.Size(321, 80);
       this.groupBox1.TabIndex = 5;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "切り取り　　　　　　　　　　　　　　　";
@@ -222,7 +224,7 @@
       // 
       // btnClearSS
       // 
-      this.btnClearSS.Location = new System.Drawing.Point(115, 41);
+      this.btnClearSS.Location = new System.Drawing.Point(79, 42);
       this.btnClearSS.Name = "btnClearSS";
       this.btnClearSS.Size = new System.Drawing.Size(46, 20);
       this.btnClearSS.TabIndex = 5;
@@ -233,7 +235,7 @@
       // 
       // btnClearTo
       // 
-      this.btnClearTo.Location = new System.Drawing.Point(287, 42);
+      this.btnClearTo.Location = new System.Drawing.Point(208, 41);
       this.btnClearTo.Name = "btnClearTo";
       this.btnClearTo.Size = new System.Drawing.Size(46, 20);
       this.btnClearTo.TabIndex = 7;
@@ -242,12 +244,12 @@
       this.btnClearTo.UseVisualStyleBackColor = true;
       this.btnClearTo.Click += new System.EventHandler(this.btnClearTo_Click);
       // 
-      // findSaveBatchFile
+      // FindSaveBatchFile
       // 
-      this.findSaveBatchFile.CheckFileExists = false;
-      this.findSaveBatchFile.CheckPathExists = false;
-      this.findSaveBatchFile.DefaultExt = "cmd";
-      this.findSaveBatchFile.FileName = "ffmpeg-batch.cmd";
+      this.FindSaveBatchFile.CheckFileExists = false;
+      this.FindSaveBatchFile.CheckPathExists = false;
+      this.FindSaveBatchFile.DefaultExt = "cmd";
+      this.FindSaveBatchFile.FileName = "ffmpeg-batch.cmd";
       // 
       // groupBox2
       // 
@@ -769,9 +771,9 @@
       this.BitrateBox.Controls.Add(this.chkEncodeAudio);
       this.BitrateBox.Controls.Add(this.chkConstantQuality);
       this.BitrateBox.Controls.Add(this.vUnit);
-      this.BitrateBox.Location = new System.Drawing.Point(366, 127);
+      this.BitrateBox.Location = new System.Drawing.Point(336, 127);
       this.BitrateBox.Name = "BitrateBox";
-      this.BitrateBox.Size = new System.Drawing.Size(432, 80);
+      this.BitrateBox.Size = new System.Drawing.Size(462, 80);
       this.BitrateBox.TabIndex = 15;
       this.BitrateBox.TabStop = false;
       this.BitrateBox.Text = "出力品質";
@@ -779,7 +781,7 @@
       // label12
       // 
       this.label12.AutoSize = true;
-      this.label12.Location = new System.Drawing.Point(268, 53);
+      this.label12.Location = new System.Drawing.Point(295, 53);
       this.label12.Name = "label12";
       this.label12.Size = new System.Drawing.Size(102, 12);
       this.label12.TabIndex = 28;
@@ -788,7 +790,7 @@
       // LookAhead
       // 
       this.LookAhead.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::ffmpeg_command_builder.Properties.Settings.Default, "lookAhead", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.LookAhead.Location = new System.Drawing.Point(371, 49);
+      this.LookAhead.Location = new System.Drawing.Point(398, 49);
       this.LookAhead.Name = "LookAhead";
       this.LookAhead.Size = new System.Drawing.Size(51, 19);
       this.LookAhead.TabIndex = 22;
@@ -845,7 +847,7 @@
       // label6
       // 
       this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(265, 27);
+      this.label6.Location = new System.Drawing.Point(292, 27);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(43, 12);
       this.label6.TabIndex = 22;
@@ -856,9 +858,9 @@
       this.cbPreset.DisplayMember = "Label";
       this.cbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbPreset.FormattingEnabled = true;
-      this.cbPreset.Location = new System.Drawing.Point(311, 23);
+      this.cbPreset.Location = new System.Drawing.Point(338, 23);
       this.cbPreset.Name = "cbPreset";
-      this.cbPreset.Size = new System.Drawing.Size(109, 20);
+      this.cbPreset.Size = new System.Drawing.Size(111, 20);
       this.cbPreset.TabIndex = 21;
       this.cbPreset.ValueMember = "Value";
       // 
@@ -921,12 +923,12 @@
       this.btnApply.UseVisualStyleBackColor = true;
       this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
       // 
-      // openInputFile
+      // OpenInputFile
       // 
-      this.openInputFile.DefaultExt = "mp4";
-      this.openInputFile.Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*";
-      this.openInputFile.Multiselect = true;
-      this.openInputFile.Title = "動画ファイルを選択してください。";
+      this.OpenInputFile.DefaultExt = "mp4";
+      this.OpenInputFile.Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*";
+      this.OpenInputFile.Multiselect = true;
+      this.OpenInputFile.Title = "動画ファイルを選択してください。";
       // 
       // FileList
       // 
@@ -1033,12 +1035,12 @@
       this.label8.TabIndex = 37;
       this.label8.Text = "ffmpeg実行ファイル";
       // 
-      // openFFMpegFileDlg
+      // OpenFFMpegFileDlg
       // 
-      this.openFFMpegFileDlg.DefaultExt = "exe";
-      this.openFFMpegFileDlg.FileName = "openFileDialog1";
-      this.openFFMpegFileDlg.Filter = "実行ファイル|*.exe";
-      this.openFFMpegFileDlg.Title = "ffmpeg実行ファイルを指定してください。";
+      this.OpenFFMpegFileDlg.DefaultExt = "exe";
+      this.OpenFFMpegFileDlg.FileName = "ffmpeg";
+      this.OpenFFMpegFileDlg.Filter = "実行ファイル|*.exe";
+      this.OpenFFMpegFileDlg.Title = "ffmpeg実行ファイルを指定してください。";
       // 
       // btnFindInPath
       // 
@@ -1280,6 +1282,7 @@
       ((System.ComponentModel.ISupportInitialize)(this.CropHeight)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.CropWidth)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.FileListBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.DeInterlaceListBindingSource)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -1289,12 +1292,12 @@
 
     private System.Windows.Forms.TextBox Commandlines;
     private System.Windows.Forms.TextBox txtSS;
-    private System.Windows.Forms.FolderBrowserDialog findFolder;
+    private System.Windows.Forms.FolderBrowserDialog FindFolder;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox txtTo;
     private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.OpenFileDialog findSaveBatchFile;
+    private System.Windows.Forms.OpenFileDialog FindSaveBatchFile;
     private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.CheckBox chkFilterDeInterlace;
     private System.Windows.Forms.RadioButton rbResizeHD;
@@ -1330,7 +1333,7 @@
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Button OpenFolder;
-    private System.Windows.Forms.OpenFileDialog openInputFile;
+    private System.Windows.Forms.OpenFileDialog OpenInputFile;
     private System.Windows.Forms.ListBox FileList;
     private System.Windows.Forms.Button btnStop;
     private System.Windows.Forms.Button btnStopAll;
@@ -1341,7 +1344,7 @@
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Button btnFFmpeg;
     private System.Windows.Forms.Label label8;
-    private System.Windows.Forms.OpenFileDialog openFFMpegFileDlg;
+    private System.Windows.Forms.OpenFileDialog OpenFFMpegFileDlg;
     private System.Windows.Forms.Button btnFindInPath;
     private System.Windows.Forms.LinkLabel linkLabel1;
     private System.Windows.Forms.ComboBox ffmpeg;
@@ -1380,6 +1383,7 @@
     private System.Windows.Forms.ComboBox FileName;
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.BindingSource FileListBindingSource;
+    private System.Windows.Forms.BindingSource DeInterlaceListBindingSource;
   }
 }
 

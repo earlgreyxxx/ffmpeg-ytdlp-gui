@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ffmpeg_command_builder
 {
-  internal class ffmpeg_command_qsv : ffmpeg_command,IEnumerable<string>
+  internal class ffmpeg_command_qsv : ffmpeg_command
   {
     public ffmpeg_command_qsv(string ffmpegPath = "") : base(ffmpegPath)
     {
@@ -50,22 +50,7 @@ namespace ffmpeg_command_builder
       return this;
     }
 
-    public override IEnumerable<string> GetArguments(string strInputPath)
-    {
-      InputPath = strInputPath;
-      var args = this.ToList();
-
-      string strOutputFileName = CreateOutputFileName(strInputPath);
-      string strOutputFilePath = Path.Combine(OutputPath, strOutputFileName);
-      if (strOutputFilePath == strInputPath)
-        throw new Exception("入力ファイルと出力ファイルが同じです。");
-
-      args.Add($"\"{strOutputFilePath}\"");
-
-      return args;
-    }
-
-    public IEnumerator<string> GetEnumerator()
+    public override IEnumerator<string> GetEnumerator()
     {
       yield return "-hide_banner";
       yield return "-y";
@@ -176,11 +161,6 @@ namespace ffmpeg_command_builder
       yield return options["acodec"];
       if (options.ContainsKey("b:a") && !string.IsNullOrEmpty(options["b:a"]))
         yield return options["b:a"];
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return (IEnumerator)GetEnumerator();
     }
   }
 }
