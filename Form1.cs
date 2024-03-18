@@ -1,8 +1,9 @@
 ﻿using ffmpeg_command_builder.Properties;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,10 +11,10 @@ using System.Windows.Forms;
 
 namespace ffmpeg_command_builder
 {
-  using StringListItem = ListItem<string>;
   using CodecListItem = ListItem<Codec>;
-  using StringListItems = List<ListItem<string>>;
   using CodecListItems = List<ListItem<Codec>>;
+  using StringListItem = ListItem<string>;
+  using StringListItems = List<ListItem<string>>;
 
   public partial class Form1 : Form
   {
@@ -25,13 +26,21 @@ namespace ffmpeg_command_builder
     private CodecListItems HardwareEncoders;
     private CodecListItems AudioEncoders;
     private StringListItems InputFileList;
+    private Size HelpFormSize = new(0, 0);
+    private StringListItems FileContainers;
+
+    [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
+    private static partial Regex RegexMovieFile();
+
+    [GeneratedRegex("^(Intel|Nvidia)", RegexOptions.IgnoreCase, "ja-JP")]
+    private static partial Regex IsIntelOrNvidia();
 
     public Form1()
     {
       InitializeComponent();
 
-      var nvencPresetList = new StringListItems()
-      {
+      StringListItems nvencPresetList =
+      [
         new StringListItem("default"),
         new StringListItem("slow"),
         new StringListItem("medium"),
@@ -51,9 +60,9 @@ namespace ffmpeg_command_builder
         new StringListItem("p5","p5:slow"),
         new StringListItem("p6","p6:slower"),
         new StringListItem("p7","p7:slowest")
-      };
-      var qsvPresetList = new StringListItems()
-      {
+      ];
+      StringListItems qsvPresetList =
+      [
         new StringListItem("veryfast"),
         new StringListItem("faster"),
         new StringListItem("fast"),
@@ -61,7 +70,7 @@ namespace ffmpeg_command_builder
         new StringListItem("slow"),
         new StringListItem("slower"),
         new StringListItem("veryslow")
-      };
+      ];
 
       PresetList = new Dictionary<string, StringListItems>()
       {
@@ -74,10 +83,9 @@ namespace ffmpeg_command_builder
 
       HardwareDecoders = new Dictionary<string, CodecListItems>()
       {
-        { 
+        {
           "nvidia",
-          new CodecListItems()
-          {
+          [
             new CodecListItem(new Codec("vp9","cuvid"),"VP9"),
             new CodecListItem(new Codec("h264","cuvid"),"H264"),
             new CodecListItem(new Codec("hevc","cuvid"),"HEVC"),
@@ -88,12 +96,11 @@ namespace ffmpeg_command_builder
             new CodecListItem(new Codec("vc1","cuvid"),"VC1"),
             new CodecListItem(new Codec("vp8","cuvid"),"VP8"),
             new CodecListItem(new Codec("av1","cuvid"),"AV1")
-          }
+          ]
         },
         {
           "intel",
-          new CodecListItems()
-          {
+          [
             new CodecListItem(new Codec("vp9","qsv"),"VP9"),
             new CodecListItem(new Codec("h264","qsv"),"H264"),
             new CodecListItem(new Codec("hevc","qsv"),"HEVC"),
@@ -102,45 +109,47 @@ namespace ffmpeg_command_builder
             new CodecListItem(new Codec("vc1","qsv"),"VC1"),
             new CodecListItem(new Codec("vp8","qsv"),"VP8"),
             new CodecListItem(new Codec("av1","qsv"),"AV1")
-          }
+          ]
         }
       };
 
-      DeInterlaces = new StringListItems()
-      {
+      DeInterlaces = 
+      [
         new StringListItem("1:-1:0","bwdif"),
         new StringListItem("2:-1:0","yadif")
-      };
+      ];
 
-      DeInterlacesCuvid = new StringListItems()
-      {
+      DeInterlacesCuvid =
+      [
         new StringListItem("bob","bob:cuvid"),
         new StringListItem("adaptive","adaptive:cuvid")
-      };
+      ];
 
       DeInterlaceListBindingSource.DataSource = DeInterlaces;
       cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
 
-      AudioEncoders = new CodecListItems()
-      {
-        new CodecListItem(new Codec("aac")),
-        new CodecListItem(new Codec("libmp3lame"))
-      };
+      AudioEncoders =
+      [
+        new CodecListItem(new Codec("aac"),"aac"),
+        new CodecListItem(new Codec("libmp3lame"),"mp3"),
+        new CodecListItem(new Codec("libvorbis"),"ogg"),
+      ];
 
       var GpuDeviceList = GetGPUDeviceList();
 
       cbDevices.DataSource = GpuDeviceList;
       cbDevices.SelectedIndex = 0;
 
-      HardwareEncoders = new CodecListItems();
-      foreach(var device in GpuDeviceList)
+      HardwareEncoders = [];
+      var ci = new CultureInfo("en-US");
+      foreach (var device in GpuDeviceList)
       {
-        if (Regex.IsMatch(device.Value,"^intel",RegexOptions.IgnoreCase))
+        if (device.Value.StartsWith("intel", true, ci))
         {
           HardwareEncoders.Add(new CodecListItem(new Codec("hevc", "qsv")));
           HardwareEncoders.Add(new CodecListItem(new Codec("h264", "qsv")));
         }
-        else if (Regex.IsMatch(device.Value,"^nvidia",RegexOptions.IgnoreCase))
+        if (device.Value.StartsWith("nvidia", true, ci))
         {
           HardwareEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc")));
           HardwareEncoders.Add(new CodecListItem(new Codec("h264", "nvenc")));
@@ -148,8 +157,19 @@ namespace ffmpeg_command_builder
       }
       HardwareEncoders.Add(new CodecListItem(new Codec("copy")));
 
-      FileListBindingSource.DataSource = InputFileList = new StringListItems();
-      FileList.DataSource = FileListBindingSource; 
+      FileListBindingSource.DataSource = InputFileList = [];
+      FileList.DataSource = FileListBindingSource;
+
+      FileContainers =
+      [
+        new StringListItem(".mp4","mp4"),
+        new StringListItem(".mkv","mkv"),
+        new StringListItem(".mp3","MP3"),
+        new StringListItem(".aac","AAC"),
+        new StringListItem(".ogg","Vorbis"),
+        new StringListItem(".webm","WebM"),
+        new StringListItem(".webA","WebA")
+      ];
 
       InitializeMembers();
     }
@@ -182,7 +202,7 @@ namespace ffmpeg_command_builder
       rbResizeHD.Checked = Settings.Default.resizeHD;
       rbResizeNum.Checked = Settings.Default.resizeNum;
 
-      vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
+      FreeOptions.Text = Settings.Default.free;
 
       UseVideoEncoder.DataSource = HardwareEncoders;
       UseVideoEncoder.SelectedIndex = 0;
@@ -192,6 +212,10 @@ namespace ffmpeg_command_builder
       UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
 
       chkConstantQuality.Checked = Settings.Default.cq;
+      vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
+
+      vBitrate.Value = Settings.Default.bitrate;
+
       aBitrate.Enabled = chkEncodeAudio.Checked;
       OutputStderr.Text = "";
 
@@ -199,12 +223,17 @@ namespace ffmpeg_command_builder
 
       chkCrop_CheckedChanged(null, null);
       cbDevices_SelectedIndexChanged(null, null);
+
+      HelpFormSize.Width = Settings.Default.HelpWidth;
+      HelpFormSize.Height = Settings.Default.HelpHeight;
+
+      FileContainer.DataSource = FileContainers;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Settings.Default.outputFolders = new StringCollection();
-      Settings.Default.ffmpeg = new StringCollection();
+      Settings.Default.outputFolders = [];
+      Settings.Default.ffmpeg = [];
 
       foreach (string item in cbOutputDir.Items)
         Settings.Default.outputFolders.Add(item);
@@ -214,6 +243,10 @@ namespace ffmpeg_command_builder
       Settings.Default.resizeFullHD = rbResizeFullHD.Checked;
       Settings.Default.resizeHD = rbResizeHD.Checked;
       Settings.Default.resizeNum = rbResizeNum.Checked;
+      Settings.Default.HelpHeight = HelpFormSize.Height;
+      Settings.Default.HelpWidth = HelpFormSize.Width;
+      Settings.Default.bitrate = vBitrate.Value;
+      Settings.Default.free = FreeOptions.Text;
 
       foreach (string item in ffmpeg.Items)
       {
@@ -227,15 +260,21 @@ namespace ffmpeg_command_builder
     private void btnClearDirs_Click(object sender, EventArgs e)
     {
       cbOutputDir.Items.Clear();
+      ffmpeg.Items.Clear();
+      Settings.Default.Reset();
     }
 
     private void btnSubmitInvoke_Click(object sender, EventArgs e)
     {
-      if (string.IsNullOrEmpty(cbOutputDir.Text) || !Directory.Exists(cbOutputDir.Text))
+      try
       {
-        MessageBox.Show("存在しない出力先フォルダが指定されました。");
-        return;
+        CheckDirectory(cbOutputDir.Text);
       }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "エラー");
+        return;
+      } 
 
       if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
         cbOutputDir.Items.Add(cbOutputDir.Text);
@@ -247,7 +286,7 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if (InputFileList != null && InputFileList.Count > 0)
+      if(FileListBindingSource.Count > 0)
       {
         btnSubmitInvoke.Enabled = false;
         CurrentCommand = CreateCommand(chkAudioOnly.Checked);
@@ -334,7 +373,7 @@ namespace ffmpeg_command_builder
     {
       bool isChecked = chkAudioOnly.Checked;
       UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
-      chkFilterDeInterlace.Enabled = !isChecked;
+      chkFilterDeInterlace.Enabled = chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isChecked;
       CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !isChecked;
 
       if (isChecked)
@@ -343,7 +382,7 @@ namespace ffmpeg_command_builder
       }
       else
       {
-        if(chkFilterDeInterlace.Checked)
+        if (chkFilterDeInterlace.Checked)
           cbDeinterlaceAlg.Enabled = true;
         else
           cbDeinterlaceAlg.Enabled = false;
@@ -355,12 +394,12 @@ namespace ffmpeg_command_builder
         aBitrate.Enabled = true;
       }
 
-      if(isChecked && !UseAudioEncoder.Enabled)
+      if (isChecked && !UseAudioEncoder.Enabled)
         UseAudioEncoder.Enabled = true;
       else if (!isChecked && !chkEncodeAudio.Checked)
         UseAudioEncoder.Enabled = false;
 
-      if(!isChecked)
+      if (!isChecked)
         UseVideoEncoder_SelectedIndexChanged(null, null);
     }
 
@@ -372,7 +411,16 @@ namespace ffmpeg_command_builder
       string[] dragFilePathArr = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
       foreach (var filePath in dragFilePathArr)
-        FileListBindingSource.Add(new StringListItem(filePath));
+      {
+        if (IsFile(filePath))
+          FileListBindingSource.Add(new StringListItem(filePath));
+        else if (IsDirectory(filePath))
+          Directory
+            .GetFiles(filePath)
+            .Where(f => RegexMovieFile().IsMatch(f))
+            .ToList()
+            .ForEach(f => FileListBindingSource.Add(new StringListItem(f)));
+      }
 
       FileListBindingSource.ResetBindings(false);
 
@@ -386,16 +434,22 @@ namespace ffmpeg_command_builder
 
     private void OpenFolder_Click(object sender, EventArgs e)
     {
-      if (!string.IsNullOrEmpty(cbOutputDir.Text))
-        Process.Start(cbOutputDir.Text);
+      string path = cbOutputDir.Text;
+      if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+      {
+        MessageBox.Show("フォルダが存在しません。","エラー");
+        return;
+      }
+
+      CustomProcess.ShellExecute(cbOutputDir.Text);
     }
 
     private void DropArea_MouseDoubleClick(object sender, MouseEventArgs e)
     {
-      if(DialogResult.Cancel == OpenInputFile.ShowDialog())
+      if (DialogResult.Cancel == OpenInputFile.ShowDialog())
         return;
 
-      foreach(var filename in OpenInputFile.FileNames)
+      foreach (var filename in OpenInputFile.FileNames)
         FileListBindingSource.Add(new StringListItem(filename));
 
       btnSubmitInvoke.Enabled = true;
@@ -403,9 +457,13 @@ namespace ffmpeg_command_builder
 
     private void btnSubmitSaveToFile_Click(object sender, EventArgs e)
     {
-      if (string.IsNullOrEmpty(cbOutputDir.Text) || !Directory.Exists(cbOutputDir.Text))
+      try
       {
-        MessageBox.Show("存在しない出力先フォルダが指定されました。");
+        CheckDirectory(cbOutputDir.Text);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "エラー");
         return;
       }
 
@@ -419,7 +477,7 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if (InputFileList != null && InputFileList.Count > 0)
+      if(FileListBindingSource.Count > 0)
       {
         if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
           return;
@@ -428,7 +486,10 @@ namespace ffmpeg_command_builder
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 
-        command.ToBatchFile(FindSaveBatchFile.FileName, InputFileList.Select(item => item.Value));
+        command.ToBatchFile(
+          FindSaveBatchFile.FileName,
+          FileListBindingSource.OfType<StringListItem>().Select(item => item.Value)
+        );
       }
     }
 
@@ -439,7 +500,6 @@ namespace ffmpeg_command_builder
 
     private void btnStopAll_Click(object sender, EventArgs e)
     {
-      FileList.Items.Clear();
       StopProcess(true);
     }
 
@@ -451,7 +511,7 @@ namespace ffmpeg_command_builder
 
       CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
-      LookAhead.Enabled = chkUseHWDecoder.Enabled = !isCopy;
+      LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
 
       InitPresetAndDevice(codec);
     }
@@ -462,7 +522,7 @@ namespace ffmpeg_command_builder
         return;
 
       ffmpeg.Text = OpenFFMpegFileDlg.FileName;
-      if(!ffmpeg.Items.Contains(ffmpeg.Text))
+      if (!ffmpeg.Items.Contains(ffmpeg.Text))
         ffmpeg.Items.Add(ffmpeg.Text);
     }
 
@@ -475,7 +535,7 @@ namespace ffmpeg_command_builder
       if (ffmpegPathes.Length == 0)
       {
         if (DialogResult.Yes == MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。\nWingetコマンドを利用してffmpegをインストールしますか？", "警告", MessageBoxButtons.YesNo))
-          Process.Start("winget install -id Gyan.FFmpeg");
+          Process.Start("winget","install -id Gyan.FFmpeg");
 
         ffmpeg.Text = string.Empty;
       }
@@ -483,7 +543,7 @@ namespace ffmpeg_command_builder
       {
         foreach (var ffmpegPath in ffmpegPathes.Reverse())
         {
-          if(!ffmpeg.Items.Contains(ffmpegPath))
+          if (!ffmpeg.Items.Contains(ffmpegPath))
             ffmpeg.Items.Insert(0, ffmpegPath);
         }
 
@@ -493,7 +553,7 @@ namespace ffmpeg_command_builder
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
-      Process.Start("https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax");
+      CustomProcess.ShellExecute("https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax");
     }
 
     private void rbResizeNum_CheckedChanged(object sender, EventArgs e)
@@ -509,14 +569,12 @@ namespace ffmpeg_command_builder
         MessageBox.Show("ログファイルが存在しません。");
         return;
       }
-
-      Process.Start(filename);
+      CustomProcess.ShellExecute(filename);
     }
 
     private void ClearFileList_Click(object sender, EventArgs e)
     {
-      InputFileList.Clear();
-      FileListBindingSource.ResetBindings(false);
+      FileListBindingSource.Clear();
     }
 
     private void chkFilterDeInterlace_CheckedChanged(object sender, EventArgs e)
@@ -537,8 +595,8 @@ namespace ffmpeg_command_builder
 
     private void cbDevices_SelectedIndexChanged(object sender, EventArgs e)
     {
-      var m = Regex.Match(cbDevices.Text, "^(Intel|Nvidia)", RegexOptions.IgnoreCase);
-      if(m.Success)
+      var m = IsIntelOrNvidia().Match(cbDevices.Text);
+      if (m.Success)
       {
         var decodersItems = HardwareDecoders[m.Groups[1].Value.ToLower()];
         HWDecoder.DataSource = decodersItems;
@@ -550,6 +608,7 @@ namespace ffmpeg_command_builder
       var codec = HWDecoder.SelectedValue as Codec;
       VideoWidth.Enabled = VideoHeight.Enabled = chkCrop.Checked && chkUseHWDecoder.Checked && codec.GpuSuffix == "cuvid";
       HWDecoder.Enabled = chkUseHWDecoder.Checked;
+      OpenDecoderHelp.Enabled = chkUseHWDecoder.Checked;
 
       if (chkUseHWDecoder.Checked)
       {
@@ -562,6 +621,24 @@ namespace ffmpeg_command_builder
           DeInterlaceListBindingSource.Remove(algo);
       }
       DeInterlaceListBindingSource.ResetBindings(false);
+    }
+
+    private void OpenEncoderHelp_Click(object sender, EventArgs e)
+    {
+      var encoder = UseVideoEncoder.SelectedValue.ToString();
+      if (encoder == "copy")
+        return;
+
+      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text,$"-hide_banner -h encoder={encoder}");
+    }
+
+    private void OpenDecoderHelp_Click(object sender, EventArgs e)
+    {
+      var decoder = HWDecoder.SelectedValue.ToString();
+      if (!chkUseHWDecoder.Checked)
+        return;
+
+      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text,$"-hide_banner -h decoder={decoder}");
     }
   }
 }

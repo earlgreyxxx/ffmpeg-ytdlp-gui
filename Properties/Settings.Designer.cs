@@ -200,5 +200,41 @@ namespace ffmpeg_command_builder.Properties {
                 this["lookAhead"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HelpWidth {
+            get {
+                return ((int)(this["HelpWidth"]));
+            }
+            set {
+                this["HelpWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HelpHeight {
+            get {
+                return ((int)(this["HelpHeight"]));
+            }
+            set {
+                this["HelpHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string free {
+            get {
+                return ((string)(this["free"]));
+            }
+            set {
+                this["free"] = value;
+            }
+        }
     }
 }

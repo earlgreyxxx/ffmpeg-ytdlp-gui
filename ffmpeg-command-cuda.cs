@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
 {
@@ -191,6 +192,10 @@ namespace ffmpeg_command_builder
         if (options.ContainsKey("tag:v"))
           yield return options["tag:v"];
       }
+
+      if (!string.IsNullOrEmpty(AdditionalOptions))
+        foreach (var option in SplitCommaColon().Split(AdditionalOptions))
+          yield return option.Trim();
 
       yield return options["acodec"];
       if (options.ContainsKey("b:a") && !string.IsNullOrEmpty(options["b:a"]))

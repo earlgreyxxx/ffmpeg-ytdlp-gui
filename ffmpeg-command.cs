@@ -9,36 +9,43 @@ using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
 {
-  internal abstract class ffmpeg_command : IEnumerable<string>
+  internal partial class ffmpeg_command : IEnumerable<string>
   {
-    public abstract ffmpeg_command vcodec(string strCodec, int indexOfGpuDevice = 0);
-    public abstract ffmpeg_command vBitrate(int value, bool bCQ = false);
-    public abstract ffmpeg_command crop(decimal width, decimal height, decimal x, decimal y);
-    public abstract ffmpeg_command crop(bool hw,decimal width, decimal height, decimal x, decimal y);
-    public abstract IEnumerator<string> GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return (IEnumerator)GetEnumerator();
-    }
-
     // instances
     protected int FileIndex = 1;
     private string _file_prefix;
     private string _file_suffix;
     private string _file_base;
+    private Encoding CP932;
+
+    [GeneratedRegex(@"^(?:\d{2}:)?\d{2}:\d{2}(?:\.\d+)?$")]
+    private static partial Regex IsDateTime();
+
+    [GeneratedRegex(@"^\d+(?:\.\d+)?(?:s|ms|us)?$", RegexOptions.IgnoreCase, "ja-JP")]
+    private static partial Regex IsSecondTime();
+
+    [GeneratedRegex(@"^(\w+)$")]
+    private static partial Regex IsWord();
+
+    [GeneratedRegex(@"\s")]
+    private static partial Regex HasSpace();
+    
+    [GeneratedRegex(@"[;,:]+")]
+    protected static partial Regex SplitCommaColon();
 
     protected Dictionary<string,string> filters;
     protected Dictionary<string, string> options;
     protected string InputPath;
 
     public string OutputPath { get; set; }
+    public string OutputExtension { get; set; }
     public string ffmpegPath {  get; set; }
     public bool bAudioOnly {  get; set; }
     public string EncoderType {  get; set; }
     public int IndexOfGpuDevice {  get; set; }
     public int Width { get; set; }
     public int Height {  get; set; }
+    public string AdditionalOptions { get; set; }
 
     public string FilePrefix
     {
@@ -72,8 +79,8 @@ namespace ffmpeg_command_builder
       protected get
       {
         int rv = 0;
-        if (options.ContainsKey("lookahead"))
-          rv = int.Parse(options["lookahead"]);
+        if (options.TryGetValue("lookahead",out string value))
+          rv = int.Parse(value);
 
         return rv;
       }
@@ -116,10 +123,14 @@ namespace ffmpeg_command_builder
 
     public ffmpeg_command(string ffmpegpath)
     {
-      filters = new Dictionary<string, string>();
+      Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+      CP932 = Encoding.GetEncoding(932);
+
+      filters = [];
       options = new Dictionary<string, string>
       {
         ["tag:v"] = "-tag:v hvc1",
+        ["vcodec"] = "-c:v copy",
         ["acodec"] = "-c:a copy",
         ["b:v"] = string.Empty,
         ["preset"] = string.Empty
@@ -137,6 +148,41 @@ namespace ffmpeg_command_builder
 
       if (!String.IsNullOrEmpty(ffmpegpath) && File.Exists(ffmpegpath))
         ffmpegPath = ffmpegpath;
+    }
+
+    public virtual IEnumerator<string> GetEnumerator()
+    {
+      yield return "-hide_banner";
+      yield return "-y";
+
+      if (options.TryGetValue("ss",out string ss) && !string.IsNullOrEmpty(ss))
+        yield return $"-ss {ss}";
+      if (options.TryGetValue("to",out string to) && !string.IsNullOrEmpty(to))
+        yield return $"-to {to}";
+
+      yield return $"-i \"{InputPath}\"";
+
+      if (bAudioOnly)
+      {
+        yield return "-vn";
+      }
+      else
+      {
+        yield return options["vcodec"];
+      }
+
+      if(!string.IsNullOrEmpty(AdditionalOptions))
+        foreach(var option in SplitCommaColon().Split(AdditionalOptions))
+          yield return option.Trim();
+
+      yield return options["acodec"];
+      if (options.TryGetValue("b:a", out string ba) && !string.IsNullOrEmpty(ba))
+        yield return ba;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return (IEnumerator)GetEnumerator();
     }
 
     public ffmpeg_command Starts(string strTime)
@@ -163,6 +209,30 @@ namespace ffmpeg_command_builder
       return this;
     }
 
+    public virtual ffmpeg_command vcodec(string strCodec, int indexOfGpuDevice = 0)
+    {
+      // copy nothing to do...
+      return this;
+    }
+
+    public virtual ffmpeg_command vBitrate(int value, bool bCQ = false)
+    {
+      // copy nothing to do...
+      return this;
+    }
+
+    public virtual ffmpeg_command crop(bool hw,decimal width, decimal height, decimal x = -1, decimal y = -1)
+    {
+      // copy nothing to do...
+      return this;
+    }
+
+    public virtual ffmpeg_command crop(decimal width, decimal height, decimal x = -1, decimal y = -1)
+    {
+      // copy nothing to do...
+      return this;
+    }
+
     public ffmpeg_command setFilter(string name,string value)
     {
       filters[name] = value;
@@ -170,8 +240,13 @@ namespace ffmpeg_command_builder
     }
     public ffmpeg_command removeFilter(string name)
     {
-      if(filters.ContainsKey(name))
-        filters.Remove(name);
+      filters.Remove(name);
+      return this;
+    }
+
+    public ffmpeg_command setOptions(string option)
+    {
+      AdditionalOptions = option.Trim();
       return this;
     }
 
@@ -233,7 +308,7 @@ namespace ffmpeg_command_builder
     public string GetCommandLine(string strInputPath)
     {
       string command = ffmpegPath;
-      if (Regex.IsMatch(ffmpegPath, @"\s"))
+      if (HasSpace().IsMatch(ffmpegPath))
         command = $"\"{ffmpegPath}\"";
 
       return $"{command} {GetCommandLineArguments(strInputPath)}";
@@ -263,6 +338,7 @@ namespace ffmpeg_command_builder
         UseShellExecute = false,
         RedirectStandardError = true,
         RedirectStandardInput = true,
+        StandardErrorEncoding = CP932,
         CreateNoWindow = true
       };
 
@@ -285,23 +361,21 @@ namespace ffmpeg_command_builder
     {
       var commandlines = files.Select(file => GetCommandLine(file));
 
-      using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
-      {
-        await sw.WriteLineAsync("@ECHO OFF");
-        foreach (var commandline in commandlines)
-          await sw.WriteLineAsync(commandline);
+      using var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932));
+      await sw.WriteLineAsync("@ECHO OFF");
+      foreach (var commandline in commandlines)
+        await sw.WriteLineAsync(commandline);
 
-        await sw.WriteLineAsync("PAUSE");
-      }
+      await sw.WriteLineAsync("PAUSE");
     }
 
-    protected string EvalTimeString(string strTime)
+    protected static string EvalTimeString(string strTime)
     {
       string rv = null;
       if (!string.IsNullOrEmpty(strTime))
       {
-        var m1 = Regex.Match(strTime, @"^(?:\d{2}:)?\d{2}:\d{2}(?:\.\d+)?$");
-        var m2 = Regex.Match(strTime, @"^\d+(?:\.\d+)?(?:s|ms|us)?$", RegexOptions.IgnoreCase);
+        var m1 = IsDateTime().Match(strTime);
+        var m2 = IsSecondTime().Match(strTime);
 
         rv = null;
         if (m1.Success || m2.Success)
@@ -315,28 +389,36 @@ namespace ffmpeg_command_builder
       string strOutputFileName = Path.GetFileName(strInputPath);
       string basename = string.IsNullOrEmpty(FileBase) ? Path.GetFileNameWithoutExtension(strInputPath) : string.Format("{0}{1:D2}",FileBase,FileIndex++);
 
-      if (bAudioOnly)
+      if (string.IsNullOrEmpty(OutputExtension))
       {
-        var m = Regex.Match(options["acodec"], @"(\w+)$");
-        if (m.Success)
+        if (bAudioOnly)
         {
-          switch (m.Captures[0].Value)
+          var m = IsWord().Match(options["acodec"]);
+          if (m.Success)
           {
-            case "aac":
-              strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.aac";
-              break;
-            case "libmp3lame":
-              strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.mp3";
-              break;
+            switch (m.Captures[0].Value)
+            {
+              case "aac":
+                strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.aac";
+                break;
+              case "libmp3lame":
+                strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.mp3";
+                break;
+            }
           }
+        }
+        else
+        {
+          strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.mp4";
         }
       }
       else
       {
-        strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}.mp4";
+        strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}{OutputExtension}";
       }
 
       return strOutputFileName;
     }
+
   }
 }

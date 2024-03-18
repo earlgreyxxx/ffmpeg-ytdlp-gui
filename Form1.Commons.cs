@@ -15,29 +15,78 @@ namespace ffmpeg_command_builder
 
   partial class Form1 : Form
   {
+    // Static members
+    // ---------------------------------------------------------------------------------
+    private static string[] FindInPath(string CommandName)
+    {
+      //環境変数%PATH%取得し、カレントディレクトリを連結。配列への格納
+      IEnumerable<string> dirPathList =
+        Environment
+          .ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("PATH"))
+          .Split([';'])
+          .Prepend(Directory.GetCurrentDirectory());
+
+      //正規表現に使用するため、%PATHEXT%の取得・ピリオド文字の変換及び配列への格納
+      string[] pathext = Environment.GetEnvironmentVariable("PATHEXT").Replace(".", @"\.").Split([';']);
+
+      //検索するファイル名の正規表現
+      var regex = new Regex(
+        $"^{CommandName}(?:{String.Join("|", pathext)})?$",
+        RegexOptions.IgnoreCase
+      );
+
+      return
+        dirPathList
+          .Where(dirPath => Directory.Exists(dirPath))
+          .SelectMany(dirPath => Directory.GetFiles(dirPath).Where(file => regex.IsMatch(Path.GetFileName(file))))
+          .ToArray();
+    }
+
+    private static void CheckDirectory(string path)
+    {
+      if (string.IsNullOrEmpty(path))
+        throw new Exception("出力先フォルダを指定してください。");
+
+      if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
+    }
+
+    private static bool IsFile(string path)
+    {
+      return (File.GetAttributes(path) & FileAttributes.Archive) == FileAttributes.Archive || (File.GetAttributes(path) & FileAttributes.Normal) == FileAttributes.Normal;
+    }
+
+    private static bool IsDirectory(string path)
+    {
+      return (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
+    }
+
+    // Instance members
+    // ---------------------------------------------------------------------------------
     private CustomProcess CurrentProcess;
     Action<string> WriteOutput;
     Action<string> ProcessExit;
     Action ProcessDoneCallback;
     private StreamWriter LogWriter;
-    private readonly Encoding CP932 = Encoding.GetEncoding(932);
+    private Encoding CP932;
 
     private void InitializeMembers()
     {
+      Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+      CP932 = Encoding.GetEncoding(932);
+
       WriteOutput = output => { OutputStderr.Text = output; };
       ProcessExit = f =>
       {
-        var listitem = InputFileList.First(item => item.Value == f);
-        InputFileList.Remove(listitem);
-
-        FileListBindingSource.ResetBindings(false);
+        var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == f);
+        if(item != null)
+          FileListBindingSource.Remove(item);
       };
       ProcessDoneCallback = () =>
       {
         btnStop.Enabled = btnStopAll.Enabled = false;
         OpenLogFile.Enabled = true;
-
-        if (InputFileList.Count > 0)
+        if(FileListBindingSource.Count > 0)
           btnSubmitInvoke.Enabled = true;
 
         MessageBox.Show("変換処理が終了しました。");
@@ -46,17 +95,15 @@ namespace ffmpeg_command_builder
 
     private ffmpeg_command CreateFFMpegCommandInstance()
     {
-      ffmpeg_command ffcommand = null;
+      ffmpeg_command ffcommand;
 
       var codec = UseVideoEncoder.SelectedValue as Codec;
       if (codec.GpuSuffix == "nvenc")
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
       else if (codec.GpuSuffix == "qsv")
         ffcommand = new ffmpeg_command_qsv(ffmpeg.Text);
-      else if (codec.Name == "copy")
-        ffcommand = new ffmpeg_command_copy(ffmpeg.Text);
       else
-        throw new Exception("Invalid encoder was given");
+        ffcommand = new ffmpeg_command(ffmpeg.Text);
 
       return ffcommand;
     }
@@ -80,7 +127,8 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.To(txtTo.Text);
 
-      ffcommand.OutputPath = cbOutputDir.Text;
+      ffcommand.OutputPath = string.IsNullOrEmpty(cbOutputDir.Text) ? "." : cbOutputDir.Text;
+      ffcommand.OutputExtension = FileContainer.SelectedValue.ToString();
 
       return ffcommand; 
     }
@@ -175,25 +223,13 @@ namespace ffmpeg_command_builder
       }
 
       var tag = int.Parse(GetCheckedRadioButton(ResizeBox).Tag as string);
-      int size;
-      switch (tag)
+      var size = tag switch
       {
-        case 0:
-          size = 0;
-          break;
-
-        case 720:
-        case 1080:
-          size = int.Parse(tag.ToString());
-          break;
-
-        case -1:
-          size = (int)resizeTo.Value;
-          break;
-
-        default:
-          throw new Exception("size error");
-      }
+        0 => 0,
+        720 or 1080 => int.Parse(tag.ToString()),
+        -1 => (int)resizeTo.Value,
+        _ => throw new Exception("size error"),
+      };
 
       if (size > 0)
       {
@@ -213,17 +249,20 @@ namespace ffmpeg_command_builder
       else
         ffcommand.setFilter("transpose", rotate.ToString());
 
+      if(!string.IsNullOrEmpty(FreeOptions.Text))
+        ffcommand.setOptions(FreeOptions.Text);
+
       return ffcommand;
     }
 
-    private RadioButton GetCheckedRadioButton(GroupBox groupBox)
+    private static RadioButton GetCheckedRadioButton(GroupBox groupBox)
     {
       return groupBox.Controls.OfType<RadioButton>().FirstOrDefault(radio => radio.Checked);
     }
 
     private void BeginFFmpegProcess()
     {
-      string filename = InputFileList.First().Value;
+      string filename = FileListBindingSource.OfType<StringListItem>().First().Value;
       try
       {
         var process = CurrentCommand.InvokeCommand(filename, true);
@@ -251,7 +290,7 @@ namespace ffmpeg_command_builder
       LogWriter.WriteLine(Encoding.UTF8.GetString(bytes));
 
       if (!String.IsNullOrEmpty(e.Data))
-        Invoke(WriteOutput, new Object[] { e.Data });
+        Invoke(WriteOutput, [e.Data]);
     }
 
     private void Process_Exited(object sender, EventArgs e)
@@ -260,17 +299,16 @@ namespace ffmpeg_command_builder
       {
         string filename = CurrentProcess.CustomFileName;
         CurrentProcess = null;
-        Invoke(ProcessExit,new object[] { filename });
+        Invoke(ProcessExit,[filename]);
         BeginFFmpegProcess();
       }
       catch (InvalidOperationException) {
         Invoke(ProcessDoneCallback);
-        if (LogWriter != null)
-          LogWriter.Dispose();
+        LogWriter?.Dispose();
       }
     }
 
-    private string GetLogFileName()
+    private static string GetLogFileName()
     {
       return Path.Combine(
         Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
@@ -286,24 +324,38 @@ namespace ffmpeg_command_builder
     private void StopProcess(bool stopAll = false)
     {
       if (stopAll)
-      {
-        InputFileList.Clear();
-        FileListBindingSource.ResetBindings(false);
-      }
+        FileListBindingSource.Clear();
 
       if (CurrentProcess == null || CurrentProcess.HasExited)
         return;
 
-      using (StreamWriter sw = CurrentProcess.StandardInput)
+      using StreamWriter sw = CurrentProcess.StandardInput;
+      sw.Write('q');
+    }
+
+    private void OpenOutputView(string executable, string arg)
+    {
+      var form = new StdoutForm();
+      if (HelpFormSize.Width > 0 && HelpFormSize.Height > 0)
       {
-        sw.Write('q');
+        form.Width = HelpFormSize.Width;
+        form.Height = HelpFormSize.Height;
       }
+
+      form.Shown += (s, e) => form.StartProcess(executable, arg);
+      form.FormClosing += (s, e) =>
+      {
+        HelpFormSize.Width = form.Width;
+        HelpFormSize.Height = form.Height;
+      };
+
+      form.Show();
     }
 
     private void InitPresetAndDevice(Codec codec)
     {
       cbPreset.DataSource = PresetList[codec.FullName];
-      string hardwareName = "";
+      string hardwareName = string.Empty;
 
       if (codec.GpuSuffix == "nvenc")
       {
@@ -325,10 +377,9 @@ namespace ffmpeg_command_builder
         vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "-cq";
     }
 
-    private StringListItems GetGPUDeviceList()
+    private static StringListItems GetGPUDeviceList()
     {
-      ManagementObjectSearcher videoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
-
+      var videoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
       var deviceList = new StringListItems();
 
       foreach (ManagementObject device in videoDevices.Get().Cast<ManagementObject>())
@@ -336,7 +387,7 @@ namespace ffmpeg_command_builder
         deviceList.Add(
           new StringListItem(
             device["AdapterCompatibility"].ToString(),
-            $"{device["Name"]}:{device["DeviceId"]}"
+            device["Name"].ToString()
           )
         );
       }
@@ -344,29 +395,5 @@ namespace ffmpeg_command_builder
       return deviceList;
     }
 
-    private string[] FindInPath(string CommandName)
-    {
-      //環境変数%PATH%取得し、カレントディレクトリを連結。配列への格納
-      var dirPathList =
-        Environment
-          .ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("PATH"))
-          .Split(new char[] { ';' })
-          .Prepend(Directory.GetCurrentDirectory());
-
-      //正規表現に使用するため、%PATHEXT%の取得・ピリオド文字の変換及び配列への格納
-      var pathext = Environment.GetEnvironmentVariable("PATHEXT").Replace(".", @"\.").Split(new Char[] { ';' });
-
-      //検索するファイル名の正規表現
-      var regex = new Regex(
-        $"^{CommandName}(?:{String.Join("|", pathext)})?$",
-        RegexOptions.IgnoreCase
-      );
-
-      return
-        dirPathList
-          .Where(dirPath => Directory.Exists(dirPath))
-          .SelectMany(dirPath => Directory.GetFiles(dirPath).Where(file => regex.IsMatch(Path.GetFileName(file))))
-          .ToArray();
-    }
   }
 }
