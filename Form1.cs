@@ -118,6 +118,9 @@ namespace ffmpeg_command_builder
         new StringListItem("adaptive","adaptive:cuvid")
       };
 
+      DeInterlaceListBindingSource.DataSource = DeInterlaces;
+      cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
+
       AudioEncoders = new CodecListItems()
       {
         new CodecListItem(new Codec("aac")),
@@ -145,7 +148,9 @@ namespace ffmpeg_command_builder
       }
       HardwareEncoders.Add(new CodecListItem(new Codec("copy")));
 
-      InputFileList = new StringListItems();
+      FileListBindingSource.DataSource = InputFileList = new StringListItems();
+      FileList.DataSource = FileListBindingSource; 
+
       InitializeMembers();
     }
 
@@ -194,12 +199,6 @@ namespace ffmpeg_command_builder
 
       chkCrop_CheckedChanged(null, null);
       cbDevices_SelectedIndexChanged(null, null);
-
-      DeInterlaceListBindingSource.DataSource = DeInterlaces;
-      cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
-
-      FileListBindingSource.DataSource = InputFileList;
-      FileList.DataSource = FileListBindingSource; 
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
