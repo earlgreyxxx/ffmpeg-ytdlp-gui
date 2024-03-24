@@ -29,23 +29,25 @@ namespace ffmpeg_command_builder
 
     [GeneratedRegex(@"\s")]
     private static partial Regex HasSpace();
-    
-    [GeneratedRegex(@"[;,:]+")]
+
+    [GeneratedRegex(@"[;,]+")]
     protected static partial Regex SplitCommaColon();
 
-    protected Dictionary<string,string> filters;
+    protected Dictionary<string, string> filters;
     protected Dictionary<string, string> options;
     protected string InputPath;
 
     public string OutputPath { get; set; }
     public string OutputExtension { get; set; }
-    public string ffmpegPath {  get; set; }
-    public bool bAudioOnly {  get; set; }
-    public string EncoderType {  get; set; }
-    public int IndexOfGpuDevice {  get; set; }
+    public string ffmpegPath { get; set; }
+    public bool bAudioOnly { get; set; }
+    public string EncoderType { get; set; }
+    public int IndexOfGpuDevice { get; set; }
     public int Width { get; set; }
-    public int Height {  get; set; }
-    public string AdditionalOptions { get; set; }
+    public int Height { get; set; }
+    public IEnumerable<string> AdditionalOptions { get; } = new List<string>();
+    public IEnumerable<string> AdditionalPreOptions { get; set; } = new List<string>();
+    public bool MultiFileProcess { get; set; } = false;
 
     public string FilePrefix
     {
@@ -100,10 +102,7 @@ namespace ffmpeg_command_builder
     {
       set
       {
-        if (String.IsNullOrEmpty(value))
-          throw new ArgumentNullException(nameof(value));
-
-        options["acodec"] = $"-c:a {value}";
+        options["acodec"] = String.IsNullOrEmpty(value) ? "-an" : $"-c:a {value}";
       }
     }
     public int ABitrate
@@ -160,7 +159,12 @@ namespace ffmpeg_command_builder
       if (options.TryGetValue("to",out string to) && !string.IsNullOrEmpty(to))
         yield return $"-to {to}";
 
-      yield return $"-i \"{InputPath}\"";
+      if(AdditionalPreOptions.Count() > 0)
+        foreach (var option in AdditionalPreOptions)
+          yield return option.Trim();
+
+      if(!string.IsNullOrEmpty(InputPath))
+        yield return $"-i \"{InputPath}\"";
 
       if (bAudioOnly)
       {
@@ -171,8 +175,8 @@ namespace ffmpeg_command_builder
         yield return options["vcodec"];
       }
 
-      if(!string.IsNullOrEmpty(AdditionalOptions))
-        foreach(var option in SplitCommaColon().Split(AdditionalOptions))
+      if(AdditionalOptions.Count() > 0)
+        foreach(var option in AdditionalOptions)
           yield return option.Trim();
 
       yield return options["acodec"];
@@ -211,7 +215,7 @@ namespace ffmpeg_command_builder
 
     public virtual ffmpeg_command vcodec(string strCodec, int indexOfGpuDevice = 0)
     {
-      // copy nothing to do...
+      options["vcodec"] = string.IsNullOrEmpty(strCodec) ? null : $"-c:v {strCodec}";
       return this;
     }
 
@@ -244,15 +248,58 @@ namespace ffmpeg_command_builder
       return this;
     }
 
-    public ffmpeg_command setOptions(string option)
+    public ffmpeg_command setOptions(string options)
     {
-      AdditionalOptions = option.Trim();
+      var list = AdditionalOptions as List<string>;
+      foreach (var option in SplitCommaColon().Split(options))
+      {
+        string str = option.Trim();
+        if (!list.Contains(str))
+          list.Add(str);
+      }
+      return this;
+    }
+
+    public ffmpeg_command setOptions(IEnumerable<string> options)
+    {
+      var list = AdditionalOptions as List<string>;
+      foreach (var option in options)
+        if (!list.Contains(option))
+          list.Add(option);
+
+      return this;
+    }
+
+    public ffmpeg_command setPreOptions(string options)
+    {
+      var list = AdditionalPreOptions as List<string>;
+      foreach (var option in SplitCommaColon().Split(options))
+      {
+        string str = option.Trim();
+        if (!list.Contains(str))
+          list.Add(str);
+      }
+      return this;
+    }
+    public ffmpeg_command setPreOptions(IEnumerable<string> options)
+    {
+      var list = AdditionalPreOptions as List<string>;
+      foreach (var option in options)
+        if (!list.Contains(option))
+          list.Add(option);
+
       return this;
     }
 
     public ffmpeg_command preset(string str)
     {
       Preset = str;
+      return this;
+    }
+
+    public ffmpeg_command OutputDirectory(string dir = ".")
+    {
+      OutputPath = string.IsNullOrEmpty(dir) ? "." : dir.Trim();
       return this;
     }
 
@@ -270,7 +317,13 @@ namespace ffmpeg_command_builder
 
     public ffmpeg_command OutputBaseName(string basename = "")
     {
-      FileBase = basename;
+      FileBase = basename.Trim();
+      return this;
+    }
+
+    public ffmpeg_command OutputContainer(string extension)
+    {
+      OutputExtension = extension;
       return this;
     }
 
@@ -387,7 +440,7 @@ namespace ffmpeg_command_builder
     protected string CreateOutputFileName(string strInputPath)
     {
       string strOutputFileName = Path.GetFileName(strInputPath);
-      string basename = string.IsNullOrEmpty(FileBase) ? Path.GetFileNameWithoutExtension(strInputPath) : string.Format("{0}{1:D2}",FileBase,FileIndex++);
+      string basename = string.IsNullOrEmpty(FileBase) ? Path.GetFileNameWithoutExtension(strInputPath) : string.Format("{0}{1}",FileBase,MultiFileProcess ? FileIndex++ : string.Empty);
 
       if (string.IsNullOrEmpty(OutputExtension))
       {

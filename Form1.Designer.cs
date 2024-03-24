@@ -65,9 +65,6 @@
       label13 = new System.Windows.Forms.Label();
       label10 = new System.Windows.Forms.Label();
       FileName = new System.Windows.Forms.ComboBox();
-      label9 = new System.Windows.Forms.Label();
-      FilePrefix = new System.Windows.Forms.TextBox();
-      FileSuffix = new System.Windows.Forms.TextBox();
       OpenLogFile = new System.Windows.Forms.Button();
       OpenFolder = new System.Windows.Forms.Button();
       btnSubmitOpenDlg = new System.Windows.Forms.Button();
@@ -127,11 +124,41 @@
       DeInterlaceListBindingSource = new System.Windows.Forms.BindingSource(components);
       Tab = new System.Windows.Forms.TabControl();
       PageConvert = new System.Windows.Forms.TabPage();
+      SubmitButtonBox = new System.Windows.Forms.Panel();
       groupBox6 = new System.Windows.Forms.GroupBox();
       FreeOptions = new System.Windows.Forms.TextBox();
       label11 = new System.Windows.Forms.Label();
       groupBox3 = new System.Windows.Forms.GroupBox();
+      tabPage1 = new System.Windows.Forms.TabPage();
+      CommonButtonBox = new System.Windows.Forms.Panel();
+      btnStopUtil = new System.Windows.Forms.Button();
+      btnStopAllUtil = new System.Windows.Forms.Button();
+      button2 = new System.Windows.Forms.Button();
+      groupBox8 = new System.Windows.Forms.GroupBox();
+      label22 = new System.Windows.Forms.Label();
+      label21 = new System.Windows.Forms.Label();
+      SubmitCopy = new System.Windows.Forms.Button();
+      SubmitConcat = new System.Windows.Forms.Button();
+      Image2Box = new System.Windows.Forms.GroupBox();
+      ImageWidth = new System.Windows.Forms.NumericUpDown();
+      ImageHeight = new System.Windows.Forms.NumericUpDown();
+      label18 = new System.Windows.Forms.Label();
+      label20 = new System.Windows.Forms.Label();
+      label17 = new System.Windows.Forms.Label();
+      FrameRate = new System.Windows.Forms.NumericUpDown();
+      ImageType = new System.Windows.Forms.ComboBox();
+      linkLabel2 = new System.Windows.Forms.LinkLabel();
+      ImageTo = new System.Windows.Forms.TextBox();
+      ImageSS = new System.Windows.Forms.TextBox();
+      label16 = new System.Windows.Forms.Label();
+      label9 = new System.Windows.Forms.Label();
+      label19 = new System.Windows.Forms.Label();
+      label15 = new System.Windows.Forms.Label();
+      label14 = new System.Windows.Forms.Label();
+      SubmitThumbnail = new System.Windows.Forms.Button();
       groupBox5 = new System.Windows.Forms.GroupBox();
+      FilePrefix = new System.Windows.Forms.ComboBox();
+      FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
       groupBox1.SuspendLayout();
       groupBox2.SuspendLayout();
@@ -157,8 +184,16 @@
       ((System.ComponentModel.ISupportInitialize)DeInterlaceListBindingSource).BeginInit();
       Tab.SuspendLayout();
       PageConvert.SuspendLayout();
+      SubmitButtonBox.SuspendLayout();
       groupBox6.SuspendLayout();
       groupBox3.SuspendLayout();
+      tabPage1.SuspendLayout();
+      CommonButtonBox.SuspendLayout();
+      groupBox8.SuspendLayout();
+      Image2Box.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)ImageWidth).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
       groupBox5.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).BeginInit();
       SuspendLayout();
@@ -396,7 +431,7 @@
       // rbResizeNum
       // 
       rbResizeNum.AutoSize = true;
-      rbResizeNum.Location = new System.Drawing.Point(180, 21);
+      rbResizeNum.Location = new System.Drawing.Point(180, 29);
       rbResizeNum.Name = "rbResizeNum";
       rbResizeNum.Size = new System.Drawing.Size(59, 16);
       rbResizeNum.TabIndex = 15;
@@ -409,7 +444,7 @@
       // 
       resizeTo.Enabled = false;
       resizeTo.Increment = new decimal(new int[] { 8, 0, 0, 0 });
-      resizeTo.Location = new System.Drawing.Point(245, 19);
+      resizeTo.Location = new System.Drawing.Point(245, 27);
       resizeTo.Maximum = new decimal(new int[] { 4320, 0, 0, 0 });
       resizeTo.Minimum = new decimal(new int[] { 320, 0, 0, 0 });
       resizeTo.Name = "resizeTo";
@@ -422,7 +457,7 @@
       // rbResizeHD
       // 
       rbResizeHD.AutoSize = true;
-      rbResizeHD.Location = new System.Drawing.Point(123, 21);
+      rbResizeHD.Location = new System.Drawing.Point(123, 29);
       rbResizeHD.Name = "rbResizeHD";
       rbResizeHD.Size = new System.Drawing.Size(53, 16);
       rbResizeHD.TabIndex = 13;
@@ -432,7 +467,7 @@
       // rbResizeFullHD
       // 
       rbResizeFullHD.AutoSize = true;
-      rbResizeFullHD.Location = new System.Drawing.Point(61, 21);
+      rbResizeFullHD.Location = new System.Drawing.Point(61, 29);
       rbResizeFullHD.Name = "rbResizeFullHD";
       rbResizeFullHD.Size = new System.Drawing.Size(59, 16);
       rbResizeFullHD.TabIndex = 12;
@@ -443,7 +478,7 @@
       // 
       rbResizeNone.AutoSize = true;
       rbResizeNone.Checked = true;
-      rbResizeNone.Location = new System.Drawing.Point(14, 21);
+      rbResizeNone.Location = new System.Drawing.Point(14, 29);
       rbResizeNone.Name = "rbResizeNone";
       rbResizeNone.Size = new System.Drawing.Size(42, 16);
       rbResizeNone.TabIndex = 11;
@@ -467,7 +502,7 @@
       // 
       rbRotateNone.AutoSize = true;
       rbRotateNone.Checked = true;
-      rbRotateNone.Location = new System.Drawing.Point(12, 21);
+      rbRotateNone.Location = new System.Drawing.Point(14, 26);
       rbRotateNone.Name = "rbRotateNone";
       rbRotateNone.Size = new System.Drawing.Size(42, 16);
       rbRotateNone.TabIndex = 16;
@@ -478,7 +513,7 @@
       // rbRotateLeft
       // 
       rbRotateLeft.AutoSize = true;
-      rbRotateLeft.Location = new System.Drawing.Point(131, 21);
+      rbRotateLeft.Location = new System.Drawing.Point(150, 26);
       rbRotateLeft.Name = "rbRotateLeft";
       rbRotateLeft.Size = new System.Drawing.Size(79, 16);
       rbRotateLeft.TabIndex = 18;
@@ -488,7 +523,7 @@
       // rbRotateRight
       // 
       rbRotateRight.AutoSize = true;
-      rbRotateRight.Location = new System.Drawing.Point(60, 21);
+      rbRotateRight.Location = new System.Drawing.Point(72, 26);
       rbRotateRight.Name = "rbRotateRight";
       rbRotateRight.Size = new System.Drawing.Size(67, 16);
       rbRotateRight.TabIndex = 17;
@@ -497,9 +532,9 @@
       // 
       // cbOutputDir
       // 
-      cbOutputDir.Location = new System.Drawing.Point(17, 30);
+      cbOutputDir.Location = new System.Drawing.Point(11, 30);
       cbOutputDir.Name = "cbOutputDir";
-      cbOutputDir.Size = new System.Drawing.Size(279, 20);
+      cbOutputDir.Size = new System.Drawing.Size(288, 20);
       cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
       // 
@@ -508,7 +543,7 @@
       FileContainer.DisplayMember = "Label";
       FileContainer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       FileContainer.FormattingEnabled = true;
-      FileContainer.Location = new System.Drawing.Point(302, 94);
+      FileContainer.Location = new System.Drawing.Point(330, 85);
       FileContainer.Name = "FileContainer";
       FileContainer.Size = new System.Drawing.Size(64, 20);
       FileContainer.TabIndex = 31;
@@ -518,7 +553,7 @@
       // 
       label13.AutoSize = true;
       label13.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold);
-      label13.Location = new System.Drawing.Point(289, 102);
+      label13.Location = new System.Drawing.Point(319, 89);
       label13.Name = "label13";
       label13.Size = new System.Drawing.Size(8, 12);
       label13.TabIndex = 32;
@@ -528,50 +563,25 @@
       // 
       label10.AutoSize = true;
       label10.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      label10.Location = new System.Drawing.Point(17, 75);
+      label10.Location = new System.Drawing.Point(13, 71);
       label10.Name = "label10";
-      label10.Size = new System.Drawing.Size(257, 11);
+      label10.Size = new System.Drawing.Size(372, 11);
       label10.TabIndex = 30;
-      label10.Text = "※元ファイル名以外を指定すると、連番号が付加されます。";
+      label10.Text = "※複数の入力ファイルがあり、元ファイル名以外を指定すると、連番号が付加されます。";
       // 
       // FileName
       // 
       FileName.FormattingEnabled = true;
       FileName.ItemHeight = 12;
       FileName.Items.AddRange(new object[] { "元ファイル名" });
-      FileName.Location = new System.Drawing.Point(114, 93);
+      FileName.Location = new System.Drawing.Point(73, 85);
       FileName.Name = "FileName";
-      FileName.Size = new System.Drawing.Size(127, 20);
+      FileName.Size = new System.Drawing.Size(182, 20);
       FileName.TabIndex = 29;
-      // 
-      // label9
-      // 
-      label9.AutoSize = true;
-      label9.Location = new System.Drawing.Point(18, 98);
-      label9.Name = "label9";
-      label9.Size = new System.Drawing.Size(51, 12);
-      label9.TabIndex = 26;
-      label9.Text = "ファイル名";
-      // 
-      // FilePrefix
-      // 
-      FilePrefix.Location = new System.Drawing.Point(72, 94);
-      FilePrefix.Name = "FilePrefix";
-      FilePrefix.Size = new System.Drawing.Size(38, 19);
-      FilePrefix.TabIndex = 13;
-      FilePrefix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-      // 
-      // FileSuffix
-      // 
-      FileSuffix.Location = new System.Drawing.Point(245, 94);
-      FileSuffix.Name = "FileSuffix";
-      FileSuffix.Size = new System.Drawing.Size(38, 19);
-      FileSuffix.TabIndex = 15;
-      FileSuffix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
       // 
       // OpenLogFile
       // 
-      OpenLogFile.Location = new System.Drawing.Point(753, 382);
+      OpenLogFile.Location = new System.Drawing.Point(756, 12);
       OpenLogFile.Name = "OpenLogFile";
       OpenLogFile.Size = new System.Drawing.Size(67, 24);
       OpenLogFile.TabIndex = 24;
@@ -582,9 +592,9 @@
       // 
       // OpenFolder
       // 
-      OpenFolder.Location = new System.Drawing.Point(348, 27);
+      OpenFolder.Location = new System.Drawing.Point(350, 27);
       OpenFolder.Name = "OpenFolder";
-      OpenFolder.Size = new System.Drawing.Size(35, 24);
+      OpenFolder.Size = new System.Drawing.Size(43, 24);
       OpenFolder.TabIndex = 10;
       OpenFolder.TabStop = false;
       OpenFolder.Text = "開く";
@@ -593,7 +603,7 @@
       // 
       // btnSubmitOpenDlg
       // 
-      btnSubmitOpenDlg.Location = new System.Drawing.Point(302, 28);
+      btnSubmitOpenDlg.Location = new System.Drawing.Point(305, 28);
       btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
       btnSubmitOpenDlg.Size = new System.Drawing.Size(43, 23);
       btnSubmitOpenDlg.TabIndex = 9;
@@ -604,7 +614,7 @@
       // 
       // btnSubmitSaveToFile
       // 
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(411, 382);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(414, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
       btnSubmitSaveToFile.Size = new System.Drawing.Size(144, 24);
       btnSubmitSaveToFile.TabIndex = 23;
@@ -615,7 +625,7 @@
       // 
       // btnClearDirs
       // 
-      btnClearDirs.Location = new System.Drawing.Point(331, 382);
+      btnClearDirs.Location = new System.Drawing.Point(334, 12);
       btnClearDirs.Name = "btnClearDirs";
       btnClearDirs.Size = new System.Drawing.Size(74, 24);
       btnClearDirs.TabIndex = 8;
@@ -627,7 +637,7 @@
       // btnSubmitInvoke
       // 
       btnSubmitInvoke.Enabled = false;
-      btnSubmitInvoke.Location = new System.Drawing.Point(561, 382);
+      btnSubmitInvoke.Location = new System.Drawing.Point(564, 12);
       btnSubmitInvoke.Name = "btnSubmitInvoke";
       btnSubmitInvoke.Size = new System.Drawing.Size(54, 24);
       btnSubmitInvoke.TabIndex = 1;
@@ -807,9 +817,9 @@
       label6.AutoSize = true;
       label6.Location = new System.Drawing.Point(289, 27);
       label6.Name = "label6";
-      label6.Size = new System.Drawing.Size(43, 12);
+      label6.Size = new System.Drawing.Size(46, 12);
       label6.TabIndex = 22;
-      label6.Text = "-preset";
+      label6.Text = "プリセット";
       // 
       // cbPreset
       // 
@@ -891,7 +901,8 @@
       FileList.ItemHeight = 12;
       FileList.Location = new System.Drawing.Point(0, 42);
       FileList.Name = "FileList";
-      FileList.Size = new System.Drawing.Size(427, 88);
+      FileList.Size = new System.Drawing.Size(419, 88);
+      FileList.Sorted = true;
       FileList.TabIndex = 29;
       FileList.ValueMember = "Value";
       FileList.DragDrop += DropArea_DragDrop;
@@ -901,7 +912,7 @@
       // btnStop
       // 
       btnStop.Enabled = false;
-      btnStop.Location = new System.Drawing.Point(621, 382);
+      btnStop.Location = new System.Drawing.Point(624, 12);
       btnStop.Name = "btnStop";
       btnStop.Size = new System.Drawing.Size(56, 24);
       btnStop.TabIndex = 31;
@@ -913,7 +924,7 @@
       // btnStopAll
       // 
       btnStopAll.Enabled = false;
-      btnStopAll.Location = new System.Drawing.Point(683, 382);
+      btnStopAll.Location = new System.Drawing.Point(686, 12);
       btnStopAll.Name = "btnStopAll";
       btnStopAll.Size = new System.Drawing.Size(64, 24);
       btnStopAll.TabIndex = 32;
@@ -953,12 +964,13 @@
       panel1.Controls.Add(ClearFileList);
       panel1.Location = new System.Drawing.Point(8, 485);
       panel1.Name = "panel1";
-      panel1.Size = new System.Drawing.Size(427, 130);
+      panel1.Size = new System.Drawing.Size(419, 130);
       panel1.TabIndex = 34;
       // 
       // ClearFileList
       // 
-      ClearFileList.Location = new System.Drawing.Point(349, 7);
+      ClearFileList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+      ClearFileList.Location = new System.Drawing.Point(344, 7);
       ClearFileList.Name = "ClearFileList";
       ClearFileList.Size = new System.Drawing.Size(75, 24);
       ClearFileList.TabIndex = 34;
@@ -970,7 +982,7 @@
       // OpenDecoderHelp
       // 
       OpenDecoderHelp.Enabled = false;
-      OpenDecoderHelp.Location = new System.Drawing.Point(171, 382);
+      OpenDecoderHelp.Location = new System.Drawing.Point(174, 12);
       OpenDecoderHelp.Name = "OpenDecoderHelp";
       OpenDecoderHelp.Size = new System.Drawing.Size(154, 24);
       OpenDecoderHelp.TabIndex = 36;
@@ -980,7 +992,7 @@
       // 
       // OpenEncoderHelp
       // 
-      OpenEncoderHelp.Location = new System.Drawing.Point(11, 382);
+      OpenEncoderHelp.Location = new System.Drawing.Point(14, 12);
       OpenEncoderHelp.Name = "OpenEncoderHelp";
       OpenEncoderHelp.Size = new System.Drawing.Size(154, 24);
       OpenEncoderHelp.TabIndex = 35;
@@ -1159,7 +1171,9 @@
       // 
       // Tab
       // 
+      Tab.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
       Tab.Controls.Add(PageConvert);
+      Tab.Controls.Add(tabPage1);
       Tab.Location = new System.Drawing.Point(3, 40);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
@@ -1171,20 +1185,13 @@
       // PageConvert
       // 
       PageConvert.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageConvert.Controls.Add(SubmitButtonBox);
       PageConvert.Controls.Add(groupBox6);
       PageConvert.Controls.Add(groupBox3);
-      PageConvert.Controls.Add(OpenDecoderHelp);
       PageConvert.Controls.Add(groupBox1);
-      PageConvert.Controls.Add(OpenLogFile);
-      PageConvert.Controls.Add(btnStopAll);
-      PageConvert.Controls.Add(OpenEncoderHelp);
-      PageConvert.Controls.Add(btnStop);
       PageConvert.Controls.Add(CropBox);
-      PageConvert.Controls.Add(btnSubmitInvoke);
-      PageConvert.Controls.Add(btnClearDirs);
       PageConvert.Controls.Add(BitrateBox);
       PageConvert.Controls.Add(ResizeBox);
-      PageConvert.Controls.Add(btnSubmitSaveToFile);
       PageConvert.Controls.Add(groupBox2);
       PageConvert.Controls.Add(RotateBox);
       PageConvert.Controls.Add(btnClear);
@@ -1198,6 +1205,22 @@
       PageConvert.Size = new System.Drawing.Size(832, 418);
       PageConvert.TabIndex = 0;
       PageConvert.Text = "動画変換";
+      // 
+      // SubmitButtonBox
+      // 
+      SubmitButtonBox.Controls.Add(OpenEncoderHelp);
+      SubmitButtonBox.Controls.Add(btnSubmitSaveToFile);
+      SubmitButtonBox.Controls.Add(btnClearDirs);
+      SubmitButtonBox.Controls.Add(OpenDecoderHelp);
+      SubmitButtonBox.Controls.Add(btnSubmitInvoke);
+      SubmitButtonBox.Controls.Add(btnStop);
+      SubmitButtonBox.Controls.Add(OpenLogFile);
+      SubmitButtonBox.Controls.Add(btnStopAll);
+      SubmitButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+      SubmitButtonBox.Location = new System.Drawing.Point(0, 372);
+      SubmitButtonBox.Name = "SubmitButtonBox";
+      SubmitButtonBox.Size = new System.Drawing.Size(832, 46);
+      SubmitButtonBox.TabIndex = 44;
       // 
       // groupBox6
       // 
@@ -1238,24 +1261,321 @@
       groupBox3.TabStop = false;
       groupBox3.Text = "その他";
       // 
+      // tabPage1
+      // 
+      tabPage1.BackColor = System.Drawing.SystemColors.ButtonFace;
+      tabPage1.Controls.Add(CommonButtonBox);
+      tabPage1.Controls.Add(groupBox8);
+      tabPage1.Controls.Add(Image2Box);
+      tabPage1.Location = new System.Drawing.Point(4, 22);
+      tabPage1.Name = "tabPage1";
+      tabPage1.Padding = new System.Windows.Forms.Padding(3);
+      tabPage1.Size = new System.Drawing.Size(832, 418);
+      tabPage1.TabIndex = 1;
+      tabPage1.Text = "ユーティリティ";
+      // 
+      // CommonButtonBox
+      // 
+      CommonButtonBox.Controls.Add(btnStopUtil);
+      CommonButtonBox.Controls.Add(btnStopAllUtil);
+      CommonButtonBox.Controls.Add(button2);
+      CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
+      CommonButtonBox.Name = "CommonButtonBox";
+      CommonButtonBox.Size = new System.Drawing.Size(826, 30);
+      CommonButtonBox.TabIndex = 27;
+      // 
+      // btnStopUtil
+      // 
+      btnStopUtil.Enabled = false;
+      btnStopUtil.Location = new System.Drawing.Point(570, 3);
+      btnStopUtil.Name = "btnStopUtil";
+      btnStopUtil.Size = new System.Drawing.Size(56, 24);
+      btnStopUtil.TabIndex = 33;
+      btnStopUtil.TabStop = false;
+      btnStopUtil.Text = "中止";
+      btnStopUtil.UseVisualStyleBackColor = true;
+      btnStopUtil.Click += btnStop_Click;
+      // 
+      // btnStopAllUtil
+      // 
+      btnStopAllUtil.Enabled = false;
+      btnStopAllUtil.Location = new System.Drawing.Point(632, 3);
+      btnStopAllUtil.Name = "btnStopAllUtil";
+      btnStopAllUtil.Size = new System.Drawing.Size(64, 24);
+      btnStopAllUtil.TabIndex = 34;
+      btnStopAllUtil.TabStop = false;
+      btnStopAllUtil.Text = "全て中止";
+      btnStopAllUtil.UseVisualStyleBackColor = true;
+      btnStopAllUtil.Click += btnStopAll_Click;
+      // 
+      // button2
+      // 
+      button2.Location = new System.Drawing.Point(704, 3);
+      button2.Name = "button2";
+      button2.Size = new System.Drawing.Size(113, 24);
+      button2.TabIndex = 26;
+      button2.TabStop = false;
+      button2.Text = "ログ表示";
+      button2.UseVisualStyleBackColor = true;
+      button2.Click += OpenLogFile_Click;
+      // 
+      // groupBox8
+      // 
+      groupBox8.Controls.Add(label22);
+      groupBox8.Controls.Add(label21);
+      groupBox8.Controls.Add(SubmitCopy);
+      groupBox8.Controls.Add(SubmitConcat);
+      groupBox8.Location = new System.Drawing.Point(12, 136);
+      groupBox8.Name = "groupBox8";
+      groupBox8.Size = new System.Drawing.Size(805, 124);
+      groupBox8.TabIndex = 2;
+      groupBox8.TabStop = false;
+      groupBox8.Text = "ツール";
+      // 
+      // label22
+      // 
+      label22.AutoSize = true;
+      label22.Location = new System.Drawing.Point(151, 77);
+      label22.Name = "label22";
+      label22.Size = new System.Drawing.Size(243, 12);
+      label22.TabIndex = 1;
+      label22.Text = "エンコーダーをCOPYにしてコンテナを再生成します。";
+      // 
+      // label21
+      // 
+      label21.AutoSize = true;
+      label21.Location = new System.Drawing.Point(151, 37);
+      label21.Name = "label21";
+      label21.Size = new System.Drawing.Size(349, 12);
+      label21.TabIndex = 1;
+      label21.Text = "入力ファイルを順番に連結します。異なるサイズの動画は結合できません。";
+      // 
+      // SubmitCopy
+      // 
+      SubmitCopy.Location = new System.Drawing.Point(18, 67);
+      SubmitCopy.Name = "SubmitCopy";
+      SubmitCopy.Size = new System.Drawing.Size(122, 32);
+      SubmitCopy.TabIndex = 0;
+      SubmitCopy.Text = "ファイルコンテナ変更";
+      SubmitCopy.UseVisualStyleBackColor = true;
+      SubmitCopy.Click += SubmitCopy_Click;
+      // 
+      // SubmitConcat
+      // 
+      SubmitConcat.Location = new System.Drawing.Point(18, 27);
+      SubmitConcat.Name = "SubmitConcat";
+      SubmitConcat.Size = new System.Drawing.Size(122, 32);
+      SubmitConcat.TabIndex = 0;
+      SubmitConcat.Text = "ファイル結合";
+      SubmitConcat.UseVisualStyleBackColor = true;
+      SubmitConcat.Click += SubmitConcat_Click;
+      // 
+      // Image2Box
+      // 
+      Image2Box.Controls.Add(ImageWidth);
+      Image2Box.Controls.Add(ImageHeight);
+      Image2Box.Controls.Add(label18);
+      Image2Box.Controls.Add(label20);
+      Image2Box.Controls.Add(label17);
+      Image2Box.Controls.Add(FrameRate);
+      Image2Box.Controls.Add(ImageType);
+      Image2Box.Controls.Add(linkLabel2);
+      Image2Box.Controls.Add(ImageTo);
+      Image2Box.Controls.Add(ImageSS);
+      Image2Box.Controls.Add(label16);
+      Image2Box.Controls.Add(label9);
+      Image2Box.Controls.Add(label19);
+      Image2Box.Controls.Add(label15);
+      Image2Box.Controls.Add(label14);
+      Image2Box.Controls.Add(SubmitThumbnail);
+      Image2Box.Location = new System.Drawing.Point(12, 25);
+      Image2Box.Name = "Image2Box";
+      Image2Box.Size = new System.Drawing.Size(805, 95);
+      Image2Box.TabIndex = 1;
+      Image2Box.TabStop = false;
+      Image2Box.Text = "画像生成                                   ";
+      // 
+      // ImageWidth
+      // 
+      ImageWidth.Location = new System.Drawing.Point(382, 53);
+      ImageWidth.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+      ImageWidth.Name = "ImageWidth";
+      ImageWidth.Size = new System.Drawing.Size(64, 19);
+      ImageWidth.TabIndex = 8;
+      ImageWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // ImageHeight
+      // 
+      ImageHeight.Location = new System.Drawing.Point(473, 53);
+      ImageHeight.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+      ImageHeight.Name = "ImageHeight";
+      ImageHeight.Size = new System.Drawing.Size(64, 19);
+      ImageHeight.TabIndex = 8;
+      ImageHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // label18
+      // 
+      label18.AutoSize = true;
+      label18.Location = new System.Drawing.Point(594, 34);
+      label18.Name = "label18";
+      label18.Size = new System.Drawing.Size(77, 12);
+      label18.TabIndex = 7;
+      label18.Text = "出力画像形式";
+      // 
+      // label20
+      // 
+      label20.AutoSize = true;
+      label20.Location = new System.Drawing.Point(543, 56);
+      label20.Name = "label20";
+      label20.Size = new System.Drawing.Size(42, 12);
+      label20.TabIndex = 7;
+      label20.Text = "ピクセル";
+      // 
+      // label17
+      // 
+      label17.AutoSize = true;
+      label17.Location = new System.Drawing.Point(235, 56);
+      label17.Name = "label17";
+      label17.Size = new System.Drawing.Size(29, 12);
+      label17.TabIndex = 7;
+      label17.Text = "秒毎";
+      // 
+      // FrameRate
+      // 
+      FrameRate.Location = new System.Drawing.Point(164, 53);
+      FrameRate.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
+      FrameRate.Name = "FrameRate";
+      FrameRate.Size = new System.Drawing.Size(64, 19);
+      FrameRate.TabIndex = 6;
+      FrameRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      FrameRate.Value = new decimal(new int[] { 1, 0, 0, 0 });
+      // 
+      // ImageType
+      // 
+      ImageType.DisplayMember = "Label";
+      ImageType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      ImageType.FormattingEnabled = true;
+      ImageType.Location = new System.Drawing.Point(594, 52);
+      ImageType.Name = "ImageType";
+      ImageType.Size = new System.Drawing.Size(94, 20);
+      ImageType.TabIndex = 5;
+      ImageType.ValueMember = "Value";
+      // 
+      // linkLabel2
+      // 
+      linkLabel2.AutoSize = true;
+      linkLabel2.Location = new System.Drawing.Point(67, 0);
+      linkLabel2.Name = "linkLabel2";
+      linkLabel2.Size = new System.Drawing.Size(111, 12);
+      linkLabel2.TabIndex = 4;
+      linkLabel2.TabStop = true;
+      linkLabel2.Text = "時間指定構文の説明";
+      linkLabel2.LinkClicked += linkLabel1_LinkClicked;
+      // 
+      // ImageTo
+      // 
+      ImageTo.Location = new System.Drawing.Point(97, 53);
+      ImageTo.Name = "ImageTo";
+      ImageTo.Size = new System.Drawing.Size(53, 19);
+      ImageTo.TabIndex = 2;
+      // 
+      // ImageSS
+      // 
+      ImageSS.Location = new System.Drawing.Point(18, 53);
+      ImageSS.Name = "ImageSS";
+      ImageSS.Size = new System.Drawing.Size(55, 19);
+      ImageSS.TabIndex = 2;
+      // 
+      // label16
+      // 
+      label16.AutoSize = true;
+      label16.Location = new System.Drawing.Point(75, 56);
+      label16.Name = "label16";
+      label16.Size = new System.Drawing.Size(17, 12);
+      label16.TabIndex = 1;
+      label16.Text = "〜";
+      // 
+      // label9
+      // 
+      label9.AutoSize = true;
+      label9.Location = new System.Drawing.Point(453, 56);
+      label9.Name = "label9";
+      label9.Size = new System.Drawing.Size(17, 12);
+      label9.TabIndex = 1;
+      label9.Text = "×";
+      label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // label19
+      // 
+      label19.AutoSize = true;
+      label19.Location = new System.Drawing.Point(379, 34);
+      label19.Name = "label19";
+      label19.Size = new System.Drawing.Size(65, 12);
+      label19.TabIndex = 1;
+      label19.Text = "画像リサイズ";
+      // 
+      // label15
+      // 
+      label15.AutoSize = true;
+      label15.Location = new System.Drawing.Point(97, 34);
+      label15.Name = "label15";
+      label15.Size = new System.Drawing.Size(53, 12);
+      label15.TabIndex = 1;
+      label15.Text = "開始位置";
+      // 
+      // label14
+      // 
+      label14.AutoSize = true;
+      label14.Location = new System.Drawing.Point(20, 34);
+      label14.Name = "label14";
+      label14.Size = new System.Drawing.Size(53, 12);
+      label14.TabIndex = 1;
+      label14.Text = "開始位置";
+      // 
+      // SubmitThumbnail
+      // 
+      SubmitThumbnail.Location = new System.Drawing.Point(693, 51);
+      SubmitThumbnail.Name = "SubmitThumbnail";
+      SubmitThumbnail.Size = new System.Drawing.Size(96, 23);
+      SubmitThumbnail.TabIndex = 0;
+      SubmitThumbnail.Text = "実行";
+      SubmitThumbnail.UseVisualStyleBackColor = true;
+      SubmitThumbnail.Click += SubmitThumbnail_Click;
+      // 
       // groupBox5
       // 
-      groupBox5.Controls.Add(label9);
-      groupBox5.Controls.Add(btnSubmitOpenDlg);
       groupBox5.Controls.Add(FilePrefix);
       groupBox5.Controls.Add(FileSuffix);
+      groupBox5.Controls.Add(btnSubmitOpenDlg);
       groupBox5.Controls.Add(FileContainer);
       groupBox5.Controls.Add(OpenFolder);
       groupBox5.Controls.Add(label13);
       groupBox5.Controls.Add(FileName);
       groupBox5.Controls.Add(label10);
       groupBox5.Controls.Add(cbOutputDir);
-      groupBox5.Location = new System.Drawing.Point(441, 488);
+      groupBox5.Location = new System.Drawing.Point(433, 492);
       groupBox5.Name = "groupBox5";
-      groupBox5.Size = new System.Drawing.Size(399, 130);
+      groupBox5.Size = new System.Drawing.Size(407, 125);
       groupBox5.TabIndex = 44;
       groupBox5.TabStop = false;
       groupBox5.Text = "出力フォルダとファイル";
+      // 
+      // FilePrefix
+      // 
+      FilePrefix.FormattingEnabled = true;
+      FilePrefix.Location = new System.Drawing.Point(11, 85);
+      FilePrefix.Name = "FilePrefix";
+      FilePrefix.Size = new System.Drawing.Size(61, 20);
+      FilePrefix.TabIndex = 34;
+      // 
+      // FileSuffix
+      // 
+      FileSuffix.FormattingEnabled = true;
+      FileSuffix.Location = new System.Drawing.Point(256, 85);
+      FileSuffix.Name = "FileSuffix";
+      FileSuffix.Size = new System.Drawing.Size(59, 20);
+      FileSuffix.TabIndex = 33;
       // 
       // settingsPropertyValueBindingSource
       // 
@@ -1319,10 +1639,20 @@
       Tab.ResumeLayout(false);
       PageConvert.ResumeLayout(false);
       PageConvert.PerformLayout();
+      SubmitButtonBox.ResumeLayout(false);
       groupBox6.ResumeLayout(false);
       groupBox6.PerformLayout();
       groupBox3.ResumeLayout(false);
       groupBox3.PerformLayout();
+      tabPage1.ResumeLayout(false);
+      CommonButtonBox.ResumeLayout(false);
+      groupBox8.ResumeLayout(false);
+      groupBox8.PerformLayout();
+      Image2Box.ResumeLayout(false);
+      Image2Box.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)ImageWidth).EndInit();
+      ((System.ComponentModel.ISupportInitialize)ImageHeight).EndInit();
+      ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
       groupBox5.ResumeLayout(false);
       groupBox5.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).EndInit();
@@ -1394,9 +1724,6 @@
     private System.Windows.Forms.Button OpenLogFile;
     private System.Windows.Forms.Button ClearFileList;
     private System.Windows.Forms.ComboBox cbDeinterlaceAlg;
-    private System.Windows.Forms.TextBox FilePrefix;
-    private System.Windows.Forms.TextBox FileSuffix;
-    private System.Windows.Forms.Label label9;
     private System.Windows.Forms.Label vQualityLabel;
     private System.Windows.Forms.Label aQualityLabel;
     private System.Windows.Forms.Label aUnit;
@@ -1436,6 +1763,36 @@
     private System.Windows.Forms.GroupBox groupBox6;
     private System.Windows.Forms.TextBox FreeOptions;
     private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.TabPage tabPage1;
+    private System.Windows.Forms.Button SubmitConcat;
+    private System.Windows.Forms.GroupBox Image2Box;
+    private System.Windows.Forms.Button SubmitThumbnail;
+    private System.Windows.Forms.LinkLabel linkLabel2;
+    private System.Windows.Forms.TextBox ImageSS;
+    private System.Windows.Forms.Label label14;
+    private System.Windows.Forms.ComboBox ImageType;
+    private System.Windows.Forms.TextBox ImageTo;
+    private System.Windows.Forms.Label label16;
+    private System.Windows.Forms.Label label15;
+    private System.Windows.Forms.Label label18;
+    private System.Windows.Forms.Label label17;
+    private System.Windows.Forms.NumericUpDown FrameRate;
+    private System.Windows.Forms.GroupBox groupBox8;
+    private System.Windows.Forms.Button SubmitCopy;
+    private System.Windows.Forms.Label label20;
+    private System.Windows.Forms.Label label19;
+    private System.Windows.Forms.NumericUpDown ImageHeight;
+    private System.Windows.Forms.Label label22;
+    private System.Windows.Forms.Label label21;
+    private System.Windows.Forms.Panel SubmitButtonBox;
+    private System.Windows.Forms.Panel CommonButtonBox;
+    private System.Windows.Forms.Button button2;
+    private System.Windows.Forms.NumericUpDown ImageWidth;
+    private System.Windows.Forms.Label label9;
+    private System.Windows.Forms.Button btnStopUtil;
+    private System.Windows.Forms.Button btnStopAllUtil;
+    private System.Windows.Forms.ComboBox FilePrefix;
+    private System.Windows.Forms.ComboBox FileSuffix;
   }
 }
 

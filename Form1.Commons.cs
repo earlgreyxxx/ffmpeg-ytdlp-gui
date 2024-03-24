@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -17,6 +15,8 @@ namespace ffmpeg_command_builder
   {
     // Static members
     // ---------------------------------------------------------------------------------
+    private static List<ManagementObject> GpuDevices;
+
     private static string[] FindInPath(string CommandName)
     {
       //環境変数%PATH%取得し、カレントディレクトリを連結。配列への格納
@@ -61,36 +61,64 @@ namespace ffmpeg_command_builder
       return (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
     }
 
+    private static StringListItems GetGPUDeviceList()
+    {
+      if (GpuDevices == null)
+        CreateGPUDeviceList(); 
+
+      var deviceList = new StringListItems();
+      foreach (var device in GpuDevices)
+      {
+        deviceList.Add(
+          new StringListItem(
+            device["AdapterCompatibility"].ToString(),
+            device["Name"].ToString()
+          )
+        );
+      }
+      return deviceList;
+    }
+
+    private static void CreateGPUDeviceList()
+    {
+      var VideoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
+      GpuDevices = VideoDevices.Get().Cast<ManagementObject>().ToList();
+    }
+
     // Instance members
     // ---------------------------------------------------------------------------------
-    private CustomProcess CurrentProcess;
-    Action<string> WriteOutput;
-    Action<string> ProcessExit;
-    Action ProcessDoneCallback;
-    private StreamWriter LogWriter;
-    private Encoding CP932;
 
-    private void InitializeMembers()
+    private ffmpeg_process Processing;
+
+    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
-      Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-      CP932 = Encoding.GetEncoding(932);
+      var process = new ffmpeg_process(command,FileListBindingSource);
 
-      WriteOutput = output => { OutputStderr.Text = output; };
-      ProcessExit = f =>
+      Action ProcessesDoneInvoker = () =>
       {
-        var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == f);
-        if(item != null)
-          FileListBindingSource.Remove(item);
-      };
-      ProcessDoneCallback = () =>
-      {
-        btnStop.Enabled = btnStopAll.Enabled = false;
+        btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
         OpenLogFile.Enabled = true;
-        if(FileListBindingSource.Count > 0)
+        if (FileListBindingSource.Count > 0)
           btnSubmitInvoke.Enabled = true;
 
+        Processing = null;
         MessageBox.Show("変換処理が終了しました。");
       };
+      Action<string> ReceiveDataInvoker = output => OutputStderr.Text = output; 
+      Action<string> ProcessExitInvoker = filename =>
+      {
+        var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == filename);
+        if (item != null)
+          FileListBindingSource.Remove(item);
+      };
+
+      process.LogFileName = GetLogFileName();
+      process.OnProcessesDone += () => Invoke(ProcessesDoneInvoker);
+      process.OnReceiveData += output => Invoke(ReceiveDataInvoker, [output]);
+      process.OnProcessExit += filename => Invoke(ProcessExitInvoker, [filename]);
+
+      Processing = process;
+      return process;
     }
 
     private ffmpeg_command CreateFFMpegCommandInstance()
@@ -114,8 +142,10 @@ namespace ffmpeg_command_builder
 
       ffcommand
         .audioOnly(true)
+        .OutputDirectory(cbOutputDir.Text)
         .OutputPrefix(FilePrefix.Text)
-        .OutputSuffix(FileSuffix.Text);
+        .OutputSuffix(FileSuffix.Text)
+        .OutputContainer(FileContainer.SelectedValue.ToString());
 
       if (chkEncodeAudio.Checked)
         ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
@@ -127,10 +157,11 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.To(txtTo.Text);
 
-      ffcommand.OutputPath = string.IsNullOrEmpty(cbOutputDir.Text) ? "." : cbOutputDir.Text;
-      ffcommand.OutputExtension = FileContainer.SelectedValue.ToString();
 
-      return ffcommand; 
+      if (InputFileList.Count > 1)
+        ffcommand.MultiFileProcess = true;
+
+      return ffcommand;
     }
 
     private ffmpeg_command CreateCommand(bool isAudioOnly = false)
@@ -145,15 +176,17 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.End = txtTo.Text;
 
-      var codec = UseVideoEncoder.SelectedValue as Codec;
-      if(codec.Name == "copy")
-      {
-        if (!string.IsNullOrEmpty(cbOutputDir.Text))
-          ffcommand.OutputPath = cbOutputDir.Text;
+      if (InputFileList.Count > 1)
+        ffcommand.MultiFileProcess = true;
 
+      var codec = UseVideoEncoder.SelectedValue as Codec;
+      if (codec.Name == "copy")
+      {
         ffcommand
+          .OutputDirectory(cbOutputDir.Text)
           .OutputPrefix(FilePrefix.Text)
-          .OutputSuffix(FileSuffix.Text);
+          .OutputSuffix(FileSuffix.Text)
+          .OutputContainer(FileContainer.SelectedValue.ToString());
 
         if (chkEncodeAudio.Checked)
           ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
@@ -173,26 +206,25 @@ namespace ffmpeg_command_builder
         ffcommand.hwdecoder(HWDecoder.SelectedValue.ToString());
 
       if (chkCrop.Checked)
-        {
-          if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
-            ffcommand.size(decimal.ToInt32(VideoWidth.Value), decimal.ToInt32(VideoHeight.Value)).crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
-          else
-            ffcommand.crop(CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
-        }
+      {
+        if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
+          ffcommand.size(decimal.ToInt32(VideoWidth.Value), decimal.ToInt32(VideoHeight.Value)).crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+        else
+          ffcommand.crop(CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+      }
 
       if (chkEncodeAudio.Checked)
         ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
-      if(!string.IsNullOrEmpty(cbOutputDir.Text))
-        ffcommand.OutputPath = cbOutputDir.Text;
-
       ffcommand
+        .OutputDirectory(cbOutputDir.Text)
         .OutputPrefix(FilePrefix.Text)
-        .OutputSuffix(FileSuffix.Text);
+        .OutputSuffix(FileSuffix.Text)
+        .OutputContainer(FileContainer.SelectedValue.ToString());
 
-      var deinterlaces = new List<string>() { "bwdif","bwdif_cuda","yadif","yadif_cuda","bob","adaptive" };
+      var deinterlaces = new List<string>() { "bwdif", "bwdif_cuda", "yadif", "yadif_cuda", "bob", "adaptive" };
 
       if (chkFilterDeInterlace.Checked)
       {
@@ -200,18 +232,18 @@ namespace ffmpeg_command_builder
         if (cbDeinterlaceAlg.Text == "bwdif")
         {
           if (codec.GpuSuffix == "nvenc")
-            ffcommand.setFilter("bwdif_cuda",value);
+            ffcommand.setFilter("bwdif_cuda", value);
           else if (codec.GpuSuffix == "qsv")
-            ffcommand.setFilter("bwdif",value);
+            ffcommand.setFilter("bwdif", value);
         }
-        else if(cbDeinterlaceAlg.Text == "yadif")
+        else if (cbDeinterlaceAlg.Text == "yadif")
         {
           if (codec.GpuSuffix == "nvenc")
-            ffcommand.setFilter("yadif_cuda",value);
+            ffcommand.setFilter("yadif_cuda", value);
           else if (codec.GpuSuffix == "qsv")
-            ffcommand.setFilter("yadif",value);
+            ffcommand.setFilter("yadif", value);
         }
-        else if(value == "bob" || value == "adaptive")
+        else if (value == "bob" || value == "adaptive")
         {
           ffcommand.setFilter(value, value);
         }
@@ -249,7 +281,7 @@ namespace ffmpeg_command_builder
       else
         ffcommand.setFilter("transpose", rotate.ToString());
 
-      if(!string.IsNullOrEmpty(FreeOptions.Text))
+      if (!string.IsNullOrEmpty(FreeOptions.Text))
         ffcommand.setOptions(FreeOptions.Text);
 
       return ffcommand;
@@ -260,53 +292,6 @@ namespace ffmpeg_command_builder
       return groupBox.Controls.OfType<RadioButton>().FirstOrDefault(radio => radio.Checked);
     }
 
-    private void BeginFFmpegProcess()
-    {
-      string filename = FileListBindingSource.OfType<StringListItem>().First().Value;
-      try
-      {
-        var process = CurrentCommand.InvokeCommand(filename, true);
-
-        process.Exited += Process_Exited;
-        process.ErrorDataReceived += new DataReceivedEventHandler(StdErrRead);
-        process.Start();
-        process.BeginErrorReadLine();
-
-        CurrentProcess = process;
-      }
-      catch(Exception e)
-      {
-        MessageBox.Show(e.Message);
-        Process_Exited(null, null);
-      }
-    }
-
-    private void StdErrRead(object sender, DataReceivedEventArgs e)
-    {
-      if (e.Data == null)
-        return;
-
-      byte[] bytes = CP932.GetBytes(e.Data);
-      LogWriter.WriteLine(Encoding.UTF8.GetString(bytes));
-
-      if (!String.IsNullOrEmpty(e.Data))
-        Invoke(WriteOutput, [e.Data]);
-    }
-
-    private void Process_Exited(object sender, EventArgs e)
-    {
-      try
-      {
-        string filename = CurrentProcess.CustomFileName;
-        CurrentProcess = null;
-        Invoke(ProcessExit,[filename]);
-        BeginFFmpegProcess();
-      }
-      catch (InvalidOperationException) {
-        Invoke(ProcessDoneCallback);
-        LogWriter?.Dispose();
-      }
-    }
 
     private static string GetLogFileName()
     {
@@ -316,21 +301,12 @@ namespace ffmpeg_command_builder
       );
     }
 
-    private void OpenLogWriter()
-    {
-      LogWriter = new StreamWriter(GetLogFileName(), false);
-    }
-
     private void StopProcess(bool stopAll = false)
     {
       if (stopAll)
         FileListBindingSource.Clear();
 
-      if (CurrentProcess == null || CurrentProcess.HasExited)
-        return;
-
-      using StreamWriter sw = CurrentProcess.StandardInput;
-      sw.Write('q');
+      Processing.Abort(stopAll);
     }
 
     private void OpenOutputView(string executable, string arg)
@@ -377,23 +353,10 @@ namespace ffmpeg_command_builder
         vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "-cq";
     }
 
-    private static StringListItems GetGPUDeviceList()
+    private void OnBeginProcess()
     {
-      var videoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
-      var deviceList = new StringListItems();
-
-      foreach (ManagementObject device in videoDevices.Get().Cast<ManagementObject>())
-      {
-        deviceList.Add(
-          new StringListItem(
-            device["AdapterCompatibility"].ToString(),
-            device["Name"].ToString()
-          )
-        );
-      }
-
-      return deviceList;
+      btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = true;
+      OpenLogFile.Enabled = false;
     }
-
   }
 }

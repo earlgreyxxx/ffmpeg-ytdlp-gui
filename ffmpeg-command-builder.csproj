@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Remove="ContainerItem.cs" />
     <Compile Remove="ffmpeg-command-copy.cs" />
+    <Compile Remove="GlobalSuppressions.cs" />
+    <Compile Remove="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Form1.Commons.resx" />

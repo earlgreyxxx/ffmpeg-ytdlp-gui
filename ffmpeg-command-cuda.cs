@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
 {
@@ -116,6 +113,10 @@ namespace ffmpeg_command_builder
       if(options.ContainsKey("to") && !string.IsNullOrEmpty(options["to"]))
         yield return $"-to {options["to"]}";
 
+      if (AdditionalPreOptions.Count() > 0)
+        foreach (var option in AdditionalPreOptions)
+          yield return option.Trim();
+
       yield return $"-i \"{InputPath}\"";
 
       if (bAudioOnly)
@@ -193,8 +194,8 @@ namespace ffmpeg_command_builder
           yield return options["tag:v"];
       }
 
-      if (!string.IsNullOrEmpty(AdditionalOptions))
-        foreach (var option in SplitCommaColon().Split(AdditionalOptions))
+      if (AdditionalOptions.Count() > 0)
+        foreach (var option in AdditionalOptions)
           yield return option.Trim();
 
       yield return options["acodec"];

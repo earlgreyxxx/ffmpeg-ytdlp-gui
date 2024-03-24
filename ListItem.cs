@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ffmpeg_command_builder
 {
-  internal class ListItem<T>(T value, string label = null)
+  internal class ListItem<T>(T value, string label = null,object data = null)
   {
     public static List<ListItem<T>> GetList(IEnumerable<KeyValuePair<string,T>> enumerable)
     {
@@ -24,5 +24,6 @@ namespace ffmpeg_command_builder
 
     public string Label { get; set; } = label ?? value.ToString();
     public T Value { get; set; } = value;
+    public object Data { get; set; } = data;
   }
 }

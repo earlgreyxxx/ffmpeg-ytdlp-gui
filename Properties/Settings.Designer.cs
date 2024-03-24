@@ -236,5 +236,41 @@ namespace ffmpeg_command_builder.Properties {
                 this["free"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3840")]
+        public decimal videoWidth {
+            get {
+                return ((decimal)(this["videoWidth"]));
+            }
+            set {
+                this["videoWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2160")]
+        public decimal videoHeight {
+            get {
+                return ((decimal)(this["videoHeight"]));
+            }
+            set {
+                this["videoHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public decimal fps {
+            get {
+                return ((decimal)(this["fps"]));
+            }
+            set {
+                this["fps"] = value;
+            }
+        }
     }
 }

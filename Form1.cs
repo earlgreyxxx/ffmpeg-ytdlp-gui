@@ -18,7 +18,6 @@ namespace ffmpeg_command_builder
 
   public partial class Form1 : Form
   {
-    private ffmpeg_command CurrentCommand;
     private Dictionary<string, StringListItems> PresetList;
     private Dictionary<string, CodecListItems> HardwareDecoders;
     private StringListItems DeInterlaces;
@@ -27,7 +26,6 @@ namespace ffmpeg_command_builder
     private CodecListItems AudioEncoders;
     private StringListItems InputFileList;
     private Size HelpFormSize = new(0, 0);
-    private StringListItems FileContainers;
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -61,6 +59,7 @@ namespace ffmpeg_command_builder
         new StringListItem("p6","p6:slower"),
         new StringListItem("p7","p7:slowest")
       ];
+
       StringListItems qsvPresetList =
       [
         new StringListItem("veryfast"),
@@ -113,7 +112,7 @@ namespace ffmpeg_command_builder
         }
       };
 
-      DeInterlaces = 
+      DeInterlaces =
       [
         new StringListItem("1:-1:0","bwdif"),
         new StringListItem("2:-1:0","yadif")
@@ -160,8 +159,8 @@ namespace ffmpeg_command_builder
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
 
-      FileContainers =
-      [
+      FileContainer.DataSource = new StringListItems()
+      {
         new StringListItem(".mp4","mp4"),
         new StringListItem(".mkv","mkv"),
         new StringListItem(".mp3","MP3"),
@@ -169,9 +168,38 @@ namespace ffmpeg_command_builder
         new StringListItem(".ogg","Vorbis"),
         new StringListItem(".webm","WebM"),
         new StringListItem(".webA","WebA")
-      ];
+      };
 
-      InitializeMembers();
+      ImageType.DataSource = new StringListItems()
+      {
+        new StringListItem("mjpeg","JPEG形式",".jpg"),
+        new StringListItem("png","PNG形式",".png"),
+        new StringListItem("gif","GIF形式",".gif")
+      };
+
+      FilePrefix.DataSource = new List<string>()
+      {
+        "%d-",
+        "%02d-",
+        "%03d-",
+        "%04d-",
+        "%05d-"
+      };
+      FileSuffix.DataSource = new List<string>()
+      {
+        "-%d",
+        "-%02d",
+        "-%03d",
+        "-%04d",
+        "-%05d"
+      };
+
+      FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
+      resizeTo.DataBindings.Add("Value", Settings.Default, "resize");
+      LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
+      VideoWidth.DataBindings.Add("Value", Settings.Default, "videoWidth");
+      VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
+      FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -202,8 +230,6 @@ namespace ffmpeg_command_builder
       rbResizeHD.Checked = Settings.Default.resizeHD;
       rbResizeNum.Checked = Settings.Default.resizeNum;
 
-      FreeOptions.Text = Settings.Default.free;
-
       UseVideoEncoder.DataSource = HardwareEncoders;
       UseVideoEncoder.SelectedIndex = 0;
 
@@ -214,7 +240,7 @@ namespace ffmpeg_command_builder
       chkConstantQuality.Checked = Settings.Default.cq;
       vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
 
-      vBitrate.Value = Settings.Default.bitrate;
+      vBitrate.Value = chkConstantQuality.Checked && Settings.Default.bitrate > 100 ? 25 : Settings.Default.bitrate;
 
       aBitrate.Enabled = chkEncodeAudio.Checked;
       OutputStderr.Text = "";
@@ -227,26 +253,29 @@ namespace ffmpeg_command_builder
       HelpFormSize.Width = Settings.Default.HelpWidth;
       HelpFormSize.Height = Settings.Default.HelpHeight;
 
-      FileContainer.DataSource = FileContainers;
+      FilePrefix.Text = FileSuffix.Text = string.Empty;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
+      if (Processing != null)
+      {
+        e.Cancel = true;
+        return;
+      }
       Settings.Default.outputFolders = [];
       Settings.Default.ffmpeg = [];
-
-      foreach (string item in cbOutputDir.Items)
-        Settings.Default.outputFolders.Add(item);
-
-      Settings.Default.cq = chkConstantQuality.Checked;
       Settings.Default.resizeNone = rbResizeNone.Checked;
       Settings.Default.resizeFullHD = rbResizeFullHD.Checked;
       Settings.Default.resizeHD = rbResizeHD.Checked;
       Settings.Default.resizeNum = rbResizeNum.Checked;
       Settings.Default.HelpHeight = HelpFormSize.Height;
       Settings.Default.HelpWidth = HelpFormSize.Width;
+      Settings.Default.cq = chkConstantQuality.Checked;
       Settings.Default.bitrate = vBitrate.Value;
-      Settings.Default.free = FreeOptions.Text;
+
+      foreach (string item in cbOutputDir.Items)
+        Settings.Default.outputFolders.Add(item);
 
       foreach (string item in ffmpeg.Items)
       {
@@ -274,7 +303,7 @@ namespace ffmpeg_command_builder
       {
         MessageBox.Show(ex.Message, "エラー");
         return;
-      } 
+      }
 
       if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
         cbOutputDir.Items.Add(cbOutputDir.Text);
@@ -286,17 +315,15 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if(FileListBindingSource.Count > 0)
+      if (FileListBindingSource.Count > 0)
       {
         btnSubmitInvoke.Enabled = false;
-        CurrentCommand = CreateCommand(chkAudioOnly.Checked);
+        var command = CreateCommand(chkAudioOnly.Checked);
         if (FileName.Text.Trim() != "元ファイル名")
-          CurrentCommand.OutputBaseName(FileName.Text);
+          command.OutputBaseName(FileName.Text);
 
-        btnStop.Enabled = btnStopAll.Enabled = true;
-        OpenLogFile.Enabled = false;
-        OpenLogWriter();
-        BeginFFmpegProcess();
+        OnBeginProcess();
+        CreateFFmpegProcess(command)?.Begin();
       }
     }
 
@@ -372,7 +399,7 @@ namespace ffmpeg_command_builder
     private void chkAudioOnly_CheckedChanged(object sender, EventArgs e)
     {
       bool isChecked = chkAudioOnly.Checked;
-      UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
+      LookAhead.Enabled = UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
       chkFilterDeInterlace.Enabled = chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isChecked;
       CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !isChecked;
 
@@ -437,7 +464,7 @@ namespace ffmpeg_command_builder
       string path = cbOutputDir.Text;
       if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
       {
-        MessageBox.Show("フォルダが存在しません。","エラー");
+        MessageBox.Show("フォルダが存在しません。", "エラー");
         return;
       }
 
@@ -477,7 +504,7 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if(FileListBindingSource.Count > 0)
+      if (FileListBindingSource.Count > 0)
       {
         if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
           return;
@@ -535,7 +562,7 @@ namespace ffmpeg_command_builder
       if (ffmpegPathes.Length == 0)
       {
         if (DialogResult.Yes == MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。\nWingetコマンドを利用してffmpegをインストールしますか？", "警告", MessageBoxButtons.YesNo))
-          Process.Start("winget","install -id Gyan.FFmpeg");
+          Process.Start("winget", "install -id Gyan.FFmpeg");
 
         ffmpeg.Text = string.Empty;
       }
@@ -629,7 +656,7 @@ namespace ffmpeg_command_builder
       if (encoder == "copy")
         return;
 
-      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text,$"-hide_banner -h encoder={encoder}");
+      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h encoder={encoder}");
     }
 
     private void OpenDecoderHelp_Click(object sender, EventArgs e)
@@ -638,7 +665,147 @@ namespace ffmpeg_command_builder
       if (!chkUseHWDecoder.Checked)
         return;
 
-      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text,$"-hide_banner -h decoder={decoder}");
+      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h decoder={decoder}");
+    }
+
+    private void SubmitCopy_Click(object sender, EventArgs e)
+    {
+      try
+      {
+        CheckDirectory(cbOutputDir.Text);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "エラー");
+        return;
+      }
+
+      if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
+        cbOutputDir.Items.Add(cbOutputDir.Text);
+
+      if (FileListBindingSource.Count > 0)
+      {
+        btnSubmitInvoke.Enabled = false;
+        var command = new ffmpeg_command(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text);
+        command
+          .vcodec("copy")
+          .acodec("copy")
+          .OutputDirectory(cbOutputDir.Text)
+          .OutputPrefix(FilePrefix.Text)
+          .OutputSuffix(FileSuffix.Text)
+          .OutputContainer(FileContainer.SelectedValue.ToString());
+
+        if (FileName.Text.Trim() != "元ファイル名")
+          command.OutputBaseName(FileName.Text);
+
+        command.MultiFileProcess = InputFileList.Count > 1;
+
+        OnBeginProcess();
+        CreateFFmpegProcess(command)?.Begin();
+      }
+    }
+
+    private void SubmitConcat_Click(object sender, EventArgs e)
+    {
+      string listfile = null;
+      try
+      {
+        if (InputFileList.Count <= 1)
+          throw new Exception("二つ以上の入力ファイルが必要です。");
+
+        if (FileName.Text.Trim() == "元ファイル名")
+          throw new Exception("元ファイル名は使用できません、出力ファイル名を指定してください。");
+
+        listfile = Path.Combine(
+          Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
+          $"ffmpeg-command-builder-{Process.GetCurrentProcess().Id}.txt"
+        );
+
+        using (var sw = new StreamWriter(listfile))
+        {
+          foreach (var item in InputFileList)
+          {
+            string filename = item.Value.Replace("\\", "\\\\");
+            sw.WriteLine($"file '{filename}'");
+          }
+        }
+
+        var command = new ffmpeg_command(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text);
+
+        command
+          .setPreOptions("-f concat,-safe 0")
+          .vcodec("copy")
+          .acodec("copy")
+          .OutputDirectory(cbOutputDir.Text)
+          .OutputPrefix(FilePrefix.Text)
+          .OutputBaseName(FileName.Text)
+          .OutputSuffix(FileSuffix.Text)
+          .OutputContainer(FileContainer.SelectedValue.ToString());
+
+        OnBeginProcess();
+        CreateFFmpegProcess(command)?.One(listfile);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "警告");
+      }
+      finally
+      {
+        if (string.IsNullOrEmpty(listfile) && File.Exists(listfile))
+          File.Delete(listfile);
+      }
+    }
+
+    private void SubmitThumbnail_Click(object sender, EventArgs e)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(cbOutputDir.Text))
+          throw new Exception("出力ディレクトリを指定してください。");
+
+        var re = new Regex(@"%\d*d");
+        if (!re.IsMatch(FileName.Text) && !re.IsMatch(FilePrefix.Text) && !re.IsMatch(FileSuffix.Text))
+          throw new Exception("画像出力の際は、%d などの連番号フォーマットが含まれている必要があります。");
+
+        if (InputFileList.Count < 1)
+          throw new Exception("一つ以上の入力ファイルが必要です。");
+
+        var imagetype = ImageType.SelectedItem as StringListItem;
+        string extension = imagetype.Data.ToString();
+        string codec = imagetype.Value;
+
+        var command = new ffmpeg_command(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text);
+
+        List<string> list = ["-vsync cfr", "-f image2"];
+        if (FrameRate.Value > 0)
+          list.Add($"-vf fps=fps=1/{FrameRate.Value}:round=down");
+
+        if (ImageWidth.Value > 0 && ImageHeight.Value > 0)
+          list.Add($"-s {ImageWidth.Value}x{ImageHeight.Value}");
+
+        command
+          .Starts(ImageSS.Text)
+          .To(ImageTo.Text)
+          .vcodec(null)
+          .acodec(null)
+          .setOptions(list)
+          .OutputDirectory(cbOutputDir.Text)
+          .OutputPrefix(FilePrefix.Text)
+          .OutputSuffix(FileSuffix.Text)
+          .OutputContainer(extension);
+
+        if (FileName.Text.Trim() != "元ファイル名")
+          command.OutputBaseName(FileName.Text);
+
+        command.MultiFileProcess = InputFileList.Count > 1;
+
+        OnBeginProcess();
+        CreateFFmpegProcess(command).Begin();
+      }
+      catch (Exception exception)
+      {
+        MessageBox.Show(exception.Message, "警告");
+      }
     }
   }
 }
