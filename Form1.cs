@@ -71,13 +71,29 @@ namespace ffmpeg_command_builder
         new StringListItem("veryslow")
       ];
 
+      StringListItems softwarePresetList =
+      [
+        new StringListItem("ultrafast"),
+        new StringListItem("superfast"),
+        new StringListItem("veryfast "),
+        new StringListItem("faster"),
+        new StringListItem("fast"),
+        new StringListItem("medium"),
+        new StringListItem("slow"),
+        new StringListItem("slower"),
+        new StringListItem("veryslow"),
+        new StringListItem("placebo")
+      ];
+
       PresetList = new Dictionary<string, StringListItems>()
       {
         { "h264_nvenc", nvencPresetList },
         { "hevc_nvenc", nvencPresetList },
         { "h264_qsv",qsvPresetList },
         { "hevc_qsv",qsvPresetList },
-        { "copy",new StringListItems() }
+        { "copy",new StringListItems() },
+        { "libx264",softwarePresetList },
+        { "libx265",softwarePresetList },
       };
 
       HardwareDecoders = new Dictionary<string, CodecListItems>()
@@ -155,6 +171,8 @@ namespace ffmpeg_command_builder
         }
       }
       HardwareEncoders.Add(new CodecListItem(new Codec("copy")));
+      HardwareEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264")));
+      HardwareEncoders.Add(new CodecListItem(new Codec("libx265","cpu","libx265")));
 
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
@@ -535,10 +553,13 @@ namespace ffmpeg_command_builder
       var codec = UseVideoEncoder.SelectedValue as Codec;
       // copyの場合は、動画品質指定はすべてdisabledにする。
       bool isCopy = codec.Name == "copy";
+      bool isCpu = codec.GpuSuffix == "cpu";
 
       CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
       LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
+
+      chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isCpu;
 
       InitPresetAndDevice(codec);
     }
@@ -656,7 +677,7 @@ namespace ffmpeg_command_builder
       if (encoder == "copy")
         return;
 
-      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h encoder={encoder}");
+      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg.exe" : ffmpeg.Text, $"-hide_banner -h encoder={encoder}");
     }
 
     private void OpenDecoderHelp_Click(object sender, EventArgs e)
@@ -806,6 +827,11 @@ namespace ffmpeg_command_builder
       {
         MessageBox.Show(exception.Message, "警告");
       }
+    }
+
+    private void CommandInvoker_Click(object sender, EventArgs e)
+    {
+      OpenOutputView("git.exe", "help -a","git help");
     }
   }
 }

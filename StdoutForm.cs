@@ -8,9 +8,9 @@ namespace ffmpeg_command_builder
 {
   public partial class StdoutForm : Form
   {
-    private Process process;
     private Action<string> StdoutErrorAndWrite;
     private Action ProcessExit;
+    private RedirectedProcess redirected;
 
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
     private static partial Regex IsExecutableFile();
@@ -30,61 +30,20 @@ namespace ffmpeg_command_builder
       };
     }
 
-    public Process StartProcess(string fileName, string arguments = "")
+    public bool StartProcess(string fileName, string arguments = "")
     {
-      var psi = new ProcessStartInfo()
-      {
-        FileName = fileName,
-      };
+      redirected = new RedirectedProcess(fileName, arguments);
+      redirected.OnProcessExited += (s, e) => Invoke(ProcessExit);
+      redirected.OnStdOutReceived += data => Invoke(StdoutErrorAndWrite,[data]);
+      redirected.OnStdErrReceived += data => Invoke(StdoutErrorAndWrite,[data]);
 
-      if (IsExecutableFile().IsMatch(fileName) || fileName == "ffmpeg")
-      {
-        psi.CreateNoWindow = true;
-        psi.RedirectStandardOutput = true;
-        psi.RedirectStandardError = true;
-        psi.RedirectStandardInput = true;
-        psi.UseShellExecute = false;
-        if (!string.IsNullOrEmpty(arguments))
-          psi.Arguments = arguments;
-      }
-      else
-      {
-        psi.UseShellExecute = true;
-      }
-
-      process = new Process()
-      {
-        StartInfo = psi,
-        EnableRaisingEvents = !psi.UseShellExecute
-      };
-
-      if (psi.UseShellExecute)
-      {
-        process.Start();
-      }
-      else
-      {
-        void DataReceivedHandler(string data) => Invoke(StdoutErrorAndWrite, [data]);
-
-        process.OutputDataReceived += (sender, e) => DataReceivedHandler(e.Data ?? string.Empty);
-        process.ErrorDataReceived += (sender, e) => DataReceivedHandler(e.Data ?? string.Empty);
-
-        process.Exited += (sender, e) => Invoke(ProcessExit);
-
-        process.Start();
-        process.BeginOutputReadLine();
-        process.BeginErrorReadLine();
-      }
-
-      return process;
+      return redirected.Start();
     }
 
     private void BtnClose_Click(object sender, EventArgs e)
     {
-      if(process != null && process.HasExited)
-        process.Dispose();
-
-      Close();
+      if(redirected.Exited)
+        Close();
     }
   }
 }

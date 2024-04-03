@@ -48,6 +48,7 @@ namespace ffmpeg_command_builder
     public IEnumerable<string> AdditionalOptions { get; } = new List<string>();
     public IEnumerable<string> AdditionalPreOptions { get; set; } = new List<string>();
     public bool MultiFileProcess { get; set; } = false;
+    public bool IsLandscape { get; set; } = true;
 
     public string FilePrefix
     {

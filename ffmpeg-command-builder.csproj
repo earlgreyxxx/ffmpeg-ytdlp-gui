@@ -56,9 +56,7 @@
     <EmbeddedResource Remove="Form1.Commons.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="CustomProcess.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="CustomProcess.cs" />
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>

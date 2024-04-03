@@ -17,11 +17,14 @@ namespace ffmpeg_command_builder
       return FullName;
     }
 
-    public Codec(string name, string gpuSuffix = "")
+    public Codec(string name, string gpuSuffix = "",string fullname = "")
     {
       Name = name;
       GpuSuffix = gpuSuffix;
-      FullName = string.IsNullOrEmpty(GpuSuffix) ? Name : $"{Name}_{GpuSuffix}";
+      if(string.IsNullOrEmpty(fullname))
+        FullName = string.IsNullOrEmpty(GpuSuffix) ? Name : $"{Name}_{GpuSuffix}";
+      else
+        FullName = fullname;
     }
   }
 }

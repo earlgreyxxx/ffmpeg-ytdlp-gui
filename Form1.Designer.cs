@@ -131,6 +131,7 @@
       groupBox3 = new System.Windows.Forms.GroupBox();
       tabPage1 = new System.Windows.Forms.TabPage();
       CommonButtonBox = new System.Windows.Forms.Panel();
+      CommandInvoker = new System.Windows.Forms.Button();
       btnStopUtil = new System.Windows.Forms.Button();
       btnStopAllUtil = new System.Windows.Forms.Button();
       button2 = new System.Windows.Forms.Button();
@@ -1276,6 +1277,7 @@
       // 
       // CommonButtonBox
       // 
+      CommonButtonBox.Controls.Add(CommandInvoker);
       CommonButtonBox.Controls.Add(btnStopUtil);
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
@@ -1284,6 +1286,16 @@
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
+      // 
+      // CommandInvoker
+      // 
+      CommandInvoker.Location = new System.Drawing.Point(9, 3);
+      CommandInvoker.Name = "CommandInvoker";
+      CommandInvoker.Size = new System.Drawing.Size(106, 24);
+      CommandInvoker.TabIndex = 2;
+      CommandInvoker.Text = "コマンド実行";
+      CommandInvoker.UseVisualStyleBackColor = true;
+      CommandInvoker.Click += CommandInvoker_Click;
       // 
       // btnStopUtil
       // 
@@ -1353,7 +1365,7 @@
       // 
       // SubmitCopy
       // 
-      SubmitCopy.Location = new System.Drawing.Point(18, 67);
+      SubmitCopy.Location = new System.Drawing.Point(18, 66);
       SubmitCopy.Name = "SubmitCopy";
       SubmitCopy.Size = new System.Drawing.Size(122, 32);
       SubmitCopy.TabIndex = 0;
@@ -1793,6 +1805,7 @@
     private System.Windows.Forms.Button btnStopAllUtil;
     private System.Windows.Forms.ComboBox FilePrefix;
     private System.Windows.Forms.ComboBox FileSuffix;
+    private System.Windows.Forms.Button CommandInvoker;
   }
 }
 

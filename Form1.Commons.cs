@@ -15,6 +15,9 @@ namespace ffmpeg_command_builder
   {
     // Static members
     // ---------------------------------------------------------------------------------
+    [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
+    private static partial Regex IsExecutableFile();
+
     private static List<ManagementObject> GpuDevices;
 
     private static string[] FindInPath(string CommandName)
@@ -64,7 +67,7 @@ namespace ffmpeg_command_builder
     private static StringListItems GetGPUDeviceList()
     {
       if (GpuDevices == null)
-        CreateGPUDeviceList(); 
+        CreateGPUDeviceList();
 
       var deviceList = new StringListItems();
       foreach (var device in GpuDevices)
@@ -76,6 +79,7 @@ namespace ffmpeg_command_builder
           )
         );
       }
+      deviceList.Add(new StringListItem("cpu"));
       return deviceList;
     }
 
@@ -130,6 +134,8 @@ namespace ffmpeg_command_builder
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
       else if (codec.GpuSuffix == "qsv")
         ffcommand = new ffmpeg_command_qsv(ffmpeg.Text);
+      else if(codec.GpuSuffix == "cpu")
+        ffcommand = new ffmpeg_command_cpu(ffmpeg.Text);
       else
         ffcommand = new ffmpeg_command(ffmpeg.Text);
 
@@ -235,12 +241,16 @@ namespace ffmpeg_command_builder
             ffcommand.setFilter("bwdif_cuda", value);
           else if (codec.GpuSuffix == "qsv")
             ffcommand.setFilter("bwdif", value);
+          else if (codec.GpuSuffix == "cpu")
+            ffcommand.setFilter("bwdif", value);
         }
         else if (cbDeinterlaceAlg.Text == "yadif")
         {
           if (codec.GpuSuffix == "nvenc")
             ffcommand.setFilter("yadif_cuda", value);
           else if (codec.GpuSuffix == "qsv")
+            ffcommand.setFilter("yadif", value);
+          else if (codec.GpuSuffix == "copy")
             ffcommand.setFilter("yadif", value);
         }
         else if (value == "bob" || value == "adaptive")
@@ -269,10 +279,12 @@ namespace ffmpeg_command_builder
           ffcommand.setFilter("scale_cuda", rbLandscape.Checked ? $"-2:{size}" : $"{size}:-2");
         else if (codec.GpuSuffix == "qsv")
           ffcommand.setFilter("scale_qsv", rbLandscape.Checked ? $"-1:{size}" : $"{size}:-1");
+        else if (codec.GpuSuffix == "cpu")
+          ffcommand.setFilter("scale", rbLandscape.Checked ? $"-1:{size}" : $"{size}:-1");
       }
       else
       {
-        ffcommand.removeFilter("scale_cuda").removeFilter("scale_qsv");
+        ffcommand.removeFilter("scale_cuda").removeFilter("scale_qsv").removeFilter("scale");
       }
 
       var rotate = int.Parse(GetCheckedRadioButton(RotateBox).Tag.ToString());
@@ -309,9 +321,15 @@ namespace ffmpeg_command_builder
       Processing.Abort(stopAll);
     }
 
-    private void OpenOutputView(string executable, string arg)
+    private void OpenOutputView(string executable, string arg,string formTitle = "ffmpeg outputs")
     {
+      var exepathes = FindInPath( executable );
+      if (exepathes.Length <= 0)
+        return;
+
       var form = new StdoutForm();
+      form.Text = formTitle;
+
       if (HelpFormSize.Width > 0 && HelpFormSize.Height > 0)
       {
         form.Width = HelpFormSize.Width;
@@ -343,14 +361,31 @@ namespace ffmpeg_command_builder
         cbPreset.SelectedIndex = 3;
         hardwareName = "intel";
       }
+      else
+      {
+        if (codec.Name != "copy")
+          cbPreset.SelectedIndex = 5;
 
-      if (codec.Name == "copy")
-        return;
+        hardwareName = "cpu";
+      }
 
       cbDevices.SelectedIndex = cbDevices.FindString(hardwareName);
 
       if(chkConstantQuality.Checked)
-        vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "-cq";
+      {
+        switch(codec.GpuSuffix)
+        {
+          case "qsv":
+            vQualityLabel.Text = "ICQ";
+            break;
+          case "nvenc":
+            vQualityLabel.Text = "-cq";
+            break;
+          default:
+            vQualityLabel.Text = "-crf";
+            break;
+        }
+      }
     }
 
     private void OnBeginProcess()

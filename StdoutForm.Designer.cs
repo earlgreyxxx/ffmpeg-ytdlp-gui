@@ -36,12 +36,12 @@
       ((System.ComponentModel.ISupportInitialize)StdoutBindingSource).BeginInit();
       SuspendLayout();
       // 
-      // StdOutView
+      // StdOutAndErrorView
       // 
-      resources.ApplyResources(StdOutAndErrorView, "StdOutView");
+      resources.ApplyResources(StdOutAndErrorView, "StdOutAndErrorView");
       StdOutAndErrorView.BackColor = System.Drawing.SystemColors.ButtonHighlight;
       StdOutAndErrorView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      StdOutAndErrorView.Name = "StdOutView";
+      StdOutAndErrorView.Name = "StdOutAndErrorView";
       StdOutAndErrorView.ReadOnly = true;
       StdOutAndErrorView.TabStop = false;
       // 
