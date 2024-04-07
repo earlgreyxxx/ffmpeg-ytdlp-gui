@@ -112,15 +112,16 @@ namespace ffmpeg_command_builder
           strFilters.Add("yadif=" + filters["yadif"]);
         }
 
-        if (filters.ContainsKey("scale_qsv"))
+        if (filters.ContainsKey("scale"))
         {
           if (sw)
           {
             strFilters.Add("hwupload=extra_hw_frames=64");
             sw = false;
           }
-
-          strFilters.Add("scale_qsv=" + filters["scale_qsv"]);
+          string size = filters["scale"];
+          string filter = IsLandscape ? $"-1:{size}" : $"{size}:-1";
+          strFilters.Add($"scale_qsv={filter}");
         }
 
         if (filters.ContainsKey("transpose"))

@@ -22,7 +22,7 @@ namespace ffmpeg_command_builder
         : Enumerable.Range(0,len).Select(i => new ListItem<T>(values[i], labels[i])).ToList();
     }
 
-    public string Label { get; set; } = label ?? value.ToString();
+    public string Label { get; set; } = (label ?? value.ToString());
     public T Value { get; set; } = value;
     public object Data { get; set; } = data;
   }

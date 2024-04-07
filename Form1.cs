@@ -22,7 +22,7 @@ namespace ffmpeg_command_builder
     private Dictionary<string, CodecListItems> HardwareDecoders;
     private StringListItems DeInterlaces;
     private StringListItems DeInterlacesCuvid;
-    private CodecListItems HardwareEncoders;
+    private CodecListItems VideoEncoders;
     private CodecListItems AudioEncoders;
     private StringListItems InputFileList;
     private Size HelpFormSize = new(0, 0);
@@ -145,9 +145,9 @@ namespace ffmpeg_command_builder
 
       AudioEncoders =
       [
-        new CodecListItem(new Codec("aac"),"aac"),
-        new CodecListItem(new Codec("libmp3lame"),"mp3"),
-        new CodecListItem(new Codec("libvorbis"),"ogg"),
+        new CodecListItem(new Codec("aac"),"AAC"),
+        new CodecListItem(new Codec("libmp3lame"),"MP3"),
+        new CodecListItem(new Codec("libvorbis"),"Ogg"),
       ];
 
       var GpuDeviceList = GetGPUDeviceList();
@@ -155,24 +155,24 @@ namespace ffmpeg_command_builder
       cbDevices.DataSource = GpuDeviceList;
       cbDevices.SelectedIndex = 0;
 
-      HardwareEncoders = [];
+      VideoEncoders = [];
       var ci = new CultureInfo("en-US");
       foreach (var device in GpuDeviceList)
       {
         if (device.Value.StartsWith("intel", true, ci))
         {
-          HardwareEncoders.Add(new CodecListItem(new Codec("hevc", "qsv")));
-          HardwareEncoders.Add(new CodecListItem(new Codec("h264", "qsv")));
+          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"),"HEVC(QSV)"));
+          VideoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"),"H264(QSV)"));
         }
         if (device.Value.StartsWith("nvidia", true, ci))
         {
-          HardwareEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc")));
-          HardwareEncoders.Add(new CodecListItem(new Codec("h264", "nvenc")));
+          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"),"HEVC(NVEnc)"));
+          VideoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"),"H264(NVEnc)"));
         }
       }
-      HardwareEncoders.Add(new CodecListItem(new Codec("copy")));
-      HardwareEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264")));
-      HardwareEncoders.Add(new CodecListItem(new Codec("libx265","cpu","libx265")));
+      VideoEncoders.Add(new CodecListItem(new Codec("copy","cpu","COPY")));
+      VideoEncoders.Add(new CodecListItem(new Codec("libx265","cpu","libx265"),"HEVC(libx265)"));
+      VideoEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264"),"H264(libx264)"));
 
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
@@ -248,7 +248,7 @@ namespace ffmpeg_command_builder
       rbResizeHD.Checked = Settings.Default.resizeHD;
       rbResizeNum.Checked = Settings.Default.resizeNum;
 
-      UseVideoEncoder.DataSource = HardwareEncoders;
+      UseVideoEncoder.DataSource = VideoEncoders;
       UseVideoEncoder.SelectedIndex = 0;
 
       UseAudioEncoder.DataSource = AudioEncoders;
@@ -558,6 +558,7 @@ namespace ffmpeg_command_builder
       CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
       LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
+      LookAhead.Enabled = !isCpu;
 
       chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isCpu;
 

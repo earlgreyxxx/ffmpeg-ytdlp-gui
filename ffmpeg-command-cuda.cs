@@ -137,7 +137,7 @@ namespace ffmpeg_command_builder
           strFilters.Add($"crop={options["crop"]}");
         }
 
-        if (filters.ContainsKey("bwdif_cuda") || filters.ContainsKey("yadif_cuda"))
+        if (filters.ContainsKey("bwdif") || filters.ContainsKey("yadif"))
         {
           if (sw)
           {
@@ -145,21 +145,22 @@ namespace ffmpeg_command_builder
             sw = false;
           }
 
-          if (filters.ContainsKey("bwdif_cuda"))
-            strFilters.Add("bwdif_cuda=" + filters["bwdif_cuda"]);
-          else if (filters.ContainsKey("yadif_cuda"))
-            strFilters.Add("yadif_cuda=" + filters["yadif_cuda"]);
+          if (filters.ContainsKey("bwdif"))
+            strFilters.Add("bwdif_cuda=" + filters["bwdif"]);
+          else if (filters.ContainsKey("yadif"))
+            strFilters.Add("yadif_cuda=" + filters["yadif"]);
         }
 
-        if (filters.ContainsKey("scale_cuda"))
+        if (filters.ContainsKey("scale"))
         {
           if (sw)
           {
             strFilters.Add("hwupload_cuda");
             sw = false;
           }
-
-          strFilters.Add("scale_cuda=" + filters["scale_cuda"]);
+          string size = filters["scale"];
+          string filter = IsLandscape ? $"-2:{size}" : $"{size}:-2";
+          strFilters.Add($"scale_cuda={filter}");
         }
 
 

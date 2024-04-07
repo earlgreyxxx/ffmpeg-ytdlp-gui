@@ -163,7 +163,6 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.To(txtTo.Text);
 
-
       if (InputFileList.Count > 1)
         ffcommand.MultiFileProcess = true;
 
@@ -230,28 +229,18 @@ namespace ffmpeg_command_builder
         .OutputSuffix(FileSuffix.Text)
         .OutputContainer(FileContainer.SelectedValue.ToString());
 
-      var deinterlaces = new List<string>() { "bwdif", "bwdif_cuda", "yadif", "yadif_cuda", "bob", "adaptive" };
+      var deinterlaces = new List<string>() { "bwdif","yadif","bob","adaptive" };
 
       if (chkFilterDeInterlace.Checked)
       {
         string value = cbDeinterlaceAlg.SelectedValue.ToString();
         if (cbDeinterlaceAlg.Text == "bwdif")
         {
-          if (codec.GpuSuffix == "nvenc")
-            ffcommand.setFilter("bwdif_cuda", value);
-          else if (codec.GpuSuffix == "qsv")
-            ffcommand.setFilter("bwdif", value);
-          else if (codec.GpuSuffix == "cpu")
-            ffcommand.setFilter("bwdif", value);
+          ffcommand.setFilter("bwdif", value);
         }
         else if (cbDeinterlaceAlg.Text == "yadif")
         {
-          if (codec.GpuSuffix == "nvenc")
-            ffcommand.setFilter("yadif_cuda", value);
-          else if (codec.GpuSuffix == "qsv")
-            ffcommand.setFilter("yadif", value);
-          else if (codec.GpuSuffix == "copy")
-            ffcommand.setFilter("yadif", value);
+          ffcommand.setFilter("yadif", value);
         }
         else if (value == "bob" || value == "adaptive")
         {
@@ -275,16 +264,12 @@ namespace ffmpeg_command_builder
 
       if (size > 0)
       {
-        if (codec.GpuSuffix == "nvenc")
-          ffcommand.setFilter("scale_cuda", rbLandscape.Checked ? $"-2:{size}" : $"{size}:-2");
-        else if (codec.GpuSuffix == "qsv")
-          ffcommand.setFilter("scale_qsv", rbLandscape.Checked ? $"-1:{size}" : $"{size}:-1");
-        else if (codec.GpuSuffix == "cpu")
-          ffcommand.setFilter("scale", rbLandscape.Checked ? $"-1:{size}" : $"{size}:-1");
+        ffcommand.IsLandscape = rbLandscape.Checked;
+        ffcommand.setFilter("scale", size.ToString());
       }
       else
       {
-        ffcommand.removeFilter("scale_cuda").removeFilter("scale_qsv").removeFilter("scale");
+        ffcommand.removeFilter("scale");
       }
 
       var rotate = int.Parse(GetCheckedRadioButton(RotateBox).Tag.ToString());
@@ -323,9 +308,12 @@ namespace ffmpeg_command_builder
 
     private void OpenOutputView(string executable, string arg,string formTitle = "ffmpeg outputs")
     {
-      var exepathes = FindInPath( executable );
-      if (exepathes.Length <= 0)
-        return;
+      if(!File.Exists(executable))
+      {
+        var exepathes = FindInPath(executable);
+        if (exepathes.Length <= 0)
+          return;
+      }
 
       var form = new StdoutForm();
       form.Text = formTitle;
@@ -373,18 +361,12 @@ namespace ffmpeg_command_builder
 
       if(chkConstantQuality.Checked)
       {
-        switch(codec.GpuSuffix)
+        vQualityLabel.Text = codec.GpuSuffix switch
         {
-          case "qsv":
-            vQualityLabel.Text = "ICQ";
-            break;
-          case "nvenc":
-            vQualityLabel.Text = "-cq";
-            break;
-          default:
-            vQualityLabel.Text = "-crf";
-            break;
-        }
+          "qsv" => "ICQ",
+          "nvenc" => "-cq",
+          _ => "-crf",
+        };
       }
     }
 

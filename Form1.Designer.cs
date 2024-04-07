@@ -208,6 +208,7 @@
       Commandlines.ReadOnly = true;
       Commandlines.Size = new System.Drawing.Size(690, 68);
       Commandlines.TabIndex = 0;
+      Commandlines.TabStop = false;
       // 
       // txtSS
       // 
@@ -215,6 +216,7 @@
       txtSS.Name = "txtSS";
       txtSS.Size = new System.Drawing.Size(62, 19);
       txtSS.TabIndex = 4;
+      txtSS.TabStop = false;
       // 
       // FindFolder
       // 
@@ -244,6 +246,7 @@
       txtTo.Name = "txtTo";
       txtTo.Size = new System.Drawing.Size(63, 19);
       txtTo.TabIndex = 6;
+      txtTo.TabStop = false;
       // 
       // groupBox1
       // 
@@ -309,9 +312,9 @@
       groupBox2.Controls.Add(label4);
       groupBox2.Controls.Add(UseAudioEncoder);
       groupBox2.Controls.Add(UseVideoEncoder);
-      groupBox2.Location = new System.Drawing.Point(681, 171);
+      groupBox2.Location = new System.Drawing.Point(651, 171);
       groupBox2.Name = "groupBox2";
-      groupBox2.Size = new System.Drawing.Size(138, 129);
+      groupBox2.Size = new System.Drawing.Size(168, 129);
       groupBox2.TabIndex = 7;
       groupBox2.TabStop = false;
       groupBox2.Text = "コーデック";
@@ -335,7 +338,7 @@
       HWDecoder.FormattingEnabled = true;
       HWDecoder.Location = new System.Drawing.Point(11, 97);
       HWDecoder.Name = "HWDecoder";
-      HWDecoder.Size = new System.Drawing.Size(119, 20);
+      HWDecoder.Size = new System.Drawing.Size(148, 20);
       HWDecoder.TabIndex = 29;
       HWDecoder.ValueMember = "Value";
       // 
@@ -364,8 +367,9 @@
       UseAudioEncoder.FormattingEnabled = true;
       UseAudioEncoder.Location = new System.Drawing.Point(43, 44);
       UseAudioEncoder.Name = "UseAudioEncoder";
-      UseAudioEncoder.Size = new System.Drawing.Size(86, 20);
+      UseAudioEncoder.Size = new System.Drawing.Size(116, 20);
       UseAudioEncoder.TabIndex = 25;
+      UseAudioEncoder.TabStop = false;
       UseAudioEncoder.ValueMember = "Value";
       // 
       // UseVideoEncoder
@@ -374,11 +378,11 @@
       UseVideoEncoder.DisplayMember = "Label";
       UseVideoEncoder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       UseVideoEncoder.FlatStyle = System.Windows.Forms.FlatStyle.System;
-      UseVideoEncoder.FormattingEnabled = true;
       UseVideoEncoder.Location = new System.Drawing.Point(43, 18);
       UseVideoEncoder.Name = "UseVideoEncoder";
-      UseVideoEncoder.Size = new System.Drawing.Size(86, 20);
+      UseVideoEncoder.Size = new System.Drawing.Size(116, 20);
       UseVideoEncoder.TabIndex = 24;
+      UseVideoEncoder.TabStop = false;
       UseVideoEncoder.ValueMember = "Value";
       UseVideoEncoder.SelectedIndexChanged += UseVideoEncoder_SelectedIndexChanged;
       // 
@@ -411,6 +415,7 @@
       chkAudioOnly.Name = "chkAudioOnly";
       chkAudioOnly.Size = new System.Drawing.Size(93, 16);
       chkAudioOnly.TabIndex = 23;
+      chkAudioOnly.TabStop = false;
       chkAudioOnly.Text = "音声のみ出力";
       chkAudioOnly.UseVisualStyleBackColor = true;
       chkAudioOnly.CheckedChanged += chkAudioOnly_CheckedChanged;
@@ -422,7 +427,7 @@
       ResizeBox.Controls.Add(rbResizeHD);
       ResizeBox.Controls.Add(rbResizeFullHD);
       ResizeBox.Controls.Add(rbResizeNone);
-      ResizeBox.Location = new System.Drawing.Point(364, 171);
+      ResizeBox.Location = new System.Drawing.Point(334, 171);
       ResizeBox.Name = "ResizeBox";
       ResizeBox.Size = new System.Drawing.Size(311, 62);
       ResizeBox.TabIndex = 8;
@@ -492,7 +497,7 @@
       RotateBox.Controls.Add(rbRotateNone);
       RotateBox.Controls.Add(rbRotateLeft);
       RotateBox.Controls.Add(rbRotateRight);
-      RotateBox.Location = new System.Drawing.Point(364, 242);
+      RotateBox.Location = new System.Drawing.Point(334, 242);
       RotateBox.Name = "RotateBox";
       RotateBox.Size = new System.Drawing.Size(311, 58);
       RotateBox.TabIndex = 9;
@@ -538,6 +543,7 @@
       cbOutputDir.Size = new System.Drawing.Size(288, 20);
       cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
+      cbOutputDir.TabStop = false;
       // 
       // FileContainer
       // 
@@ -548,6 +554,7 @@
       FileContainer.Name = "FileContainer";
       FileContainer.Size = new System.Drawing.Size(64, 20);
       FileContainer.TabIndex = 31;
+      FileContainer.TabStop = false;
       FileContainer.ValueMember = "Value";
       // 
       // label13
@@ -579,6 +586,7 @@
       FileName.Name = "FileName";
       FileName.Size = new System.Drawing.Size(182, 20);
       FileName.TabIndex = 29;
+      FileName.TabStop = false;
       // 
       // OpenLogFile
       // 
@@ -656,7 +664,7 @@
       LayoutBox.Controls.Add(rbLandscape);
       LayoutBox.Location = new System.Drawing.Point(10, 253);
       LayoutBox.Name = "LayoutBox";
-      LayoutBox.Size = new System.Drawing.Size(347, 62);
+      LayoutBox.Size = new System.Drawing.Size(318, 62);
       LayoutBox.TabIndex = 12;
       LayoutBox.TabStop = false;
       LayoutBox.Text = "元動画の情報(リサイズとクロップ時のヒント情報)";
@@ -772,6 +780,7 @@
       LookAhead.Name = "LookAhead";
       LookAhead.Size = new System.Drawing.Size(51, 19);
       LookAhead.TabIndex = 22;
+      LookAhead.TabStop = false;
       LookAhead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       LookAhead.Value = new decimal(new int[] { 15, 0, 0, 0 });
       // 
@@ -792,6 +801,7 @@
       aBitrate.Name = "aBitrate";
       aBitrate.Size = new System.Drawing.Size(70, 19);
       aBitrate.TabIndex = 20;
+      aBitrate.TabStop = false;
       aBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       aBitrate.Value = new decimal(new int[] { 192, 0, 0, 0 });
       // 
@@ -831,6 +841,7 @@
       cbPreset.Name = "cbPreset";
       cbPreset.Size = new System.Drawing.Size(111, 20);
       cbPreset.TabIndex = 21;
+      cbPreset.TabStop = false;
       cbPreset.ValueMember = "Value";
       // 
       // vBitrate
@@ -840,6 +851,7 @@
       vBitrate.Name = "vBitrate";
       vBitrate.Size = new System.Drawing.Size(70, 19);
       vBitrate.TabIndex = 18;
+      vBitrate.TabStop = false;
       vBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       vBitrate.Value = new decimal(new int[] { 6000, 0, 0, 0 });
       // 
@@ -850,6 +862,7 @@
       chkEncodeAudio.Name = "chkEncodeAudio";
       chkEncodeAudio.Size = new System.Drawing.Size(93, 16);
       chkEncodeAudio.TabIndex = 19;
+      chkEncodeAudio.TabStop = false;
       chkEncodeAudio.Text = "音声エンコード";
       chkEncodeAudio.UseVisualStyleBackColor = true;
       chkEncodeAudio.CheckedChanged += chkEncodeAudio_CheckedChanged;
@@ -905,6 +918,7 @@
       FileList.Size = new System.Drawing.Size(419, 88);
       FileList.Sorted = true;
       FileList.TabIndex = 29;
+      FileList.TabStop = false;
       FileList.ValueMember = "Value";
       FileList.DragDrop += DropArea_DragDrop;
       FileList.DragEnter += DropArea_DragEnter;
@@ -938,7 +952,7 @@
       // 
       groupBox4.Controls.Add(cbDeinterlaceAlg);
       groupBox4.Controls.Add(chkFilterDeInterlace);
-      groupBox4.Location = new System.Drawing.Point(364, 306);
+      groupBox4.Location = new System.Drawing.Point(334, 306);
       groupBox4.Name = "groupBox4";
       groupBox4.Size = new System.Drawing.Size(227, 60);
       groupBox4.TabIndex = 33;
@@ -950,9 +964,9 @@
       cbDevices.DisplayMember = "Label";
       cbDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       cbDevices.FormattingEnabled = true;
-      cbDevices.Location = new System.Drawing.Point(131, 18);
+      cbDevices.Location = new System.Drawing.Point(121, 18);
       cbDevices.Name = "cbDevices";
-      cbDevices.Size = new System.Drawing.Size(203, 20);
+      cbDevices.Size = new System.Drawing.Size(179, 20);
       cbDevices.TabIndex = 0;
       cbDevices.TabStop = false;
       cbDevices.ValueMember = "Value";
@@ -987,6 +1001,7 @@
       OpenDecoderHelp.Name = "OpenDecoderHelp";
       OpenDecoderHelp.Size = new System.Drawing.Size(154, 24);
       OpenDecoderHelp.TabIndex = 36;
+      OpenDecoderHelp.TabStop = false;
       OpenDecoderHelp.Text = "デコーダーオプションのヘルプ";
       OpenDecoderHelp.UseVisualStyleBackColor = true;
       OpenDecoderHelp.Click += OpenDecoderHelp_Click;
@@ -997,6 +1012,7 @@
       OpenEncoderHelp.Name = "OpenEncoderHelp";
       OpenEncoderHelp.Size = new System.Drawing.Size(154, 24);
       OpenEncoderHelp.TabIndex = 35;
+      OpenEncoderHelp.TabStop = false;
       OpenEncoderHelp.Text = "エンコーダーオプションのヘルプ";
       OpenEncoderHelp.UseVisualStyleBackColor = true;
       OpenEncoderHelp.Click += OpenEncoderHelp_Click;
@@ -1007,6 +1023,7 @@
       btnFFmpeg.Name = "btnFFmpeg";
       btnFFmpeg.Size = new System.Drawing.Size(49, 23);
       btnFFmpeg.TabIndex = 36;
+      btnFFmpeg.TabStop = false;
       btnFFmpeg.Text = "参照";
       btnFFmpeg.UseVisualStyleBackColor = true;
       btnFFmpeg.Click += btnFFmpeg_Click;
@@ -1033,6 +1050,7 @@
       btnFindInPath.Name = "btnFindInPath";
       btnFindInPath.Size = new System.Drawing.Size(144, 23);
       btnFindInPath.TabIndex = 38;
+      btnFindInPath.TabStop = false;
       btnFindInPath.Text = "環境変数PATHから探す";
       btnFindInPath.UseVisualStyleBackColor = true;
       btnFindInPath.Click += btnFindInPath_Click;
@@ -1044,6 +1062,7 @@
       ffmpeg.Name = "ffmpeg";
       ffmpeg.Size = new System.Drawing.Size(522, 20);
       ffmpeg.TabIndex = 39;
+      ffmpeg.TabStop = false;
       // 
       // StatusBar
       // 
@@ -1078,7 +1097,7 @@
       CropBox.Controls.Add(chkCrop);
       CropBox.Location = new System.Drawing.Point(10, 171);
       CropBox.Name = "CropBox";
-      CropBox.Size = new System.Drawing.Size(347, 76);
+      CropBox.Size = new System.Drawing.Size(318, 76);
       CropBox.TabIndex = 41;
       CropBox.TabStop = false;
       CropBox.Text = "クロップ";
@@ -1127,6 +1146,7 @@
       CropY.Name = "CropY";
       CropY.Size = new System.Drawing.Size(54, 19);
       CropY.TabIndex = 12;
+      CropY.TabStop = false;
       CropY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       CropY.Value = new decimal(new int[] { 1, 0, 0, int.MinValue });
       // 
@@ -1138,6 +1158,7 @@
       CropX.Name = "CropX";
       CropX.Size = new System.Drawing.Size(54, 19);
       CropX.TabIndex = 11;
+      CropX.TabStop = false;
       CropX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       CropX.Value = new decimal(new int[] { 1, 0, 0, int.MinValue });
       // 
@@ -1148,6 +1169,7 @@
       CropHeight.Name = "CropHeight";
       CropHeight.Size = new System.Drawing.Size(54, 19);
       CropHeight.TabIndex = 10;
+      CropHeight.TabStop = false;
       CropHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // CropWidth
@@ -1157,6 +1179,7 @@
       CropWidth.Name = "CropWidth";
       CropWidth.Size = new System.Drawing.Size(54, 19);
       CropWidth.TabIndex = 9;
+      CropWidth.TabStop = false;
       CropWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // chkCrop
@@ -1166,6 +1189,7 @@
       chkCrop.Name = "chkCrop";
       chkCrop.Size = new System.Drawing.Size(67, 16);
       chkCrop.TabIndex = 8;
+      chkCrop.TabStop = false;
       chkCrop.Text = "処理する";
       chkCrop.UseVisualStyleBackColor = true;
       chkCrop.CheckedChanged += chkCrop_CheckedChanged;
@@ -1227,9 +1251,9 @@
       // 
       groupBox6.Controls.Add(FreeOptions);
       groupBox6.Controls.Add(label11);
-      groupBox6.Location = new System.Drawing.Point(603, 306);
+      groupBox6.Location = new System.Drawing.Point(567, 306);
       groupBox6.Name = "groupBox6";
-      groupBox6.Size = new System.Drawing.Size(216, 60);
+      groupBox6.Size = new System.Drawing.Size(252, 60);
       groupBox6.TabIndex = 43;
       groupBox6.TabStop = false;
       groupBox6.Text = "追加オプション";
@@ -1238,7 +1262,7 @@
       // 
       FreeOptions.Location = new System.Drawing.Point(14, 32);
       FreeOptions.Name = "FreeOptions";
-      FreeOptions.Size = new System.Drawing.Size(180, 19);
+      FreeOptions.Size = new System.Drawing.Size(229, 19);
       FreeOptions.TabIndex = 0;
       // 
       // label11
@@ -1257,7 +1281,7 @@
       groupBox3.Controls.Add(chkAudioOnly);
       groupBox3.Location = new System.Drawing.Point(11, 320);
       groupBox3.Name = "groupBox3";
-      groupBox3.Size = new System.Drawing.Size(347, 46);
+      groupBox3.Size = new System.Drawing.Size(317, 46);
       groupBox3.TabIndex = 42;
       groupBox3.TabStop = false;
       groupBox3.Text = "その他";
@@ -1268,10 +1292,10 @@
       tabPage1.Controls.Add(CommonButtonBox);
       tabPage1.Controls.Add(groupBox8);
       tabPage1.Controls.Add(Image2Box);
-      tabPage1.Location = new System.Drawing.Point(4, 22);
+      tabPage1.Location = new System.Drawing.Point(4, 27);
       tabPage1.Name = "tabPage1";
       tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      tabPage1.Size = new System.Drawing.Size(832, 418);
+      tabPage1.Size = new System.Drawing.Size(832, 413);
       tabPage1.TabIndex = 1;
       tabPage1.Text = "ユーティリティ";
       // 
@@ -1282,7 +1306,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1580,6 +1604,7 @@
       FilePrefix.Name = "FilePrefix";
       FilePrefix.Size = new System.Drawing.Size(61, 20);
       FilePrefix.TabIndex = 34;
+      FilePrefix.TabStop = false;
       // 
       // FileSuffix
       // 
@@ -1588,6 +1613,7 @@
       FileSuffix.Name = "FileSuffix";
       FileSuffix.Size = new System.Drawing.Size(59, 20);
       FileSuffix.TabIndex = 33;
+      FileSuffix.TabStop = false;
       // 
       // settingsPropertyValueBindingSource
       // 
@@ -1613,7 +1639,7 @@
       Name = "Form1";
       Padding = new System.Windows.Forms.Padding(3);
       SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-      Text = "ffmpeg command builder for NVENC and QSV : required ffmpeg 6.1 or higher";
+      Text = "ffmpeg command builder : required ffmpeg 6.1 or higher";
       FormClosing += Form1_FormClosing;
       Load += Form1_Load;
       groupBox1.ResumeLayout(false);

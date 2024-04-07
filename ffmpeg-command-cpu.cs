@@ -109,7 +109,11 @@ namespace ffmpeg_command_builder
           strFilters.Add("yadif=" + filters["yadif"]);
 
         if (filters.ContainsKey("scale"))
-          strFilters.Add("scale=" + filters["scale"]);
+        {
+          string size = filters["scale"];
+          string filter = IsLandscape ? $"-1:{size}" : $"{size}:-1";
+          strFilters.Add($"scale={filter}");
+        }
 
         if (filters.ContainsKey("transpose"))
           strFilters.Add($"transpose={filters["transpose"]}");
