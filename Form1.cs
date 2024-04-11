@@ -170,7 +170,7 @@ namespace ffmpeg_command_builder
           VideoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"),"H264(NVEnc)"));
         }
       }
-      VideoEncoders.Add(new CodecListItem(new Codec("copy","cpu","COPY")));
+      VideoEncoders.Add(new CodecListItem(new Codec("copy","cpu","copy"),"COPY"));
       VideoEncoders.Add(new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC(libx265)"));
       VideoEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264"),"H264(libx264)"));
 

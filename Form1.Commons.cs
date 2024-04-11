@@ -134,7 +134,7 @@ namespace ffmpeg_command_builder
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
       else if (codec.GpuSuffix == "qsv")
         ffcommand = new ffmpeg_command_qsv(ffmpeg.Text);
-      else if(codec.GpuSuffix == "cpu")
+      else if(codec.Name != "copy" && codec.GpuSuffix == "cpu")
         ffcommand = new ffmpeg_command_cpu(ffmpeg.Text);
       else
         ffcommand = new ffmpeg_command(ffmpeg.Text);
