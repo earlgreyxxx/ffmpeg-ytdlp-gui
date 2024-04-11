@@ -93,7 +93,7 @@ namespace ffmpeg_command_builder
         { "hevc_qsv",qsvPresetList },
         { "copy",new StringListItems() },
         { "libx264",softwarePresetList },
-        { "libx265",softwarePresetList },
+        { "hevc",softwarePresetList },
       };
 
       HardwareDecoders = new Dictionary<string, CodecListItems>()
@@ -171,7 +171,7 @@ namespace ffmpeg_command_builder
         }
       }
       VideoEncoders.Add(new CodecListItem(new Codec("copy","cpu","COPY")));
-      VideoEncoders.Add(new CodecListItem(new Codec("libx265","cpu","libx265"),"HEVC(libx265)"));
+      VideoEncoders.Add(new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC(libx265)"));
       VideoEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264"),"H264(libx264)"));
 
       FileListBindingSource.DataSource = InputFileList = [];
