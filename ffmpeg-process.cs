@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 
@@ -14,9 +13,18 @@ namespace ffmpeg_command_builder
 
   internal class ffmpeg_process
   {
+    public static string GetLogFileName()
+    {
+      return Path.Combine(
+        Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
+        $"ffmpeg-stderr-{Process.GetCurrentProcess().Id}.log"
+      );
+    }
+
     BindingSource FileList;
 
     public CustomProcess Current { get; private set; }
+    private List<CustomProcess> Processes = new List<CustomProcess>();
 
     private StreamWriter LogWriter;
     private Encoding CP932;
@@ -26,17 +34,30 @@ namespace ffmpeg_command_builder
     public event Action OnProcessesDone;
 
     public ffmpeg_command Command { get; private set; }
-    public string LogFileName { get; set; }
+    public string LogFileName { get; set; } = GetLogFileName();
 
     public ffmpeg_process(ffmpeg_command command,IEnumerable<string> list)
       : this(command,new BindingSource() { DataSource = list.ToList(), }) { }
 
     public ffmpeg_process(ffmpeg_command command,BindingSource bs)
     {
-      Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-      CP932 = Encoding.GetEncoding(932);
+      try
+      {
+        CP932 = Encoding.GetEncoding(932);
+      }
+      catch
+      {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        CP932 = Encoding.GetEncoding(932);
+      }
       Command = command;
       FileList = bs;
+    }
+
+    ~ffmpeg_process()
+    {
+      foreach(var process in Processes)
+        process.Dispose();
     }
 
     public void Begin()
@@ -45,7 +66,7 @@ namespace ffmpeg_command_builder
         throw new Exception("現在実行中のプロセスが終了するまで新しいプロセスを開始できません。");
 
       if (!string.IsNullOrEmpty(LogFileName))
-        LogWriter = new StreamWriter(LogFileName, false);
+        LogWriter = new StreamWriter(LogFileName, true);
 
       CreateProcess();
     }
@@ -57,6 +78,7 @@ namespace ffmpeg_command_builder
         throw new Exception("no file");
 
       var process = Command.InvokeCommand(filename, true);
+      Processes.Add(process);
 
       process.Exited += OnProcessExited;
       process.ErrorDataReceived += new DataReceivedEventHandler(OnDataReceived);
@@ -121,7 +143,8 @@ namespace ffmpeg_command_builder
       OnProcessesDone();
       FileList.Clear();
       FileList.ResetBindings(false);
-      if(LogWriter != null)
+      LogWriter.Flush();
+      if (LogWriter != null)
       {
         LogWriter.Dispose();
         LogWriter = null;

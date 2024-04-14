@@ -33,7 +33,6 @@ namespace ffmpeg_command_builder
       StdInWriter = null;
       OnProcessExited(this, new RedirectedProcessEventArgs(psi.FileName, psi.Arguments));
       Exited = Current.HasExited;
-      Current.Dispose();
     }
 
     public RedirectedProcess(string filename, string arguments)
@@ -44,6 +43,11 @@ namespace ffmpeg_command_builder
       Current.StartInfo = psi;
       Current.Exited += Process_Exited;
       Current.EnableRaisingEvents = true;
+    }
+
+    ~RedirectedProcess()
+    {
+      Current.Dispose();
     }
 
     public bool Start()

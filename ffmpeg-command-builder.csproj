@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Form1.Commons.resx" />
+    <EmbeddedResource Remove="StdoutForm.ja-JP.resx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="CustomProcess.cs" />

@@ -29,7 +29,6 @@
     private void InitializeComponent()
     {
       components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StdoutForm));
       StdOutAndErrorView = new System.Windows.Forms.TextBox();
       BtnClose = new System.Windows.Forms.Button();
       StdoutBindingSource = new System.Windows.Forms.BindingSource(components);
@@ -38,32 +37,47 @@
       // 
       // StdOutAndErrorView
       // 
-      resources.ApplyResources(StdOutAndErrorView, "StdOutAndErrorView");
+      StdOutAndErrorView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
       StdOutAndErrorView.BackColor = System.Drawing.SystemColors.ButtonHighlight;
       StdOutAndErrorView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      StdOutAndErrorView.Font = new System.Drawing.Font("ＭＳ ゴシック", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      StdOutAndErrorView.Location = new System.Drawing.Point(0, 0);
+      StdOutAndErrorView.Multiline = true;
       StdOutAndErrorView.Name = "StdOutAndErrorView";
       StdOutAndErrorView.ReadOnly = true;
+      StdOutAndErrorView.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      StdOutAndErrorView.Size = new System.Drawing.Size(856, 420);
+      StdOutAndErrorView.TabIndex = 0;
       StdOutAndErrorView.TabStop = false;
       // 
       // BtnClose
       // 
-      resources.ApplyResources(BtnClose, "BtnClose");
+      BtnClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+      BtnClose.Location = new System.Drawing.Point(780, 436);
+      BtnClose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       BtnClose.Name = "BtnClose";
+      BtnClose.Size = new System.Drawing.Size(64, 29);
+      BtnClose.TabIndex = 1;
       BtnClose.TabStop = false;
+      BtnClose.Text = " 閉じる";
       BtnClose.UseVisualStyleBackColor = true;
       BtnClose.Click += BtnClose_Click;
       // 
       // StdoutForm
       // 
-      resources.ApplyResources(this, "$this");
+      AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      ClientSize = new System.Drawing.Size(856, 476);
       Controls.Add(BtnClose);
       Controls.Add(StdOutAndErrorView);
+      Font = new System.Drawing.Font("MS UI Gothic", 9F);
+      Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       MaximizeBox = false;
       MinimizeBox = false;
       Name = "StdoutForm";
       ShowIcon = false;
       ShowInTaskbar = false;
+      Text = "ffmpeg outputs";
       ((System.ComponentModel.ISupportInitialize)StdoutBindingSource).EndInit();
       ResumeLayout(false);
       PerformLayout();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -116,7 +117,6 @@ namespace ffmpeg_command_builder
           FileListBindingSource.Remove(item);
       };
 
-      process.LogFileName = GetLogFileName();
       process.OnProcessesDone += () => Invoke(ProcessesDoneInvoker);
       process.OnReceiveData += output => Invoke(ReceiveDataInvoker, [output]);
       process.OnProcessExit += filename => Invoke(ProcessExitInvoker, [filename]);
@@ -287,15 +287,6 @@ namespace ffmpeg_command_builder
     private static RadioButton GetCheckedRadioButton(GroupBox groupBox)
     {
       return groupBox.Controls.OfType<RadioButton>().FirstOrDefault(radio => radio.Checked);
-    }
-
-
-    private static string GetLogFileName()
-    {
-      return Path.Combine(
-        Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
-        "ffmpeg.stderr.log"
-      );
     }
 
     private void StopProcess(bool stopAll = false)

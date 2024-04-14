@@ -19,7 +19,7 @@ namespace ffmpeg_command_builder
     {
       InitializeComponent();
 
-      StdoutErrorAndWrite = output => StdOutAndErrorView.AppendText($"{output}\r\n");
+      StdoutErrorAndWrite = output => StdOutAndErrorView.AppendText(output + "\r\n");
       ProcessExit = () =>
       {
         BtnClose.Enabled = true;

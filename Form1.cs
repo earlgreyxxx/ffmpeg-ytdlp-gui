@@ -94,6 +94,7 @@ namespace ffmpeg_command_builder
         { "copy",new StringListItems() },
         { "libx264",softwarePresetList },
         { "hevc",softwarePresetList },
+        { "libx265",softwarePresetList },
       };
 
       HardwareDecoders = new Dictionary<string, CodecListItems>()
@@ -171,7 +172,7 @@ namespace ffmpeg_command_builder
         }
       }
       VideoEncoders.Add(new CodecListItem(new Codec("copy","cpu","copy"),"COPY"));
-      VideoEncoders.Add(new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC(libx265)"));
+      VideoEncoders.Add(new CodecListItem(new Codec("hevc","cpu","libx265"),"HEVC(libx265)"));
       VideoEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264"),"H264(libx264)"));
 
       FileListBindingSource.DataSource = InputFileList = [];
@@ -612,7 +613,7 @@ namespace ffmpeg_command_builder
 
     private void OpenLogFile_Click(object sender, EventArgs e)
     {
-      var filename = GetLogFileName();
+      var filename = ffmpeg_process.GetLogFileName();
       if (!System.IO.File.Exists(filename))
       {
         MessageBox.Show("ログファイルが存在しません。");
