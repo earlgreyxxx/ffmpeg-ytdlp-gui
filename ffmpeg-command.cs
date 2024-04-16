@@ -123,8 +123,15 @@ namespace ffmpeg_command_builder
 
     public ffmpeg_command(string ffmpegpath)
     {
-      Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-      CP932 = Encoding.GetEncoding(932);
+      try
+      {
+        CP932 = Encoding.GetEncoding(932);
+      }
+      catch
+      {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        CP932 = Encoding.GetEncoding(932);
+      }
 
       filters = [];
       options = new Dictionary<string, string>
@@ -381,34 +388,6 @@ namespace ffmpeg_command_builder
       args.Add($"\"{strOutputFilePath}\"");
 
       return args;
-    }
-
-    public CustomProcess InvokeCommand(string strInputPath,bool suspend = false)
-    {
-      var psi = new ProcessStartInfo()
-      {
-        FileName = ffmpegPath,
-        Arguments = GetCommandLineArguments(strInputPath),
-        UseShellExecute = false,
-        RedirectStandardError = true,
-        RedirectStandardInput = true,
-        StandardErrorEncoding = CP932,
-        CreateNoWindow = true
-      };
-
-      psi.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
-
-      var process = new CustomProcess()
-      {
-        StartInfo = psi,
-        EnableRaisingEvents = true,
-        CustomFileName = strInputPath
-      };
-
-      if(!suspend)
-        process.Start();
-
-      return process;
     }
 
     public async void ToBatchFile(string filename,IEnumerable<string> files)

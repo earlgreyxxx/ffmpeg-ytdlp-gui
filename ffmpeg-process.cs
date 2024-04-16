@@ -23,8 +23,7 @@ namespace ffmpeg_command_builder
 
     BindingSource FileList;
 
-    public CustomProcess Current { get; private set; }
-    private List<CustomProcess> Processes = new List<CustomProcess>();
+    public RedirectedProcess Redirected { get; private set; }
 
     private StreamWriter LogWriter;
     private Encoding CP932;
@@ -54,15 +53,9 @@ namespace ffmpeg_command_builder
       FileList = bs;
     }
 
-    ~ffmpeg_process()
-    {
-      foreach(var process in Processes)
-        process.Dispose();
-    }
-
     public void Begin()
     {
-      if (Current != null && !Current.HasExited)
+      if (Redirected != null && !Redirected.Current.HasExited)
         throw new Exception("現在実行中のプロセスが終了するまで新しいプロセスを開始できません。");
 
       if (!string.IsNullOrEmpty(LogFileName))
@@ -77,17 +70,12 @@ namespace ffmpeg_command_builder
       if (filename == null)
         throw new Exception("no file");
 
-      var process = Command.InvokeCommand(filename, true);
-      Processes.Add(process);
-
-      process.Exited += OnProcessExited;
-      process.ErrorDataReceived += new DataReceivedEventHandler(OnDataReceived);
-      if (!process.Start())
-        throw new Exception("プロセスが正常に開始できませんでした。");
-
-      process.BeginErrorReadLine();
-
-      Current = process;
+      Redirected = CreateRedirectedProcess(filename);
+      if (!Redirected.Start())
+      {
+        OnProcessExited(Redirected.Current, new EventArgs());
+        return;
+      }
     }
 
     public void One(string filename)
@@ -95,41 +83,31 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(LogFileName))
         LogWriter = new StreamWriter(LogFileName, false);
 
-      var process = Command.InvokeCommand(filename, true);
-      process.Exited += OnAllProcessExited;
-      process.ErrorDataReceived += new DataReceivedEventHandler(OnDataReceived);
-      if (!process.Start())
+      Redirected = CreateRedirectedProcess(filename);
+      if (!Redirected.Start())
       {
-        OnAllProcessExited(process, new EventArgs());
+        OnAllProcessExited(Redirected.Current, new EventArgs());
         return;
       }
-      process.BeginErrorReadLine();
-      Current = process;
     }
 
-    private void OnDataReceived(object sender, DataReceivedEventArgs e)
+    private void WriteLog(string data)
     {
-      if (e.Data == null)
+      if (string.IsNullOrEmpty(data))
         return;
 
-      if (LogWriter != null)
-      {
-        byte[] bytes = CP932.GetBytes(e.Data);
-        LogWriter.WriteLine(Encoding.UTF8.GetString(bytes));
-      }
-
-      if (!String.IsNullOrEmpty(e.Data))
-        OnReceiveData(e.Data);
+      byte[] bytes = CP932.GetBytes(data);
+      LogWriter?.WriteLine(Encoding.UTF8.GetString(bytes));
     }
 
     private void OnProcessExited(object sender, EventArgs e)
     {
       try
       {
-        string filename = Current.CustomFileName;
-        Current.Dispose();
-        Current = null;
-        OnProcessExit(filename);
+        var process = Redirected.Current as CustomProcess;
+        string filename = process.CustomFileName;
+        OnProcessExit?.Invoke(filename);
+        Redirected = null;
         CreateProcess();
       }
       catch
@@ -140,15 +118,12 @@ namespace ffmpeg_command_builder
 
     private void OnAllProcessExited(object sender, EventArgs e)
     {
-      OnProcessesDone();
+      OnProcessesDone?.Invoke();
       FileList.Clear();
       FileList.ResetBindings(false);
-      LogWriter.Flush();
-      if (LogWriter != null)
-      {
-        LogWriter.Dispose();
-        LogWriter = null;
-      }
+      LogWriter?.Flush();
+      LogWriter?.Dispose();
+      LogWriter = null;
     }
 
     public void Abort(bool stopAll = false)
@@ -156,11 +131,24 @@ namespace ffmpeg_command_builder
       if (stopAll)
         FileList.Clear();
 
-      if (Current == null || Current.HasExited)
+      if (Redirected == null || Redirected.Current.HasExited)
         return;
 
-      using StreamWriter sw = Current.StandardInput;
-      sw.Write('q');
+      Redirected.StdInWriter.Write('q');
+    }
+
+    private RedirectedProcess CreateRedirectedProcess(string filename)
+    {
+      var redirected = new RedirectedProcess(Command.ffmpegPath, Command.GetCommandLineArguments(filename));
+      var process = redirected.Current as CustomProcess;
+      process.CustomFileName = filename;
+      process.StartInfo.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
+
+      redirected.OnProcessExited += OnProcessExited;
+      redirected.OnStdErrReceived += WriteLog;
+      redirected.OnStdErrReceived += data => OnReceiveData.Invoke(data);
+      
+      return redirected;
     }
   }
 }

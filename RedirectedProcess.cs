@@ -11,7 +11,7 @@ namespace ffmpeg_command_builder
 {
   internal class RedirectedProcess
   {
-    public Process Current { get; private set; } = new Process();
+    public Process Current { get; private set; } = new CustomProcess();
     public event Action<object, EventArgs> OnProcessExited;
     public event Action<string> OnStdOutReceived;
     public event Action<string> OnStdErrReceived;
@@ -31,14 +31,15 @@ namespace ffmpeg_command_builder
     {
       StdInWriter.Dispose();
       StdInWriter = null;
-      OnProcessExited(this, new RedirectedProcessEventArgs(psi.FileName, psi.Arguments));
+      OnProcessExited?.Invoke(this, new RedirectedProcessEventArgs(psi.FileName, psi.Arguments));
       Exited = Current.HasExited;
     }
 
-    public RedirectedProcess(string filename, string arguments)
+    public RedirectedProcess(string filename, string arguments = "")
     {
       psi.FileName = filename;
-      psi.Arguments = arguments;
+      if(!string.IsNullOrEmpty(arguments))
+        psi.Arguments = arguments;
 
       Current.StartInfo = psi;
       Current.Exited += Process_Exited;
@@ -50,10 +51,13 @@ namespace ffmpeg_command_builder
       Current.Dispose();
     }
 
-    public bool Start()
+    public bool Start(string arguments = "")
     {
-      Current.OutputDataReceived += (sender, ev) => OnStdOutReceived(ev.Data ?? string.Empty);
-      Current.ErrorDataReceived += (sender, ev) => OnStdErrReceived(ev.Data ?? string.Empty);
+      Current.OutputDataReceived += (sender, ev) => OnStdOutReceived?.Invoke(ev.Data ?? string.Empty);
+      Current.ErrorDataReceived += (sender, ev) => OnStdErrReceived?.Invoke(ev.Data ?? string.Empty);
+
+      if(!string.IsNullOrEmpty(arguments))
+        Current.StartInfo.Arguments = arguments;
 
       bool rv = Current.Start();
       if (rv)
