@@ -65,5 +65,8 @@
     <Setting Name="fps" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
+    <Setting Name="openStderr" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

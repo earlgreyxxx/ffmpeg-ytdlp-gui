@@ -28,11 +28,9 @@
     /// </summary>
     private void InitializeComponent()
     {
-      components = new System.ComponentModel.Container();
       StdOutAndErrorView = new System.Windows.Forms.TextBox();
       BtnClose = new System.Windows.Forms.Button();
-      StdoutBindingSource = new System.Windows.Forms.BindingSource(components);
-      ((System.ComponentModel.ISupportInitialize)StdoutBindingSource).BeginInit();
+      BtnToggleReader = new System.Windows.Forms.Button();
       SuspendLayout();
       // 
       // StdOutAndErrorView
@@ -53,6 +51,7 @@
       // BtnClose
       // 
       BtnClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+      BtnClose.Enabled = false;
       BtnClose.Location = new System.Drawing.Point(780, 436);
       BtnClose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       BtnClose.Name = "BtnClose";
@@ -63,11 +62,23 @@
       BtnClose.UseVisualStyleBackColor = true;
       BtnClose.Click += BtnClose_Click;
       // 
+      // BtnToggleReader
+      // 
+      BtnToggleReader.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+      BtnToggleReader.Location = new System.Drawing.Point(699, 436);
+      BtnToggleReader.Name = "BtnToggleReader";
+      BtnToggleReader.Size = new System.Drawing.Size(75, 29);
+      BtnToggleReader.TabIndex = 2;
+      BtnToggleReader.Text = "読込中断";
+      BtnToggleReader.UseVisualStyleBackColor = true;
+      BtnToggleReader.Click += ToggleReader_Click;
+      // 
       // StdoutForm
       // 
       AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       ClientSize = new System.Drawing.Size(856, 476);
+      Controls.Add(BtnToggleReader);
       Controls.Add(BtnClose);
       Controls.Add(StdOutAndErrorView);
       Font = new System.Drawing.Font("MS UI Gothic", 9F);
@@ -78,7 +89,7 @@
       ShowIcon = false;
       ShowInTaskbar = false;
       Text = "ffmpeg outputs";
-      ((System.ComponentModel.ISupportInitialize)StdoutBindingSource).EndInit();
+      FormClosing += StdoutForm_FormClosing;
       ResumeLayout(false);
       PerformLayout();
     }
@@ -87,6 +98,6 @@
 
     private System.Windows.Forms.TextBox StdOutAndErrorView;
     private System.Windows.Forms.Button BtnClose;
-    private System.Windows.Forms.BindingSource StdoutBindingSource;
+    private System.Windows.Forms.Button BtnToggleReader;
   }
 }

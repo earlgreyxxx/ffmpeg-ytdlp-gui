@@ -8,9 +8,13 @@ namespace ffmpeg_command_builder
 {
   public partial class StdoutForm : Form
   {
-    private Action<string> StdoutErrorAndWrite;
-    private Action ProcessExit;
-    private RedirectedProcess redirected;
+    public bool Pause { get; private set; } = false;
+    public List<string> LogData { get; private set; } = new List<string>();
+
+    public event Action<string> OnDataReceived;
+    public event Action OnProcessExit;
+
+    public RedirectedProcess Redirected { get; private set; }
 
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
     private static partial Regex IsExecutableFile();
@@ -18,32 +22,71 @@ namespace ffmpeg_command_builder
     public StdoutForm()
     {
       InitializeComponent();
+    }
 
-      StdoutErrorAndWrite = output => StdOutAndErrorView.AppendText(output + "\r\n");
-      ProcessExit = () =>
+    public StdoutForm(string executable, string arguments, string title = "") : this()
+    {
+      OnDataReceived += data => WriteLine(data);
+      OnProcessExit += () =>
       {
         BtnClose.Enabled = true;
         StdOutAndErrorView.Focus();
-
         StdOutAndErrorView.SelectionStart = 0;
         StdOutAndErrorView.ScrollToCaret();
       };
+
+      Redirected = new RedirectedProcess(executable, arguments);
+      Redirected.OnProcessExited += (s, e) => Invoke(OnProcessExit);
+      Redirected.OnStdErrReceived += data => Invoke(OnDataReceived, [data]);
+      Redirected.OnStdOutReceived += data => Invoke(OnDataReceived, [data]);
+
+      if (!string.IsNullOrEmpty(title))
+        Text = title;
+
+      BtnClose.Enabled = true;
     }
 
-    public bool StartProcess(string fileName, string arguments = "")
+    public void OnProcesssDoneInvoker()
     {
-      redirected = new RedirectedProcess(fileName, arguments);
-      redirected.OnProcessExited += (s, e) => Invoke(ProcessExit);
-      redirected.OnStdOutReceived += data => Invoke(StdoutErrorAndWrite,[data]);
-      redirected.OnStdErrReceived += data => Invoke(StdoutErrorAndWrite,[data]);
+      BtnClose.Enabled = true;
+      BtnToggleReader.Enabled = false;
+      if (LogData.Count > 0)
+      {
+        StdOutAndErrorView.AppendText("\r\n");
+        StdOutAndErrorView.AppendText(string.Join("\r\n", LogData));
+        LogData.Clear();
+      }
+    }
 
-      return redirected.Start();
+    public void WriteLine(object data)
+    {
+      StdOutAndErrorView.AppendText($"{data.ToString()}\r\n");
     }
 
     private void BtnClose_Click(object sender, EventArgs e)
     {
-      if(redirected.Exited)
-        Close();
+      Close();
+    }
+
+    private void StdoutForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      if (!BtnClose.Enabled)
+        e.Cancel = true;
+    }
+
+    private void ToggleReader_Click(object sender, EventArgs e)
+    {
+      Button btn = sender as Button;
+
+      btn.Text = Pause ? "読込中断" : "読込再開";
+      if (Pause)
+      {
+        StdOutAndErrorView.AppendText("\r\n");
+        StdOutAndErrorView.AppendText(string.Join("\r\n", LogData));
+      }
+      LogData.Clear();
+
+      Pause = !Pause;
     }
   }
 }

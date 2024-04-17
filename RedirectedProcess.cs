@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
 {
-  internal class RedirectedProcess
+  public class RedirectedProcess
   {
     public Process Current { get; private set; } = new CustomProcess();
     public event Action<object, EventArgs> OnProcessExited;

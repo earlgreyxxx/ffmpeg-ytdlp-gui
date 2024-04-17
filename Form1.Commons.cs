@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -92,9 +92,7 @@ namespace ffmpeg_command_builder
 
     // Instance members
     // ---------------------------------------------------------------------------------
-
-    private ffmpeg_process Processing;
-
+    private ffmpeg_process Proceeding;
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
       var process = new ffmpeg_process(command,FileListBindingSource);
@@ -106,22 +104,45 @@ namespace ffmpeg_command_builder
         if (FileListBindingSource.Count > 0)
           btnSubmitInvoke.Enabled = true;
 
-        Processing = null;
+        Proceeding = null;
         MessageBox.Show("変換処理が終了しました。");
       };
       Action<string> ReceiveDataInvoker = output => OutputStderr.Text = output; 
       Action<string> ProcessExitInvoker = filename =>
       {
         var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == filename);
-        if (item != null)
-          FileListBindingSource.Remove(item);
+        if (item == null)
+          return;
+
+        FileListBindingSource.Remove(item);
       };
 
       process.OnProcessesDone += () => Invoke(ProcessesDoneInvoker);
-      process.OnReceiveData += output => Invoke(ReceiveDataInvoker, [output]);
+      process.OnReceiveData += data => Invoke(ReceiveDataInvoker, [data]);
       process.OnProcessExit += filename => Invoke(ProcessExitInvoker, [filename]);
 
-      Processing = process;
+      if (IsOpenStderr.Checked)
+      {
+        var form = new StdoutForm();
+        var cp932 = Encoding.GetEncoding(932);
+        process.OnReceiveData += data =>
+        {
+          if (string.IsNullOrEmpty(data))
+            return;
+
+          byte[] bytes = cp932.GetBytes(data);
+          string encoded = Encoding.UTF8.GetString(bytes);
+
+          if (form.Pause)
+            form.LogData.Add(encoded);
+          else
+            form.Invoke(form.WriteLine, [encoded]);
+        };
+        process.OnProcessesDone += () => form.Invoke(form.OnProcesssDoneInvoker);
+        form.Show();
+      }
+
+      Proceeding = process;
       return process;
     }
 
@@ -294,7 +315,7 @@ namespace ffmpeg_command_builder
       if (stopAll)
         FileListBindingSource.Clear();
 
-      Processing.Abort(stopAll);
+      Proceeding.Abort(stopAll);
     }
 
     private void OpenOutputView(string executable, string arg,string formTitle = "ffmpeg outputs")
@@ -306,8 +327,8 @@ namespace ffmpeg_command_builder
           return;
       }
 
-      var form = new StdoutForm();
-      form.Text = formTitle;
+      var form = new StdoutForm(executable, arg, formTitle);
+      form.OnProcessExit += form.OnProcesssDoneInvoker;
 
       if (HelpFormSize.Width > 0 && HelpFormSize.Height > 0)
       {
@@ -315,7 +336,7 @@ namespace ffmpeg_command_builder
         form.Height = HelpFormSize.Height;
       }
 
-      form.Shown += (s, e) => form.StartProcess(executable, arg);
+      form.Shown += (s, e) => form.Redirected.Start();
       form.FormClosing += (s, e) =>
       {
         HelpFormSize.Width = form.Width;
@@ -365,6 +386,9 @@ namespace ffmpeg_command_builder
     {
       btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = true;
       OpenLogFile.Enabled = false;
+
+      if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
+        cbOutputDir.Items.Add(cbOutputDir.Text);
     }
   }
 }

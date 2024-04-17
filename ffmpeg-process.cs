@@ -13,6 +13,8 @@ namespace ffmpeg_command_builder
 
   internal class ffmpeg_process
   {
+    // statics
+    // ---------------------------------------------------------------------------------------
     public static string GetLogFileName()
     {
       return Path.Combine(
@@ -21,6 +23,18 @@ namespace ffmpeg_command_builder
       );
     }
 
+    private static RedirectedProcess CreateRedirectedProcess(string filename,ffmpeg_command command)
+    {
+      var redirected = new RedirectedProcess(command.ffmpegPath, command.GetCommandLineArguments(filename));
+      var process = redirected.Current as CustomProcess;
+      process.CustomFileName = filename;
+      process.StartInfo.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
+
+      return redirected;
+    }
+
+    // instances
+    // ---------------------------------------------------------------------------------------
     BindingSource FileList;
 
     public RedirectedProcess Redirected { get; private set; }
@@ -70,7 +84,10 @@ namespace ffmpeg_command_builder
       if (filename == null)
         throw new Exception("no file");
 
-      Redirected = CreateRedirectedProcess(filename);
+      Redirected = CreateRedirectedProcess(filename,Command);
+      Redirected.OnProcessExited += OnProcessExited;
+      Redirected.OnStdErrReceived += WriteLog;
+      Redirected.OnStdErrReceived += data => OnReceiveData.Invoke(data);
       if (!Redirected.Start())
       {
         OnProcessExited(Redirected.Current, new EventArgs());
@@ -83,7 +100,11 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(LogFileName))
         LogWriter = new StreamWriter(LogFileName, false);
 
-      Redirected = CreateRedirectedProcess(filename);
+      Redirected = CreateRedirectedProcess(filename,Command);
+      Redirected.OnProcessExited += OnAllProcessExited;
+      Redirected.OnStdErrReceived += WriteLog;
+      Redirected.OnStdErrReceived += data => OnReceiveData.Invoke(data);
+      
       if (!Redirected.Start())
       {
         OnAllProcessExited(Redirected.Current, new EventArgs());
@@ -135,20 +156,6 @@ namespace ffmpeg_command_builder
         return;
 
       Redirected.StdInWriter.Write('q');
-    }
-
-    private RedirectedProcess CreateRedirectedProcess(string filename)
-    {
-      var redirected = new RedirectedProcess(Command.ffmpegPath, Command.GetCommandLineArguments(filename));
-      var process = redirected.Current as CustomProcess;
-      process.CustomFileName = filename;
-      process.StartInfo.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
-
-      redirected.OnProcessExited += OnProcessExited;
-      redirected.OnStdErrReceived += WriteLog;
-      redirected.OnStdErrReceived += data => OnReceiveData.Invoke(data);
-      
-      return redirected;
     }
   }
 }

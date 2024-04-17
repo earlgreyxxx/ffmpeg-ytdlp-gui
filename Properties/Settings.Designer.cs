@@ -272,5 +272,17 @@ namespace ffmpeg_command_builder.Properties {
                 this["fps"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool openStderr {
+            get {
+                return ((bool)(this["openStderr"]));
+            }
+            set {
+                this["openStderr"] = value;
+            }
+        }
     }
 }

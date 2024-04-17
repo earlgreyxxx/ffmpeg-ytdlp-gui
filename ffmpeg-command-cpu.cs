@@ -111,7 +111,7 @@ namespace ffmpeg_command_builder
         if (filters.ContainsKey("scale"))
         {
           string size = filters["scale"];
-          string filter = IsLandscape ? $"-1:{size}" : $"{size}:-1";
+          string filter = IsLandscape ? $"-2:{size}" : $"{size}:-2";
           strFilters.Add($"scale={filter}");
         }
 
@@ -127,6 +127,9 @@ namespace ffmpeg_command_builder
         yield return options["vcodec"];
         yield return options["preset"];
         yield return options["b:v"];
+
+        if (options.ContainsKey("lookahead") && !string.IsNullOrEmpty(options["lookahead"]))
+          yield return $"-rc-lookahead {options["lookahead"]}";
 
         if (options.ContainsKey("tag:v"))
           yield return options["tag:v"];

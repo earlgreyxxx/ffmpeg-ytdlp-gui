@@ -158,6 +158,7 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       groupBox5 = new System.Windows.Forms.GroupBox();
+      IsOpenStderr = new System.Windows.Forms.CheckBox();
       FilePrefix = new System.Windows.Forms.ComboBox();
       FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
@@ -538,10 +539,9 @@
       // 
       // cbOutputDir
       // 
-      cbOutputDir.Location = new System.Drawing.Point(11, 30);
+      cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
       cbOutputDir.Size = new System.Drawing.Size(288, 20);
-      cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
       // 
@@ -550,7 +550,7 @@
       FileContainer.DisplayMember = "Label";
       FileContainer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       FileContainer.FormattingEnabled = true;
-      FileContainer.Location = new System.Drawing.Point(330, 85);
+      FileContainer.Location = new System.Drawing.Point(328, 67);
       FileContainer.Name = "FileContainer";
       FileContainer.Size = new System.Drawing.Size(64, 20);
       FileContainer.TabIndex = 31;
@@ -561,7 +561,7 @@
       // 
       label13.AutoSize = true;
       label13.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold);
-      label13.Location = new System.Drawing.Point(319, 89);
+      label13.Location = new System.Drawing.Point(317, 71);
       label13.Name = "label13";
       label13.Size = new System.Drawing.Size(8, 12);
       label13.TabIndex = 32;
@@ -571,7 +571,7 @@
       // 
       label10.AutoSize = true;
       label10.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      label10.Location = new System.Drawing.Point(13, 71);
+      label10.Location = new System.Drawing.Point(12, 53);
       label10.Name = "label10";
       label10.Size = new System.Drawing.Size(372, 11);
       label10.TabIndex = 30;
@@ -582,7 +582,7 @@
       FileName.FormattingEnabled = true;
       FileName.ItemHeight = 12;
       FileName.Items.AddRange(new object[] { "元ファイル名" });
-      FileName.Location = new System.Drawing.Point(73, 85);
+      FileName.Location = new System.Drawing.Point(73, 67);
       FileName.Name = "FileName";
       FileName.Size = new System.Drawing.Size(182, 20);
       FileName.TabIndex = 29;
@@ -601,7 +601,7 @@
       // 
       // OpenFolder
       // 
-      OpenFolder.Location = new System.Drawing.Point(350, 27);
+      OpenFolder.Location = new System.Drawing.Point(350, 18);
       OpenFolder.Name = "OpenFolder";
       OpenFolder.Size = new System.Drawing.Size(43, 24);
       OpenFolder.TabIndex = 10;
@@ -612,7 +612,7 @@
       // 
       // btnSubmitOpenDlg
       // 
-      btnSubmitOpenDlg.Location = new System.Drawing.Point(305, 28);
+      btnSubmitOpenDlg.Location = new System.Drawing.Point(305, 19);
       btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
       btnSubmitOpenDlg.Size = new System.Drawing.Size(43, 23);
       btnSubmitOpenDlg.TabIndex = 9;
@@ -1292,10 +1292,10 @@
       tabPage1.Controls.Add(CommonButtonBox);
       tabPage1.Controls.Add(groupBox8);
       tabPage1.Controls.Add(Image2Box);
-      tabPage1.Location = new System.Drawing.Point(4, 27);
+      tabPage1.Location = new System.Drawing.Point(4, 22);
       tabPage1.Name = "tabPage1";
       tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      tabPage1.Size = new System.Drawing.Size(832, 413);
+      tabPage1.Size = new System.Drawing.Size(832, 418);
       tabPage1.TabIndex = 1;
       tabPage1.Text = "ユーティリティ";
       // 
@@ -1306,19 +1306,21 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
       // 
       // CommandInvoker
       // 
+      CommandInvoker.Enabled = false;
       CommandInvoker.Location = new System.Drawing.Point(9, 3);
       CommandInvoker.Name = "CommandInvoker";
       CommandInvoker.Size = new System.Drawing.Size(106, 24);
       CommandInvoker.TabIndex = 2;
       CommandInvoker.Text = "コマンド実行";
       CommandInvoker.UseVisualStyleBackColor = true;
+      CommandInvoker.Visible = false;
       CommandInvoker.Click += CommandInvoker_Click;
       // 
       // btnStopUtil
@@ -1364,7 +1366,7 @@
       groupBox8.Controls.Add(SubmitConcat);
       groupBox8.Location = new System.Drawing.Point(12, 136);
       groupBox8.Name = "groupBox8";
-      groupBox8.Size = new System.Drawing.Size(805, 124);
+      groupBox8.Size = new System.Drawing.Size(805, 119);
       groupBox8.TabIndex = 2;
       groupBox8.TabStop = false;
       groupBox8.Text = "ツール";
@@ -1581,6 +1583,7 @@
       // 
       // groupBox5
       // 
+      groupBox5.Controls.Add(IsOpenStderr);
       groupBox5.Controls.Add(FilePrefix);
       groupBox5.Controls.Add(FileSuffix);
       groupBox5.Controls.Add(btnSubmitOpenDlg);
@@ -1597,10 +1600,21 @@
       groupBox5.TabStop = false;
       groupBox5.Text = "出力フォルダとファイル";
       // 
+      // IsOpenStderr
+      // 
+      IsOpenStderr.AutoSize = true;
+      IsOpenStderr.Location = new System.Drawing.Point(12, 99);
+      IsOpenStderr.Name = "IsOpenStderr";
+      IsOpenStderr.Size = new System.Drawing.Size(218, 16);
+      IsOpenStderr.TabIndex = 35;
+      IsOpenStderr.TabStop = false;
+      IsOpenStderr.Text = "FFmpegの実行出力ウィンドウを表示する";
+      IsOpenStderr.UseVisualStyleBackColor = true;
+      // 
       // FilePrefix
       // 
       FilePrefix.FormattingEnabled = true;
-      FilePrefix.Location = new System.Drawing.Point(11, 85);
+      FilePrefix.Location = new System.Drawing.Point(11, 67);
       FilePrefix.Name = "FilePrefix";
       FilePrefix.Size = new System.Drawing.Size(61, 20);
       FilePrefix.TabIndex = 34;
@@ -1609,7 +1623,7 @@
       // FileSuffix
       // 
       FileSuffix.FormattingEnabled = true;
-      FileSuffix.Location = new System.Drawing.Point(256, 85);
+      FileSuffix.Location = new System.Drawing.Point(256, 67);
       FileSuffix.Name = "FileSuffix";
       FileSuffix.Size = new System.Drawing.Size(59, 20);
       FileSuffix.TabIndex = 33;
@@ -1832,6 +1846,7 @@
     private System.Windows.Forms.ComboBox FilePrefix;
     private System.Windows.Forms.ComboBox FileSuffix;
     private System.Windows.Forms.Button CommandInvoker;
+    private System.Windows.Forms.CheckBox IsOpenStderr;
   }
 }
 

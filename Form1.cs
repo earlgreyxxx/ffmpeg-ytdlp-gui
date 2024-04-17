@@ -219,6 +219,7 @@ namespace ffmpeg_command_builder
       VideoWidth.DataBindings.Add("Value", Settings.Default, "videoWidth");
       VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
       FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
+      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -277,7 +278,7 @@ namespace ffmpeg_command_builder
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
-      if (Processing != null)
+      if (Proceeding != null)
       {
         e.Cancel = true;
         return;
@@ -323,9 +324,6 @@ namespace ffmpeg_command_builder
         MessageBox.Show(ex.Message, "エラー");
         return;
       }
-
-      if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
-        cbOutputDir.Items.Add(cbOutputDir.Text);
 
       if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
       {
@@ -559,7 +557,8 @@ namespace ffmpeg_command_builder
       CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
       LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
-      LookAhead.Enabled = !isCpu;
+      //LookAhead.Enabled = !isCpu;
+      //if(codec.Name == "libx264")
 
       chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isCpu;
 
@@ -703,9 +702,6 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
-        cbOutputDir.Items.Add(cbOutputDir.Text);
-
       if (FileListBindingSource.Count > 0)
       {
         btnSubmitInvoke.Enabled = false;
@@ -743,6 +739,9 @@ namespace ffmpeg_command_builder
           Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
           $"ffmpeg-command-builder-{Process.GetCurrentProcess().Id}.txt"
         );
+
+        if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
+          cbOutputDir.Items.Add(cbOutputDir.Text);
 
         using (var sw = new StreamWriter(listfile))
         {
