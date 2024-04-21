@@ -162,6 +162,7 @@
       FilePrefix = new System.Windows.Forms.ComboBox();
       FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
+      DirectoryListBindingSource = new System.Windows.Forms.BindingSource(components);
       groupBox1.SuspendLayout();
       groupBox2.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -198,6 +199,7 @@
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
       groupBox5.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)DirectoryListBindingSource).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -539,11 +541,14 @@
       // 
       // cbOutputDir
       // 
+      cbOutputDir.DisplayMember = "Label";
       cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
       cbOutputDir.Size = new System.Drawing.Size(288, 20);
+      cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
+      cbOutputDir.ValueMember = "Value";
       // 
       // FileContainer
       // 
@@ -724,7 +729,7 @@
       // 
       // btnClear
       // 
-      btnClear.Location = new System.Drawing.Point(706, 55);
+      btnClear.Location = new System.Drawing.Point(706, 56);
       btnClear.Name = "btnClear";
       btnClear.Size = new System.Drawing.Size(113, 23);
       btnClear.TabIndex = 2;
@@ -891,7 +896,7 @@
       // 
       btnApply.Location = new System.Drawing.Point(706, 10);
       btnApply.Name = "btnApply";
-      btnApply.Size = new System.Drawing.Size(113, 39);
+      btnApply.Size = new System.Drawing.Size(113, 40);
       btnApply.TabIndex = 1;
       btnApply.TabStop = false;
       btnApply.Text = "実行コマンド確認\r\n（表示更新）";
@@ -1708,6 +1713,7 @@
       groupBox5.ResumeLayout(false);
       groupBox5.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)DirectoryListBindingSource).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -1847,6 +1853,7 @@
     private System.Windows.Forms.ComboBox FileSuffix;
     private System.Windows.Forms.Button CommandInvoker;
     private System.Windows.Forms.CheckBox IsOpenStderr;
+    private System.Windows.Forms.BindingSource DirectoryListBindingSource;
   }
 }
 

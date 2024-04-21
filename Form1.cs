@@ -25,6 +25,7 @@ namespace ffmpeg_command_builder
     private CodecListItems VideoEncoders;
     private CodecListItems AudioEncoders;
     private StringListItems InputFileList;
+    private StringListItems OutputDirectoryList;
     private Size HelpFormSize = new(0, 0);
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
@@ -36,6 +37,7 @@ namespace ffmpeg_command_builder
     public Form1()
     {
       InitializeComponent();
+      ChangeCurrentDirectory();
 
       StringListItems nvencPresetList =
       [
@@ -178,6 +180,9 @@ namespace ffmpeg_command_builder
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
 
+      DirectoryListBindingSource.DataSource = OutputDirectoryList = [];
+      cbOutputDir.DataSource = DirectoryListBindingSource;
+
       FileContainer.DataSource = new StringListItems()
       {
         new StringListItem(".mp4","mp4"),
@@ -228,12 +233,11 @@ namespace ffmpeg_command_builder
       var folders = Settings.Default.outputFolders;
       if (folders != null && folders.Count > 0)
       {
-        foreach (string item in folders)
+        foreach (string info in folders)
         {
-          if (cbOutputDir.Items.Contains(item) || !Directory.Exists(item))
-            continue;
-
-          cbOutputDir.Items.Add(item);
+          var items = info.Split(['|']);
+          var item = new StringListItem(items[0], DateTime.Parse(items[1]));
+          DirectoryListBindingSource.Add(item);
         }
       }
 
@@ -294,8 +298,16 @@ namespace ffmpeg_command_builder
       Settings.Default.cq = chkConstantQuality.Checked;
       Settings.Default.bitrate = vBitrate.Value;
 
-      foreach (string item in cbOutputDir.Items)
-        Settings.Default.outputFolders.Add(item);
+      var checks = new List<string>();
+      var items = OutputDirectoryList.OrderByDescending(item => (DateTime)item.Data).Take(10);
+      foreach (var item in items)
+      {
+        if (!checks.Contains(item.Value))
+        {
+          checks.Add(item.Value);
+          Settings.Default.outputFolders.Add($"{item.Value}|{((DateTime)item.Data).ToString()}");
+        }
+      }
 
       foreach (string item in ffmpeg.Items)
       {
@@ -308,8 +320,8 @@ namespace ffmpeg_command_builder
 
     private void btnClearDirs_Click(object sender, EventArgs e)
     {
-      cbOutputDir.Items.Clear();
       ffmpeg.Items.Clear();
+      DirectoryListBindingSource.Clear();
       Settings.Default.Reset();
     }
 
@@ -350,7 +362,10 @@ namespace ffmpeg_command_builder
         FindFolder.SelectedPath = cbOutputDir.Text;
 
       if (DialogResult.OK == FindFolder.ShowDialog())
+      {
+        cbOutputDir.Text = null;
         cbOutputDir.Text = FindFolder.SelectedPath;
+      }
     }
 
     private void btnApply_Click(object sender, EventArgs e)
@@ -363,8 +378,13 @@ namespace ffmpeg_command_builder
       }
 
       var ffcommand = CreateCommand(chkAudioOnly.Checked);
-      if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text) && !cbOutputDir.Items.Contains(cbOutputDir.Text))
-        cbOutputDir.Items.Add(cbOutputDir.Text);
+
+      if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text) && !cbOutputDir.Items.OfType<StringListItem>().Any(item => item.Value == cbOutputDir.Text))
+      {
+        var item = new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now);
+        DirectoryListBindingSource.Add(item);
+        cbOutputDir.SelectedItem = item;
+      }
 
       Commandlines.Text = ffcommand.GetCommandLine("sample.mp4");
     }
@@ -511,8 +531,7 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
-        cbOutputDir.Items.Add(cbOutputDir.Text);
+      AddDirectoryListItem();
 
       if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
       {
@@ -739,9 +758,6 @@ namespace ffmpeg_command_builder
           Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
           $"ffmpeg-command-builder-{Process.GetCurrentProcess().Id}.txt"
         );
-
-        if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
-          cbOutputDir.Items.Add(cbOutputDir.Text);
 
         using (var sw = new StreamWriter(listfile))
         {

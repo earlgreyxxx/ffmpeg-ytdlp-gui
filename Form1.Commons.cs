@@ -46,8 +46,9 @@ namespace ffmpeg_command_builder
           .ToArray();
     }
 
-    private static void CheckDirectory(string path)
+    private static void CheckDirectory(string strPath)
     {
+      string path = strPath.Trim();
       if (string.IsNullOrEmpty(path))
         throw new Exception("出力先フォルダを指定してください。");
 
@@ -88,6 +89,14 @@ namespace ffmpeg_command_builder
     {
       var VideoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
       GpuDevices = VideoDevices.Get().Cast<ManagementObject>().ToList();
+    }
+
+    private static void ChangeCurrentDirectory(string dir = null)
+    {
+      if (string.IsNullOrEmpty(dir))
+        dir = @"%USERPROFILE%\Videos";
+
+      Environment.CurrentDirectory = Environment.ExpandEnvironmentVariables(dir);
     }
 
     // Instance members
@@ -387,8 +396,13 @@ namespace ffmpeg_command_builder
       btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = true;
       OpenLogFile.Enabled = false;
 
-      if (!cbOutputDir.Items.Contains(cbOutputDir.Text))
-        cbOutputDir.Items.Add(cbOutputDir.Text);
+      AddDirectoryListItem();
+    }
+
+    private void AddDirectoryListItem()
+    {
+      if(!cbOutputDir.Items.OfType<StringListItem>().Any(item => item.Value == cbOutputDir.Text))
+        DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, DateTime.Now));
     }
   }
 }
