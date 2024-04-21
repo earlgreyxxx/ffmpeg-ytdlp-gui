@@ -9,8 +9,23 @@ using System.Text.RegularExpressions;
 
 namespace ffmpeg_command_builder
 {
+  using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
+
   internal partial class ffmpeg_command : IEnumerable<string>
   {
+    public static string CreateBatch(FFmpegBatchList list)
+    {
+      var sb = new StringBuilder();
+      var commandlines = list.SelectMany(pair => pair.Value.Select(path => pair.Key.GetCommandLine(path)));
+
+      sb.AppendLine("@ECHO OFF");
+      foreach (var commandline in commandlines)
+        sb.AppendLine(commandline);
+      sb.AppendLine("PAUSE");
+
+      return sb.ToString();
+    }
+
     // instances
     protected int FileIndex = 1;
     private string _file_prefix;

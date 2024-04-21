@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ namespace ffmpeg_command_builder
   using CodecListItems = List<ListItem<Codec>>;
   using StringListItem = ListItem<string>;
   using StringListItems = List<ListItem<string>>;
+  using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
 
   public partial class Form1 : Form
   {
@@ -27,6 +29,7 @@ namespace ffmpeg_command_builder
     private StringListItems InputFileList;
     private StringListItems OutputDirectoryList;
     private Size HelpFormSize = new(0, 0);
+    private FFmpegBatchList BatchList;
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -164,18 +167,18 @@ namespace ffmpeg_command_builder
       {
         if (device.Value.StartsWith("intel", true, ci))
         {
-          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"),"HEVC(QSV)"));
-          VideoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"),"H264(QSV)"));
+          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"), "HEVC(QSV)"));
+          VideoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"), "H264(QSV)"));
         }
         if (device.Value.StartsWith("nvidia", true, ci))
         {
-          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"),"HEVC(NVEnc)"));
-          VideoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"),"H264(NVEnc)"));
+          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"), "HEVC(NVEnc)"));
+          VideoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"), "H264(NVEnc)"));
         }
       }
-      VideoEncoders.Add(new CodecListItem(new Codec("copy","cpu","copy"),"COPY"));
-      VideoEncoders.Add(new CodecListItem(new Codec("hevc","cpu","libx265"),"HEVC(libx265)"));
-      VideoEncoders.Add(new CodecListItem(new Codec("libx264","cpu","libx264"),"H264(libx264)"));
+      VideoEncoders.Add(new CodecListItem(new Codec("copy", "cpu", "copy"), "COPY"));
+      VideoEncoders.Add(new CodecListItem(new Codec("hevc", "cpu", "libx265"), "HEVC(libx265)"));
+      VideoEncoders.Add(new CodecListItem(new Codec("libx264", "cpu", "libx264"), "H264(libx264)"));
 
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
@@ -236,8 +239,11 @@ namespace ffmpeg_command_builder
         foreach (string info in folders)
         {
           var items = info.Split(['|']);
-          var item = new StringListItem(items[0], DateTime.Parse(items[1]));
-          DirectoryListBindingSource.Add(item);
+          if (items.Length == 2)
+          {
+            var item = new StringListItem(items[0], DateTime.Parse(items[1]));
+            DirectoryListBindingSource.Add(item);
+          }
         }
       }
 
@@ -521,6 +527,31 @@ namespace ffmpeg_command_builder
 
     private void btnSubmitSaveToFile_Click(object sender, EventArgs e)
     {
+      if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
+        return;
+
+      string filename = FindSaveBatchFile.FileName;
+      if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？","警告",MessageBoxButtons.YesNo))
+        return;
+
+      using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
+      {
+        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList));
+      }
+
+      BatchList.Clear();
+      BatchList = null;
+      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = false;
+    }
+
+    private void btnSubmitAddToFile_Click(object sender, EventArgs e)
+    {
+      if (BatchList == null)
+      {
+        BatchList = new FFmpegBatchList();
+        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = true;
+      }
+
       try
       {
         CheckDirectory(cbOutputDir.Text);
@@ -542,18 +573,24 @@ namespace ffmpeg_command_builder
 
       if (FileListBindingSource.Count > 0)
       {
-        if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
-          return;
-
         var command = CreateCommand(chkAudioOnly.Checked);
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 
-        command.ToBatchFile(
-          FindSaveBatchFile.FileName,
-          FileListBindingSource.OfType<StringListItem>().Select(item => item.Value)
+        BatchList.Add(
+          command,
+          FileListBindingSource.OfType<StringListItem>().Select(item => item.Value).ToList()
         );
+
+        FileListBindingSource.Clear();
       }
+    }
+
+    private void btnSubmitBatchClear_Click(object sender, EventArgs e)
+    {
+      BatchList.Clear();
+      BatchList = null;
+      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = false;
     }
 
     private void btnStop_Click(object sender, EventArgs e)
@@ -848,7 +885,7 @@ namespace ffmpeg_command_builder
 
     private void CommandInvoker_Click(object sender, EventArgs e)
     {
-      OpenOutputView("git.exe", "help -a","git help");
+      OpenOutputView("git.exe", "help -a", "git help");
     }
   }
 }

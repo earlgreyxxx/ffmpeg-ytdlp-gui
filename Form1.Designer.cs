@@ -68,7 +68,7 @@
       OpenLogFile = new System.Windows.Forms.Button();
       OpenFolder = new System.Windows.Forms.Button();
       btnSubmitOpenDlg = new System.Windows.Forms.Button();
-      btnSubmitSaveToFile = new System.Windows.Forms.Button();
+      btnSubmitAddToBatch = new System.Windows.Forms.Button();
       btnClearDirs = new System.Windows.Forms.Button();
       btnSubmitInvoke = new System.Windows.Forms.Button();
       LayoutBox = new System.Windows.Forms.GroupBox();
@@ -101,8 +101,6 @@
       cbDevices = new System.Windows.Forms.ComboBox();
       panel1 = new System.Windows.Forms.Panel();
       ClearFileList = new System.Windows.Forms.Button();
-      OpenDecoderHelp = new System.Windows.Forms.Button();
-      OpenEncoderHelp = new System.Windows.Forms.Button();
       btnFFmpeg = new System.Windows.Forms.Button();
       label8 = new System.Windows.Forms.Label();
       OpenFFMpegFileDlg = new System.Windows.Forms.OpenFileDialog();
@@ -125,12 +123,16 @@
       Tab = new System.Windows.Forms.TabControl();
       PageConvert = new System.Windows.Forms.TabPage();
       SubmitButtonBox = new System.Windows.Forms.Panel();
+      btnSubmitBatchClear = new System.Windows.Forms.Button();
+      btnSubmitSaveToFile = new System.Windows.Forms.Button();
       groupBox6 = new System.Windows.Forms.GroupBox();
       FreeOptions = new System.Windows.Forms.TextBox();
       label11 = new System.Windows.Forms.Label();
       groupBox3 = new System.Windows.Forms.GroupBox();
       tabPage1 = new System.Windows.Forms.TabPage();
       CommonButtonBox = new System.Windows.Forms.Panel();
+      OpenEncoderHelp = new System.Windows.Forms.Button();
+      OpenDecoderHelp = new System.Windows.Forms.Button();
       CommandInvoker = new System.Windows.Forms.Button();
       btnStopUtil = new System.Windows.Forms.Button();
       btnStopAllUtil = new System.Windows.Forms.Button();
@@ -626,20 +628,20 @@
       btnSubmitOpenDlg.UseVisualStyleBackColor = true;
       btnSubmitOpenDlg.Click += btnSubmitOpenDlg_Click;
       // 
-      // btnSubmitSaveToFile
+      // btnSubmitAddToBatch
       // 
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(414, 12);
-      btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
-      btnSubmitSaveToFile.Size = new System.Drawing.Size(144, 24);
-      btnSubmitSaveToFile.TabIndex = 23;
-      btnSubmitSaveToFile.TabStop = false;
-      btnSubmitSaveToFile.Text = "バッチファイルとして保存";
-      btnSubmitSaveToFile.UseVisualStyleBackColor = true;
-      btnSubmitSaveToFile.Click += btnSubmitSaveToFile_Click;
+      btnSubmitAddToBatch.Location = new System.Drawing.Point(250, 12);
+      btnSubmitAddToBatch.Name = "btnSubmitAddToBatch";
+      btnSubmitAddToBatch.Size = new System.Drawing.Size(93, 24);
+      btnSubmitAddToBatch.TabIndex = 23;
+      btnSubmitAddToBatch.TabStop = false;
+      btnSubmitAddToBatch.Text = "バッチに追加";
+      btnSubmitAddToBatch.UseVisualStyleBackColor = true;
+      btnSubmitAddToBatch.Click += btnSubmitAddToFile_Click;
       // 
       // btnClearDirs
       // 
-      btnClearDirs.Location = new System.Drawing.Point(334, 12);
+      btnClearDirs.Location = new System.Drawing.Point(11, 12);
       btnClearDirs.Name = "btnClearDirs";
       btnClearDirs.Size = new System.Drawing.Size(74, 24);
       btnClearDirs.TabIndex = 8;
@@ -999,29 +1001,6 @@
       ClearFileList.UseVisualStyleBackColor = true;
       ClearFileList.Click += ClearFileList_Click;
       // 
-      // OpenDecoderHelp
-      // 
-      OpenDecoderHelp.Enabled = false;
-      OpenDecoderHelp.Location = new System.Drawing.Point(174, 12);
-      OpenDecoderHelp.Name = "OpenDecoderHelp";
-      OpenDecoderHelp.Size = new System.Drawing.Size(154, 24);
-      OpenDecoderHelp.TabIndex = 36;
-      OpenDecoderHelp.TabStop = false;
-      OpenDecoderHelp.Text = "デコーダーオプションのヘルプ";
-      OpenDecoderHelp.UseVisualStyleBackColor = true;
-      OpenDecoderHelp.Click += OpenDecoderHelp_Click;
-      // 
-      // OpenEncoderHelp
-      // 
-      OpenEncoderHelp.Location = new System.Drawing.Point(14, 12);
-      OpenEncoderHelp.Name = "OpenEncoderHelp";
-      OpenEncoderHelp.Size = new System.Drawing.Size(154, 24);
-      OpenEncoderHelp.TabIndex = 35;
-      OpenEncoderHelp.TabStop = false;
-      OpenEncoderHelp.Text = "エンコーダーオプションのヘルプ";
-      OpenEncoderHelp.UseVisualStyleBackColor = true;
-      OpenEncoderHelp.Click += OpenEncoderHelp_Click;
-      // 
       // btnFFmpeg
       // 
       btnFFmpeg.Location = new System.Drawing.Point(640, 9);
@@ -1238,10 +1217,10 @@
       // 
       // SubmitButtonBox
       // 
-      SubmitButtonBox.Controls.Add(OpenEncoderHelp);
+      SubmitButtonBox.Controls.Add(btnSubmitBatchClear);
       SubmitButtonBox.Controls.Add(btnSubmitSaveToFile);
+      SubmitButtonBox.Controls.Add(btnSubmitAddToBatch);
       SubmitButtonBox.Controls.Add(btnClearDirs);
-      SubmitButtonBox.Controls.Add(OpenDecoderHelp);
       SubmitButtonBox.Controls.Add(btnSubmitInvoke);
       SubmitButtonBox.Controls.Add(btnStop);
       SubmitButtonBox.Controls.Add(OpenLogFile);
@@ -1251,6 +1230,28 @@
       SubmitButtonBox.Name = "SubmitButtonBox";
       SubmitButtonBox.Size = new System.Drawing.Size(832, 46);
       SubmitButtonBox.TabIndex = 44;
+      // 
+      // btnSubmitBatchClear
+      // 
+      btnSubmitBatchClear.Enabled = false;
+      btnSubmitBatchClear.Location = new System.Drawing.Point(349, 12);
+      btnSubmitBatchClear.Name = "btnSubmitBatchClear";
+      btnSubmitBatchClear.Size = new System.Drawing.Size(84, 23);
+      btnSubmitBatchClear.TabIndex = 34;
+      btnSubmitBatchClear.Text = "バッチクリア";
+      btnSubmitBatchClear.UseVisualStyleBackColor = true;
+      btnSubmitBatchClear.Click += btnSubmitBatchClear_Click;
+      // 
+      // btnSubmitSaveToFile
+      // 
+      btnSubmitSaveToFile.Enabled = false;
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(132, 13);
+      btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
+      btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 23);
+      btnSubmitSaveToFile.TabIndex = 33;
+      btnSubmitSaveToFile.Text = "バッチファイル保存";
+      btnSubmitSaveToFile.UseVisualStyleBackColor = true;
+      btnSubmitSaveToFile.Click += btnSubmitSaveToFile_Click;
       // 
       // groupBox6
       // 
@@ -1306,6 +1307,8 @@
       // 
       // CommonButtonBox
       // 
+      CommonButtonBox.Controls.Add(OpenEncoderHelp);
+      CommonButtonBox.Controls.Add(OpenDecoderHelp);
       CommonButtonBox.Controls.Add(CommandInvoker);
       CommonButtonBox.Controls.Add(btnStopUtil);
       CommonButtonBox.Controls.Add(btnStopAllUtil);
@@ -1315,6 +1318,29 @@
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
+      // 
+      // OpenEncoderHelp
+      // 
+      OpenEncoderHelp.Location = new System.Drawing.Point(249, 3);
+      OpenEncoderHelp.Name = "OpenEncoderHelp";
+      OpenEncoderHelp.Size = new System.Drawing.Size(154, 24);
+      OpenEncoderHelp.TabIndex = 37;
+      OpenEncoderHelp.TabStop = false;
+      OpenEncoderHelp.Text = "エンコーダーオプションのヘルプ";
+      OpenEncoderHelp.UseVisualStyleBackColor = true;
+      OpenEncoderHelp.Click += OpenEncoderHelp_Click;
+      // 
+      // OpenDecoderHelp
+      // 
+      OpenDecoderHelp.Enabled = false;
+      OpenDecoderHelp.Location = new System.Drawing.Point(409, 3);
+      OpenDecoderHelp.Name = "OpenDecoderHelp";
+      OpenDecoderHelp.Size = new System.Drawing.Size(154, 24);
+      OpenDecoderHelp.TabIndex = 38;
+      OpenDecoderHelp.TabStop = false;
+      OpenDecoderHelp.Text = "デコーダーオプションのヘルプ";
+      OpenDecoderHelp.UseVisualStyleBackColor = true;
+      OpenDecoderHelp.Click += OpenDecoderHelp_Click;
       // 
       // CommandInvoker
       // 
@@ -1746,7 +1772,7 @@
     private System.Windows.Forms.RadioButton rbLandscape;
     private System.Windows.Forms.Button btnClear;
     private System.Windows.Forms.Button btnSubmitInvoke;
-    private System.Windows.Forms.Button btnSubmitSaveToFile;
+    private System.Windows.Forms.Button btnSubmitAddToBatch;
     private System.Windows.Forms.Button btnClearDirs;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.GroupBox BitrateBox;
@@ -1809,8 +1835,6 @@
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.BindingSource FileListBindingSource;
     private System.Windows.Forms.BindingSource DeInterlaceListBindingSource;
-    private System.Windows.Forms.Button OpenEncoderHelp;
-    private System.Windows.Forms.Button OpenDecoderHelp;
     private System.Windows.Forms.Label label13;
     private System.Windows.Forms.ComboBox FileContainer;
     private System.Windows.Forms.TabControl Tab;
@@ -1854,6 +1878,10 @@
     private System.Windows.Forms.Button CommandInvoker;
     private System.Windows.Forms.CheckBox IsOpenStderr;
     private System.Windows.Forms.BindingSource DirectoryListBindingSource;
+    private System.Windows.Forms.Button OpenEncoderHelp;
+    private System.Windows.Forms.Button OpenDecoderHelp;
+    private System.Windows.Forms.Button btnSubmitSaveToFile;
+    private System.Windows.Forms.Button btnSubmitBatchClear;
   }
 }
 
