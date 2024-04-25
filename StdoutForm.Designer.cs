@@ -31,6 +31,8 @@
       StdOutAndErrorView = new System.Windows.Forms.TextBox();
       BtnClose = new System.Windows.Forms.Button();
       BtnToggleReader = new System.Windows.Forms.Button();
+      BtnSubmitSaveFile = new System.Windows.Forms.Button();
+      SaveFileDlg = new System.Windows.Forms.SaveFileDialog();
       SuspendLayout();
       // 
       // StdOutAndErrorView
@@ -40,11 +42,12 @@
       StdOutAndErrorView.BorderStyle = System.Windows.Forms.BorderStyle.None;
       StdOutAndErrorView.Font = new System.Drawing.Font("ＭＳ ゴシック", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       StdOutAndErrorView.Location = new System.Drawing.Point(0, 0);
+      StdOutAndErrorView.MaxLength = 0;
       StdOutAndErrorView.Multiline = true;
       StdOutAndErrorView.Name = "StdOutAndErrorView";
       StdOutAndErrorView.ReadOnly = true;
       StdOutAndErrorView.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      StdOutAndErrorView.Size = new System.Drawing.Size(856, 420);
+      StdOutAndErrorView.Size = new System.Drawing.Size(873, 437);
       StdOutAndErrorView.TabIndex = 0;
       StdOutAndErrorView.TabStop = false;
       // 
@@ -52,7 +55,7 @@
       // 
       BtnClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
       BtnClose.Enabled = false;
-      BtnClose.Location = new System.Drawing.Point(780, 436);
+      BtnClose.Location = new System.Drawing.Point(797, 453);
       BtnClose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       BtnClose.Name = "BtnClose";
       BtnClose.Size = new System.Drawing.Size(64, 29);
@@ -65,7 +68,7 @@
       // BtnToggleReader
       // 
       BtnToggleReader.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-      BtnToggleReader.Location = new System.Drawing.Point(699, 436);
+      BtnToggleReader.Location = new System.Drawing.Point(716, 453);
       BtnToggleReader.Name = "BtnToggleReader";
       BtnToggleReader.Size = new System.Drawing.Size(75, 29);
       BtnToggleReader.TabIndex = 2;
@@ -73,11 +76,30 @@
       BtnToggleReader.UseVisualStyleBackColor = true;
       BtnToggleReader.Click += ToggleReader_Click;
       // 
+      // BtnSubmitSaveFile
+      // 
+      BtnSubmitSaveFile.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+      BtnSubmitSaveFile.Enabled = false;
+      BtnSubmitSaveFile.Location = new System.Drawing.Point(12, 453);
+      BtnSubmitSaveFile.Name = "BtnSubmitSaveFile";
+      BtnSubmitSaveFile.Size = new System.Drawing.Size(75, 29);
+      BtnSubmitSaveFile.TabIndex = 3;
+      BtnSubmitSaveFile.Text = "保存";
+      BtnSubmitSaveFile.UseVisualStyleBackColor = true;
+      BtnSubmitSaveFile.Click += BtnSubmitSaveFile_Click;
+      // 
+      // SaveFileDlg
+      // 
+      SaveFileDlg.Filter = "テキストファイル|*.log,*.txt";
+      SaveFileDlg.OkRequiresInteraction = true;
+      SaveFileDlg.Title = "ログを保存します。";
+      // 
       // StdoutForm
       // 
       AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      ClientSize = new System.Drawing.Size(856, 476);
+      ClientSize = new System.Drawing.Size(873, 493);
+      Controls.Add(BtnSubmitSaveFile);
       Controls.Add(BtnToggleReader);
       Controls.Add(BtnClose);
       Controls.Add(StdOutAndErrorView);
@@ -88,7 +110,7 @@
       Name = "StdoutForm";
       ShowIcon = false;
       ShowInTaskbar = false;
-      Text = "ffmpeg outputs";
+      Text = "View of process stdout,stderr or both.";
       FormClosing += StdoutForm_FormClosing;
       ResumeLayout(false);
       PerformLayout();
@@ -99,5 +121,7 @@
     private System.Windows.Forms.TextBox StdOutAndErrorView;
     private System.Windows.Forms.Button BtnClose;
     private System.Windows.Forms.Button BtnToggleReader;
+    private System.Windows.Forms.Button BtnSubmitSaveFile;
+    private System.Windows.Forms.SaveFileDialog SaveFileDlg;
   }
 }

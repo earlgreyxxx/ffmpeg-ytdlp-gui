@@ -130,9 +130,12 @@
       label11 = new System.Windows.Forms.Label();
       groupBox3 = new System.Windows.Forms.GroupBox();
       tabPage1 = new System.Windows.Forms.TabPage();
-      CommonButtonBox = new System.Windows.Forms.Panel();
+      groupBox7 = new System.Windows.Forms.GroupBox();
+      DecoderHelpList = new System.Windows.Forms.ComboBox();
+      EncoderHelpList = new System.Windows.Forms.ComboBox();
       OpenEncoderHelp = new System.Windows.Forms.Button();
       OpenDecoderHelp = new System.Windows.Forms.Button();
+      CommonButtonBox = new System.Windows.Forms.Panel();
       CommandInvoker = new System.Windows.Forms.Button();
       btnStopUtil = new System.Windows.Forms.Button();
       btnStopAllUtil = new System.Windows.Forms.Button();
@@ -193,6 +196,7 @@
       groupBox6.SuspendLayout();
       groupBox3.SuspendLayout();
       tabPage1.SuspendLayout();
+      groupBox7.SuspendLayout();
       CommonButtonBox.SuspendLayout();
       groupBox8.SuspendLayout();
       Image2Box.SuspendLayout();
@@ -1295,6 +1299,7 @@
       // tabPage1
       // 
       tabPage1.BackColor = System.Drawing.SystemColors.ButtonFace;
+      tabPage1.Controls.Add(groupBox7);
       tabPage1.Controls.Add(CommonButtonBox);
       tabPage1.Controls.Add(groupBox8);
       tabPage1.Controls.Add(Image2Box);
@@ -1305,10 +1310,65 @@
       tabPage1.TabIndex = 1;
       tabPage1.Text = "ユーティリティ";
       // 
+      // groupBox7
+      // 
+      groupBox7.Controls.Add(DecoderHelpList);
+      groupBox7.Controls.Add(EncoderHelpList);
+      groupBox7.Controls.Add(OpenEncoderHelp);
+      groupBox7.Controls.Add(OpenDecoderHelp);
+      groupBox7.Location = new System.Drawing.Point(12, 291);
+      groupBox7.Name = "groupBox7";
+      groupBox7.Size = new System.Drawing.Size(805, 70);
+      groupBox7.TabIndex = 28;
+      groupBox7.TabStop = false;
+      groupBox7.Text = "その他";
+      // 
+      // DecoderHelpList
+      // 
+      DecoderHelpList.DisplayMember = "Label";
+      DecoderHelpList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      DecoderHelpList.FormattingEnabled = true;
+      DecoderHelpList.Location = new System.Drawing.Point(533, 34);
+      DecoderHelpList.Name = "DecoderHelpList";
+      DecoderHelpList.Size = new System.Drawing.Size(145, 20);
+      DecoderHelpList.TabIndex = 39;
+      DecoderHelpList.ValueMember = "Value";
+      // 
+      // EncoderHelpList
+      // 
+      EncoderHelpList.DisplayMember = "Label";
+      EncoderHelpList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      EncoderHelpList.FormattingEnabled = true;
+      EncoderHelpList.Location = new System.Drawing.Point(178, 34);
+      EncoderHelpList.Name = "EncoderHelpList";
+      EncoderHelpList.Size = new System.Drawing.Size(145, 20);
+      EncoderHelpList.TabIndex = 39;
+      EncoderHelpList.ValueMember = "Value";
+      // 
+      // OpenEncoderHelp
+      // 
+      OpenEncoderHelp.Location = new System.Drawing.Point(20, 33);
+      OpenEncoderHelp.Name = "OpenEncoderHelp";
+      OpenEncoderHelp.Size = new System.Drawing.Size(152, 23);
+      OpenEncoderHelp.TabIndex = 37;
+      OpenEncoderHelp.TabStop = false;
+      OpenEncoderHelp.Text = "エンコーダーオプションのヘルプ";
+      OpenEncoderHelp.UseVisualStyleBackColor = true;
+      OpenEncoderHelp.Click += OpenEncoderHelp_Click;
+      // 
+      // OpenDecoderHelp
+      // 
+      OpenDecoderHelp.Location = new System.Drawing.Point(373, 33);
+      OpenDecoderHelp.Name = "OpenDecoderHelp";
+      OpenDecoderHelp.Size = new System.Drawing.Size(154, 23);
+      OpenDecoderHelp.TabIndex = 38;
+      OpenDecoderHelp.TabStop = false;
+      OpenDecoderHelp.Text = "デコーダーオプションのヘルプ";
+      OpenDecoderHelp.UseVisualStyleBackColor = true;
+      OpenDecoderHelp.Click += OpenDecoderHelp_Click;
+      // 
       // CommonButtonBox
       // 
-      CommonButtonBox.Controls.Add(OpenEncoderHelp);
-      CommonButtonBox.Controls.Add(OpenDecoderHelp);
       CommonButtonBox.Controls.Add(CommandInvoker);
       CommonButtonBox.Controls.Add(btnStopUtil);
       CommonButtonBox.Controls.Add(btnStopAllUtil);
@@ -1318,29 +1378,6 @@
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
-      // 
-      // OpenEncoderHelp
-      // 
-      OpenEncoderHelp.Location = new System.Drawing.Point(249, 3);
-      OpenEncoderHelp.Name = "OpenEncoderHelp";
-      OpenEncoderHelp.Size = new System.Drawing.Size(154, 24);
-      OpenEncoderHelp.TabIndex = 37;
-      OpenEncoderHelp.TabStop = false;
-      OpenEncoderHelp.Text = "エンコーダーオプションのヘルプ";
-      OpenEncoderHelp.UseVisualStyleBackColor = true;
-      OpenEncoderHelp.Click += OpenEncoderHelp_Click;
-      // 
-      // OpenDecoderHelp
-      // 
-      OpenDecoderHelp.Enabled = false;
-      OpenDecoderHelp.Location = new System.Drawing.Point(409, 3);
-      OpenDecoderHelp.Name = "OpenDecoderHelp";
-      OpenDecoderHelp.Size = new System.Drawing.Size(154, 24);
-      OpenDecoderHelp.TabIndex = 38;
-      OpenDecoderHelp.TabStop = false;
-      OpenDecoderHelp.Text = "デコーダーオプションのヘルプ";
-      OpenDecoderHelp.UseVisualStyleBackColor = true;
-      OpenDecoderHelp.Click += OpenDecoderHelp_Click;
       // 
       // CommandInvoker
       // 
@@ -1395,9 +1432,9 @@
       groupBox8.Controls.Add(label21);
       groupBox8.Controls.Add(SubmitCopy);
       groupBox8.Controls.Add(SubmitConcat);
-      groupBox8.Location = new System.Drawing.Point(12, 136);
+      groupBox8.Location = new System.Drawing.Point(12, 126);
       groupBox8.Name = "groupBox8";
-      groupBox8.Size = new System.Drawing.Size(805, 119);
+      groupBox8.Size = new System.Drawing.Size(805, 159);
       groupBox8.TabIndex = 2;
       groupBox8.TabStop = false;
       groupBox8.Text = "ツール";
@@ -1405,7 +1442,7 @@
       // label22
       // 
       label22.AutoSize = true;
-      label22.Location = new System.Drawing.Point(151, 77);
+      label22.Location = new System.Drawing.Point(188, 77);
       label22.Name = "label22";
       label22.Size = new System.Drawing.Size(243, 12);
       label22.TabIndex = 1;
@@ -1414,7 +1451,7 @@
       // label21
       // 
       label21.AutoSize = true;
-      label21.Location = new System.Drawing.Point(151, 37);
+      label21.Location = new System.Drawing.Point(188, 37);
       label21.Name = "label21";
       label21.Size = new System.Drawing.Size(349, 12);
       label21.TabIndex = 1;
@@ -1424,7 +1461,7 @@
       // 
       SubmitCopy.Location = new System.Drawing.Point(18, 66);
       SubmitCopy.Name = "SubmitCopy";
-      SubmitCopy.Size = new System.Drawing.Size(122, 32);
+      SubmitCopy.Size = new System.Drawing.Size(154, 32);
       SubmitCopy.TabIndex = 0;
       SubmitCopy.Text = "ファイルコンテナ変更";
       SubmitCopy.UseVisualStyleBackColor = true;
@@ -1434,7 +1471,7 @@
       // 
       SubmitConcat.Location = new System.Drawing.Point(18, 27);
       SubmitConcat.Name = "SubmitConcat";
-      SubmitConcat.Size = new System.Drawing.Size(122, 32);
+      SubmitConcat.Size = new System.Drawing.Size(154, 32);
       SubmitConcat.TabIndex = 0;
       SubmitConcat.Text = "ファイル結合";
       SubmitConcat.UseVisualStyleBackColor = true;
@@ -1728,6 +1765,7 @@
       groupBox3.ResumeLayout(false);
       groupBox3.PerformLayout();
       tabPage1.ResumeLayout(false);
+      groupBox7.ResumeLayout(false);
       CommonButtonBox.ResumeLayout(false);
       groupBox8.ResumeLayout(false);
       groupBox8.PerformLayout();
@@ -1882,6 +1920,9 @@
     private System.Windows.Forms.Button OpenDecoderHelp;
     private System.Windows.Forms.Button btnSubmitSaveToFile;
     private System.Windows.Forms.Button btnSubmitBatchClear;
+    private System.Windows.Forms.ComboBox DecoderHelpList;
+    private System.Windows.Forms.ComboBox EncoderHelpList;
+    private System.Windows.Forms.GroupBox groupBox7;
   }
 }
 

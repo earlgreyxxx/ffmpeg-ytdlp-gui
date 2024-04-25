@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ffmpeg_command_builder
 {
-  internal class ListItem<T>(T value, string label = null, object data = null)
+  internal class ListItem<T>(T value, string label = null, object data = null) : ICloneable
   {
     public static List<ListItem<T>> GetList(IEnumerable<KeyValuePair<string, T>> enumerable)
     {
@@ -22,11 +22,20 @@ namespace ffmpeg_command_builder
         : Enumerable.Range(0, len).Select(i => new ListItem<T>(values[i], labels[i])).ToList();
     }
 
+    public object Clone()
+    {
+      return new ListItem<T>(this);
+    }
+
     public string Label { get; set; } = (label ?? value.ToString());
     public T Value { get; set; } = value;
     public object Data { get; set; } = data;
 
     public ListItem(T value,object data) : this(value, null, data)
+    {
+    }
+
+    public ListItem(ListItem<T> item) : this(item.Value, item.Label, item.Data)
     {
     }
   }

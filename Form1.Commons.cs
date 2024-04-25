@@ -87,7 +87,7 @@ namespace ffmpeg_command_builder
 
     private static void CreateGPUDeviceList()
     {
-      var VideoDevices = new ManagementObjectSearcher("select * from Win32_VideoController");
+      var VideoDevices = new ManagementObjectSearcher("SELECT * FROM WIN32_VIDEOCONTROLLER");
       GpuDevices = VideoDevices.Get().Cast<ManagementObject>().ToList();
     }
 

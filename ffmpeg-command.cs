@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -405,16 +404,17 @@ namespace ffmpeg_command_builder
       return args;
     }
 
-    public async void ToBatchFile(string filename,IEnumerable<string> files)
+    public string CreateBatch(string filename,IEnumerable<string> files)
     {
       var commandlines = files.Select(file => GetCommandLine(file));
-
-      using var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932));
-      await sw.WriteLineAsync("@ECHO OFF");
+      var sb = new StringBuilder();
+      sb.AppendLine("@ECHO OFF");
       foreach (var commandline in commandlines)
-        await sw.WriteLineAsync(commandline);
+        sb.AppendLine(commandline);
 
-      await sw.WriteLineAsync("PAUSE");
+      sb.AppendLine("PAUSE");
+
+      return sb.ToString();
     }
 
     protected static string EvalTimeString(string strTime)

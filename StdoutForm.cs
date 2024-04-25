@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -29,7 +29,8 @@ namespace ffmpeg_command_builder
       OnDataReceived += data => WriteLine(data);
       OnProcessExit += () =>
       {
-        BtnClose.Enabled = true;
+        BtnClose.Enabled = BtnSubmitSaveFile.Enabled = Pause = true;
+
         StdOutAndErrorView.Focus();
         StdOutAndErrorView.SelectionStart = 0;
         StdOutAndErrorView.ScrollToCaret();
@@ -87,6 +88,25 @@ namespace ffmpeg_command_builder
       LogData.Clear();
 
       Pause = !Pause;
+
+      BtnSubmitSaveFile.Enabled = Pause;
+    }
+
+    private async void BtnSubmitSaveFile_Click(object sender, EventArgs e)
+    {
+      if (!Pause)
+        return;
+
+      if (DialogResult.Cancel == SaveFileDlg.ShowDialog())
+        return;
+
+      string filename = SaveFileDlg.FileName;
+      using (var sw = new StreamWriter(filename, false))
+      {
+        foreach (var line in StdOutAndErrorView.Lines)
+          await sw.WriteLineAsync(line);
+      }
+      SaveFileDlg.FileName = string.Empty;
     }
   }
 }

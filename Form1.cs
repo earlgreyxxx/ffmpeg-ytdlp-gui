@@ -24,8 +24,6 @@ namespace ffmpeg_command_builder
     private Dictionary<string, CodecListItems> HardwareDecoders;
     private StringListItems DeInterlaces;
     private StringListItems DeInterlacesCuvid;
-    private CodecListItems VideoEncoders;
-    private CodecListItems AudioEncoders;
     private StringListItems InputFileList;
     private StringListItems OutputDirectoryList;
     private Size HelpFormSize = new(0, 0);
@@ -149,36 +147,44 @@ namespace ffmpeg_command_builder
       DeInterlaceListBindingSource.DataSource = DeInterlaces;
       cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
 
-      AudioEncoders =
-      [
+      UseAudioEncoder.DataSource = new CodecListItems()
+      {
         new CodecListItem(new Codec("aac"),"AAC"),
         new CodecListItem(new Codec("libmp3lame"),"MP3"),
         new CodecListItem(new Codec("libvorbis"),"Ogg"),
-      ];
+      };
+      UseAudioEncoder.SelectedIndex = 0;
+      UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
 
       var GpuDeviceList = GetGPUDeviceList();
 
       cbDevices.DataSource = GpuDeviceList;
       cbDevices.SelectedIndex = 0;
 
-      VideoEncoders = [];
+      var videoEncoders = new CodecListItems();
       var ci = new CultureInfo("en-US");
       foreach (var device in GpuDeviceList)
       {
         if (device.Value.StartsWith("intel", true, ci))
         {
-          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"), "HEVC(QSV)"));
-          VideoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"), "H264(QSV)"));
+          videoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"), "HEVC(QSV)"));
+          videoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"), "H264(QSV)"));
         }
         if (device.Value.StartsWith("nvidia", true, ci))
         {
-          VideoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"), "HEVC(NVEnc)"));
-          VideoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"), "H264(NVEnc)"));
+          videoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"), "HEVC(NVEnc)"));
+          videoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"), "H264(NVEnc)"));
         }
       }
-      VideoEncoders.Add(new CodecListItem(new Codec("copy", "cpu", "copy"), "COPY"));
-      VideoEncoders.Add(new CodecListItem(new Codec("hevc", "cpu", "libx265"), "HEVC(libx265)"));
-      VideoEncoders.Add(new CodecListItem(new Codec("libx264", "cpu", "libx264"), "H264(libx264)"));
+      videoEncoders.Add(new CodecListItem(new Codec("hevc", "cpu", "libx265"), "HEVC(libx265)"));
+      videoEncoders.Add(new CodecListItem(new Codec("libx264", "cpu", "libx264"), "H264(libx264)"));
+      videoEncoders.Add(new CodecListItem(new Codec("copy", "cpu", "copy"), "COPY"));
+
+      UseVideoEncoder.DataSource = videoEncoders;
+      UseVideoEncoder.SelectedIndex = 0;
+
+      EncoderHelpList.DataSource = videoEncoders.Select(encoder => encoder.Clone()).ToList();
+      EncoderHelpList.SelectedIndex = 0;
 
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
@@ -259,13 +265,6 @@ namespace ffmpeg_command_builder
       rbResizeFullHD.Checked = Settings.Default.resizeFullHD;
       rbResizeHD.Checked = Settings.Default.resizeHD;
       rbResizeNum.Checked = Settings.Default.resizeNum;
-
-      UseVideoEncoder.DataSource = VideoEncoders;
-      UseVideoEncoder.SelectedIndex = 0;
-
-      UseAudioEncoder.DataSource = AudioEncoders;
-      UseAudioEncoder.SelectedIndex = 0;
-      UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
 
       chkConstantQuality.Checked = Settings.Default.cq;
       vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
@@ -705,6 +704,7 @@ namespace ffmpeg_command_builder
       {
         var decodersItems = HardwareDecoders[m.Groups[1].Value.ToLower()];
         HWDecoder.DataSource = decodersItems;
+        DecoderHelpList.DataSource = decodersItems.Select(decoder => decoder.Clone()).ToList();
       }
     }
 
@@ -713,7 +713,6 @@ namespace ffmpeg_command_builder
       var codec = HWDecoder.SelectedValue as Codec;
       VideoWidth.Enabled = VideoHeight.Enabled = chkCrop.Checked && chkUseHWDecoder.Checked && codec.GpuSuffix == "cuvid";
       HWDecoder.Enabled = chkUseHWDecoder.Checked;
-      OpenDecoderHelp.Enabled = chkUseHWDecoder.Checked;
 
       if (chkUseHWDecoder.Checked)
       {
@@ -730,7 +729,7 @@ namespace ffmpeg_command_builder
 
     private void OpenEncoderHelp_Click(object sender, EventArgs e)
     {
-      var encoder = UseVideoEncoder.SelectedValue.ToString();
+      var encoder = EncoderHelpList.SelectedValue.ToString();
       if (encoder == "copy")
         return;
 
@@ -739,10 +738,7 @@ namespace ffmpeg_command_builder
 
     private void OpenDecoderHelp_Click(object sender, EventArgs e)
     {
-      var decoder = HWDecoder.SelectedValue.ToString();
-      if (!chkUseHWDecoder.Checked)
-        return;
-
+      var decoder = DecoderHelpList.SelectedValue.ToString();
       OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h decoder={decoder}");
     }
 

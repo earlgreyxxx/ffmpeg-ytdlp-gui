@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
 {
-  internal class Codec
+  internal class Codec : ICloneable
   {
     public string Name { get; set; }
     public string GpuSuffix { get; set; }
@@ -17,6 +17,11 @@ namespace ffmpeg_command_builder
       return FullName;
     }
 
+    public object Clone()
+    {
+      return new Codec(this);
+    }
+
     public Codec(string name, string gpuSuffix = "",string fullname = "")
     {
       Name = name;
@@ -25,6 +30,10 @@ namespace ffmpeg_command_builder
         FullName = string.IsNullOrEmpty(GpuSuffix) ? Name : $"{Name}_{GpuSuffix}";
       else
         FullName = fullname;
+    }
+
+    public Codec(Codec other) : this(other.Name, other.GpuSuffix, other.FullName)
+    {
     }
   }
 }
