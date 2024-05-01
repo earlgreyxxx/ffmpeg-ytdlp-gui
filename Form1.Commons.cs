@@ -401,7 +401,7 @@ namespace ffmpeg_command_builder
 
     private void AddDirectoryListItem()
     {
-      if (!cbOutputDir.Items.OfType<StringListItem>().Any(item => item.Value == cbOutputDir.Text))
+      if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
       {
         var listitem = new StringListItem(cbOutputDir.Text, DateTime.Now);
         DirectoryListBindingSource.Add(listitem);

@@ -74,7 +74,7 @@ namespace ffmpeg_command_builder
         new StringListItem("veryslow")
       ];
 
-      StringListItems softwarePresetList =
+      StringListItems cpuPresetList =
       [
         new StringListItem("ultrafast"),
         new StringListItem("superfast"),
@@ -95,9 +95,9 @@ namespace ffmpeg_command_builder
         { "h264_qsv",qsvPresetList },
         { "hevc_qsv",qsvPresetList },
         { "copy",new StringListItems() },
-        { "libx264",softwarePresetList },
-        { "hevc",softwarePresetList },
-        { "libx265",softwarePresetList },
+        { "libx264",cpuPresetList },
+        { "hevc",cpuPresetList },
+        { "libx265",cpuPresetList },
       };
 
       HardwareDecoders = new Dictionary<string, CodecListItems>()
@@ -307,7 +307,7 @@ namespace ffmpeg_command_builder
       var items = OutputDirectoryList.OrderByDescending(item => (DateTime)item.Data).Take(10);
       foreach (var item in items)
       {
-        if (!checks.Contains(item.Value))
+        if (Directory.Exists(item.Value) && !checks.Contains(item.Value))
         {
           checks.Add(item.Value);
           Settings.Default.outputFolders.Add($"{item.Value}|{((DateTime)item.Data).ToString()}");
@@ -368,8 +368,14 @@ namespace ffmpeg_command_builder
 
       if (DialogResult.OK == FindFolder.ShowDialog())
       {
-        cbOutputDir.Text = null;
-        cbOutputDir.Text = FindFolder.SelectedPath;
+        var item = new StringListItem(FindFolder.SelectedPath, DateTime.Now);
+        var same = OutputDirectoryList.FirstOrDefault(item => item.Value == FindFolder.SelectedPath);
+        if (same == null)
+          DirectoryListBindingSource.Add(item);
+        else
+          item = same; 
+
+        cbOutputDir.SelectedItem = item;
       }
     }
 
@@ -384,7 +390,7 @@ namespace ffmpeg_command_builder
 
       var ffcommand = CreateCommand(chkAudioOnly.Checked);
 
-      if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text) && !cbOutputDir.Items.OfType<StringListItem>().Any(item => item.Value == cbOutputDir.Text))
+      if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0  && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
       {
         var item = new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now);
         DirectoryListBindingSource.Add(item);
