@@ -550,7 +550,7 @@
       cbOutputDir.DisplayMember = "Label";
       cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
-      cbOutputDir.Size = new System.Drawing.Size(288, 20);
+      cbOutputDir.Size = new System.Drawing.Size(284, 20);
       cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
@@ -623,7 +623,7 @@
       // 
       // btnSubmitOpenDlg
       // 
-      btnSubmitOpenDlg.Location = new System.Drawing.Point(305, 19);
+      btnSubmitOpenDlg.Location = new System.Drawing.Point(301, 19);
       btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
       btnSubmitOpenDlg.Size = new System.Drawing.Size(43, 23);
       btnSubmitOpenDlg.TabIndex = 9;
@@ -1303,10 +1303,10 @@
       tabPage1.Controls.Add(CommonButtonBox);
       tabPage1.Controls.Add(groupBox8);
       tabPage1.Controls.Add(Image2Box);
-      tabPage1.Location = new System.Drawing.Point(4, 22);
+      tabPage1.Location = new System.Drawing.Point(4, 27);
       tabPage1.Name = "tabPage1";
       tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      tabPage1.Size = new System.Drawing.Size(832, 418);
+      tabPage1.Size = new System.Drawing.Size(832, 413);
       tabPage1.TabIndex = 1;
       tabPage1.Text = "ユーティリティ";
       // 
@@ -1374,7 +1374,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;

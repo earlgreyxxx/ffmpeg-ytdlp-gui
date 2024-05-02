@@ -22,7 +22,6 @@ namespace ffmpeg_command_builder
   {
     private Dictionary<string, StringListItems> PresetList;
     private Dictionary<string, CodecListItems> HardwareDecoders;
-    private StringListItems DeInterlaces;
     private StringListItems DeInterlacesCuvid;
     private StringListItems InputFileList;
     private StringListItems OutputDirectoryList;
@@ -129,14 +128,17 @@ namespace ffmpeg_command_builder
             new CodecListItem(new Codec("vp8","qsv"),"VP8"),
             new CodecListItem(new Codec("av1","qsv"),"AV1")
           ]
+        },
+        {
+          "cpu",
+          [
+            new CodecListItem(new Codec("h264","cpu","h264"),"H264"),
+            new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC"),
+            new CodecListItem(new Codec("mjpeg","cpu","mjpeg"),"MJPEG"),
+            new CodecListItem(new Codec("av1","cpu","av1"),"AV1")
+          ]
         }
       };
-
-      DeInterlaces =
-      [
-        new StringListItem("1:-1:0","bwdif"),
-        new StringListItem("2:-1:0","yadif")
-      ];
 
       DeInterlacesCuvid =
       [
@@ -144,7 +146,11 @@ namespace ffmpeg_command_builder
         new StringListItem("adaptive","adaptive:cuvid")
       ];
 
-      DeInterlaceListBindingSource.DataSource = DeInterlaces;
+      DeInterlaceListBindingSource.DataSource = new StringListItems()
+      {
+        new StringListItem("1:-1:0","bwdif"),
+        new StringListItem("2:-1:0","yadif")
+      };
       cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
 
       UseAudioEncoder.DataSource = new CodecListItems()
@@ -283,6 +289,8 @@ namespace ffmpeg_command_builder
       HelpFormSize.Height = Settings.Default.HelpHeight;
 
       FilePrefix.Text = FileSuffix.Text = string.Empty;
+
+      chkUseHWDecoder_CheckedChanged(null, null);
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -366,17 +374,17 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text))
         FindFolder.SelectedPath = cbOutputDir.Text;
 
-      if (DialogResult.OK == FindFolder.ShowDialog())
-      {
-        var item = new StringListItem(FindFolder.SelectedPath, DateTime.Now);
-        var same = OutputDirectoryList.FirstOrDefault(item => item.Value == FindFolder.SelectedPath);
-        if (same == null)
-          DirectoryListBindingSource.Add(item);
-        else
-          item = same; 
+      if (DialogResult.Cancel == FindFolder.ShowDialog())
+        return;
 
-        cbOutputDir.SelectedItem = item;
-      }
+      var item = new StringListItem(FindFolder.SelectedPath, DateTime.Now);
+      var same = OutputDirectoryList.FirstOrDefault(item => item.Value == FindFolder.SelectedPath);
+      if (same == null)
+        DirectoryListBindingSource.Add(item);
+      else
+        item = same;
+
+      cbOutputDir.SelectedItem = item;
     }
 
     private void btnApply_Click(object sender, EventArgs e)
@@ -390,7 +398,7 @@ namespace ffmpeg_command_builder
 
       var ffcommand = CreateCommand(chkAudioOnly.Checked);
 
-      if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0  && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
+      if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
       {
         var item = new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now);
         DirectoryListBindingSource.Add(item);
@@ -422,12 +430,12 @@ namespace ffmpeg_command_builder
 
     private void btnClearSS_Click(object sender, EventArgs e)
     {
-      txtSS.Text = "";
+      txtSS.Text = string.Empty;
     }
 
     private void btnClearTo_Click(object sender, EventArgs e)
     {
-      txtTo.Text = "";
+      txtTo.Text = string.Empty;
     }
 
     private void btnClear_Click(object sender, EventArgs e)
@@ -536,7 +544,7 @@ namespace ffmpeg_command_builder
         return;
 
       string filename = FindSaveBatchFile.FileName;
-      if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？","警告",MessageBoxButtons.YesNo))
+      if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？", "警告", MessageBoxButtons.YesNo))
         return;
 
       using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
@@ -600,12 +608,12 @@ namespace ffmpeg_command_builder
 
     private void btnStop_Click(object sender, EventArgs e)
     {
-      StopProcess();
+      StopCurrentProcess();
     }
 
     private void btnStopAll_Click(object sender, EventArgs e)
     {
-      StopProcess(true);
+      StopAllProcess();
     }
 
     private void UseVideoEncoder_SelectedIndexChanged(object sender, EventArgs e)
@@ -618,9 +626,6 @@ namespace ffmpeg_command_builder
       CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
       LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
-      //LookAhead.Enabled = !isCpu;
-      //if(codec.Name == "libx264")
-
       chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isCpu;
 
       InitPresetAndDevice(codec);
@@ -706,12 +711,14 @@ namespace ffmpeg_command_builder
     private void cbDevices_SelectedIndexChanged(object sender, EventArgs e)
     {
       var m = IsIntelOrNvidia().Match(cbDevices.Text);
-      if (m.Success)
-      {
-        var decodersItems = HardwareDecoders[m.Groups[1].Value.ToLower()];
-        HWDecoder.DataSource = decodersItems;
-        DecoderHelpList.DataSource = decodersItems.Select(decoder => decoder.Clone()).ToList();
-      }
+      string key = m.Success ? m.Groups[1].Value.ToLower() : "cpu";
+
+      var decodersItems = HardwareDecoders[key];
+
+      HWDecoder.DataSource = decodersItems;
+      DecoderHelpList.DataSource = decodersItems.Select(decoder => decoder.Clone()).ToList();
+
+      HWDecoder.Enabled = chkUseHWDecoder.Enabled = key != "cpu";
     }
 
     private void chkUseHWDecoder_CheckedChanged(object sender, EventArgs e)

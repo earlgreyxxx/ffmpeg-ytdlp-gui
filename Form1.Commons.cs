@@ -19,8 +19,6 @@ namespace ffmpeg_command_builder
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
     private static partial Regex IsExecutableFile();
 
-    private static List<ManagementObject> GpuDevices;
-
     private static string[] FindInPath(string CommandName)
     {
       //環境変数%PATH%取得し、カレントディレクトリを連結。配列への格納
@@ -66,10 +64,14 @@ namespace ffmpeg_command_builder
       return (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
     }
 
+    private static List<ManagementObject> GpuDevices;
     private static StringListItems GetGPUDeviceList()
     {
       if (GpuDevices == null)
-        CreateGPUDeviceList();
+      {
+        var VideoDevices = new ManagementObjectSearcher("SELECT * FROM WIN32_VIDEOCONTROLLER");
+        GpuDevices = VideoDevices.Get().Cast<ManagementObject>().ToList();
+      }
 
       var deviceList = new StringListItems();
       foreach (var device in GpuDevices)
@@ -81,14 +83,8 @@ namespace ffmpeg_command_builder
           )
         );
       }
-      deviceList.Add(new StringListItem("cpu"));
+      deviceList.Add(new StringListItem("cpu","CPU(Software)"));
       return deviceList;
-    }
-
-    private static void CreateGPUDeviceList()
-    {
-      var VideoDevices = new ManagementObjectSearcher("SELECT * FROM WIN32_VIDEOCONTROLLER");
-      GpuDevices = VideoDevices.Get().Cast<ManagementObject>().ToList();
     }
 
     private static void ChangeCurrentDirectory(string dir = null)
@@ -318,6 +314,9 @@ namespace ffmpeg_command_builder
     {
       return groupBox.Controls.OfType<RadioButton>().FirstOrDefault(radio => radio.Checked);
     }
+
+    private void StopCurrentProcess() => StopProcess(false);
+    private void StopAllProcess() => StopProcess(true);
 
     private void StopProcess(bool stopAll = false)
     {
