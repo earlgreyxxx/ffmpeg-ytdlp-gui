@@ -97,7 +97,7 @@
       FileList = new System.Windows.Forms.ListBox();
       btnStop = new System.Windows.Forms.Button();
       btnStopAll = new System.Windows.Forms.Button();
-      groupBox4 = new System.Windows.Forms.GroupBox();
+      DeInterlaceBox = new System.Windows.Forms.GroupBox();
       cbDevices = new System.Windows.Forms.ComboBox();
       panel1 = new System.Windows.Forms.Panel();
       ClearFileList = new System.Windows.Forms.Button();
@@ -128,7 +128,7 @@
       groupBox6 = new System.Windows.Forms.GroupBox();
       FreeOptions = new System.Windows.Forms.TextBox();
       label11 = new System.Windows.Forms.Label();
-      groupBox3 = new System.Windows.Forms.GroupBox();
+      OthersBox = new System.Windows.Forms.GroupBox();
       tabPage1 = new System.Windows.Forms.TabPage();
       groupBox7 = new System.Windows.Forms.GroupBox();
       DecoderHelpList = new System.Windows.Forms.ComboBox();
@@ -180,7 +180,7 @@
       ((System.ComponentModel.ISupportInitialize)LookAhead).BeginInit();
       ((System.ComponentModel.ISupportInitialize)aBitrate).BeginInit();
       ((System.ComponentModel.ISupportInitialize)vBitrate).BeginInit();
-      groupBox4.SuspendLayout();
+      DeInterlaceBox.SuspendLayout();
       panel1.SuspendLayout();
       StatusBar.SuspendLayout();
       CropBox.SuspendLayout();
@@ -194,7 +194,7 @@
       PageConvert.SuspendLayout();
       SubmitButtonBox.SuspendLayout();
       groupBox6.SuspendLayout();
-      groupBox3.SuspendLayout();
+      OthersBox.SuspendLayout();
       tabPage1.SuspendLayout();
       groupBox7.SuspendLayout();
       CommonButtonBox.SuspendLayout();
@@ -959,16 +959,16 @@
       btnStopAll.UseVisualStyleBackColor = true;
       btnStopAll.Click += btnStopAll_Click;
       // 
-      // groupBox4
+      // DeInterlaceBox
       // 
-      groupBox4.Controls.Add(cbDeinterlaceAlg);
-      groupBox4.Controls.Add(chkFilterDeInterlace);
-      groupBox4.Location = new System.Drawing.Point(334, 306);
-      groupBox4.Name = "groupBox4";
-      groupBox4.Size = new System.Drawing.Size(227, 60);
-      groupBox4.TabIndex = 33;
-      groupBox4.TabStop = false;
-      groupBox4.Text = "デインターレース";
+      DeInterlaceBox.Controls.Add(cbDeinterlaceAlg);
+      DeInterlaceBox.Controls.Add(chkFilterDeInterlace);
+      DeInterlaceBox.Location = new System.Drawing.Point(334, 306);
+      DeInterlaceBox.Name = "DeInterlaceBox";
+      DeInterlaceBox.Size = new System.Drawing.Size(227, 60);
+      DeInterlaceBox.TabIndex = 33;
+      DeInterlaceBox.TabStop = false;
+      DeInterlaceBox.Text = "デインターレース";
       // 
       // cbDevices
       // 
@@ -1200,7 +1200,7 @@
       PageConvert.BackColor = System.Drawing.SystemColors.ButtonFace;
       PageConvert.Controls.Add(SubmitButtonBox);
       PageConvert.Controls.Add(groupBox6);
-      PageConvert.Controls.Add(groupBox3);
+      PageConvert.Controls.Add(OthersBox);
       PageConvert.Controls.Add(groupBox1);
       PageConvert.Controls.Add(CropBox);
       PageConvert.Controls.Add(BitrateBox);
@@ -1208,7 +1208,7 @@
       PageConvert.Controls.Add(groupBox2);
       PageConvert.Controls.Add(RotateBox);
       PageConvert.Controls.Add(btnClear);
-      PageConvert.Controls.Add(groupBox4);
+      PageConvert.Controls.Add(DeInterlaceBox);
       PageConvert.Controls.Add(btnApply);
       PageConvert.Controls.Add(Commandlines);
       PageConvert.Controls.Add(LayoutBox);
@@ -1285,16 +1285,16 @@
       label11.TabIndex = 30;
       label11.Text = "カンマ、セミコロン、コロンで区切ってください";
       // 
-      // groupBox3
+      // OthersBox
       // 
-      groupBox3.Controls.Add(cbDevices);
-      groupBox3.Controls.Add(chkAudioOnly);
-      groupBox3.Location = new System.Drawing.Point(11, 320);
-      groupBox3.Name = "groupBox3";
-      groupBox3.Size = new System.Drawing.Size(317, 46);
-      groupBox3.TabIndex = 42;
-      groupBox3.TabStop = false;
-      groupBox3.Text = "その他";
+      OthersBox.Controls.Add(cbDevices);
+      OthersBox.Controls.Add(chkAudioOnly);
+      OthersBox.Location = new System.Drawing.Point(11, 320);
+      OthersBox.Name = "OthersBox";
+      OthersBox.Size = new System.Drawing.Size(317, 46);
+      OthersBox.TabIndex = 42;
+      OthersBox.TabStop = false;
+      OthersBox.Text = "その他";
       // 
       // tabPage1
       // 
@@ -1742,8 +1742,8 @@
       ((System.ComponentModel.ISupportInitialize)LookAhead).EndInit();
       ((System.ComponentModel.ISupportInitialize)aBitrate).EndInit();
       ((System.ComponentModel.ISupportInitialize)vBitrate).EndInit();
-      groupBox4.ResumeLayout(false);
-      groupBox4.PerformLayout();
+      DeInterlaceBox.ResumeLayout(false);
+      DeInterlaceBox.PerformLayout();
       panel1.ResumeLayout(false);
       panel1.PerformLayout();
       StatusBar.ResumeLayout(false);
@@ -1762,8 +1762,8 @@
       SubmitButtonBox.ResumeLayout(false);
       groupBox6.ResumeLayout(false);
       groupBox6.PerformLayout();
-      groupBox3.ResumeLayout(false);
-      groupBox3.PerformLayout();
+      OthersBox.ResumeLayout(false);
+      OthersBox.PerformLayout();
       tabPage1.ResumeLayout(false);
       groupBox7.ResumeLayout(false);
       CommonButtonBox.ResumeLayout(false);
@@ -1832,7 +1832,7 @@
     private System.Windows.Forms.Button btnStopAll;
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.ComboBox cbPreset;
-    private System.Windows.Forms.GroupBox groupBox4;
+    private System.Windows.Forms.GroupBox DeInterlaceBox;
     private System.Windows.Forms.ComboBox cbDevices;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Button btnFFmpeg;
@@ -1877,7 +1877,7 @@
     private System.Windows.Forms.ComboBox FileContainer;
     private System.Windows.Forms.TabControl Tab;
     private System.Windows.Forms.TabPage PageConvert;
-    private System.Windows.Forms.GroupBox groupBox3;
+    private System.Windows.Forms.GroupBox OthersBox;
     private System.Windows.Forms.GroupBox groupBox5;
     private System.Windows.Forms.BindingSource settingsPropertyValueBindingSource;
     private System.Windows.Forms.GroupBox groupBox6;

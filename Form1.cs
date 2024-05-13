@@ -290,7 +290,7 @@ namespace ffmpeg_command_builder
 
       FilePrefix.Text = FileSuffix.Text = string.Empty;
 
-      chkUseHWDecoder_CheckedChanged(null, null);
+      //chkUseHWDecoder_CheckedChanged(null, null);
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -456,8 +456,10 @@ namespace ffmpeg_command_builder
     {
       bool isChecked = chkAudioOnly.Checked;
       LookAhead.Enabled = UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
-      chkFilterDeInterlace.Enabled = chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isChecked;
+      chkFilterDeInterlace.Enabled = chkUseHWDecoder.Enabled = !isChecked;
       CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !isChecked;
+      if(!chkUseHWDecoder.Enabled)
+        chkUseHWDecoder.Checked = false;
 
       if (isChecked)
       {
@@ -626,7 +628,8 @@ namespace ffmpeg_command_builder
       CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
       LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
-      chkUseHWDecoder.Enabled = HWDecoder.Enabled = !isCpu;
+      chkUseHWDecoder.Enabled = !isCpu;
+      DeInterlaceBox.Enabled = OthersBox.Enabled = !isCopy;
 
       InitPresetAndDevice(codec);
     }
@@ -718,7 +721,9 @@ namespace ffmpeg_command_builder
       HWDecoder.DataSource = decodersItems;
       DecoderHelpList.DataSource = decodersItems.Select(decoder => decoder.Clone()).ToList();
 
-      HWDecoder.Enabled = chkUseHWDecoder.Enabled = key != "cpu";
+      chkUseHWDecoder.Enabled = key != "cpu";
+      if (!chkUseHWDecoder.Enabled)
+        chkUseHWDecoder.Checked = false;
     }
 
     private void chkUseHWDecoder_CheckedChanged(object sender, EventArgs e)
