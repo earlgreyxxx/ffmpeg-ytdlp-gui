@@ -100,6 +100,8 @@ namespace ffmpeg_command_builder
     private ffmpeg_process Proceeding;
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
+      command.Overwrite = Overwrite.Checked;
+
       var process = new ffmpeg_process(command,FileListBindingSource);
 
       Action ProcessesDoneInvoker = () =>

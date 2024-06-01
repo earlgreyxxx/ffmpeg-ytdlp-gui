@@ -163,6 +163,7 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       groupBox5 = new System.Windows.Forms.GroupBox();
+      Overwrite = new System.Windows.Forms.CheckBox();
       IsOpenStderr = new System.Windows.Forms.CheckBox();
       FilePrefix = new System.Windows.Forms.ComboBox();
       FileSuffix = new System.Windows.Forms.ComboBox();
@@ -1303,10 +1304,10 @@
       tabPage1.Controls.Add(CommonButtonBox);
       tabPage1.Controls.Add(groupBox8);
       tabPage1.Controls.Add(Image2Box);
-      tabPage1.Location = new System.Drawing.Point(4, 27);
+      tabPage1.Location = new System.Drawing.Point(4, 22);
       tabPage1.Name = "tabPage1";
       tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      tabPage1.Size = new System.Drawing.Size(832, 413);
+      tabPage1.Size = new System.Drawing.Size(832, 418);
       tabPage1.TabIndex = 1;
       tabPage1.Text = "ユーティリティ";
       // 
@@ -1374,7 +1375,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1651,6 +1652,7 @@
       // 
       // groupBox5
       // 
+      groupBox5.Controls.Add(Overwrite);
       groupBox5.Controls.Add(IsOpenStderr);
       groupBox5.Controls.Add(FilePrefix);
       groupBox5.Controls.Add(FileSuffix);
@@ -1668,15 +1670,25 @@
       groupBox5.TabStop = false;
       groupBox5.Text = "出力フォルダとファイル";
       // 
+      // Overwrite
+      // 
+      Overwrite.AutoSize = true;
+      Overwrite.Location = new System.Drawing.Point(223, 99);
+      Overwrite.Name = "Overwrite";
+      Overwrite.Size = new System.Drawing.Size(177, 16);
+      Overwrite.TabIndex = 36;
+      Overwrite.Text = "既存ファイルの上書きを許可する";
+      Overwrite.UseVisualStyleBackColor = true;
+      // 
       // IsOpenStderr
       // 
       IsOpenStderr.AutoSize = true;
       IsOpenStderr.Location = new System.Drawing.Point(12, 99);
       IsOpenStderr.Name = "IsOpenStderr";
-      IsOpenStderr.Size = new System.Drawing.Size(218, 16);
+      IsOpenStderr.Size = new System.Drawing.Size(193, 16);
       IsOpenStderr.TabIndex = 35;
       IsOpenStderr.TabStop = false;
-      IsOpenStderr.Text = "FFmpegの実行出力ウィンドウを表示する";
+      IsOpenStderr.Text = "FFmpegの実行出力ウィンドウを開く";
       IsOpenStderr.UseVisualStyleBackColor = true;
       // 
       // FilePrefix
@@ -1923,6 +1935,7 @@
     private System.Windows.Forms.ComboBox DecoderHelpList;
     private System.Windows.Forms.ComboBox EncoderHelpList;
     private System.Windows.Forms.GroupBox groupBox7;
+    private System.Windows.Forms.CheckBox Overwrite;
   }
 }
 

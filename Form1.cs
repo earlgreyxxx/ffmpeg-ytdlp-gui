@@ -242,6 +242,13 @@ namespace ffmpeg_command_builder
       VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
       FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
       IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
+      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
+
+      rbResizeNone.DataBindings.Add("Checked",Settings.Default,"resizeNone");
+      rbResizeFullHD.DataBindings.Add("Checked",Settings.Default,"resizeFullHD");
+      rbResizeHD.DataBindings.Add("Checked",Settings.Default,"resizeHD");
+      rbResizeNum.DataBindings.Add("Checked",Settings.Default,"resizeNum");
+      chkConstantQuality.DataBindings.Add("Checked",Settings.Default,"cq");
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -269,12 +276,6 @@ namespace ffmpeg_command_builder
         ffmpeg.SelectedIndex = 0;
       }
 
-      rbResizeNone.Checked = Settings.Default.resizeNone;
-      rbResizeFullHD.Checked = Settings.Default.resizeFullHD;
-      rbResizeHD.Checked = Settings.Default.resizeHD;
-      rbResizeNum.Checked = Settings.Default.resizeNum;
-
-      chkConstantQuality.Checked = Settings.Default.cq;
       vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
 
       vBitrate.Value = chkConstantQuality.Checked && Settings.Default.bitrate > 100 ? 25 : Settings.Default.bitrate;
@@ -302,13 +303,8 @@ namespace ffmpeg_command_builder
       }
       Settings.Default.outputFolders = [];
       Settings.Default.ffmpeg = [];
-      Settings.Default.resizeNone = rbResizeNone.Checked;
-      Settings.Default.resizeFullHD = rbResizeFullHD.Checked;
-      Settings.Default.resizeHD = rbResizeHD.Checked;
-      Settings.Default.resizeNum = rbResizeNum.Checked;
       Settings.Default.HelpHeight = HelpFormSize.Height;
       Settings.Default.HelpWidth = HelpFormSize.Width;
-      Settings.Default.cq = chkConstantQuality.Checked;
       Settings.Default.bitrate = vBitrate.Value;
 
       var checks = new List<string>();
@@ -589,6 +585,8 @@ namespace ffmpeg_command_builder
       if (FileListBindingSource.Count > 0)
       {
         var command = CreateCommand(chkAudioOnly.Checked);
+        command.Overwrite = Overwrite.Checked;
+
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 

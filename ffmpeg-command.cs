@@ -63,6 +63,7 @@ namespace ffmpeg_command_builder
     public IEnumerable<string> AdditionalPreOptions { get; set; } = new List<string>();
     public bool MultiFileProcess { get; set; } = false;
     public bool IsLandscape { get; set; } = true;
+    public bool Overwrite { get; set; } = false;
 
     public string FilePrefix
     {
@@ -463,6 +464,23 @@ namespace ffmpeg_command_builder
       else
       {
         strOutputFileName = $"{FilePrefix}{basename}{FileSuffix}{OutputExtension}";
+      }
+
+      // ファイルが存在する場合は変更
+      string fullpath = Path.Combine(OutputPath,strOutputFileName);
+      if(File.Exists(fullpath) && !Overwrite)
+      {
+        string filename = Path.GetFileNameWithoutExtension(strOutputFileName);
+        string extension = Path.GetExtension(strOutputFileName);
+        string newname;
+        int num = 1;
+        do
+        {
+          newname = $"{filename}.{num++}{extension}";
+          fullpath = Path.Combine(OutputPath, newname);
+        } while (File.Exists(fullpath));
+
+        strOutputFileName = newname;
       }
 
       return strOutputFileName;
