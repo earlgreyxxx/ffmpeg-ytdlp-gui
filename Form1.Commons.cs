@@ -90,7 +90,7 @@ namespace ffmpeg_command_builder
     private static void ChangeCurrentDirectory(string dir = null)
     {
       if (string.IsNullOrEmpty(dir))
-        dir = @"%USERPROFILE%\Videos";
+        dir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
       Environment.CurrentDirectory = Environment.ExpandEnvironmentVariables(dir);
     }

@@ -20,6 +20,8 @@ namespace ffmpeg_command_builder
 
   public partial class Form1 : Form
   {
+    private const int SaveFolderLength = 15;
+
     private Dictionary<string, StringListItems> PresetList;
     private Dictionary<string, CodecListItems> HardwareDecoders;
     private StringListItems DeInterlacesCuvid;
@@ -289,8 +291,6 @@ namespace ffmpeg_command_builder
       HelpFormSize.Height = Settings.Default.HelpHeight;
 
       FilePrefix.Text = FileSuffix.Text = string.Empty;
-
-      //chkUseHWDecoder_CheckedChanged(null, null);
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -312,7 +312,7 @@ namespace ffmpeg_command_builder
       Settings.Default.bitrate = vBitrate.Value;
 
       var checks = new List<string>();
-      var items = OutputDirectoryList.OrderByDescending(item => (DateTime)item.Data).Take(10);
+      var items = OutputDirectoryList.OrderByDescending(item => (DateTime)item.Data).Take(SaveFolderLength);
       foreach (var item in items)
       {
         if (Directory.Exists(item.Value) && !checks.Contains(item.Value))
