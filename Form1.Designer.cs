@@ -35,12 +35,12 @@
       label1 = new System.Windows.Forms.Label();
       label2 = new System.Windows.Forms.Label();
       txtTo = new System.Windows.Forms.TextBox();
-      groupBox1 = new System.Windows.Forms.GroupBox();
+      CuttingBox = new System.Windows.Forms.GroupBox();
       linkLabel1 = new System.Windows.Forms.LinkLabel();
       btnClearSS = new System.Windows.Forms.Button();
       btnClearTo = new System.Windows.Forms.Button();
       FindSaveBatchFile = new System.Windows.Forms.OpenFileDialog();
-      groupBox2 = new System.Windows.Forms.GroupBox();
+      CodecBox = new System.Windows.Forms.GroupBox();
       chkUseHWDecoder = new System.Windows.Forms.CheckBox();
       HWDecoder = new System.Windows.Forms.ComboBox();
       label5 = new System.Windows.Forms.Label();
@@ -162,15 +162,15 @@
       label15 = new System.Windows.Forms.Label();
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
-      groupBox5 = new System.Windows.Forms.GroupBox();
+      OutputBox = new System.Windows.Forms.GroupBox();
       Overwrite = new System.Windows.Forms.CheckBox();
       IsOpenStderr = new System.Windows.Forms.CheckBox();
       FilePrefix = new System.Windows.Forms.ComboBox();
       FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
       DirectoryListBindingSource = new System.Windows.Forms.BindingSource(components);
-      groupBox1.SuspendLayout();
-      groupBox2.SuspendLayout();
+      CuttingBox.SuspendLayout();
+      CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)resizeTo).BeginInit();
       RotateBox.SuspendLayout();
@@ -204,7 +204,7 @@
       ((System.ComponentModel.ISupportInitialize)ImageWidth).BeginInit();
       ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
-      groupBox5.SuspendLayout();
+      OutputBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)DirectoryListBindingSource).BeginInit();
       SuspendLayout();
@@ -258,21 +258,21 @@
       txtTo.TabIndex = 6;
       txtTo.TabStop = false;
       // 
-      // groupBox1
+      // CuttingBox
       // 
-      groupBox1.Controls.Add(linkLabel1);
-      groupBox1.Controls.Add(btnClearSS);
-      groupBox1.Controls.Add(btnClearTo);
-      groupBox1.Controls.Add(label1);
-      groupBox1.Controls.Add(txtTo);
-      groupBox1.Controls.Add(txtSS);
-      groupBox1.Controls.Add(label2);
-      groupBox1.Location = new System.Drawing.Point(10, 85);
-      groupBox1.Name = "groupBox1";
-      groupBox1.Size = new System.Drawing.Size(347, 80);
-      groupBox1.TabIndex = 5;
-      groupBox1.TabStop = false;
-      groupBox1.Text = "切り取り　　　　　　　　　　　　　　　";
+      CuttingBox.Controls.Add(linkLabel1);
+      CuttingBox.Controls.Add(btnClearSS);
+      CuttingBox.Controls.Add(btnClearTo);
+      CuttingBox.Controls.Add(label1);
+      CuttingBox.Controls.Add(txtTo);
+      CuttingBox.Controls.Add(txtSS);
+      CuttingBox.Controls.Add(label2);
+      CuttingBox.Location = new System.Drawing.Point(10, 85);
+      CuttingBox.Name = "CuttingBox";
+      CuttingBox.Size = new System.Drawing.Size(347, 80);
+      CuttingBox.TabIndex = 5;
+      CuttingBox.TabStop = false;
+      CuttingBox.Text = "切り取り　　　　　　　　　　　　　　　";
       // 
       // linkLabel1
       // 
@@ -314,20 +314,20 @@
       FindSaveBatchFile.DefaultExt = "cmd";
       FindSaveBatchFile.FileName = "ffmpeg-batch.cmd";
       // 
-      // groupBox2
+      // CodecBox
       // 
-      groupBox2.Controls.Add(chkUseHWDecoder);
-      groupBox2.Controls.Add(HWDecoder);
-      groupBox2.Controls.Add(label5);
-      groupBox2.Controls.Add(label4);
-      groupBox2.Controls.Add(UseAudioEncoder);
-      groupBox2.Controls.Add(UseVideoEncoder);
-      groupBox2.Location = new System.Drawing.Point(651, 171);
-      groupBox2.Name = "groupBox2";
-      groupBox2.Size = new System.Drawing.Size(168, 129);
-      groupBox2.TabIndex = 7;
-      groupBox2.TabStop = false;
-      groupBox2.Text = "コーデック";
+      CodecBox.Controls.Add(chkUseHWDecoder);
+      CodecBox.Controls.Add(HWDecoder);
+      CodecBox.Controls.Add(label5);
+      CodecBox.Controls.Add(label4);
+      CodecBox.Controls.Add(UseAudioEncoder);
+      CodecBox.Controls.Add(UseVideoEncoder);
+      CodecBox.Location = new System.Drawing.Point(651, 171);
+      CodecBox.Name = "CodecBox";
+      CodecBox.Size = new System.Drawing.Size(168, 129);
+      CodecBox.TabIndex = 7;
+      CodecBox.TabStop = false;
+      CodecBox.Text = "コーデック";
       // 
       // chkUseHWDecoder
       // 
@@ -1202,11 +1202,11 @@
       PageConvert.Controls.Add(SubmitButtonBox);
       PageConvert.Controls.Add(groupBox6);
       PageConvert.Controls.Add(OthersBox);
-      PageConvert.Controls.Add(groupBox1);
+      PageConvert.Controls.Add(CuttingBox);
       PageConvert.Controls.Add(CropBox);
       PageConvert.Controls.Add(BitrateBox);
       PageConvert.Controls.Add(ResizeBox);
-      PageConvert.Controls.Add(groupBox2);
+      PageConvert.Controls.Add(CodecBox);
       PageConvert.Controls.Add(RotateBox);
       PageConvert.Controls.Add(btnClear);
       PageConvert.Controls.Add(DeInterlaceBox);
@@ -1304,10 +1304,10 @@
       tabPage1.Controls.Add(CommonButtonBox);
       tabPage1.Controls.Add(groupBox8);
       tabPage1.Controls.Add(Image2Box);
-      tabPage1.Location = new System.Drawing.Point(4, 22);
+      tabPage1.Location = new System.Drawing.Point(4, 27);
       tabPage1.Name = "tabPage1";
       tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      tabPage1.Size = new System.Drawing.Size(832, 418);
+      tabPage1.Size = new System.Drawing.Size(832, 413);
       tabPage1.TabIndex = 1;
       tabPage1.Text = "ユーティリティ";
       // 
@@ -1375,7 +1375,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1650,30 +1650,30 @@
       SubmitThumbnail.UseVisualStyleBackColor = true;
       SubmitThumbnail.Click += SubmitThumbnail_Click;
       // 
-      // groupBox5
+      // OutputBox
       // 
-      groupBox5.Controls.Add(Overwrite);
-      groupBox5.Controls.Add(IsOpenStderr);
-      groupBox5.Controls.Add(FilePrefix);
-      groupBox5.Controls.Add(FileSuffix);
-      groupBox5.Controls.Add(btnSubmitOpenDlg);
-      groupBox5.Controls.Add(FileContainer);
-      groupBox5.Controls.Add(OpenFolder);
-      groupBox5.Controls.Add(label13);
-      groupBox5.Controls.Add(FileName);
-      groupBox5.Controls.Add(label10);
-      groupBox5.Controls.Add(cbOutputDir);
-      groupBox5.Location = new System.Drawing.Point(433, 492);
-      groupBox5.Name = "groupBox5";
-      groupBox5.Size = new System.Drawing.Size(407, 125);
-      groupBox5.TabIndex = 44;
-      groupBox5.TabStop = false;
-      groupBox5.Text = "出力フォルダとファイル";
+      OutputBox.Controls.Add(Overwrite);
+      OutputBox.Controls.Add(IsOpenStderr);
+      OutputBox.Controls.Add(FilePrefix);
+      OutputBox.Controls.Add(FileSuffix);
+      OutputBox.Controls.Add(btnSubmitOpenDlg);
+      OutputBox.Controls.Add(FileContainer);
+      OutputBox.Controls.Add(OpenFolder);
+      OutputBox.Controls.Add(label13);
+      OutputBox.Controls.Add(FileName);
+      OutputBox.Controls.Add(label10);
+      OutputBox.Controls.Add(cbOutputDir);
+      OutputBox.Location = new System.Drawing.Point(433, 492);
+      OutputBox.Name = "OutputBox";
+      OutputBox.Size = new System.Drawing.Size(407, 125);
+      OutputBox.TabIndex = 44;
+      OutputBox.TabStop = false;
+      OutputBox.Text = "出力フォルダとファイル";
       // 
       // Overwrite
       // 
       Overwrite.AutoSize = true;
-      Overwrite.Location = new System.Drawing.Point(223, 99);
+      Overwrite.Location = new System.Drawing.Point(216, 99);
       Overwrite.Name = "Overwrite";
       Overwrite.Size = new System.Drawing.Size(177, 16);
       Overwrite.TabIndex = 36;
@@ -1719,7 +1719,7 @@
       AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       ClientSize = new System.Drawing.Size(846, 651);
-      Controls.Add(groupBox5);
+      Controls.Add(OutputBox);
       Controls.Add(Tab);
       Controls.Add(StatusBar);
       Controls.Add(ffmpeg);
@@ -1736,10 +1736,10 @@
       Text = "ffmpeg command builder : required ffmpeg 6.1 or higher";
       FormClosing += Form1_FormClosing;
       Load += Form1_Load;
-      groupBox1.ResumeLayout(false);
-      groupBox1.PerformLayout();
-      groupBox2.ResumeLayout(false);
-      groupBox2.PerformLayout();
+      CuttingBox.ResumeLayout(false);
+      CuttingBox.PerformLayout();
+      CodecBox.ResumeLayout(false);
+      CodecBox.PerformLayout();
       ResizeBox.ResumeLayout(false);
       ResizeBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)resizeTo).EndInit();
@@ -1786,8 +1786,8 @@
       ((System.ComponentModel.ISupportInitialize)ImageWidth).EndInit();
       ((System.ComponentModel.ISupportInitialize)ImageHeight).EndInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
-      groupBox5.ResumeLayout(false);
-      groupBox5.PerformLayout();
+      OutputBox.ResumeLayout(false);
+      OutputBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)DirectoryListBindingSource).EndInit();
       ResumeLayout(false);
@@ -1802,9 +1802,9 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox txtTo;
-    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.GroupBox CuttingBox;
     private System.Windows.Forms.OpenFileDialog FindSaveBatchFile;
-    private System.Windows.Forms.GroupBox groupBox2;
+    private System.Windows.Forms.GroupBox CodecBox;
     private System.Windows.Forms.CheckBox chkFilterDeInterlace;
     private System.Windows.Forms.RadioButton rbResizeHD;
     private System.Windows.Forms.RadioButton rbResizeFullHD;
@@ -1890,7 +1890,7 @@
     private System.Windows.Forms.TabControl Tab;
     private System.Windows.Forms.TabPage PageConvert;
     private System.Windows.Forms.GroupBox OthersBox;
-    private System.Windows.Forms.GroupBox groupBox5;
+    private System.Windows.Forms.GroupBox OutputBox;
     private System.Windows.Forms.BindingSource settingsPropertyValueBindingSource;
     private System.Windows.Forms.GroupBox groupBox6;
     private System.Windows.Forms.TextBox FreeOptions;
