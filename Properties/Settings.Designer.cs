@@ -84,37 +84,13 @@ namespace ffmpeg_command_builder.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool resizeNone {
+        [global::System.Configuration.DefaultSettingValueAttribute("Num")]
+        public string resize {
             get {
-                return ((bool)(this["resizeNone"]));
+                return ((string)(this["resize"]));
             }
             set {
-                this["resizeNone"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool resizeFullHD {
-            get {
-                return ((bool)(this["resizeFullHD"]));
-            }
-            set {
-                this["resizeFullHD"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool resizeHD {
-            get {
-                return ((bool)(this["resizeHD"]));
-            }
-            set {
-                this["resizeHD"] = value;
+                this["resize"] = value;
             }
         }
         
@@ -131,25 +107,13 @@ namespace ffmpeg_command_builder.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool resizeNum {
-            get {
-                return ((bool)(this["resizeNum"]));
-            }
-            set {
-                this["resizeNum"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("320")]
-        public decimal resize {
+        public decimal resizeTo {
             get {
-                return ((decimal)(this["resize"]));
+                return ((decimal)(this["resizeTo"]));
             }
             set {
-                this["resize"] = value;
+                this["resizeTo"] = value;
             }
         }
         

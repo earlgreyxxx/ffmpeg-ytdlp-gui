@@ -236,7 +236,7 @@ namespace ffmpeg_command_builder
       };
 
       FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
-      resizeTo.DataBindings.Add("Value", Settings.Default, "resize");
+      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
       LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
       VideoWidth.DataBindings.Add("Value", Settings.Default, "videoWidth");
       VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
@@ -244,10 +244,6 @@ namespace ffmpeg_command_builder
       IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
       Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
 
-      rbResizeNone.DataBindings.Add("Checked",Settings.Default,"resizeNone");
-      rbResizeFullHD.DataBindings.Add("Checked",Settings.Default,"resizeFullHD");
-      rbResizeHD.DataBindings.Add("Checked",Settings.Default,"resizeHD");
-      rbResizeNum.DataBindings.Add("Checked",Settings.Default,"resizeNum");
       chkConstantQuality.DataBindings.Add("Checked",Settings.Default,"cq");
     }
 
@@ -275,6 +271,9 @@ namespace ffmpeg_command_builder
 
         ffmpeg.SelectedIndex = 0;
       }
+
+      var radio = (ResizeBox.Controls[$"rbResize{Settings.Default.resize}"] as RadioButton) ?? rbResizeNone;
+      radio.Checked = true;
 
       vUnit.Text = chkConstantQuality.Checked ? "" : "Kbps";
 
@@ -323,6 +322,9 @@ namespace ffmpeg_command_builder
         if (!string.IsNullOrEmpty(item) && !Settings.Default.ffmpeg.Contains(item))
           Settings.Default.ffmpeg.Add(item);
       }
+
+      var radio = GetCheckedRadioButton(ResizeBox);
+      Settings.Default.resize = radio.Name.Substring(8);
 
       Settings.Default.Save();
     }

@@ -17,22 +17,13 @@
     <Setting Name="bitrate" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">6000</Value>
     </Setting>
-    <Setting Name="resizeNone" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="resizeFullHD" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="resizeHD" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="resize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Num</Value>
     </Setting>
     <Setting Name="ffmpeg" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="resizeNum" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="resize" Type="System.Decimal" Scope="User">
+    <Setting Name="resizeTo" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">320</Value>
     </Setting>
     <Setting Name="prefix" Type="System.String" Scope="User">
