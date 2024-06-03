@@ -62,5 +62,11 @@
     <Setting Name="overwrite" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="cookiePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="downloadFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%(title)s-%(id)s.%(ext)s</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

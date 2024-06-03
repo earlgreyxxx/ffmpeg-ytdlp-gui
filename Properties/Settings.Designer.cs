@@ -260,5 +260,29 @@ namespace ffmpeg_command_builder.Properties {
                 this["overwrite"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string cookiePath {
+            get {
+                return ((string)(this["cookiePath"]));
+            }
+            set {
+                this["cookiePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%(title)s-%(id)s.%(ext)s")]
+        public string downloadFileName {
+            get {
+                return ((string)(this["downloadFileName"]));
+            }
+            set {
+                this["downloadFileName"] = value;
+            }
+        }
     }
 }

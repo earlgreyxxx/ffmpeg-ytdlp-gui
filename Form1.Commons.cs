@@ -1,16 +1,24 @@
-﻿using System;
+﻿using ffmpeg_command_builder.Properties;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace ffmpeg_command_builder
 {
+  using CodecListItem = ListItem<Codec>;
+  using CodecListItems = List<ListItem<Codec>>;
   using StringListItem = ListItem<string>;
   using StringListItems = List<ListItem<string>>;
+  using DecimalListItem = ListItem<decimal>;
+  using DecimalListItems = List<ListItem<decimal>>;
 
   partial class Form1 : Form
   {
@@ -18,31 +26,6 @@ namespace ffmpeg_command_builder
     // ---------------------------------------------------------------------------------
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
     private static partial Regex IsExecutableFile();
-
-    private static string[] FindInPath(string CommandName)
-    {
-      //環境変数%PATH%取得し、カレントディレクトリを連結。配列への格納
-      IEnumerable<string> dirPathList =
-        Environment
-          .ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("PATH"))
-          .Split([';'])
-          .Prepend(Directory.GetCurrentDirectory());
-
-      //正規表現に使用するため、%PATHEXT%の取得・ピリオド文字の変換及び配列への格納
-      string[] pathext = Environment.GetEnvironmentVariable("PATHEXT").Replace(".", @"\.").Split([';']);
-
-      //検索するファイル名の正規表現
-      var regex = new Regex(
-        $"^{CommandName}(?:{String.Join("|", pathext)})?$",
-        RegexOptions.IgnoreCase
-      );
-
-      return
-        dirPathList
-          .Where(dirPath => Directory.Exists(dirPath))
-          .SelectMany(dirPath => Directory.GetFiles(dirPath).Where(file => regex.IsMatch(Path.GetFileName(file))))
-          .ToArray();
-    }
 
     private static void CheckDirectory(string strPath)
     {
@@ -97,6 +80,248 @@ namespace ffmpeg_command_builder
 
     // Instance members
     // ---------------------------------------------------------------------------------
+
+    private void InitializeSettingsBinding()
+    {
+      FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
+      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
+      LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
+      VideoWidth.DataBindings.Add("Value", Settings.Default, "videoWidth");
+      VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
+      FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
+      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
+      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
+      chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
+      CookiePath.DataBindings.Add("Text", Settings.Default, "cookiePath");
+      OutputFileFormat.DataBindings.Add("Text", Settings.Default, "downloadFileName");
+    }
+
+    private void InitializeDataSource()
+    {
+      StringListItems nvencPresetList =
+      [
+        new StringListItem("default"),
+        new StringListItem("slow"),
+        new StringListItem("medium"),
+        new StringListItem("fast"),
+        new StringListItem("hp"),
+        new StringListItem("hq"),
+        new StringListItem("bd"),
+        new StringListItem("ll","low latency"),
+        new StringListItem("llhq","low latency hq"),
+        new StringListItem("llhp","low latency hp"),
+        new StringListItem("lossless"),
+        new StringListItem("losslesshp"),
+        new StringListItem("p1","p1:fastest"),
+        new StringListItem("p2","p2:faster"),
+        new StringListItem("p3","p3:fast"),
+        new StringListItem("p4","p4:medium"),
+        new StringListItem("p5","p5:slow"),
+        new StringListItem("p6","p6:slower"),
+        new StringListItem("p7","p7:slowest")
+      ];
+
+      StringListItems qsvPresetList =
+      [
+        new StringListItem("veryfast"),
+        new StringListItem("faster"),
+        new StringListItem("fast"),
+        new StringListItem("medium"),
+        new StringListItem("slow"),
+        new StringListItem("slower"),
+        new StringListItem("veryslow")
+      ];
+
+      StringListItems cpuPresetList =
+      [
+        new StringListItem("ultrafast"),
+        new StringListItem("superfast"),
+        new StringListItem("veryfast "),
+        new StringListItem("faster"),
+        new StringListItem("fast"),
+        new StringListItem("medium"),
+        new StringListItem("slow"),
+        new StringListItem("slower"),
+        new StringListItem("veryslow"),
+        new StringListItem("placebo")
+      ];
+
+      PresetList = new Dictionary<string, StringListItems>()
+      {
+        { "h264_nvenc", nvencPresetList },
+        { "hevc_nvenc", nvencPresetList },
+        { "h264_qsv",qsvPresetList },
+        { "hevc_qsv",qsvPresetList },
+        { "copy",new StringListItems() },
+        { "libx264",cpuPresetList },
+        { "hevc",cpuPresetList },
+        { "libx265",cpuPresetList },
+      };
+
+      HardwareDecoders = new Dictionary<string, CodecListItems>()
+      {
+        {
+          "nvidia",
+          [
+            new CodecListItem(new Codec("vp9","cuvid"),"VP9"),
+            new CodecListItem(new Codec("h264","cuvid"),"H264"),
+            new CodecListItem(new Codec("hevc","cuvid"),"HEVC"),
+            new CodecListItem(new Codec("mpeg4","cuvid"),"MPEG4"),
+            new CodecListItem(new Codec("mpeg2","cuvid"),"MPEG2"),
+            new CodecListItem(new Codec("mjpeg","cuvid"),"MJPEG"),
+            new CodecListItem(new Codec("mpeg1","cuvid"),"MPEG1"),
+            new CodecListItem(new Codec("vc1","cuvid"),"VC1"),
+            new CodecListItem(new Codec("vp8","cuvid"),"VP8"),
+            new CodecListItem(new Codec("av1","cuvid"),"AV1")
+          ]
+        },
+        {
+          "intel",
+          [
+            new CodecListItem(new Codec("vp9","qsv"),"VP9"),
+            new CodecListItem(new Codec("h264","qsv"),"H264"),
+            new CodecListItem(new Codec("hevc","qsv"),"HEVC"),
+            new CodecListItem(new Codec("mpeg2","qsv"),"MPEG2"),
+            new CodecListItem(new Codec("mjpeg","qsv"),"MJPEG"),
+            new CodecListItem(new Codec("vc1","qsv"),"VC1"),
+            new CodecListItem(new Codec("vp8","qsv"),"VP8"),
+            new CodecListItem(new Codec("av1","qsv"),"AV1")
+          ]
+        },
+        {
+          "cpu",
+          [
+            new CodecListItem(new Codec("h264","cpu","h264"),"H264"),
+            new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC"),
+            new CodecListItem(new Codec("mjpeg","cpu","mjpeg"),"MJPEG"),
+            new CodecListItem(new Codec("av1","cpu","av1"),"AV1")
+          ]
+        }
+      };
+
+      DeInterlacesCuvid =
+      [
+        new StringListItem("bob","bob:cuvid"),
+        new StringListItem("adaptive","adaptive:cuvid")
+      ];
+
+      DeInterlaceListBindingSource.DataSource = new StringListItems()
+      {
+        new StringListItem("1:-1:0","bwdif"),
+        new StringListItem("2:-1:0","yadif")
+      };
+      cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
+
+      UseAudioEncoder.DataSource = new CodecListItems()
+      {
+        new CodecListItem(new Codec("aac"),"AAC"),
+        new CodecListItem(new Codec("libmp3lame"),"MP3"),
+        new CodecListItem(new Codec("libvorbis"),"Ogg"),
+      };
+      UseAudioEncoder.SelectedIndex = 0;
+      UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
+
+      var GpuDeviceList = GetGPUDeviceList();
+
+      cbDevices.DataSource = GpuDeviceList;
+      cbDevices.SelectedIndex = 0;
+
+      var videoEncoders = new CodecListItems();
+      var ci = new CultureInfo("en-US");
+      foreach (var device in GpuDeviceList)
+      {
+        if (device.Value.StartsWith("intel", true, ci))
+        {
+          videoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"), "HEVC(QSV)"));
+          videoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"), "H264(QSV)"));
+        }
+        if (device.Value.StartsWith("nvidia", true, ci))
+        {
+          videoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"), "HEVC(NVEnc)"));
+          videoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"), "H264(NVEnc)"));
+        }
+      }
+      videoEncoders.Add(new CodecListItem(new Codec("hevc", "cpu", "libx265"), "HEVC(libx265)"));
+      videoEncoders.Add(new CodecListItem(new Codec("libx264", "cpu", "libx264"), "H264(libx264)"));
+      videoEncoders.Add(new CodecListItem(new Codec("copy", "cpu", "copy"), "COPY"));
+
+      UseVideoEncoder.DataSource = videoEncoders;
+      UseVideoEncoder.SelectedIndex = 0;
+
+      EncoderHelpList.DataSource = videoEncoders.Select(encoder => encoder.Clone()).ToList();
+      EncoderHelpList.SelectedIndex = 0;
+
+      FileListBindingSource.DataSource = InputFileList = [];
+      FileList.DataSource = FileListBindingSource;
+
+      DirectoryListBindingSource.DataSource = OutputDirectoryList = [];
+      cbOutputDir.DataSource = DirectoryListBindingSource;
+
+      FileContainer.DataSource = new StringListItems()
+      {
+        new StringListItem(".mp4","mp4"),
+        new StringListItem(".mkv","mkv"),
+        new StringListItem(".mp3","MP3"),
+        new StringListItem(".aac","AAC"),
+        new StringListItem(".ogg","Vorbis"),
+        new StringListItem(".webm","WebM"),
+        new StringListItem(".webA","WebA")
+      };
+
+      ImageType.DataSource = new StringListItems()
+      {
+        new StringListItem("mjpeg","JPEG形式",".jpg"),
+        new StringListItem("png","PNG形式",".png"),
+        new StringListItem("gif","GIF形式",".gif")
+      };
+
+      FilePrefix.DataSource = new List<string>()
+      {
+        "%d-",
+        "%02d-",
+        "%03d-",
+        "%04d-",
+        "%05d-"
+      };
+      FileSuffix.DataSource = new List<string>()
+      {
+        "-%d",
+        "-%02d",
+        "-%03d",
+        "-%04d",
+        "-%05d"
+      };
+
+      UseCookie.DataSource = new StringListItems()
+      {
+        new StringListItem("none","使用しない"),
+        new StringListItem("file","Cookieファイル"),
+        new StringListItem("edge","Microsoft Edge"),
+        new StringListItem("chrome","Google Chrome"),
+        new StringListItem("firefox","Mozilla FireFox"),
+        new StringListItem("opera","Opera Software"),
+        new StringListItem("brave","Brave"),
+        new StringListItem("vivaldi","VIVALDI")
+      };
+
+      VideoFrameRate.DataSource = new DecimalListItems()
+      {
+        new DecimalListItem(0,"変更なし"),
+        new DecimalListItem(29.97m,"29.97 fps"),
+        new DecimalListItem(59.94m,"59.94 fps"),
+        new DecimalListItem(30,"30 fps"),
+        new DecimalListItem(60,"60 fps"),
+        new DecimalListItem(24,"24 fps")
+      };
+
+      AudioOnlyFormatSource.DataSource = new StringListItems();
+      AudioOnlyFormat.DataSource = AudioOnlyFormatSource;
+      VideoOnlyFormatSource.DataSource = new StringListItems();
+      VideoOnlyFormat.DataSource = VideoOnlyFormatSource;
+      MovieFormatSource.DataSource = new StringListItems();
+      MovieFormat.DataSource = MovieFormatSource;
+    }
+
     private ffmpeg_process Proceeding;
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
@@ -235,6 +460,9 @@ namespace ffmpeg_command_builder
         .lookAhead((int)LookAhead.Value)
         .preset(cbPreset.SelectedValue.ToString());
 
+      ffcommand.vFrameRate((decimal)VideoFrameRate.SelectedValue);
+
+
       if (chkUseHWDecoder.Checked)
         ffcommand.hwdecoder(HWDecoder.SelectedValue.ToString());
 
@@ -332,7 +560,7 @@ namespace ffmpeg_command_builder
     {
       if(!File.Exists(executable))
       {
-        var exepathes = FindInPath(executable);
+        var exepathes = CustomProcess.FindInPath(executable);
         if (exepathes.Length <= 0)
           return;
       }
@@ -407,6 +635,208 @@ namespace ffmpeg_command_builder
         var listitem = new StringListItem(cbOutputDir.Text, DateTime.Now);
         DirectoryListBindingSource.Add(listitem);
         cbOutputDir.SelectedItem = listitem;
+      }
+    }
+
+    /// <summary>
+    /// ダウンロードメディア情報
+    /// </summary>
+    private MediaInformation mediaInfo = null;
+
+    /// <summary>
+    /// ダウンロードプロセス
+    /// </summary>
+    private ytdlp_process ytdlp = null;
+
+    private void YtdlpClearDownload()
+    {
+      DownloadUrl.Text = string.Empty;
+      DownloadUrl.Enabled = true;
+      DownloadUrl.Focus();
+
+      MediaTitle.Text = string.Empty;
+      ThumbnailBox.Image = null;
+      SubmitDownload.Enabled = false;
+      SubmitSeparatedDownload.Enabled = true;
+
+      AudioOnlyFormatSource.Clear();
+      VideoOnlyFormatSource.Clear();
+      MovieFormatSource.Clear();
+
+      mediaInfo = null;
+    }
+
+    private async Task YtdlpParseDownloadUrl()
+    {
+      try
+      {
+        var url = DownloadUrl.Text.Trim();
+        if (url.Length == 0)
+          throw new Exception("URLが入力されていません。");
+
+        var ytdlp = new ytdlp_process() { Url = url };
+
+        var cookieKind = UseCookie.SelectedValue.ToString();
+        if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
+          ytdlp.CookiePath = CookiePath.Text;
+        else if (cookieKind != "none" && cookieKind != "file")
+          ytdlp.CookieBrowser = cookieKind;
+
+        mediaInfo = await ytdlp.getMediaInformation();
+        if (mediaInfo == null)
+          throw new Exception("解析に失敗しました。");
+
+        using (var pngStream = await mediaInfo.GetThumbnailImage())
+        {
+          if (pngStream != null)
+            ThumbnailBox.Image = Image.FromStream(pngStream);
+        }
+
+        DownloadUrl.Enabled = false;
+        MediaTitle.Text = mediaInfo.title;
+
+        // format_id 構築
+        VideoOnlyFormatSource.Clear();
+        VideoOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+        AudioOnlyFormatSource.Clear();
+        AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+
+        MovieFormatSource.Clear();
+
+        foreach (var format in mediaInfo.formats)
+        {
+          if (format.vcodec == "none" && format.acodec != "none")
+            AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+          else if (format.acodec == "none" && format.vcodec != "none")
+            VideoOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+          else if (format.acodec != "none" && format.vcodec != "none")
+            MovieFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        }
+
+        MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
+
+        // requested_formats? があれば
+        if (mediaInfo.requested_formats.Count > 0)
+        {
+          var items = mediaInfo.requested_formats.Select(f => new
+          {
+            Value = f.format_id,
+            Label = f.ToString(),
+            Video = f.acodec == "none",
+            Audio = f.vcodec == "none",
+          });
+
+          foreach (var item in items)
+          {
+            ComboBox cb = null;
+            if (item.Video)
+              cb = VideoOnlyFormat;
+            else if (item.Audio)
+              cb = AudioOnlyFormat;
+
+            cb.SelectedValue = item.Value;
+            //cb.SelectedIndex = cb.FindString(item.Label);
+          }
+        }
+
+        SubmitDownload.Enabled = true;
+        SubmitSeparatedDownload.Enabled = true;
+      }
+      catch (Exception exception)
+      {
+        MessageBox.Show(exception.Message);
+      }
+    }
+
+    private async Task YtdlpInvokeDownload(bool separatedDownload = false)
+    {
+      if (mediaInfo == null)
+        return;
+
+      StdoutForm form = null;
+
+      try
+      {
+        var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
+        if (!Directory.Exists(outputdir))
+          Directory.CreateDirectory(outputdir);
+
+        ytdlp = new ytdlp_process()
+        {
+          Url = mediaInfo.webpage_url,
+          OutputPath = outputdir
+        };
+
+        if (!string.IsNullOrEmpty(OutputFileFormat.Text))
+          ytdlp.OutputFile = OutputFileFormat.Text;
+
+        var cookieKind = UseCookie.SelectedValue.ToString();
+
+        if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
+          ytdlp.CookiePath = CookiePath.Text;
+        else if (cookieKind != "none" && cookieKind != "file")
+          ytdlp.CookieBrowser = cookieKind;
+
+        ytdlp.OnDataOutputReceived += data => Invoke(() => OutputStderr.Text = data);
+
+        if (IsOpenStderr.Checked)
+        {
+          form = new StdoutForm();
+
+          Action<string> receiver = data =>
+          {
+            if (form.Pause)
+              form.LogData.Add(data);
+            else
+              form.Invoke(form.WriteLine, [data]);
+          };
+
+          ytdlp.OnDataOutputReceived += receiver;
+          ytdlp.OnDataErrorReceived += receiver;
+          ytdlp.OnProcessDone += process =>
+          {
+            form.Invoke(() =>
+            {
+              var button = form.Controls["BtnClose"] as Button;
+              button.Enabled = true;
+            });
+
+            ytdlp = null;
+          };
+
+          form.Show();
+        }
+
+        if (separatedDownload)
+        {
+          await ytdlp.Download(
+            VideoOnlyFormat.SelectedValue.ToString(),
+            AudioOnlyFormat.SelectedValue.ToString()
+          );
+        }
+        else
+        {
+          await ytdlp.Download(
+            MovieFormat.SelectedValue.ToString()
+          );
+        }
+      }
+      catch (Exception exception)
+      {
+        MessageBox.Show(exception.Message,"エラー");
+        if (form != null)
+        {
+          var button = form.Controls["BtnClose"] as Button;
+          button.Enabled = true;
+        }
+      }
+    }
+
+    private void YtdlpAbortDownload()
+    {
+      if (ytdlp != null)
+      {
+        ytdlp.Kill();
       }
     }
   }

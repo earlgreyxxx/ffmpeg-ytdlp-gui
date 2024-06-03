@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
 {
@@ -64,10 +65,17 @@ namespace ffmpeg_command_builder
       return rv;
     }
 
+    public Task StartAsync(string arguments = "")
+    {
+      Start(arguments);
+
+      return Current.WaitForExitAsync();
+    }
+
     public void Abort()
     {
       if (!Current.HasExited)
-        Current.Kill();
+        Current.Kill(true);
     }
   }
 

@@ -38,5 +38,10 @@ namespace ffmpeg_command_builder
     public ListItem(ListItem<T> item) : this(item.Value, item.Label, item.Data)
     {
     }
+
+    public override string ToString()
+    {
+      return $"{Label}:{Value.ToString()}";
+    }
   }
 }

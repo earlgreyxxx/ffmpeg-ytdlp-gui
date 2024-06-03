@@ -2,17 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace ffmpeg_command_builder
 {
-  using CodecListItem = ListItem<Codec>;
   using CodecListItems = List<ListItem<Codec>>;
   using StringListItem = ListItem<string>;
   using StringListItems = List<ListItem<string>>;
@@ -39,212 +38,10 @@ namespace ffmpeg_command_builder
     public Form1()
     {
       InitializeComponent();
+      InitializeSettingsBinding();
+      InitializeDataSource();
+
       ChangeCurrentDirectory();
-
-      StringListItems nvencPresetList =
-      [
-        new StringListItem("default"),
-        new StringListItem("slow"),
-        new StringListItem("medium"),
-        new StringListItem("fast"),
-        new StringListItem("hp"),
-        new StringListItem("hq"),
-        new StringListItem("bd"),
-        new StringListItem("ll","low latency"),
-        new StringListItem("llhq","low latency hq"),
-        new StringListItem("llhp","low latency hp"),
-        new StringListItem("lossless"),
-        new StringListItem("losslesshp"),
-        new StringListItem("p1","p1:fastest"),
-        new StringListItem("p2","p2:faster"),
-        new StringListItem("p3","p3:fast"),
-        new StringListItem("p4","p4:medium"),
-        new StringListItem("p5","p5:slow"),
-        new StringListItem("p6","p6:slower"),
-        new StringListItem("p7","p7:slowest")
-      ];
-
-      StringListItems qsvPresetList =
-      [
-        new StringListItem("veryfast"),
-        new StringListItem("faster"),
-        new StringListItem("fast"),
-        new StringListItem("medium"),
-        new StringListItem("slow"),
-        new StringListItem("slower"),
-        new StringListItem("veryslow")
-      ];
-
-      StringListItems cpuPresetList =
-      [
-        new StringListItem("ultrafast"),
-        new StringListItem("superfast"),
-        new StringListItem("veryfast "),
-        new StringListItem("faster"),
-        new StringListItem("fast"),
-        new StringListItem("medium"),
-        new StringListItem("slow"),
-        new StringListItem("slower"),
-        new StringListItem("veryslow"),
-        new StringListItem("placebo")
-      ];
-
-      PresetList = new Dictionary<string, StringListItems>()
-      {
-        { "h264_nvenc", nvencPresetList },
-        { "hevc_nvenc", nvencPresetList },
-        { "h264_qsv",qsvPresetList },
-        { "hevc_qsv",qsvPresetList },
-        { "copy",new StringListItems() },
-        { "libx264",cpuPresetList },
-        { "hevc",cpuPresetList },
-        { "libx265",cpuPresetList },
-      };
-
-      HardwareDecoders = new Dictionary<string, CodecListItems>()
-      {
-        {
-          "nvidia",
-          [
-            new CodecListItem(new Codec("vp9","cuvid"),"VP9"),
-            new CodecListItem(new Codec("h264","cuvid"),"H264"),
-            new CodecListItem(new Codec("hevc","cuvid"),"HEVC"),
-            new CodecListItem(new Codec("mpeg4","cuvid"),"MPEG4"),
-            new CodecListItem(new Codec("mpeg2","cuvid"),"MPEG2"),
-            new CodecListItem(new Codec("mjpeg","cuvid"),"MJPEG"),
-            new CodecListItem(new Codec("mpeg1","cuvid"),"MPEG1"),
-            new CodecListItem(new Codec("vc1","cuvid"),"VC1"),
-            new CodecListItem(new Codec("vp8","cuvid"),"VP8"),
-            new CodecListItem(new Codec("av1","cuvid"),"AV1")
-          ]
-        },
-        {
-          "intel",
-          [
-            new CodecListItem(new Codec("vp9","qsv"),"VP9"),
-            new CodecListItem(new Codec("h264","qsv"),"H264"),
-            new CodecListItem(new Codec("hevc","qsv"),"HEVC"),
-            new CodecListItem(new Codec("mpeg2","qsv"),"MPEG2"),
-            new CodecListItem(new Codec("mjpeg","qsv"),"MJPEG"),
-            new CodecListItem(new Codec("vc1","qsv"),"VC1"),
-            new CodecListItem(new Codec("vp8","qsv"),"VP8"),
-            new CodecListItem(new Codec("av1","qsv"),"AV1")
-          ]
-        },
-        {
-          "cpu",
-          [
-            new CodecListItem(new Codec("h264","cpu","h264"),"H264"),
-            new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC"),
-            new CodecListItem(new Codec("mjpeg","cpu","mjpeg"),"MJPEG"),
-            new CodecListItem(new Codec("av1","cpu","av1"),"AV1")
-          ]
-        }
-      };
-
-      DeInterlacesCuvid =
-      [
-        new StringListItem("bob","bob:cuvid"),
-        new StringListItem("adaptive","adaptive:cuvid")
-      ];
-
-      DeInterlaceListBindingSource.DataSource = new StringListItems()
-      {
-        new StringListItem("1:-1:0","bwdif"),
-        new StringListItem("2:-1:0","yadif")
-      };
-      cbDeinterlaceAlg.DataSource = DeInterlaceListBindingSource;
-
-      UseAudioEncoder.DataSource = new CodecListItems()
-      {
-        new CodecListItem(new Codec("aac"),"AAC"),
-        new CodecListItem(new Codec("libmp3lame"),"MP3"),
-        new CodecListItem(new Codec("libvorbis"),"Ogg"),
-      };
-      UseAudioEncoder.SelectedIndex = 0;
-      UseAudioEncoder.Enabled = chkEncodeAudio.Checked;
-
-      var GpuDeviceList = GetGPUDeviceList();
-
-      cbDevices.DataSource = GpuDeviceList;
-      cbDevices.SelectedIndex = 0;
-
-      var videoEncoders = new CodecListItems();
-      var ci = new CultureInfo("en-US");
-      foreach (var device in GpuDeviceList)
-      {
-        if (device.Value.StartsWith("intel", true, ci))
-        {
-          videoEncoders.Add(new CodecListItem(new Codec("hevc", "qsv"), "HEVC(QSV)"));
-          videoEncoders.Add(new CodecListItem(new Codec("h264", "qsv"), "H264(QSV)"));
-        }
-        if (device.Value.StartsWith("nvidia", true, ci))
-        {
-          videoEncoders.Add(new CodecListItem(new Codec("hevc", "nvenc"), "HEVC(NVEnc)"));
-          videoEncoders.Add(new CodecListItem(new Codec("h264", "nvenc"), "H264(NVEnc)"));
-        }
-      }
-      videoEncoders.Add(new CodecListItem(new Codec("hevc", "cpu", "libx265"), "HEVC(libx265)"));
-      videoEncoders.Add(new CodecListItem(new Codec("libx264", "cpu", "libx264"), "H264(libx264)"));
-      videoEncoders.Add(new CodecListItem(new Codec("copy", "cpu", "copy"), "COPY"));
-
-      UseVideoEncoder.DataSource = videoEncoders;
-      UseVideoEncoder.SelectedIndex = 0;
-
-      EncoderHelpList.DataSource = videoEncoders.Select(encoder => encoder.Clone()).ToList();
-      EncoderHelpList.SelectedIndex = 0;
-
-      FileListBindingSource.DataSource = InputFileList = [];
-      FileList.DataSource = FileListBindingSource;
-
-      DirectoryListBindingSource.DataSource = OutputDirectoryList = [];
-      cbOutputDir.DataSource = DirectoryListBindingSource;
-
-      FileContainer.DataSource = new StringListItems()
-      {
-        new StringListItem(".mp4","mp4"),
-        new StringListItem(".mkv","mkv"),
-        new StringListItem(".mp3","MP3"),
-        new StringListItem(".aac","AAC"),
-        new StringListItem(".ogg","Vorbis"),
-        new StringListItem(".webm","WebM"),
-        new StringListItem(".webA","WebA")
-      };
-
-      ImageType.DataSource = new StringListItems()
-      {
-        new StringListItem("mjpeg","JPEG形式",".jpg"),
-        new StringListItem("png","PNG形式",".png"),
-        new StringListItem("gif","GIF形式",".gif")
-      };
-
-      FilePrefix.DataSource = new List<string>()
-      {
-        "%d-",
-        "%02d-",
-        "%03d-",
-        "%04d-",
-        "%05d-"
-      };
-      FileSuffix.DataSource = new List<string>()
-      {
-        "-%d",
-        "-%02d",
-        "-%03d",
-        "-%04d",
-        "-%05d"
-      };
-
-      FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
-      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
-      LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
-      VideoWidth.DataBindings.Add("Value", Settings.Default, "videoWidth");
-      VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
-      FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
-      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
-      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
-
-      chkConstantQuality.DataBindings.Add("Checked",Settings.Default,"cq");
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -291,6 +88,9 @@ namespace ffmpeg_command_builder
       HelpFormSize.Height = Settings.Default.HelpHeight;
 
       FilePrefix.Text = FileSuffix.Text = string.Empty;
+
+      UseCookie.SelectedIndex = 0;
+      VideoFrameRate.SelectedIndex = 0;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -418,7 +218,7 @@ namespace ffmpeg_command_builder
       if (chkConstantQuality.Checked)
       {
         var codec = UseVideoEncoder.SelectedValue as Codec;
-        vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "-cq";
+        vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "CQ";
       }
       else
       {
@@ -453,10 +253,10 @@ namespace ffmpeg_command_builder
     private void chkAudioOnly_CheckedChanged(object sender, EventArgs e)
     {
       bool isChecked = chkAudioOnly.Checked;
-      LookAhead.Enabled = UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
+      VideoFrameRate.Enabled = LookAhead.Enabled = UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
       chkFilterDeInterlace.Enabled = chkUseHWDecoder.Enabled = !isChecked;
       CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !isChecked;
-      if(!chkUseHWDecoder.Enabled)
+      if (!chkUseHWDecoder.Enabled)
         chkUseHWDecoder.Checked = false;
 
       if (isChecked)
@@ -649,7 +449,7 @@ namespace ffmpeg_command_builder
       foreach (var path in ffmpeg.Items.Cast<string>().Where(item => item != "ffmpeg" && !System.IO.File.Exists(item)))
         ffmpeg.Items.Remove(path);
 
-      string[] ffmpegPathes = FindInPath("ffmpeg");
+      string[] ffmpegPathes = CustomProcess.FindInPath("ffmpeg");
       if (ffmpegPathes.Length == 0)
       {
         if (DialogResult.Yes == MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。\nWingetコマンドを利用してffmpegをインストールしますか？", "警告", MessageBoxButtons.YesNo))
@@ -900,6 +700,85 @@ namespace ffmpeg_command_builder
     private void CommandInvoker_Click(object sender, EventArgs e)
     {
       OpenOutputView("git.exe", "help -a", "git help");
+    }
+
+    private void DownloadUrl_Leave(object sender, EventArgs e)
+    {
+      if (DownloadUrl.Text.Length > 0 && !Regex.IsMatch(DownloadUrl.Text, "^https?://"))
+      {
+        var tooltip = new ToolTip();
+        tooltip.SetToolTip(DownloadUrl, "フォーマットエラー");
+        tooltip.AutomaticDelay = 10;
+        tooltip.Show("正しいURLを入力してください。", DownloadUrl);
+        DownloadUrl.Focus();
+        Task.Delay(5000).ContinueWith(_ => Invoke(() => tooltip.Hide(DownloadUrl)));
+      }
+    }
+
+    private void SubmitClearUrl_Click(object sender, EventArgs e)
+    {
+      YtdlpClearDownload();
+    }
+
+    private async void SubmitSepareatedDownload_Click(object sender, EventArgs e)
+    {
+      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
+      StopDownload.Enabled = true;
+      await YtdlpInvokeDownload(true);
+      StopDownload.Enabled = false;
+      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
+    }
+
+    private async void SubmitDownload_Click(object sender, EventArgs e)
+    {
+      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
+      StopDownload.Enabled = true;
+      await YtdlpInvokeDownload();
+      StopDownload.Enabled = false;
+      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
+    }
+
+    private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
+    {
+      Tab.Enabled = false;
+      await YtdlpParseDownloadUrl();
+      Tab.Enabled = true;
+    }
+
+    private void Tab_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      bool IsNotDownloader = Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader";
+      InputBox.Enabled = IsNotDownloader;
+      FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = IsNotDownloader;
+    }
+
+    private void LinkYdlOutputTemplate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      CustomProcess.ShellExecute("https://github.com/yt-dlp/yt-dlp/#output-template");
+    }
+
+    private void UseCookie_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      var value = UseCookie.SelectedValue.ToString();
+      CookieAttn.Visible = value != "none" && value != "file" && value != "firefox";
+    }
+
+    private void SubmitOpenCookie_Click(object sender, EventArgs e)
+    {
+      if (DialogResult.Cancel == OpenCookieFileDialog.ShowDialog())
+        return;
+
+      CookiePath.Text = OpenCookieFileDialog.FileName;
+    }
+
+    private void StopDownload_Click(object sender, EventArgs e)
+    {
+      YtdlpAbortDownload();
+    }
+
+    private void CookieAttn_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      CustomProcess.ShellExecute("https://github.com/yt-dlp/yt-dlp/issues/7271");
     }
   }
 }

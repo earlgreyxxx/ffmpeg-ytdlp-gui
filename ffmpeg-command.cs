@@ -136,6 +136,11 @@ namespace ffmpeg_command_builder
       set => options["preset"] = $"-preset {value}";
     }
 
+    public decimal VFrameRate
+    {
+      set => options["r:v"] = value > 0 ? $"-r:v {value}" : string.Empty;
+    }
+
     public ffmpeg_command(string ffmpegpath)
     {
       try
@@ -233,6 +238,12 @@ namespace ffmpeg_command_builder
     public ffmpeg_command aBitrate(int bitrate)
     {
       ABitrate = bitrate;
+      return this;
+    }
+
+    public ffmpeg_command vFrameRate(decimal fps)
+    {
+      VFrameRate = fps;
       return this;
     }
 

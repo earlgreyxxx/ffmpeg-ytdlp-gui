@@ -187,8 +187,9 @@ namespace ffmpeg_command_builder
         yield return options["vcodec"];
         yield return options["preset"];
         yield return options["b:v"];
+        yield return options["r:v"];
 
-        if(options.ContainsKey("lookahead") && !string.IsNullOrEmpty(options["lookahead"]))
+        if (options.ContainsKey("lookahead") && !string.IsNullOrEmpty(options["lookahead"]))
           yield return $"-rc-lookahead {options["lookahead"]}";
 
         if (options.ContainsKey("tag:v"))

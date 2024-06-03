@@ -80,6 +80,8 @@
       btnClear = new System.Windows.Forms.Button();
       label3 = new System.Windows.Forms.Label();
       BitrateBox = new System.Windows.Forms.GroupBox();
+      VideoFrameRate = new System.Windows.Forms.ComboBox();
+      label27 = new System.Windows.Forms.Label();
       label12 = new System.Windows.Forms.Label();
       LookAhead = new System.Windows.Forms.NumericUpDown();
       aUnit = new System.Windows.Forms.Label();
@@ -99,7 +101,7 @@
       btnStopAll = new System.Windows.Forms.Button();
       DeInterlaceBox = new System.Windows.Forms.GroupBox();
       cbDevices = new System.Windows.Forms.ComboBox();
-      panel1 = new System.Windows.Forms.Panel();
+      InputBox = new System.Windows.Forms.Panel();
       ClearFileList = new System.Windows.Forms.Button();
       btnFFmpeg = new System.Windows.Forms.Button();
       label8 = new System.Windows.Forms.Label();
@@ -129,7 +131,7 @@
       FreeOptions = new System.Windows.Forms.TextBox();
       label11 = new System.Windows.Forms.Label();
       OthersBox = new System.Windows.Forms.GroupBox();
-      tabPage1 = new System.Windows.Forms.TabPage();
+      PageUtility = new System.Windows.Forms.TabPage();
       groupBox7 = new System.Windows.Forms.GroupBox();
       DecoderHelpList = new System.Windows.Forms.ComboBox();
       EncoderHelpList = new System.Windows.Forms.ComboBox();
@@ -162,6 +164,32 @@
       label15 = new System.Windows.Forms.Label();
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
+      PageDownloader = new System.Windows.Forms.TabPage();
+      CookieAttn = new System.Windows.Forms.LinkLabel();
+      StopDownload = new System.Windows.Forms.Button();
+      groupBox2 = new System.Windows.Forms.GroupBox();
+      MovieFormat = new System.Windows.Forms.ComboBox();
+      SubmitDownload = new System.Windows.Forms.Button();
+      groupBox1 = new System.Windows.Forms.GroupBox();
+      label23 = new System.Windows.Forms.Label();
+      SubmitSeparatedDownload = new System.Windows.Forms.Button();
+      label30 = new System.Windows.Forms.Label();
+      VideoOnlyFormat = new System.Windows.Forms.ComboBox();
+      AudioOnlyFormat = new System.Windows.Forms.ComboBox();
+      CookiePath = new System.Windows.Forms.TextBox();
+      LinkYdlOutputTemplate = new System.Windows.Forms.LinkLabel();
+      UseCookie = new System.Windows.Forms.ComboBox();
+      MediaTitle = new System.Windows.Forms.Label();
+      OutputFileFormat = new System.Windows.Forms.TextBox();
+      SubmitOpenCookie = new System.Windows.Forms.Button();
+      ThumbnailBox = new System.Windows.Forms.PictureBox();
+      SubmitClearUrl = new System.Windows.Forms.Button();
+      label28 = new System.Windows.Forms.Label();
+      SubmitConfirmFormat = new System.Windows.Forms.Button();
+      label29 = new System.Windows.Forms.Label();
+      label0 = new System.Windows.Forms.Label();
+      label24 = new System.Windows.Forms.Label();
+      DownloadUrl = new System.Windows.Forms.TextBox();
       OutputBox = new System.Windows.Forms.GroupBox();
       Overwrite = new System.Windows.Forms.CheckBox();
       IsOpenStderr = new System.Windows.Forms.CheckBox();
@@ -169,6 +197,11 @@
       FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
       DirectoryListBindingSource = new System.Windows.Forms.BindingSource(components);
+      imageList1 = new System.Windows.Forms.ImageList(components);
+      OpenCookieFileDialog = new System.Windows.Forms.OpenFileDialog();
+      VideoOnlyFormatSource = new System.Windows.Forms.BindingSource(components);
+      AudioOnlyFormatSource = new System.Windows.Forms.BindingSource(components);
+      MovieFormatSource = new System.Windows.Forms.BindingSource(components);
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -182,7 +215,7 @@
       ((System.ComponentModel.ISupportInitialize)aBitrate).BeginInit();
       ((System.ComponentModel.ISupportInitialize)vBitrate).BeginInit();
       DeInterlaceBox.SuspendLayout();
-      panel1.SuspendLayout();
+      InputBox.SuspendLayout();
       StatusBar.SuspendLayout();
       CropBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)CropY).BeginInit();
@@ -196,7 +229,7 @@
       SubmitButtonBox.SuspendLayout();
       groupBox6.SuspendLayout();
       OthersBox.SuspendLayout();
-      tabPage1.SuspendLayout();
+      PageUtility.SuspendLayout();
       groupBox7.SuspendLayout();
       CommonButtonBox.SuspendLayout();
       groupBox8.SuspendLayout();
@@ -204,9 +237,16 @@
       ((System.ComponentModel.ISupportInitialize)ImageWidth).BeginInit();
       ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
+      PageDownloader.SuspendLayout();
+      groupBox2.SuspendLayout();
+      groupBox1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
       OutputBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)DirectoryListBindingSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)VideoOnlyFormatSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)AudioOnlyFormatSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)MovieFormatSource).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -269,7 +309,7 @@
       CuttingBox.Controls.Add(label2);
       CuttingBox.Location = new System.Drawing.Point(10, 85);
       CuttingBox.Name = "CuttingBox";
-      CuttingBox.Size = new System.Drawing.Size(347, 80);
+      CuttingBox.Size = new System.Drawing.Size(275, 80);
       CuttingBox.TabIndex = 5;
       CuttingBox.TabStop = false;
       CuttingBox.Text = "切り取り　　　　　　　　　　　　　　　";
@@ -277,6 +317,7 @@
       // linkLabel1
       // 
       linkLabel1.AutoSize = true;
+      linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
       linkLabel1.Location = new System.Drawing.Point(64, 0);
       linkLabel1.Name = "linkLabel1";
       linkLabel1.Size = new System.Drawing.Size(111, 12);
@@ -758,6 +799,8 @@
       // 
       // BitrateBox
       // 
+      BitrateBox.Controls.Add(VideoFrameRate);
+      BitrateBox.Controls.Add(label27);
       BitrateBox.Controls.Add(label12);
       BitrateBox.Controls.Add(LookAhead);
       BitrateBox.Controls.Add(aUnit);
@@ -770,27 +813,47 @@
       BitrateBox.Controls.Add(chkEncodeAudio);
       BitrateBox.Controls.Add(chkConstantQuality);
       BitrateBox.Controls.Add(vUnit);
-      BitrateBox.Location = new System.Drawing.Point(364, 85);
+      BitrateBox.Location = new System.Drawing.Point(295, 85);
       BitrateBox.Name = "BitrateBox";
-      BitrateBox.Size = new System.Drawing.Size(456, 80);
+      BitrateBox.Size = new System.Drawing.Size(524, 80);
       BitrateBox.TabIndex = 15;
       BitrateBox.TabStop = false;
       BitrateBox.Text = "出力品質";
       // 
+      // VideoFrameRate
+      // 
+      VideoFrameRate.DisplayMember = "Label";
+      VideoFrameRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      VideoFrameRate.FormattingEnabled = true;
+      VideoFrameRate.Location = new System.Drawing.Point(295, 21);
+      VideoFrameRate.Name = "VideoFrameRate";
+      VideoFrameRate.Size = new System.Drawing.Size(96, 20);
+      VideoFrameRate.TabIndex = 30;
+      VideoFrameRate.ValueMember = "Value";
+      // 
+      // label27
+      // 
+      label27.AutoSize = true;
+      label27.Location = new System.Drawing.Point(268, 25);
+      label27.Name = "label27";
+      label27.Size = new System.Drawing.Size(23, 12);
+      label27.TabIndex = 29;
+      label27.Text = "-r:v";
+      // 
       // label12
       // 
       label12.AutoSize = true;
-      label12.Location = new System.Drawing.Point(292, 53);
+      label12.Location = new System.Drawing.Point(406, 26);
       label12.Name = "label12";
-      label12.Size = new System.Drawing.Size(102, 12);
+      label12.Size = new System.Drawing.Size(61, 12);
       label12.TabIndex = 28;
-      label12.Text = "先行探索フレーム数";
+      label12.Text = "LookAhead";
       // 
       // LookAhead
       // 
-      LookAhead.Location = new System.Drawing.Point(395, 49);
+      LookAhead.Location = new System.Drawing.Point(469, 22);
       LookAhead.Name = "LookAhead";
-      LookAhead.Size = new System.Drawing.Size(51, 19);
+      LookAhead.Size = new System.Drawing.Size(46, 19);
       LookAhead.TabIndex = 22;
       LookAhead.TabStop = false;
       LookAhead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -799,7 +862,7 @@
       // aUnit
       // 
       aUnit.AutoSize = true;
-      aUnit.Location = new System.Drawing.Point(219, 50);
+      aUnit.Location = new System.Drawing.Point(219, 52);
       aUnit.Name = "aUnit";
       aUnit.Size = new System.Drawing.Size(30, 12);
       aUnit.TabIndex = 26;
@@ -808,7 +871,7 @@
       // aBitrate
       // 
       aBitrate.Increment = new decimal(new int[] { 16, 0, 0, 0 });
-      aBitrate.Location = new System.Drawing.Point(148, 46);
+      aBitrate.Location = new System.Drawing.Point(148, 49);
       aBitrate.Maximum = new decimal(new int[] { 320, 0, 0, 0 });
       aBitrate.Name = "aBitrate";
       aBitrate.Size = new System.Drawing.Size(70, 19);
@@ -820,7 +883,7 @@
       // aQualityLabel
       // 
       aQualityLabel.AutoSize = true;
-      aQualityLabel.Location = new System.Drawing.Point(119, 48);
+      aQualityLabel.Location = new System.Drawing.Point(119, 52);
       aQualityLabel.Name = "aQualityLabel";
       aQualityLabel.Size = new System.Drawing.Size(25, 12);
       aQualityLabel.TabIndex = 24;
@@ -828,7 +891,7 @@
       // 
       // vQualityLabel
       // 
-      vQualityLabel.Location = new System.Drawing.Point(94, 26);
+      vQualityLabel.Location = new System.Drawing.Point(94, 25);
       vQualityLabel.Name = "vQualityLabel";
       vQualityLabel.Size = new System.Drawing.Size(50, 12);
       vQualityLabel.TabIndex = 23;
@@ -838,20 +901,20 @@
       // label6
       // 
       label6.AutoSize = true;
-      label6.Location = new System.Drawing.Point(289, 27);
+      label6.Location = new System.Drawing.Point(270, 52);
       label6.Name = "label6";
-      label6.Size = new System.Drawing.Size(46, 12);
+      label6.Size = new System.Drawing.Size(38, 12);
       label6.TabIndex = 22;
-      label6.Text = "プリセット";
+      label6.Text = "Preset";
       // 
       // cbPreset
       // 
       cbPreset.DisplayMember = "Label";
       cbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       cbPreset.FormattingEnabled = true;
-      cbPreset.Location = new System.Drawing.Point(335, 23);
+      cbPreset.Location = new System.Drawing.Point(317, 48);
       cbPreset.Name = "cbPreset";
-      cbPreset.Size = new System.Drawing.Size(111, 20);
+      cbPreset.Size = new System.Drawing.Size(104, 20);
       cbPreset.TabIndex = 21;
       cbPreset.TabStop = false;
       cbPreset.ValueMember = "Value";
@@ -870,7 +933,7 @@
       // chkEncodeAudio
       // 
       chkEncodeAudio.AutoSize = true;
-      chkEncodeAudio.Location = new System.Drawing.Point(14, 47);
+      chkEncodeAudio.Location = new System.Drawing.Point(14, 50);
       chkEncodeAudio.Name = "chkEncodeAudio";
       chkEncodeAudio.Size = new System.Drawing.Size(93, 16);
       chkEncodeAudio.TabIndex = 19;
@@ -882,7 +945,7 @@
       // chkConstantQuality
       // 
       chkConstantQuality.AutoSize = true;
-      chkConstantQuality.Location = new System.Drawing.Point(14, 24);
+      chkConstantQuality.Location = new System.Drawing.Point(14, 23);
       chkConstantQuality.Name = "chkConstantQuality";
       chkConstantQuality.Size = new System.Drawing.Size(72, 16);
       chkConstantQuality.TabIndex = 17;
@@ -893,7 +956,7 @@
       // vUnit
       // 
       vUnit.AutoSize = true;
-      vUnit.Location = new System.Drawing.Point(219, 26);
+      vUnit.Location = new System.Drawing.Point(219, 25);
       vUnit.Name = "vUnit";
       vUnit.Size = new System.Drawing.Size(30, 12);
       vUnit.TabIndex = 1;
@@ -984,15 +1047,15 @@
       cbDevices.ValueMember = "Value";
       cbDevices.SelectedIndexChanged += cbDevices_SelectedIndexChanged;
       // 
-      // panel1
+      // InputBox
       // 
-      panel1.Controls.Add(label3);
-      panel1.Controls.Add(FileList);
-      panel1.Controls.Add(ClearFileList);
-      panel1.Location = new System.Drawing.Point(8, 485);
-      panel1.Name = "panel1";
-      panel1.Size = new System.Drawing.Size(419, 130);
-      panel1.TabIndex = 34;
+      InputBox.Controls.Add(label3);
+      InputBox.Controls.Add(FileList);
+      InputBox.Controls.Add(ClearFileList);
+      InputBox.Location = new System.Drawing.Point(8, 485);
+      InputBox.Name = "InputBox";
+      InputBox.Size = new System.Drawing.Size(419, 130);
+      InputBox.TabIndex = 34;
       // 
       // ClearFileList
       // 
@@ -1187,7 +1250,8 @@
       // 
       Tab.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
       Tab.Controls.Add(PageConvert);
-      Tab.Controls.Add(tabPage1);
+      Tab.Controls.Add(PageUtility);
+      Tab.Controls.Add(PageDownloader);
       Tab.Location = new System.Drawing.Point(3, 40);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
@@ -1195,6 +1259,7 @@
       Tab.SelectedIndex = 0;
       Tab.Size = new System.Drawing.Size(840, 444);
       Tab.TabIndex = 42;
+      Tab.SelectedIndexChanged += Tab_SelectedIndexChanged;
       // 
       // PageConvert
       // 
@@ -1297,19 +1362,19 @@
       OthersBox.TabStop = false;
       OthersBox.Text = "その他";
       // 
-      // tabPage1
+      // PageUtility
       // 
-      tabPage1.BackColor = System.Drawing.SystemColors.ButtonFace;
-      tabPage1.Controls.Add(groupBox7);
-      tabPage1.Controls.Add(CommonButtonBox);
-      tabPage1.Controls.Add(groupBox8);
-      tabPage1.Controls.Add(Image2Box);
-      tabPage1.Location = new System.Drawing.Point(4, 27);
-      tabPage1.Name = "tabPage1";
-      tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      tabPage1.Size = new System.Drawing.Size(832, 413);
-      tabPage1.TabIndex = 1;
-      tabPage1.Text = "ユーティリティ";
+      PageUtility.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageUtility.Controls.Add(groupBox7);
+      PageUtility.Controls.Add(CommonButtonBox);
+      PageUtility.Controls.Add(groupBox8);
+      PageUtility.Controls.Add(Image2Box);
+      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Name = "PageUtility";
+      PageUtility.Padding = new System.Windows.Forms.Padding(3);
+      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.TabIndex = 1;
+      PageUtility.Text = "ユーティリティ";
       // 
       // groupBox7
       // 
@@ -1650,6 +1715,293 @@
       SubmitThumbnail.UseVisualStyleBackColor = true;
       SubmitThumbnail.Click += SubmitThumbnail_Click;
       // 
+      // PageDownloader
+      // 
+      PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(CookieAttn);
+      PageDownloader.Controls.Add(StopDownload);
+      PageDownloader.Controls.Add(groupBox2);
+      PageDownloader.Controls.Add(groupBox1);
+      PageDownloader.Controls.Add(CookiePath);
+      PageDownloader.Controls.Add(LinkYdlOutputTemplate);
+      PageDownloader.Controls.Add(UseCookie);
+      PageDownloader.Controls.Add(MediaTitle);
+      PageDownloader.Controls.Add(OutputFileFormat);
+      PageDownloader.Controls.Add(SubmitOpenCookie);
+      PageDownloader.Controls.Add(ThumbnailBox);
+      PageDownloader.Controls.Add(SubmitClearUrl);
+      PageDownloader.Controls.Add(label28);
+      PageDownloader.Controls.Add(SubmitConfirmFormat);
+      PageDownloader.Controls.Add(label29);
+      PageDownloader.Controls.Add(label0);
+      PageDownloader.Controls.Add(label24);
+      PageDownloader.Controls.Add(DownloadUrl);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Name = "PageDownloader";
+      PageDownloader.Padding = new System.Windows.Forms.Padding(3);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.TabIndex = 2;
+      PageDownloader.Text = "ダウンロード";
+      // 
+      // CookieAttn
+      // 
+      CookieAttn.AutoSize = true;
+      CookieAttn.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
+      CookieAttn.Location = new System.Drawing.Point(249, 58);
+      CookieAttn.Name = "CookieAttn";
+      CookieAttn.Size = new System.Drawing.Size(187, 12);
+      CookieAttn.TabIndex = 39;
+      CookieAttn.TabStop = true;
+      CookieAttn.Text = "※事前にブラウザを全て閉じてください。";
+      CookieAttn.LinkClicked += CookieAttn_LinkClicked;
+      // 
+      // StopDownload
+      // 
+      StopDownload.Enabled = false;
+      StopDownload.Location = new System.Drawing.Point(461, 311);
+      StopDownload.Name = "StopDownload";
+      StopDownload.Size = new System.Drawing.Size(348, 32);
+      StopDownload.TabIndex = 11;
+      StopDownload.Text = "ダウンロード中止";
+      StopDownload.UseVisualStyleBackColor = true;
+      StopDownload.Click += StopDownload_Click;
+      // 
+      // groupBox2
+      // 
+      groupBox2.Controls.Add(MovieFormat);
+      groupBox2.Controls.Add(SubmitDownload);
+      groupBox2.Location = new System.Drawing.Point(447, 216);
+      groupBox2.Name = "groupBox2";
+      groupBox2.Size = new System.Drawing.Size(372, 89);
+      groupBox2.TabIndex = 38;
+      groupBox2.TabStop = false;
+      groupBox2.Text = "ムービー";
+      // 
+      // MovieFormat
+      // 
+      MovieFormat.DisplayMember = "Label";
+      MovieFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      MovieFormat.FormattingEnabled = true;
+      MovieFormat.Location = new System.Drawing.Point(14, 25);
+      MovieFormat.Name = "MovieFormat";
+      MovieFormat.Size = new System.Drawing.Size(348, 20);
+      MovieFormat.TabIndex = 10;
+      MovieFormat.ValueMember = "Value";
+      // 
+      // SubmitDownload
+      // 
+      SubmitDownload.Enabled = false;
+      SubmitDownload.Location = new System.Drawing.Point(13, 52);
+      SubmitDownload.Name = "SubmitDownload";
+      SubmitDownload.Size = new System.Drawing.Size(350, 26);
+      SubmitDownload.TabIndex = 6;
+      SubmitDownload.Text = "ダウンロード開始";
+      SubmitDownload.UseVisualStyleBackColor = true;
+      SubmitDownload.Click += SubmitDownload_Click;
+      // 
+      // groupBox1
+      // 
+      groupBox1.Controls.Add(label23);
+      groupBox1.Controls.Add(SubmitSeparatedDownload);
+      groupBox1.Controls.Add(label30);
+      groupBox1.Controls.Add(VideoOnlyFormat);
+      groupBox1.Controls.Add(AudioOnlyFormat);
+      groupBox1.Location = new System.Drawing.Point(448, 87);
+      groupBox1.Name = "groupBox1";
+      groupBox1.Size = new System.Drawing.Size(370, 123);
+      groupBox1.TabIndex = 37;
+      groupBox1.TabStop = false;
+      groupBox1.Text = "動画＋音声";
+      // 
+      // label23
+      // 
+      label23.AutoSize = true;
+      label23.Location = new System.Drawing.Point(11, 32);
+      label23.Name = "label23";
+      label23.Size = new System.Drawing.Size(29, 12);
+      label23.TabIndex = 5;
+      label23.Text = "動画";
+      // 
+      // SubmitSeparatedDownload
+      // 
+      SubmitSeparatedDownload.Enabled = false;
+      SubmitSeparatedDownload.Location = new System.Drawing.Point(13, 86);
+      SubmitSeparatedDownload.Name = "SubmitSeparatedDownload";
+      SubmitSeparatedDownload.Size = new System.Drawing.Size(350, 26);
+      SubmitSeparatedDownload.TabIndex = 6;
+      SubmitSeparatedDownload.Text = "ダウンロード開始";
+      SubmitSeparatedDownload.UseVisualStyleBackColor = true;
+      SubmitSeparatedDownload.Click += SubmitSepareatedDownload_Click;
+      // 
+      // label30
+      // 
+      label30.AutoSize = true;
+      label30.Location = new System.Drawing.Point(11, 61);
+      label30.Name = "label30";
+      label30.Size = new System.Drawing.Size(29, 12);
+      label30.TabIndex = 5;
+      label30.Text = "音声";
+      // 
+      // VideoOnlyFormat
+      // 
+      VideoOnlyFormat.DisplayMember = "Label";
+      VideoOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      VideoOnlyFormat.FormattingEnabled = true;
+      VideoOnlyFormat.Location = new System.Drawing.Point(46, 29);
+      VideoOnlyFormat.Name = "VideoOnlyFormat";
+      VideoOnlyFormat.Size = new System.Drawing.Size(315, 20);
+      VideoOnlyFormat.TabIndex = 10;
+      VideoOnlyFormat.ValueMember = "Value";
+      // 
+      // AudioOnlyFormat
+      // 
+      AudioOnlyFormat.DisplayMember = "Label";
+      AudioOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      AudioOnlyFormat.FormattingEnabled = true;
+      AudioOnlyFormat.Location = new System.Drawing.Point(46, 58);
+      AudioOnlyFormat.Name = "AudioOnlyFormat";
+      AudioOnlyFormat.Size = new System.Drawing.Size(315, 20);
+      AudioOnlyFormat.TabIndex = 10;
+      AudioOnlyFormat.ValueMember = "Value";
+      // 
+      // CookiePath
+      // 
+      CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+      CookiePath.Location = new System.Drawing.Point(554, 55);
+      CookiePath.Name = "CookiePath";
+      CookiePath.ReadOnly = true;
+      CookiePath.Size = new System.Drawing.Size(211, 19);
+      CookiePath.TabIndex = 15;
+      // 
+      // LinkYdlOutputTemplate
+      // 
+      LinkYdlOutputTemplate.AutoSize = true;
+      LinkYdlOutputTemplate.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
+      LinkYdlOutputTemplate.Location = new System.Drawing.Point(554, 364);
+      LinkYdlOutputTemplate.Name = "LinkYdlOutputTemplate";
+      LinkYdlOutputTemplate.Size = new System.Drawing.Size(124, 12);
+      LinkYdlOutputTemplate.TabIndex = 14;
+      LinkYdlOutputTemplate.TabStop = true;
+      LinkYdlOutputTemplate.Text = "※OUTPUT TEMPLATE";
+      LinkYdlOutputTemplate.LinkClicked += LinkYdlOutputTemplate_LinkClicked;
+      // 
+      // UseCookie
+      // 
+      UseCookie.DisplayMember = "Label";
+      UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      UseCookie.FormattingEnabled = true;
+      UseCookie.Location = new System.Drawing.Point(135, 54);
+      UseCookie.Name = "UseCookie";
+      UseCookie.Size = new System.Drawing.Size(110, 20);
+      UseCookie.TabIndex = 13;
+      UseCookie.ValueMember = "Value";
+      UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
+      // 
+      // MediaTitle
+      // 
+      MediaTitle.AutoEllipsis = true;
+      MediaTitle.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      MediaTitle.Location = new System.Drawing.Point(15, 338);
+      MediaTitle.Name = "MediaTitle";
+      MediaTitle.Size = new System.Drawing.Size(426, 69);
+      MediaTitle.TabIndex = 12;
+      MediaTitle.Text = "メディアタイトル";
+      // 
+      // OutputFileFormat
+      // 
+      OutputFileFormat.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      OutputFileFormat.Location = new System.Drawing.Point(450, 382);
+      OutputFileFormat.Name = "OutputFileFormat";
+      OutputFileFormat.Size = new System.Drawing.Size(368, 25);
+      OutputFileFormat.TabIndex = 11;
+      // 
+      // SubmitOpenCookie
+      // 
+      SubmitOpenCookie.Location = new System.Drawing.Point(769, 53);
+      SubmitOpenCookie.Name = "SubmitOpenCookie";
+      SubmitOpenCookie.Size = new System.Drawing.Size(49, 23);
+      SubmitOpenCookie.TabIndex = 36;
+      SubmitOpenCookie.TabStop = false;
+      SubmitOpenCookie.Text = "参照";
+      SubmitOpenCookie.UseVisualStyleBackColor = true;
+      SubmitOpenCookie.Click += SubmitOpenCookie_Click;
+      // 
+      // ThumbnailBox
+      // 
+      ThumbnailBox.BackColor = System.Drawing.Color.Black;
+      ThumbnailBox.InitialImage = null;
+      ThumbnailBox.Location = new System.Drawing.Point(15, 92);
+      ThumbnailBox.Name = "ThumbnailBox";
+      ThumbnailBox.Size = new System.Drawing.Size(426, 240);
+      ThumbnailBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      ThumbnailBox.TabIndex = 9;
+      ThumbnailBox.TabStop = false;
+      // 
+      // SubmitClearUrl
+      // 
+      SubmitClearUrl.Location = new System.Drawing.Point(682, 13);
+      SubmitClearUrl.Name = "SubmitClearUrl";
+      SubmitClearUrl.Size = new System.Drawing.Size(59, 31);
+      SubmitClearUrl.TabIndex = 7;
+      SubmitClearUrl.Text = "クリア";
+      SubmitClearUrl.UseVisualStyleBackColor = true;
+      SubmitClearUrl.Click += SubmitClearUrl_Click;
+      // 
+      // label28
+      // 
+      label28.AutoSize = true;
+      label28.Location = new System.Drawing.Point(447, 364);
+      label28.Name = "label28";
+      label28.Size = new System.Drawing.Size(99, 12);
+      label28.TabIndex = 5;
+      label28.Text = "保存ファイル名規則";
+      // 
+      // SubmitConfirmFormat
+      // 
+      SubmitConfirmFormat.Location = new System.Drawing.Point(747, 13);
+      SubmitConfirmFormat.Name = "SubmitConfirmFormat";
+      SubmitConfirmFormat.Size = new System.Drawing.Size(72, 31);
+      SubmitConfirmFormat.TabIndex = 6;
+      SubmitConfirmFormat.Text = "URL解析";
+      SubmitConfirmFormat.UseVisualStyleBackColor = true;
+      SubmitConfirmFormat.Click += SubmitConfirmFormat_Click;
+      // 
+      // label29
+      // 
+      label29.AutoSize = true;
+      label29.Location = new System.Drawing.Point(449, 58);
+      label29.Name = "label29";
+      label29.Size = new System.Drawing.Size(103, 12);
+      label29.TabIndex = 5;
+      label29.Text = "Cookieファイルのパス";
+      // 
+      // label0
+      // 
+      label0.AutoSize = true;
+      label0.Location = new System.Drawing.Point(10, 58);
+      label0.Name = "label0";
+      label0.Size = new System.Drawing.Size(119, 12);
+      label0.TabIndex = 5;
+      label0.Text = "ブラウザのCookieを使用";
+      // 
+      // label24
+      // 
+      label24.AutoSize = true;
+      label24.Location = new System.Drawing.Point(10, 22);
+      label24.Name = "label24";
+      label24.Size = new System.Drawing.Size(82, 12);
+      label24.TabIndex = 5;
+      label24.Text = "ダウンロードURL";
+      // 
+      // DownloadUrl
+      // 
+      DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      DownloadUrl.Location = new System.Drawing.Point(98, 14);
+      DownloadUrl.Name = "DownloadUrl";
+      DownloadUrl.Size = new System.Drawing.Size(578, 28);
+      DownloadUrl.TabIndex = 4;
+      DownloadUrl.Leave += DownloadUrl_Leave;
+      // 
       // OutputBox
       // 
       OutputBox.Controls.Add(Overwrite);
@@ -1685,10 +2037,10 @@
       IsOpenStderr.AutoSize = true;
       IsOpenStderr.Location = new System.Drawing.Point(12, 99);
       IsOpenStderr.Name = "IsOpenStderr";
-      IsOpenStderr.Size = new System.Drawing.Size(193, 16);
+      IsOpenStderr.Size = new System.Drawing.Size(164, 16);
       IsOpenStderr.TabIndex = 35;
       IsOpenStderr.TabStop = false;
-      IsOpenStderr.Text = "FFmpegの実行出力ウィンドウを開く";
+      IsOpenStderr.Text = "実行中の出力ウィンドウを開く";
       IsOpenStderr.UseVisualStyleBackColor = true;
       // 
       // FilePrefix
@@ -1713,6 +2065,17 @@
       // 
       settingsPropertyValueBindingSource.DataSource = typeof(System.Configuration.SettingsPropertyValue);
       // 
+      // imageList1
+      // 
+      imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+      imageList1.ImageSize = new System.Drawing.Size(16, 16);
+      imageList1.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // OpenCookieFileDialog
+      // 
+      OpenCookieFileDialog.FileName = "cookie.txt";
+      OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
+      // 
       // Form1
       // 
       AllowDrop = true;
@@ -1726,7 +2089,7 @@
       Controls.Add(btnFindInPath);
       Controls.Add(label8);
       Controls.Add(btnFFmpeg);
-      Controls.Add(panel1);
+      Controls.Add(InputBox);
       Font = new System.Drawing.Font("MS UI Gothic", 9F);
       FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       MaximizeBox = false;
@@ -1756,8 +2119,8 @@
       ((System.ComponentModel.ISupportInitialize)vBitrate).EndInit();
       DeInterlaceBox.ResumeLayout(false);
       DeInterlaceBox.PerformLayout();
-      panel1.ResumeLayout(false);
-      panel1.PerformLayout();
+      InputBox.ResumeLayout(false);
+      InputBox.PerformLayout();
       StatusBar.ResumeLayout(false);
       StatusBar.PerformLayout();
       CropBox.ResumeLayout(false);
@@ -1776,7 +2139,7 @@
       groupBox6.PerformLayout();
       OthersBox.ResumeLayout(false);
       OthersBox.PerformLayout();
-      tabPage1.ResumeLayout(false);
+      PageUtility.ResumeLayout(false);
       groupBox7.ResumeLayout(false);
       CommonButtonBox.ResumeLayout(false);
       groupBox8.ResumeLayout(false);
@@ -1786,10 +2149,19 @@
       ((System.ComponentModel.ISupportInitialize)ImageWidth).EndInit();
       ((System.ComponentModel.ISupportInitialize)ImageHeight).EndInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
+      PageDownloader.ResumeLayout(false);
+      PageDownloader.PerformLayout();
+      groupBox2.ResumeLayout(false);
+      groupBox1.ResumeLayout(false);
+      groupBox1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)ThumbnailBox).EndInit();
       OutputBox.ResumeLayout(false);
       OutputBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)DirectoryListBindingSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)VideoOnlyFormatSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)AudioOnlyFormatSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)MovieFormatSource).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -1846,7 +2218,7 @@
     private System.Windows.Forms.ComboBox cbPreset;
     private System.Windows.Forms.GroupBox DeInterlaceBox;
     private System.Windows.Forms.ComboBox cbDevices;
-    private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.Panel InputBox;
     private System.Windows.Forms.Button btnFFmpeg;
     private System.Windows.Forms.Label label8;
     private System.Windows.Forms.OpenFileDialog OpenFFMpegFileDlg;
@@ -1895,7 +2267,7 @@
     private System.Windows.Forms.GroupBox groupBox6;
     private System.Windows.Forms.TextBox FreeOptions;
     private System.Windows.Forms.Label label11;
-    private System.Windows.Forms.TabPage tabPage1;
+    private System.Windows.Forms.TabPage PageUtility;
     private System.Windows.Forms.Button SubmitConcat;
     private System.Windows.Forms.GroupBox Image2Box;
     private System.Windows.Forms.Button SubmitThumbnail;
@@ -1936,6 +2308,39 @@
     private System.Windows.Forms.ComboBox EncoderHelpList;
     private System.Windows.Forms.GroupBox groupBox7;
     private System.Windows.Forms.CheckBox Overwrite;
+    private System.Windows.Forms.TabPage PageDownloader;
+    private System.Windows.Forms.Label label24;
+    private System.Windows.Forms.TextBox DownloadUrl;
+    private System.Windows.Forms.Button SubmitClearUrl;
+    private System.Windows.Forms.Button SubmitDownload;
+    private System.Windows.Forms.Button SubmitConfirmFormat;
+    private System.Windows.Forms.PictureBox ThumbnailBox;
+    private System.Windows.Forms.ImageList imageList1;
+    private System.Windows.Forms.ComboBox VideoOnlyFormat;
+    private System.Windows.Forms.ComboBox AudioOnlyFormat;
+    private System.Windows.Forms.Label label23;
+    private System.Windows.Forms.ComboBox MovieFormat;
+    private System.Windows.Forms.TextBox OutputFileFormat;
+    private System.Windows.Forms.Label MediaTitle;
+    private System.Windows.Forms.ComboBox UseCookie;
+    private System.Windows.Forms.Label label0;
+    private System.Windows.Forms.Label label28;
+    private System.Windows.Forms.LinkLabel LinkYdlOutputTemplate;
+    private System.Windows.Forms.TextBox CookiePath;
+    private System.Windows.Forms.Button SubmitOpenCookie;
+    private System.Windows.Forms.Label label29;
+    private System.Windows.Forms.OpenFileDialog OpenCookieFileDialog;
+    private System.Windows.Forms.ComboBox VideoFrameRate;
+    private System.Windows.Forms.Label label27;
+    private System.Windows.Forms.Label label30;
+    private System.Windows.Forms.BindingSource VideoOnlyFormatSource;
+    private System.Windows.Forms.BindingSource AudioOnlyFormatSource;
+    private System.Windows.Forms.BindingSource MovieFormatSource;
+    private System.Windows.Forms.GroupBox groupBox2;
+    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.Button SubmitSeparatedDownload;
+    private System.Windows.Forms.Button StopDownload;
+    private System.Windows.Forms.LinkLabel CookieAttn;
   }
 }
 
