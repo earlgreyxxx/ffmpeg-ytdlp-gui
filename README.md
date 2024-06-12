@@ -14,3 +14,6 @@ ffmpeg.exe／yt-dlp.exe (いずれも winget でインストールしたもの�
 winget install Gyan.FFmpeg
 winget install yt-dlp.yt-dlp
 ```
+
+## 利用しているライブラリなど
+* webpなどの画像をpng形式に変換するため、ImageSharp を使用しています。
