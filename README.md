@@ -6,7 +6,7 @@ ffmpegでの変換はh264/hevc (nvenc/qsv/cpu)のみ。
 
 ## 動作環境
 * Windows10 22H2以降,Windows11
-* .NET 8.0
+* .NET 8 デスクトップ ランタイム
 
 ## 必須
 ffmpeg.exe／yt-dlp.exe (いずれも winget でインストールしたもの）
