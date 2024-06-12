@@ -1736,10 +1736,10 @@
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
       PageDownloader.Controls.Add(DownloadUrl);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 413);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2096,7 +2096,7 @@
       Name = "Form1";
       Padding = new System.Windows.Forms.Padding(3);
       SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-      Text = "ffmpeg command builder : required ffmpeg 6.1 or higher";
+      Text = "ffmpeg & yt-dlp GUI";
       FormClosing += Form1_FormClosing;
       Load += Form1_Load;
       CuttingBox.ResumeLayout(false);

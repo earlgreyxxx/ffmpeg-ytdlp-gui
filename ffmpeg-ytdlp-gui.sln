@@ -1,9 +1,8 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ffmpeg-command-builder", "ffmpeg-command-builder.csproj", "{4AD3B25A-A52B-41A7-A505-3414ACC9644A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ffmpeg-ytdlp-gui", "ffmpeg-ytdlp-gui.csproj", "{4AD3B25A-A52B-41A7-A505-3414ACC9644A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
