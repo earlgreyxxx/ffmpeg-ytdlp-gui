@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
 {
   internal class ytdlp_process
   {
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool AttachConsole(uint dwProcessId);
+
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool FreeConsole();
+
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool SetConsoleCtrlHandler(ConsoleEventHandler handlerRoutine, bool add);
+
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
+
+    delegate bool ConsoleEventHandler(uint handler);
+
     public event Action<string> OnDataOutputReceived;
     public event Action<string> OnDataErrorReceived;
     public event Action<Process> OnProcessDone;
@@ -67,11 +82,12 @@ namespace ffmpeg_command_builder
 
       var process = Current = new RedirectedProcess(Command,arguments);
       process.OnStdOutReceived += data => OnDataOutputReceived?.Invoke(data);
-      process.OnStdErrReceived += data=> OnDataErrorReceived?.Invoke(data);
+      process.OnStdErrReceived += data => OnDataErrorReceived?.Invoke(data);
       process.OnProcessExited += (s, e) =>
       {
         OnProcessDone?.Invoke(process.Current);
         Current = null;
+        Debug.WriteLine("yt-dlpプロセス終了");
       };
 
       await process.StartAsync();
@@ -82,7 +98,19 @@ namespace ffmpeg_command_builder
       if (Current == null)
         throw new Exception("既にダウンロードプロセスは終了しています。");
 
-      Current.Abort();
+      var process = Current.Current;
+      AttachConsole((uint)process.Id);
+      SetConsoleCtrlHandler(null, true);
+
+      if (!GenerateConsoleCtrlEvent(0, (uint)process.Id))
+      {
+        Debug.WriteLine("CTRL-Cイベント発行失敗");
+        return;
+      }
+
+      process.WaitForExit(0);
+      SetConsoleCtrlHandler(null, false);
+      FreeConsole();
     }
 
     public async Task<MediaInformation> getMediaInformation()
