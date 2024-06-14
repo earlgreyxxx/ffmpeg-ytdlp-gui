@@ -42,9 +42,9 @@ namespace ffmpeg_command_builder
     private StreamWriter LogWriter;
     private Encoding CP932;
 
-    public event Action<string> OnProcessExit;
-    public event Action<string> OnReceiveData;
-    public event Action OnProcessesDone;
+    public event Action<string> ProcessExit;
+    public event Action<string> ReceiveData;
+    public event Action ProcessesDone;
 
     public ffmpeg_command Command { get; private set; }
     public string LogFileName { get; set; } = GetLogFileName();
@@ -85,9 +85,9 @@ namespace ffmpeg_command_builder
         throw new Exception("no file");
 
       Redirected = CreateRedirectedProcess(filename,Command);
-      Redirected.OnProcessExited += OnProcessExited;
-      Redirected.OnStdErrReceived += WriteLog;
-      Redirected.OnStdErrReceived += data => OnReceiveData.Invoke(data);
+      Redirected.ProcessExited += OnProcessExited;
+      Redirected.StdErrReceived += WriteLog;
+      Redirected.StdErrReceived += data => OnReceiveData(data);
       if (!Redirected.Start())
       {
         OnProcessExited(Redirected.Current, new EventArgs());
@@ -101,9 +101,9 @@ namespace ffmpeg_command_builder
         LogWriter = new StreamWriter(LogFileName, false);
 
       Redirected = CreateRedirectedProcess(filename,Command);
-      Redirected.OnProcessExited += OnAllProcessExited;
-      Redirected.OnStdErrReceived += WriteLog;
-      Redirected.OnStdErrReceived += data => OnReceiveData.Invoke(data);
+      Redirected.ProcessExited += OnAllProcessExited;
+      Redirected.StdErrReceived += WriteLog;
+      Redirected.StdErrReceived += data => OnReceiveData(data);
       
       if (!Redirected.Start())
       {
@@ -127,7 +127,7 @@ namespace ffmpeg_command_builder
       {
         var process = Redirected.Current as CustomProcess;
         string filename = process.CustomFileName;
-        OnProcessExit?.Invoke(filename);
+        OnProcessExit(filename);
         Redirected = null;
         CreateProcess();
       }
@@ -139,7 +139,7 @@ namespace ffmpeg_command_builder
 
     private void OnAllProcessExited(object sender, EventArgs e)
     {
-      OnProcessesDone?.Invoke();
+      OnProcessesDone();
       FileList.Clear();
       FileList.ResetBindings(false);
       LogWriter?.Flush();
@@ -147,7 +147,7 @@ namespace ffmpeg_command_builder
       LogWriter = null;
     }
 
-    public void Abort(bool stopAll = false)
+    public void Kill(bool stopAll = false)
     {
       if (stopAll)
         FileList.Clear();
@@ -157,5 +157,20 @@ namespace ffmpeg_command_builder
 
       Redirected.StdInWriter.Write('q');
     }
+
+    // イベント
+    public virtual void OnProcessExit(string filename)
+    {
+      ProcessExit?.Invoke(filename);
+    }
+    public virtual void OnReceiveData(string data)
+    {
+      ReceiveData?.Invoke(data);
+    }
+    public virtual void OnProcessesDone()
+    {
+      ProcessesDone?.Invoke();
+    }
+
   }
 }

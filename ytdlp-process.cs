@@ -3,39 +3,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
 {
-  internal class ytdlp_process
+  internal class ytdlp_process : RedirectedProcess
   {
-    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-    static extern bool AttachConsole(uint dwProcessId);
-
-    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-    static extern bool FreeConsole();
-
-    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-    static extern bool SetConsoleCtrlHandler(ConsoleEventHandler handlerRoutine, bool add);
-
-    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-    static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
-
-    delegate bool ConsoleEventHandler(uint handler);
-
-    public event Action<string> OnDataOutputReceived;
-    public event Action<string> OnDataErrorReceived;
-    public event Action<Process> OnProcessDone;
-
     public string Url { get; set; }
-    public string Command { get; set; } = "yt-dlp";
     public string CookieBrowser { get; set; } = "";
     public string CookiePath { get; set; }
     public string OutputPath { get; set; }
     public string OutputFile { get; set; }
 
-    private RedirectedProcess Current = null;
+    //private RedirectedProcess Current = null;
+
+    public ytdlp_process() : base("yt-dlp")
+    {
+      ProcessExited += (s, e) => Debug.WriteLine("yt-dlpプロセス終了");
+    }
 
     private IEnumerable<string> CreateArguments(string[] additionalOptions = null)
     {
@@ -58,7 +43,7 @@ namespace ffmpeg_command_builder
       return options;
     }
 
-    public async Task Download(string fid1, string fid2 = null)
+    public async Task DownloadAsync(string fid1, string fid2 = null)
     {
       var sb = new List<string>();
 
@@ -67,50 +52,14 @@ namespace ffmpeg_command_builder
       if (!string.IsNullOrEmpty(fid2))
         sb.Add(fid2);
 
-      var strarr = sb.Count > 0 ? new string[] { $"-f {string.Join('+', sb.ToArray())}" } : null;
-      if (strarr == null)
+      string[] formats = sb.Count > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : null;
+      if (formats == null)
         throw new Exception("ダウンロードする対象が指定されていません。");
 
-      await Download(strarr);
-    }
-
-
-    public async Task Download(string[] additionals = null)
-    {
-      string arguments = string.Join(' ',CreateArguments(additionals).ToArray());
+      string arguments = string.Join(' ',CreateArguments(formats).ToArray());
       Debug.WriteLine($"{Command} {arguments}");
 
-      var process = Current = new RedirectedProcess(Command,arguments);
-      process.OnStdOutReceived += data => OnDataOutputReceived?.Invoke(data);
-      process.OnStdErrReceived += data => OnDataErrorReceived?.Invoke(data);
-      process.OnProcessExited += (s, e) =>
-      {
-        OnProcessDone?.Invoke(process.Current);
-        Current = null;
-        Debug.WriteLine("yt-dlpプロセス終了");
-      };
-
-      await process.StartAsync();
-    }
-
-    public void Kill()
-    {
-      if (Current == null)
-        throw new Exception("既にダウンロードプロセスは終了しています。");
-
-      var process = Current.Current;
-      AttachConsole((uint)process.Id);
-      SetConsoleCtrlHandler(null, true);
-
-      if (!GenerateConsoleCtrlEvent(0, (uint)process.Id))
-      {
-        Debug.WriteLine("CTRL-Cイベント発行失敗");
-        return;
-      }
-
-      process.WaitForExit(0);
-      SetConsoleCtrlHandler(null, false);
-      FreeConsole();
+      await StartAsync(arguments);
     }
 
     public async Task<MediaInformation> getMediaInformation()
@@ -124,22 +73,20 @@ namespace ffmpeg_command_builder
       else if (!string.IsNullOrEmpty(CookieBrowser))
         options.Add($"--cookies-from-browser {CookieBrowser}");
 
+      var log = new List<string>();
       var arguments = string.Join(' ', options.ToArray());
-      Debug.WriteLine($"{Command} {arguments}");
-      var process = new RedirectedProcess(Command, arguments);
       MediaInformation info = null;
 
-      var log = new List<string>();
+      Debug.WriteLine($"{Command} {arguments}");
 
-      process.OnStdOutReceived += data => log.Add(data);
-      process.OnStdErrReceived += OnDataErrorReceived;
-      process.OnProcessExited += (s, e) =>
+      StdOutReceived += data => log.Add(data);
+      ProcessExited += (s, e) =>
       {
-        if(process.Current.ExitCode == 0)
+        if(Current.ExitCode == 0)
           info = new MediaInformation(string.Join(string.Empty, log.ToArray()));
       };
 
-      await process.StartAsync();
+      await StartAsync(arguments);
       return info;
     }
   }

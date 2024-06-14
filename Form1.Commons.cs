@@ -329,7 +329,16 @@ namespace ffmpeg_command_builder
 
       var process = new ffmpeg_process(command,FileListBindingSource);
 
-      Action ProcessesDoneInvoker = () =>
+      process.ReceiveData += data => Invoke(() => OutputStderr.Text = data);
+      process.ProcessExit += filename => Invoke(() =>
+      {
+        var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == filename);
+        if (item == null)
+          return;
+
+        FileListBindingSource.Remove(item);
+      });
+      process.ProcessesDone += () => Invoke(() =>
       {
         btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
         OpenLogFile.Enabled = true;
@@ -338,26 +347,13 @@ namespace ffmpeg_command_builder
 
         Proceeding = null;
         MessageBox.Show("変換処理が終了しました。");
-      };
-      Action<string> ReceiveDataInvoker = output => OutputStderr.Text = output; 
-      Action<string> ProcessExitInvoker = filename =>
-      {
-        var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == filename);
-        if (item == null)
-          return;
-
-        FileListBindingSource.Remove(item);
-      };
-
-      process.OnProcessesDone += () => Invoke(ProcessesDoneInvoker);
-      process.OnReceiveData += data => Invoke(ReceiveDataInvoker, [data]);
-      process.OnProcessExit += filename => Invoke(ProcessExitInvoker, [filename]);
+      });
 
       if (IsOpenStderr.Checked)
       {
         var form = new StdoutForm();
         var cp932 = Encoding.GetEncoding(932);
-        process.OnReceiveData += data =>
+        process.ReceiveData += data =>
         {
           if (string.IsNullOrEmpty(data))
             return;
@@ -368,9 +364,9 @@ namespace ffmpeg_command_builder
           if (form.Pause)
             form.LogData.Add(encoded);
           else
-            form.Invoke(form.WriteLine, [encoded]);
+            form.Invoke(() => form.WriteLine(encoded));
         };
-        process.OnProcessesDone += () => form.Invoke(form.OnProcesssDoneInvoker);
+        process.ProcessesDone += () => form.Invoke(form.OnProcesssDoneInvoker);
         form.Show();
       }
 
@@ -553,7 +549,7 @@ namespace ffmpeg_command_builder
       if (stopAll)
         FileListBindingSource.Clear();
 
-      Proceeding.Abort(stopAll);
+      Proceeding.Kill(stopAll);
     }
 
     private void OpenOutputView(string executable, string arg,string formTitle = "ffmpeg outputs")
@@ -663,6 +659,7 @@ namespace ffmpeg_command_builder
       VideoOnlyFormatSource.Clear();
       MovieFormatSource.Clear();
 
+      ytdlp = null;
       mediaInfo = null;
     }
 
@@ -682,7 +679,10 @@ namespace ffmpeg_command_builder
         else if (cookieKind != "none" && cookieKind != "file")
           ytdlp.CookieBrowser = cookieKind;
 
+        OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
         mediaInfo = await ytdlp.getMediaInformation();
+        OutputStderr.Text = "";
+
         if (mediaInfo == null)
           throw new Exception("解析に失敗しました。");
 
@@ -735,7 +735,6 @@ namespace ffmpeg_command_builder
               cb = AudioOnlyFormat;
 
             cb.SelectedValue = item.Value;
-            //cb.SelectedIndex = cb.FindString(item.Label);
           }
         }
 
@@ -777,7 +776,7 @@ namespace ffmpeg_command_builder
         else if (cookieKind != "none" && cookieKind != "file")
           ytdlp.CookieBrowser = cookieKind;
 
-        ytdlp.OnDataOutputReceived += data => Invoke(() => OutputStderr.Text = data);
+        ytdlp.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
 
         if (IsOpenStderr.Checked)
         {
@@ -791,9 +790,9 @@ namespace ffmpeg_command_builder
               form.Invoke(form.WriteLine, [data]);
           };
 
-          ytdlp.OnDataOutputReceived += receiver;
-          ytdlp.OnDataErrorReceived += receiver;
-          ytdlp.OnProcessDone += process =>
+          ytdlp.StdOutReceived += receiver;
+          ytdlp.StdErrReceived += receiver;
+          ytdlp.ProcessExited += (s,e) =>
           {
             form.Invoke(() =>
             {
@@ -809,14 +808,14 @@ namespace ffmpeg_command_builder
 
         if (separatedDownload)
         {
-          await ytdlp.Download(
+          await ytdlp.DownloadAsync(
             VideoOnlyFormat.SelectedValue.ToString(),
             AudioOnlyFormat.SelectedValue.ToString()
           );
         }
         else
         {
-          await ytdlp.Download(
+          await ytdlp.DownloadAsync(
             MovieFormat.SelectedValue.ToString()
           );
         }
@@ -835,9 +834,7 @@ namespace ffmpeg_command_builder
     private void YtdlpAbortDownload()
     {
       if (ytdlp != null)
-      {
-        ytdlp.Kill();
-      }
+        ytdlp.Interrupt();
     }
   }
 }

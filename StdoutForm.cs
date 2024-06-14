@@ -37,9 +37,9 @@ namespace ffmpeg_command_builder
       };
 
       Redirected = new RedirectedProcess(executable, arguments);
-      Redirected.OnProcessExited += (s, e) => Invoke(OnProcessExit);
-      Redirected.OnStdErrReceived += data => Invoke(OnDataReceived, [data]);
-      Redirected.OnStdOutReceived += data => Invoke(OnDataReceived, [data]);
+      Redirected.ProcessExited += (s, e) => Invoke(OnProcessExit);
+      Redirected.StdErrReceived += data => Invoke(OnDataReceived, [data]);
+      Redirected.StdOutReceived += data => Invoke(OnDataReceived, [data]);
 
       if (!string.IsNullOrEmpty(title))
         Text = title;

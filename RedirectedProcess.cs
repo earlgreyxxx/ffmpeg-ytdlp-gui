@@ -1,20 +1,42 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
 {
+  /// <summary>
+  /// 標準入出力をリダイレクトしたプロセスを表すヘルパークラス
+  /// </summary>
   public class RedirectedProcess
   {
-    public Process Current { get; private set; } = new CustomProcess();
-    public event Action<object, EventArgs> OnProcessExited;
-    public event Action<string> OnStdOutReceived;
-    public event Action<string> OnStdErrReceived;
-    public StreamWriter StdInWriter { get; private set; }
-    public bool Exited { private set; get; } = false;
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool AttachConsole(uint dwProcessId);
 
-    private ProcessStartInfo psi { get; set; } = new ProcessStartInfo()
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool FreeConsole();
+
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool SetConsoleCtrlHandler(ConsoleEventHandler handlerRoutine, bool add);
+
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
+
+    delegate bool ConsoleEventHandler(uint handler);
+
+    const uint CTRL_C_EVENT = 0;
+    const uint CTRL_BRAKE_EVENT = 1;
+
+    public Process Current { get; private set; } = new CustomProcess();
+    public event Action<object, EventArgs> ProcessExited;
+    public event Action<string> StdOutReceived;
+    public event Action<string> StdErrReceived;
+    public StreamWriter StdInWriter { get; protected set; }
+    public bool Exited { private set; get; } = false;
+    public string Command { get; protected set; }
+
+    protected ProcessStartInfo psi { get; set; } = new ProcessStartInfo()
     {
       CreateNoWindow = true,
       RedirectStandardOutput = true,
@@ -23,23 +45,27 @@ namespace ffmpeg_command_builder
       UseShellExecute = false
     };
 
-    private void Process_Exited(object sender, EventArgs e)
+    private void default_Process_Exited(object sender, EventArgs e)
     {
       StdInWriter.Dispose();
       StdInWriter = null;
-      OnProcessExited?.Invoke(this, new RedirectedProcessEventArgs(psi.FileName, psi.Arguments));
       Exited = Current.HasExited;
     }
 
     public RedirectedProcess(string filename, string arguments = "")
     {
-      psi.FileName = filename;
+      Command = filename;
+
       if(!string.IsNullOrEmpty(arguments))
         psi.Arguments = arguments;
 
       Current.StartInfo = psi;
-      Current.Exited += Process_Exited;
       Current.EnableRaisingEvents = true;
+      Current.Exited += default_Process_Exited; 
+
+      Current.Exited += (sender, ev) => OnProcessExited(sender, new RedirectedProcessEventArgs(psi.FileName,psi.Arguments));
+      Current.OutputDataReceived += (sender, ev) => OnStdOutReceived(ev.Data ?? string.Empty);
+      Current.ErrorDataReceived += (sender, ev) => OnStdErrReceived(ev.Data ?? string.Empty);
     }
 
     ~RedirectedProcess()
@@ -47,10 +73,14 @@ namespace ffmpeg_command_builder
       Current.Dispose();
     }
 
-    public bool Start(string arguments = "")
+    /// <summary>
+    ///  プロセスを開始します。
+    /// </summary>
+    /// <param name="arguments">追加の引数</param>
+    /// <returns></returns>
+    public virtual bool Start(string arguments = "")
     {
-      Current.OutputDataReceived += (sender, ev) => OnStdOutReceived?.Invoke(ev.Data ?? string.Empty);
-      Current.ErrorDataReceived += (sender, ev) => OnStdErrReceived?.Invoke(ev.Data ?? string.Empty);
+      Current.StartInfo.FileName = Command;
 
       if(!string.IsNullOrEmpty(arguments))
         Current.StartInfo.Arguments = arguments;
@@ -65,17 +95,68 @@ namespace ffmpeg_command_builder
       return rv;
     }
 
+    /// <summary>
+    /// プロセスを開始してブロックせずに終了まで待ちます。
+    /// </summary>
+    /// <param name="arguments">追加の引数</param>
+    /// <returns></returns>
     public Task StartAsync(string arguments = "")
     {
-      Start(arguments);
+      if(!Start(arguments))
+        return null;
 
-      return Current.WaitForExitAsync();
+       return Current.WaitForExitAsync();
     }
 
-    public void Abort()
+    /// <summary>
+    /// 強制プロセス終了
+    /// </summary>
+    public void Kill()
     {
       if (!Current.HasExited)
         Current.Kill(true);
+    }
+   
+    /// <summary>
+    /// CTRL-Cイベントを起こしてプロセスを終了する。
+    /// </summary>
+    public void Interrupt()
+    {
+      if (Current.HasExited)
+      {
+        Debug.WriteLine("既にダウンロードプロセスは終了しています。");
+        return;
+      }
+
+      uint processId = (uint)Current.Id;
+
+      AttachConsole(processId);
+      SetConsoleCtrlHandler(null, true);
+
+      if (!GenerateConsoleCtrlEvent(CTRL_C_EVENT, (uint)Current.Id))
+      {
+        Debug.WriteLine("CTRL-Cイベント発行失敗");
+        return;
+      }
+
+      SetConsoleCtrlHandler(null, false);
+      FreeConsole();
+    }
+
+    // イベント実行
+    protected virtual void OnStdOutReceived(string message)
+    {
+      StdOutReceived?.Invoke(message);
+    }
+
+    protected virtual void OnStdErrReceived(string message)
+    {
+      StdErrReceived?.Invoke(message);
+    }
+
+    protected virtual void OnProcessExited(object sender, EventArgs e)
+    {
+      ProcessExited?.Invoke(sender, e);
     }
   }
 
