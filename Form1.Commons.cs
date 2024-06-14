@@ -667,6 +667,7 @@ namespace ffmpeg_command_builder
     {
       try
       {
+        Tab.Enabled = false;
         var url = DownloadUrl.Text.Trim();
         if (url.Length == 0)
           throw new Exception("URLが入力されていません。");
@@ -745,6 +746,10 @@ namespace ffmpeg_command_builder
       {
         MessageBox.Show(exception.Message);
       }
+      finally
+      {
+        Tab.Enabled = true;
+      }
     }
 
     private async Task YtdlpInvokeDownload(bool separatedDownload = false)
@@ -756,6 +761,9 @@ namespace ffmpeg_command_builder
 
       try
       {
+        SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
+        StopDownload.Enabled = true;
+
         var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
         if (!Directory.Exists(outputdir))
           Directory.CreateDirectory(outputdir);
@@ -828,6 +836,11 @@ namespace ffmpeg_command_builder
           var button = form.Controls["BtnClose"] as Button;
           button.Enabled = true;
         }
+      }
+      finally
+      {
+        StopDownload.Enabled = false;
+        SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
       }
     }
 

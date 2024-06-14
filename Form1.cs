@@ -722,27 +722,17 @@ namespace ffmpeg_command_builder
 
     private async void SubmitSepareatedDownload_Click(object sender, EventArgs e)
     {
-      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
-      StopDownload.Enabled = true;
       await YtdlpInvokeDownload(true);
-      StopDownload.Enabled = false;
-      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
     }
 
     private async void SubmitDownload_Click(object sender, EventArgs e)
     {
-      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
-      StopDownload.Enabled = true;
       await YtdlpInvokeDownload();
-      StopDownload.Enabled = false;
-      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
     }
 
     private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
     {
-      Tab.Enabled = false;
       await YtdlpParseDownloadUrl();
-      Tab.Enabled = true;
     }
 
     private void Tab_SelectedIndexChanged(object sender, EventArgs e)

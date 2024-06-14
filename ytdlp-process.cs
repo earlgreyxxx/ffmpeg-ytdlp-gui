@@ -15,8 +15,6 @@ namespace ffmpeg_command_builder
     public string OutputPath { get; set; }
     public string OutputFile { get; set; }
 
-    //private RedirectedProcess Current = null;
-
     public ytdlp_process() : base("yt-dlp")
     {
       ProcessExited += (s, e) => Debug.WriteLine("yt-dlpプロセス終了");
