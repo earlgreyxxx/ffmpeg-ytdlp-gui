@@ -11,8 +11,8 @@ namespace ffmpeg_command_builder
     public bool Pause { get; private set; } = false;
     public List<string> LogData { get; private set; } = new List<string>();
 
-    public event Action<string> OnDataReceived;
-    public event Action OnProcessExit;
+    public event Action<string> DataReceived;
+    public event Action ProcessExit;
 
     public RedirectedProcess Redirected { get; private set; }
 
@@ -22,18 +22,28 @@ namespace ffmpeg_command_builder
     public StdoutForm()
     {
       InitializeComponent();
+
+      ProcessExit += () =>
+      {
+        BtnClose.Enabled = true;
+        BtnToggleReader.Enabled = false;
+        if (LogData.Count > 0)
+        {
+          StdOutAndErrorView.AppendText("\r\n");
+          StdOutAndErrorView.AppendText(string.Join("\r\n", LogData));
+          LogData.Clear();
+        }
+      };
+
     }
 
     public StdoutForm(string executable, string arguments, string title = "") : this()
     {
-      OnDataReceived += data => WriteLine(data);
-      OnProcessExit += () =>
+      DataReceived += data => WriteLine(data);
+      ProcessExit += () =>
       {
         BtnClose.Enabled = BtnSubmitSaveFile.Enabled = Pause = true;
-
         StdOutAndErrorView.Focus();
-        StdOutAndErrorView.SelectionStart = 0;
-        StdOutAndErrorView.ScrollToCaret();
       };
 
       Redirected = new RedirectedProcess(executable, arguments);
@@ -45,18 +55,6 @@ namespace ffmpeg_command_builder
         Text = title;
 
       BtnClose.Enabled = true;
-    }
-
-    public void OnProcesssDoneInvoker()
-    {
-      BtnClose.Enabled = true;
-      BtnToggleReader.Enabled = false;
-      if (LogData.Count > 0)
-      {
-        StdOutAndErrorView.AppendText("\r\n");
-        StdOutAndErrorView.AppendText(string.Join("\r\n", LogData));
-        LogData.Clear();
-      }
     }
 
     public void WriteLine(object data)
@@ -107,6 +105,16 @@ namespace ffmpeg_command_builder
           await sw.WriteLineAsync(line);
       }
       SaveFileDlg.FileName = string.Empty;
+    }
+
+    public virtual void OnDataReceived(string data)
+    {
+      DataReceived?.Invoke(data);
+    }
+
+    public virtual void OnProcessExit()
+    {
+      ProcessExit?.Invoke();
     }
   }
 }

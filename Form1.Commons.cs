@@ -366,7 +366,7 @@ namespace ffmpeg_command_builder
           else
             form.Invoke(() => form.WriteLine(encoded));
         };
-        process.ProcessesDone += () => form.Invoke(form.OnProcesssDoneInvoker);
+        process.ProcessesDone += () => form.Invoke(form.OnProcessExit);
         form.Show();
       }
 
@@ -562,7 +562,6 @@ namespace ffmpeg_command_builder
       }
 
       var form = new StdoutForm(executable, arg, formTitle);
-      form.OnProcessExit += form.OnProcesssDoneInvoker;
 
       if (HelpFormSize.Width > 0 && HelpFormSize.Height > 0)
       {

@@ -54,10 +54,7 @@ namespace ffmpeg_command_builder
       if (formats == null)
         throw new Exception("ダウンロードする対象が指定されていません。");
 
-      string arguments = string.Join(' ',CreateArguments(formats).ToArray());
-      Debug.WriteLine($"{Command} {arguments}");
-
-      await StartAsync(arguments);
+      await StartAsync(string.Join(' ',CreateArguments(formats).ToArray()));
     }
 
     public async Task<MediaInformation> getMediaInformation()

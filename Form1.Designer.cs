@@ -643,7 +643,7 @@
       // 
       // OpenLogFile
       // 
-      OpenLogFile.Location = new System.Drawing.Point(756, 12);
+      OpenLogFile.Location = new System.Drawing.Point(519, 12);
       OpenLogFile.Name = "OpenLogFile";
       OpenLogFile.Size = new System.Drawing.Size(67, 24);
       OpenLogFile.TabIndex = 24;
@@ -654,9 +654,9 @@
       // 
       // OpenFolder
       // 
-      OpenFolder.Location = new System.Drawing.Point(350, 18);
+      OpenFolder.Location = new System.Drawing.Point(350, 19);
       OpenFolder.Name = "OpenFolder";
-      OpenFolder.Size = new System.Drawing.Size(43, 24);
+      OpenFolder.Size = new System.Drawing.Size(47, 24);
       OpenFolder.TabIndex = 10;
       OpenFolder.TabStop = false;
       OpenFolder.Text = "開く";
@@ -667,7 +667,7 @@
       // 
       btnSubmitOpenDlg.Location = new System.Drawing.Point(301, 19);
       btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
-      btnSubmitOpenDlg.Size = new System.Drawing.Size(43, 23);
+      btnSubmitOpenDlg.Size = new System.Drawing.Size(48, 24);
       btnSubmitOpenDlg.TabIndex = 9;
       btnSubmitOpenDlg.TabStop = false;
       btnSubmitOpenDlg.Text = "参照";
@@ -699,9 +699,9 @@
       // btnSubmitInvoke
       // 
       btnSubmitInvoke.Enabled = false;
-      btnSubmitInvoke.Location = new System.Drawing.Point(564, 12);
+      btnSubmitInvoke.Location = new System.Drawing.Point(733, 12);
       btnSubmitInvoke.Name = "btnSubmitInvoke";
-      btnSubmitInvoke.Size = new System.Drawing.Size(54, 24);
+      btnSubmitInvoke.Size = new System.Drawing.Size(90, 24);
       btnSubmitInvoke.TabIndex = 1;
       btnSubmitInvoke.TabStop = false;
       btnSubmitInvoke.Text = "実行";
@@ -1002,7 +1002,7 @@
       // btnStop
       // 
       btnStop.Enabled = false;
-      btnStop.Location = new System.Drawing.Point(624, 12);
+      btnStop.Location = new System.Drawing.Point(601, 12);
       btnStop.Name = "btnStop";
       btnStop.Size = new System.Drawing.Size(56, 24);
       btnStop.TabIndex = 31;
@@ -1014,7 +1014,7 @@
       // btnStopAll
       // 
       btnStopAll.Enabled = false;
-      btnStopAll.Location = new System.Drawing.Point(686, 12);
+      btnStopAll.Location = new System.Drawing.Point(663, 12);
       btnStopAll.Name = "btnStopAll";
       btnStopAll.Size = new System.Drawing.Size(64, 24);
       btnStopAll.TabIndex = 32;
@@ -1306,7 +1306,7 @@
       btnSubmitBatchClear.Enabled = false;
       btnSubmitBatchClear.Location = new System.Drawing.Point(349, 12);
       btnSubmitBatchClear.Name = "btnSubmitBatchClear";
-      btnSubmitBatchClear.Size = new System.Drawing.Size(84, 23);
+      btnSubmitBatchClear.Size = new System.Drawing.Size(84, 24);
       btnSubmitBatchClear.TabIndex = 34;
       btnSubmitBatchClear.Text = "バッチクリア";
       btnSubmitBatchClear.UseVisualStyleBackColor = true;
@@ -1315,9 +1315,9 @@
       // btnSubmitSaveToFile
       // 
       btnSubmitSaveToFile.Enabled = false;
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(132, 13);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(132, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
-      btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 23);
+      btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 24);
       btnSubmitSaveToFile.TabIndex = 33;
       btnSubmitSaveToFile.Text = "バッチファイル保存";
       btnSubmitSaveToFile.UseVisualStyleBackColor = true;
@@ -1369,10 +1369,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 418);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1440,7 +1440,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;

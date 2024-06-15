@@ -16,4 +16,4 @@ winget install yt-dlp.yt-dlp
 ```
 
 ## 利用しているライブラリなど
-* webpなどの画像をpng形式に変換するため、ImageSharp を使用しています。
+* 画像変換処理に <b>[ImageSharp(Apache 2.0ライセンス)](https://github.com/SixLabors/ImageSharp)</b> を使用しています。
