@@ -148,9 +148,15 @@
       SubmitCopy = new System.Windows.Forms.Button();
       SubmitConcat = new System.Windows.Forms.Button();
       Image2Box = new System.Windows.Forms.GroupBox();
+      useTiledImage = new System.Windows.Forms.CheckBox();
+      TileRows = new System.Windows.Forms.NumericUpDown();
+      CropTB = new System.Windows.Forms.NumericUpDown();
       ImageWidth = new System.Windows.Forms.NumericUpDown();
+      TileColumns = new System.Windows.Forms.NumericUpDown();
+      CropLR = new System.Windows.Forms.NumericUpDown();
       ImageHeight = new System.Windows.Forms.NumericUpDown();
       label18 = new System.Windows.Forms.Label();
+      label31 = new System.Windows.Forms.Label();
       label20 = new System.Windows.Forms.Label();
       label17 = new System.Windows.Forms.Label();
       FrameRate = new System.Windows.Forms.NumericUpDown();
@@ -158,7 +164,10 @@
       linkLabel2 = new System.Windows.Forms.LinkLabel();
       ImageTo = new System.Windows.Forms.TextBox();
       ImageSS = new System.Windows.Forms.TextBox();
+      label33 = new System.Windows.Forms.Label();
+      label26 = new System.Windows.Forms.Label();
       label16 = new System.Windows.Forms.Label();
+      label25 = new System.Windows.Forms.Label();
       label9 = new System.Windows.Forms.Label();
       label19 = new System.Windows.Forms.Label();
       label15 = new System.Windows.Forms.Label();
@@ -234,7 +243,11 @@
       CommonButtonBox.SuspendLayout();
       groupBox8.SuspendLayout();
       Image2Box.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)TileRows).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)CropTB).BeginInit();
       ((System.ComponentModel.ISupportInitialize)ImageWidth).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)TileColumns).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)CropLR).BeginInit();
       ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
       PageDownloader.SuspendLayout();
@@ -1498,9 +1511,9 @@
       groupBox8.Controls.Add(label21);
       groupBox8.Controls.Add(SubmitCopy);
       groupBox8.Controls.Add(SubmitConcat);
-      groupBox8.Location = new System.Drawing.Point(12, 126);
+      groupBox8.Location = new System.Drawing.Point(12, 165);
       groupBox8.Name = "groupBox8";
-      groupBox8.Size = new System.Drawing.Size(805, 159);
+      groupBox8.Size = new System.Drawing.Size(805, 120);
       groupBox8.TabIndex = 2;
       groupBox8.TabStop = false;
       groupBox8.Text = "ツール";
@@ -1545,9 +1558,15 @@
       // 
       // Image2Box
       // 
+      Image2Box.Controls.Add(useTiledImage);
+      Image2Box.Controls.Add(TileRows);
+      Image2Box.Controls.Add(CropTB);
       Image2Box.Controls.Add(ImageWidth);
+      Image2Box.Controls.Add(TileColumns);
+      Image2Box.Controls.Add(CropLR);
       Image2Box.Controls.Add(ImageHeight);
       Image2Box.Controls.Add(label18);
+      Image2Box.Controls.Add(label31);
       Image2Box.Controls.Add(label20);
       Image2Box.Controls.Add(label17);
       Image2Box.Controls.Add(FrameRate);
@@ -1555,7 +1574,10 @@
       Image2Box.Controls.Add(linkLabel2);
       Image2Box.Controls.Add(ImageTo);
       Image2Box.Controls.Add(ImageSS);
+      Image2Box.Controls.Add(label33);
+      Image2Box.Controls.Add(label26);
       Image2Box.Controls.Add(label16);
+      Image2Box.Controls.Add(label25);
       Image2Box.Controls.Add(label9);
       Image2Box.Controls.Add(label19);
       Image2Box.Controls.Add(label15);
@@ -1563,23 +1585,71 @@
       Image2Box.Controls.Add(SubmitThumbnail);
       Image2Box.Location = new System.Drawing.Point(12, 25);
       Image2Box.Name = "Image2Box";
-      Image2Box.Size = new System.Drawing.Size(805, 95);
+      Image2Box.Size = new System.Drawing.Size(805, 134);
       Image2Box.TabIndex = 1;
       Image2Box.TabStop = false;
       Image2Box.Text = "画像生成                                   ";
       // 
+      // useTiledImage
+      // 
+      useTiledImage.AutoSize = true;
+      useTiledImage.Location = new System.Drawing.Point(380, 93);
+      useTiledImage.Name = "useTiledImage";
+      useTiledImage.Size = new System.Drawing.Size(97, 16);
+      useTiledImage.TabIndex = 9;
+      useTiledImage.Text = "タイル(列 x 行)";
+      useTiledImage.UseVisualStyleBackColor = true;
+      // 
+      // TileRows
+      // 
+      TileRows.Location = new System.Drawing.Point(565, 90);
+      TileRows.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+      TileRows.Name = "TileRows";
+      TileRows.Size = new System.Drawing.Size(64, 19);
+      TileRows.TabIndex = 8;
+      TileRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      TileRows.Value = new decimal(new int[] { 5, 0, 0, 0 });
+      // 
+      // CropTB
+      // 
+      CropTB.Location = new System.Drawing.Point(357, 52);
+      CropTB.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+      CropTB.Name = "CropTB";
+      CropTB.Size = new System.Drawing.Size(64, 19);
+      CropTB.TabIndex = 8;
+      CropTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
       // ImageWidth
       // 
-      ImageWidth.Location = new System.Drawing.Point(382, 53);
+      ImageWidth.Location = new System.Drawing.Point(486, 53);
       ImageWidth.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
       ImageWidth.Name = "ImageWidth";
       ImageWidth.Size = new System.Drawing.Size(64, 19);
       ImageWidth.TabIndex = 8;
       ImageWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
+      // TileColumns
+      // 
+      TileColumns.Location = new System.Drawing.Point(479, 90);
+      TileColumns.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+      TileColumns.Name = "TileColumns";
+      TileColumns.Size = new System.Drawing.Size(64, 19);
+      TileColumns.TabIndex = 8;
+      TileColumns.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      TileColumns.Value = new decimal(new int[] { 6, 0, 0, 0 });
+      // 
+      // CropLR
+      // 
+      CropLR.Location = new System.Drawing.Point(271, 52);
+      CropLR.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+      CropLR.Name = "CropLR";
+      CropLR.Size = new System.Drawing.Size(64, 19);
+      CropLR.TabIndex = 8;
+      CropLR.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
       // ImageHeight
       // 
-      ImageHeight.Location = new System.Drawing.Point(473, 53);
+      ImageHeight.Location = new System.Drawing.Point(567, 53);
       ImageHeight.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
       ImageHeight.Name = "ImageHeight";
       ImageHeight.Size = new System.Drawing.Size(64, 19);
@@ -1589,16 +1659,25 @@
       // label18
       // 
       label18.AutoSize = true;
-      label18.Location = new System.Drawing.Point(594, 34);
+      label18.Location = new System.Drawing.Point(695, 34);
       label18.Name = "label18";
       label18.Size = new System.Drawing.Size(77, 12);
       label18.TabIndex = 7;
       label18.Text = "出力画像形式";
       // 
+      // label31
+      // 
+      label31.AutoSize = true;
+      label31.Location = new System.Drawing.Point(427, 56);
+      label31.Name = "label31";
+      label31.Size = new System.Drawing.Size(42, 12);
+      label31.TabIndex = 7;
+      label31.Text = "ピクセル";
+      // 
       // label20
       // 
       label20.AutoSize = true;
-      label20.Location = new System.Drawing.Point(543, 56);
+      label20.Location = new System.Drawing.Point(637, 56);
       label20.Name = "label20";
       label20.Size = new System.Drawing.Size(42, 12);
       label20.TabIndex = 7;
@@ -1607,7 +1686,7 @@
       // label17
       // 
       label17.AutoSize = true;
-      label17.Location = new System.Drawing.Point(235, 56);
+      label17.Location = new System.Drawing.Point(228, 56);
       label17.Name = "label17";
       label17.Size = new System.Drawing.Size(29, 12);
       label17.TabIndex = 7;
@@ -1615,7 +1694,7 @@
       // 
       // FrameRate
       // 
-      FrameRate.Location = new System.Drawing.Point(164, 53);
+      FrameRate.Location = new System.Drawing.Point(157, 53);
       FrameRate.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
       FrameRate.Name = "FrameRate";
       FrameRate.Size = new System.Drawing.Size(64, 19);
@@ -1628,9 +1707,9 @@
       ImageType.DisplayMember = "Label";
       ImageType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       ImageType.FormattingEnabled = true;
-      ImageType.Location = new System.Drawing.Point(594, 52);
+      ImageType.Location = new System.Drawing.Point(695, 52);
       ImageType.Name = "ImageType";
-      ImageType.Size = new System.Drawing.Size(94, 20);
+      ImageType.Size = new System.Drawing.Size(96, 20);
       ImageType.TabIndex = 5;
       ImageType.ValueMember = "Value";
       // 
@@ -1647,31 +1726,60 @@
       // 
       // ImageTo
       // 
-      ImageTo.Location = new System.Drawing.Point(97, 53);
+      ImageTo.Location = new System.Drawing.Point(90, 53);
       ImageTo.Name = "ImageTo";
       ImageTo.Size = new System.Drawing.Size(53, 19);
       ImageTo.TabIndex = 2;
       // 
       // ImageSS
       // 
-      ImageSS.Location = new System.Drawing.Point(18, 53);
+      ImageSS.Location = new System.Drawing.Point(11, 53);
       ImageSS.Name = "ImageSS";
       ImageSS.Size = new System.Drawing.Size(55, 19);
       ImageSS.TabIndex = 2;
       // 
+      // label33
+      // 
+      label33.AutoSize = true;
+      label33.Location = new System.Drawing.Point(549, 94);
+      label33.Name = "label33";
+      label33.Size = new System.Drawing.Size(17, 12);
+      label33.TabIndex = 1;
+      label33.Text = "×";
+      label33.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // label26
+      // 
+      label26.AutoSize = true;
+      label26.Location = new System.Drawing.Point(341, 56);
+      label26.Name = "label26";
+      label26.Size = new System.Drawing.Size(17, 12);
+      label26.TabIndex = 1;
+      label26.Text = "×";
+      label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
       // label16
       // 
       label16.AutoSize = true;
-      label16.Location = new System.Drawing.Point(75, 56);
+      label16.Location = new System.Drawing.Point(68, 56);
       label16.Name = "label16";
       label16.Size = new System.Drawing.Size(17, 12);
       label16.TabIndex = 1;
       label16.Text = "〜";
       // 
+      // label25
+      // 
+      label25.AutoSize = true;
+      label25.Location = new System.Drawing.Point(271, 34);
+      label25.Name = "label25";
+      label25.Size = new System.Drawing.Size(89, 12);
+      label25.TabIndex = 1;
+      label25.Text = "クロップ(L&R x T&B)";
+      // 
       // label9
       // 
       label9.AutoSize = true;
-      label9.Location = new System.Drawing.Point(453, 56);
+      label9.Location = new System.Drawing.Point(551, 56);
       label9.Name = "label9";
       label9.Size = new System.Drawing.Size(17, 12);
       label9.TabIndex = 1;
@@ -1681,16 +1789,16 @@
       // label19
       // 
       label19.AutoSize = true;
-      label19.Location = new System.Drawing.Point(379, 34);
+      label19.Location = new System.Drawing.Point(483, 34);
       label19.Name = "label19";
-      label19.Size = new System.Drawing.Size(65, 12);
+      label19.Size = new System.Drawing.Size(96, 12);
       label19.TabIndex = 1;
-      label19.Text = "画像リサイズ";
+      label19.Text = "画像リサイズ(WxH)";
       // 
       // label15
       // 
       label15.AutoSize = true;
-      label15.Location = new System.Drawing.Point(97, 34);
+      label15.Location = new System.Drawing.Point(90, 34);
       label15.Name = "label15";
       label15.Size = new System.Drawing.Size(53, 12);
       label15.TabIndex = 1;
@@ -1699,7 +1807,7 @@
       // label14
       // 
       label14.AutoSize = true;
-      label14.Location = new System.Drawing.Point(20, 34);
+      label14.Location = new System.Drawing.Point(13, 34);
       label14.Name = "label14";
       label14.Size = new System.Drawing.Size(53, 12);
       label14.TabIndex = 1;
@@ -1707,11 +1815,11 @@
       // 
       // SubmitThumbnail
       // 
-      SubmitThumbnail.Location = new System.Drawing.Point(693, 51);
+      SubmitThumbnail.Location = new System.Drawing.Point(644, 89);
       SubmitThumbnail.Name = "SubmitThumbnail";
-      SubmitThumbnail.Size = new System.Drawing.Size(96, 23);
+      SubmitThumbnail.Size = new System.Drawing.Size(149, 23);
       SubmitThumbnail.TabIndex = 0;
-      SubmitThumbnail.Text = "実行";
+      SubmitThumbnail.Text = "画像生成";
       SubmitThumbnail.UseVisualStyleBackColor = true;
       SubmitThumbnail.Click += SubmitThumbnail_Click;
       // 
@@ -2146,7 +2254,11 @@
       groupBox8.PerformLayout();
       Image2Box.ResumeLayout(false);
       Image2Box.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)TileRows).EndInit();
+      ((System.ComponentModel.ISupportInitialize)CropTB).EndInit();
       ((System.ComponentModel.ISupportInitialize)ImageWidth).EndInit();
+      ((System.ComponentModel.ISupportInitialize)TileColumns).EndInit();
+      ((System.ComponentModel.ISupportInitialize)CropLR).EndInit();
       ((System.ComponentModel.ISupportInitialize)ImageHeight).EndInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
       PageDownloader.ResumeLayout(false);
@@ -2341,6 +2453,15 @@
     private System.Windows.Forms.Button SubmitSeparatedDownload;
     private System.Windows.Forms.Button StopDownload;
     private System.Windows.Forms.LinkLabel CookieAttn;
+    private System.Windows.Forms.NumericUpDown CropTB;
+    private System.Windows.Forms.NumericUpDown CropLR;
+    private System.Windows.Forms.Label label31;
+    private System.Windows.Forms.Label label26;
+    private System.Windows.Forms.Label label25;
+    private System.Windows.Forms.NumericUpDown TileRows;
+    private System.Windows.Forms.NumericUpDown TileColumns;
+    private System.Windows.Forms.Label label33;
+    private System.Windows.Forms.CheckBox useTiledImage;
   }
 }
 

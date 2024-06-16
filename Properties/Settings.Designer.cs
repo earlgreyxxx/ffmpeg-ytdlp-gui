@@ -284,5 +284,29 @@ namespace ffmpeg_command_builder.Properties {
                 this["downloadFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public decimal tileRows {
+            get {
+                return ((decimal)(this["tileRows"]));
+            }
+            set {
+                this["tileRows"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
+        public decimal tileColumns {
+            get {
+                return ((decimal)(this["tileColumns"]));
+            }
+            set {
+                this["tileColumns"] = value;
+            }
+        }
     }
 }

@@ -665,17 +665,39 @@ namespace ffmpeg_command_builder
 
         var command = new ffmpeg_command(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text);
 
-        List<string> list = ["-vsync cfr", "-f image2"];
+        List<string> list = ["-vsync vfr"];
+        List<string> vfilter = [];
         if (FrameRate.Value > 0)
-          list.Add($"-vf fps=fps=1/{FrameRate.Value}:round=down");
+          vfilter.Add($"fps=fps=1/{FrameRate.Value}:round=down");
+
+        if (CropTB.Value > 0 && CropLR.Value > 0)
+          vfilter.Add($"crop=iw-{CropLR.Value * 2}:ih-{CropTB.Value * 2}:{CropLR.Value}:{CropTB.Value}");
+        else if (CropTB.Value <= 0 && CropLR.Value > 0)
+          vfilter.Add($"crop=iw-{CropLR.Value * 2}:ih:{CropLR.Value}:0");
+        else if (CropTB.Value > 0 && CropLR.Value <= 0)
+          vfilter.Add($"crop=iw:ih-{CropTB.Value * 2}:0:{CropTB.Value}");
 
         if (ImageWidth.Value > 0 && ImageHeight.Value > 0)
-          list.Add($"-s {ImageWidth.Value}x{ImageHeight.Value}");
+          vfilter.Add($"scale={ImageWidth.Value}:{ImageHeight.Value}");
+
+        if(useTiledImage.Checked)
+          vfilter.Add($"tile={TileColumns.Value}x{TileRows.Value}");
+
+        if (vfilter.Count > 0)
+          list.Add($"-vf \"{string.Join(',', vfilter.ToArray())}\"");
+
+        if (codec == "mjpeg")
+          list.Add("-q:v 5");
+
+        Debug.WriteLine(string.Join(' ',list.ToArray()));
+
+        if(!Directory.Exists(cbOutputDir.Text))
+          Directory.CreateDirectory(cbOutputDir.Text);
 
         command
           .Starts(ImageSS.Text)
           .To(ImageTo.Text)
-          .vcodec(null)
+          .vcodec(codec)
           .acodec(null)
           .setOptions(list)
           .OutputDirectory(cbOutputDir.Text)
@@ -683,13 +705,15 @@ namespace ffmpeg_command_builder
           .OutputSuffix(FileSuffix.Text)
           .OutputContainer(extension);
 
+        Debug.WriteLine(command.GetCommandLine("sample.mp4"));
+
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 
         command.MultiFileProcess = InputFileList.Count > 1;
 
         OnBeginProcess();
-        CreateFFmpegProcess(command).Begin();
+        CreateFFmpegProcess(command)?.Begin();
       }
       catch (Exception exception)
       {

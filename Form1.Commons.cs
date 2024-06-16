@@ -94,6 +94,8 @@ namespace ffmpeg_command_builder
       chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
       CookiePath.DataBindings.Add("Text", Settings.Default, "cookiePath");
       OutputFileFormat.DataBindings.Add("Text", Settings.Default, "downloadFileName");
+      TileColumns.DataBindings.Add("text", Settings.Default, "tileColumns");
+      TileRows.DataBindings.Add("text", Settings.Default, "tileRows");
     }
 
     private void InitializeDataSource()

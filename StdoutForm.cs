@@ -25,8 +25,9 @@ namespace ffmpeg_command_builder
 
       ProcessExit += () =>
       {
-        BtnClose.Enabled = true;
+        BtnClose.Enabled = BtnSubmitSaveFile.Enabled = true;
         BtnToggleReader.Enabled = false;
+        
         if (LogData.Count > 0)
         {
           StdOutAndErrorView.AppendText("\r\n");
@@ -34,7 +35,6 @@ namespace ffmpeg_command_builder
           LogData.Clear();
         }
       };
-
     }
 
     public StdoutForm(string executable, string arguments, string title = "") : this()
