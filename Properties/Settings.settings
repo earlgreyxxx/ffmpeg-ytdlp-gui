@@ -69,10 +69,19 @@
       <Value Profile="(Default)">%(title)s-%(id)s.%(ext)s</Value>
     </Setting>
     <Setting Name="tileRows" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">5</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="tileColumns" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">6</Value>
+    </Setting>
+    <Setting Name="imageWidth" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="imageHeight" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="downloadCompleted" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

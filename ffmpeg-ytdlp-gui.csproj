@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Remove="ContainerItem.cs" />
     <Compile Remove="ffmpeg-command-copy.cs" />
+    <Compile Remove="ffmpeg-image-process.cs" />
     <Compile Remove="GlobalSuppressions.cs" />
     <Compile Remove="Settings.cs" />
   </ItemGroup>

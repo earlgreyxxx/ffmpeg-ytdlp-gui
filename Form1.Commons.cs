@@ -5,11 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace ffmpeg_command_builder
 {
@@ -83,19 +83,20 @@ namespace ffmpeg_command_builder
 
     private void InitializeSettingsBinding()
     {
-      FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
-      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
-      LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
-      VideoWidth.DataBindings.Add("Value", Settings.Default, "videoWidth");
-      VideoHeight.DataBindings.Add("Value", Settings.Default, "videoHeight");
-      FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
-      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
-      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
-      chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
       CookiePath.DataBindings.Add("Text", Settings.Default, "cookiePath");
+      FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
+      FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
+      ImageHeight.DataBindings.Add("Value", Settings.Default, "imageHeight");
+      ImageWidth.DataBindings.Add("Value", Settings.Default, "imageWidth");
+      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
+      LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
       OutputFileFormat.DataBindings.Add("Text", Settings.Default, "downloadFileName");
-      TileColumns.DataBindings.Add("text", Settings.Default, "tileColumns");
-      TileRows.DataBindings.Add("text", Settings.Default, "tileRows");
+      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
+      TileColumns.DataBindings.Add("Value", Settings.Default, "tileColumns");
+      TileRows.DataBindings.Add("Value", Settings.Default, "tileRows");
+      chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
+      chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
+      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
     }
 
     private void InitializeDataSource()
@@ -245,6 +246,7 @@ namespace ffmpeg_command_builder
       }
       videoEncoders.Add(new CodecListItem(new Codec("hevc", "cpu", "libx265"), "HEVC(libx265)"));
       videoEncoders.Add(new CodecListItem(new Codec("libx264", "cpu", "libx264"), "H264(libx264)"));
+      videoEncoders.Add(new CodecListItem(new Codec("gif", "cpu", "gif"), "アニメーションGIF"));
       videoEncoders.Add(new CodecListItem(new Codec("copy", "cpu", "copy"), "COPY"));
 
       UseVideoEncoder.DataSource = videoEncoders;
@@ -267,14 +269,14 @@ namespace ffmpeg_command_builder
         new StringListItem(".aac","AAC"),
         new StringListItem(".ogg","Vorbis"),
         new StringListItem(".webm","WebM"),
-        new StringListItem(".webA","WebA")
+        new StringListItem(".weba","WebA"),
+        new StringListItem(".gif","gif")
       };
 
       ImageType.DataSource = new StringListItems()
       {
         new StringListItem("mjpeg","JPEG形式",".jpg"),
-        new StringListItem("png","PNG形式",".png"),
-        new StringListItem("gif","GIF形式",".gif")
+        new StringListItem("png","PNG形式",".png")
       };
 
       FilePrefix.DataSource = new List<string>()
@@ -308,12 +310,14 @@ namespace ffmpeg_command_builder
 
       VideoFrameRate.DataSource = new DecimalListItems()
       {
-        new DecimalListItem(0,"変更なし"),
-        new DecimalListItem(29.97m,"29.97 fps"),
+        new DecimalListItem(0,"元動画と同じ"),
+        new DecimalListItem(25,"PAL(25 fps)"),
+        new DecimalListItem(29.97m,"NTSC(29.97 fps)"),
         new DecimalListItem(59.94m,"59.94 fps"),
         new DecimalListItem(30,"30 fps"),
         new DecimalListItem(60,"60 fps"),
-        new DecimalListItem(24,"24 fps")
+        new DecimalListItem(24,"FILM"),
+        new DecimalListItem(23.98m,"NTSC-FILM(23.98 fps)")
       };
 
       AudioOnlyFormatSource.DataSource = new StringListItems();
@@ -324,13 +328,49 @@ namespace ffmpeg_command_builder
       MovieFormat.DataSource = MovieFormatSource;
     }
 
+    private void RuntimeSetting(ffmpeg_command command, string filename)
+    {
+      if (command.bAudioOnly)
+        return;
+
+      if (!File.Exists(filename))
+      {
+        command.IsLandscape = true;
+        command.Width = 1920;
+        command.Height = 1080;
+      }
+      else
+      {
+        var ffprobe = ffprobe_process.CreateInstance(filename);
+        var stream = ffprobe.getStreamProperties()?.FirstOrDefault(msp => msp.codec_type == "video");
+
+        command.IsLandscape = stream.width > stream.height;
+        command.Width = (int)stream.width;
+        command.Height = (int)stream.height;
+      }
+
+      if (chkCrop.Checked)
+      {
+        if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
+          command
+            .size(command.Width, command.Height)
+            .crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+        else
+          command.crop(CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
+      }
+      else
+      {
+        // クロップ削除
+        command.crop();
+      }
+    }
+
     private ffmpeg_process Proceeding;
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
       command.Overwrite = Overwrite.Checked;
 
       var process = new ffmpeg_process(command,FileListBindingSource);
-
       process.ReceiveData += data => Invoke(() => OutputStderr.Text = data);
       process.ProcessExit += filename => Invoke(() =>
       {
@@ -354,19 +394,15 @@ namespace ffmpeg_command_builder
       if (IsOpenStderr.Checked)
       {
         var form = new StdoutForm();
-        var cp932 = Encoding.GetEncoding(932);
         process.ReceiveData += data =>
         {
           if (string.IsNullOrEmpty(data))
             return;
 
-          byte[] bytes = cp932.GetBytes(data);
-          string encoded = Encoding.UTF8.GetString(bytes);
-
           if (form.Pause)
-            form.LogData.Add(encoded);
+            form.LogData.Add(data);
           else
-            form.Invoke(() => form.WriteLine(encoded));
+            form.Invoke(() => form.WriteLine(data));
         };
         process.ProcessesDone += () => form.Invoke(form.OnProcessExit);
         form.Show();
@@ -452,27 +488,54 @@ namespace ffmpeg_command_builder
         return ffcommand;
       }
 
-      ffcommand
-        .vcodec(UseVideoEncoder.SelectedValue.ToString(), cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0)
-        .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
-        .lookAhead((int)LookAhead.Value)
-        .preset(cbPreset.SelectedValue.ToString());
+      ffcommand.vcodec(
+        UseVideoEncoder.SelectedValue.ToString(),
+        cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0
+      );
 
-      ffcommand.vFrameRate((decimal)VideoFrameRate.SelectedValue);
+      if (codec.Name != "gif")
+      {
+        ffcommand
+          .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
+          .lookAhead((int)LookAhead.Value)
+          .preset(cbPreset.SelectedValue.ToString());
+      }
 
+      var vfr = (decimal?)VideoFrameRate.SelectedValue;
+      if (vfr == null)
+      {
+        var match = Regex.Match(VideoFrameRate.Text, @"^(?<int>\d+)/(?<decimal>\d+)$");
+        if (match.Success)
+        {
+          ffcommand.vFrameRate(
+            Math.Round(
+              decimal.Parse(match.Groups["int"].Value) / decimal.Parse(match.Groups["decimal"].Value),
+              2,
+              MidpointRounding.AwayFromZero
+            )
+          );
+        }
+        else if (decimal.TryParse(VideoFrameRate.Text, out decimal temp))
+        {
+          ffcommand.vFrameRate(temp);
+        }
+        else
+        {
+          VideoFrameRate.SelectedIndex = 0;
+          ffcommand.vFrameRate(0);
+        }
+      }
+      else
+      {
+        ffcommand.vFrameRate((decimal)vfr);
+      }
 
       if (chkUseHWDecoder.Checked)
         ffcommand.hwdecoder(HWDecoder.SelectedValue.ToString());
 
-      if (chkCrop.Checked)
-      {
-        if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
-          ffcommand.size(decimal.ToInt32(VideoWidth.Value), decimal.ToInt32(VideoHeight.Value)).crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
-        else
-          ffcommand.crop(CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
-      }
-
-      if (chkEncodeAudio.Checked)
+      if (codec.Name == "gif")
+        ffcommand.acodec(null);
+      else if (chkEncodeAudio.Checked)
         ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
@@ -511,20 +574,15 @@ namespace ffmpeg_command_builder
       var size = tag switch
       {
         0 => 0,
-        720 or 1080 => int.Parse(tag.ToString()),
+        480 or 720 or 900 or 1080 => int.Parse(tag.ToString()),
         -1 => (int)resizeTo.Value,
         _ => throw new Exception("size error"),
       };
 
       if (size > 0)
-      {
-        ffcommand.IsLandscape = rbLandscape.Checked;
         ffcommand.setFilter("scale", size.ToString());
-      }
       else
-      {
         ffcommand.removeFilter("scale");
-      }
 
       var rotate = int.Parse(GetCheckedRadioButton(RotateBox).Tag.ToString());
       if (rotate == 0)
@@ -583,6 +641,12 @@ namespace ffmpeg_command_builder
 
     private void InitPresetAndDevice(Codec codec)
     {
+      if (!PresetList.ContainsKey(codec.FullName))
+      {
+        cbPreset.DataSource = null;
+        return;
+      }
+
       cbPreset.DataSource = PresetList[codec.FullName];
       string hardwareName = string.Empty;
 
@@ -644,6 +708,9 @@ namespace ffmpeg_command_builder
     /// ダウンロードプロセス
     /// </summary>
     private ytdlp_process ytdlp = null;
+    private string DownloadFileName = null;
+    private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
+    private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
 
     private void YtdlpClearDownload()
     {
@@ -653,6 +720,8 @@ namespace ffmpeg_command_builder
 
       MediaTitle.Text = string.Empty;
       ThumbnailBox.Image = null;
+      ThumbnailBox.ContextMenuStrip = null;
+
       SubmitDownload.Enabled = false;
       SubmitSeparatedDownload.Enabled = true;
 
@@ -662,6 +731,21 @@ namespace ffmpeg_command_builder
 
       ytdlp = null;
       mediaInfo = null;
+      DownloadFileName = null;
+    }
+
+    private void YtdlpPreDownload()
+    {
+      ytdlp = null;
+      DownloadFileName = null;
+      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
+      StopDownload.Enabled = true;
+    }
+
+    private void YtdlpPostDownload()
+    {
+      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
+      StopDownload.Enabled = false;
     }
 
     private async Task YtdlpParseDownloadUrl()
@@ -691,7 +775,10 @@ namespace ffmpeg_command_builder
         using (var pngStream = await mediaInfo.GetThumbnailImage())
         {
           if (pngStream != null)
+          {
+            ThumbnailBox.ContextMenuStrip = ImageContextMenu;
             ThumbnailBox.Image = Image.FromStream(pngStream);
+          }
         }
 
         DownloadUrl.Enabled = false;
@@ -755,15 +842,14 @@ namespace ffmpeg_command_builder
 
     private async Task YtdlpInvokeDownload(bool separatedDownload = false)
     {
+      StdoutForm form = null;
+
       if (mediaInfo == null)
         return;
 
-      StdoutForm form = null;
-
       try
       {
-        SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
-        StopDownload.Enabled = true;
+        YtdlpPreDownload();
 
         var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
         if (!Directory.Exists(outputdir))
@@ -786,6 +872,22 @@ namespace ffmpeg_command_builder
           ytdlp.CookieBrowser = cookieKind;
 
         ytdlp.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
+        ytdlp.ProcessExited += (s, e) => Invoke(YtdlpPostDownload);
+
+        if (chkAfterDownload.Checked)
+        {
+          ytdlp.StdOutReceived += YtdlpReceiver;
+          ytdlp.ProcessExited += (s, e) => Invoke(() =>
+          {
+            Debug.WriteLine($"exitcode = {ytdlp.ExitCode},DownloadName = {DownloadFileName}");
+
+            if (ytdlp.ExitCode == 0 && !string.IsNullOrEmpty(DownloadFileName))
+            {
+              FileListBindingSource.Add(new StringListItem(DownloadFileName));
+              btnSubmitInvoke.Enabled = true;
+            }
+          });
+        }
 
         if (IsOpenStderr.Checked)
         {
@@ -840,8 +942,25 @@ namespace ffmpeg_command_builder
       }
       finally
       {
-        StopDownload.Enabled = false;
-        SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
+        YtdlpPostDownload();
+      }
+    }
+
+    private void YtdlpReceiver(string data)
+    {
+      var match = DownloadRegex.Match(data);
+      if (match.Success)
+      {
+        DownloadFileName = match.Groups["filename"].Value;
+      }
+      else
+      {
+        match = MergerRegex.Match(data);
+        if (match.Success)
+        {
+          DownloadFileName = match.Groups["filename"].Value;
+          ytdlp.StdOutReceived -= YtdlpReceiver;
+        }
       }
     }
 

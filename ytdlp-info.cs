@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 
@@ -96,6 +99,9 @@ namespace ffmpeg_command_builder
     public string format { set; get; }
     public string vcodec { set; get; }
     public string acodec { set; get; }
+    public string url {set; get; }
+    public decimal? rows { set; get; }
+    public decimal? cols { set; get; }
     public decimal? fps { set; get; }
     public decimal? width { set; get; }
     public decimal? height { set; get; }

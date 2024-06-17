@@ -36,6 +36,12 @@ namespace ffmpeg_command_builder
     public bool Exited { private set; get; } = false;
     public string Command { get; protected set; }
 
+    public int ExitCode 
+    {
+      get => Current.ExitCode;
+      private set => throw new Exception("exit code can not set");
+    }
+
     protected ProcessStartInfo psi { get; set; } = new ProcessStartInfo()
     {
       CreateNoWindow = true,

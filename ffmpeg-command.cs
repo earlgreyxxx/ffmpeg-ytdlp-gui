@@ -12,10 +12,19 @@ namespace ffmpeg_command_builder
 
   internal partial class ffmpeg_command : IEnumerable<string>
   {
-    public static string CreateBatch(FFmpegBatchList list)
+    public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string> callback = null)
     {
       var sb = new StringBuilder();
-      var commandlines = list.SelectMany(pair => pair.Value.Select(path => pair.Key.GetCommandLine(path)));
+      var commandlines = list.SelectMany(
+        pair => pair.Value.Select(
+          path =>
+          {
+            var command = pair.Key;
+            callback?.Invoke(command,path);
+            return command.GetCommandLine(path);
+          }
+        )
+      );
 
       sb.AppendLine("@ECHO OFF");
       foreach (var commandline in commandlines)
@@ -62,7 +71,7 @@ namespace ffmpeg_command_builder
     public IEnumerable<string> AdditionalOptions { get; } = new List<string>();
     public IEnumerable<string> AdditionalPreOptions { get; set; } = new List<string>();
     public bool MultiFileProcess { get; set; } = false;
-    public bool IsLandscape { get; set; } = true;
+    public bool IsLandscape { get; set; } = false;
     public bool Overwrite { get; set; } = false;
 
     public string FilePrefix
@@ -259,6 +268,14 @@ namespace ffmpeg_command_builder
       return this;
     }
 
+    public virtual ffmpeg_command crop(bool remove = true)
+    {
+      if(remove)
+        options.Remove("crop");
+
+      return this;
+    }
+
     public virtual ffmpeg_command crop(bool hw,decimal width, decimal height, decimal x = -1, decimal y = -1)
     {
       // copy nothing to do...
@@ -281,6 +298,10 @@ namespace ffmpeg_command_builder
       filters.Remove(name);
       return this;
     }
+    public string getFilter(string name)
+    {
+      return filters.ContainsKey(name) && filters[name] != null ? filters[name] : null;
+    }
 
     public ffmpeg_command setOptions(string options)
     {
@@ -300,6 +321,14 @@ namespace ffmpeg_command_builder
       foreach (var option in options)
         if (!list.Contains(option))
           list.Add(option);
+
+      return this;
+    }
+
+    public ffmpeg_command clearOptions()
+    {
+      var list = AdditionalOptions as List<string>;
+      list.Clear();
 
       return this;
     }

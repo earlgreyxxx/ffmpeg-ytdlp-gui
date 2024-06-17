@@ -9,11 +9,18 @@ ffmpegでの変換はh264/hevc (nvenc/qsv/cpu)のみ。
 * .NET 8 デスクトップ ランタイム
 
 ## 必須
-ffmpeg.exe／yt-dlp.exe (いずれも winget でインストールしたもの）
+ffmpeg.exe／ffprobe.exe／yt-dlp.exe (いずれも winget でインストールしたもの）
 ```
 winget install Gyan.FFmpeg
 winget install yt-dlp.yt-dlp
 ```
 
 ## 利用しているライブラリなど
-* 画像変換処理に <b>[ImageSharp(Apache 2.0ライセンス)](https://github.com/SixLabors/ImageSharp)</b> を使用しています。
+* 画像変換処理に <b>[ImageSharp](https://github.com/SixLabors/ImageSharp)</b> を使用しています。
+
+## スクリーンショット
+
+[<img width="32%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-convert.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-convert.png)
+[<img width="32%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-utils.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-utils.png)
+[<img width="32%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-download.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-download.png)
+

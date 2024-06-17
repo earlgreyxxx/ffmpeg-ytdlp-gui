@@ -287,7 +287,7 @@ namespace ffmpeg_command_builder.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public decimal tileRows {
             get {
                 return ((decimal)(this["tileRows"]));
@@ -306,6 +306,42 @@ namespace ffmpeg_command_builder.Properties {
             }
             set {
                 this["tileColumns"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public decimal imageWidth {
+            get {
+                return ((decimal)(this["imageWidth"]));
+            }
+            set {
+                this["imageWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public decimal imageHeight {
+            get {
+                return ((decimal)(this["imageHeight"]));
+            }
+            set {
+                this["imageHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool downloadCompleted {
+            get {
+                return ((bool)(this["downloadCompleted"]));
+            }
+            set {
+                this["downloadCompleted"] = value;
             }
         }
     }

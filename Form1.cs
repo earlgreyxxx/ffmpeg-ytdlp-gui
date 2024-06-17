@@ -28,6 +28,7 @@ namespace ffmpeg_command_builder
     private StringListItems OutputDirectoryList;
     private Size HelpFormSize = new(0, 0);
     private FFmpegBatchList BatchList;
+    private PictureBoxSizeMode SizeMode;
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -46,6 +47,8 @@ namespace ffmpeg_command_builder
 
     private void Form1_Load(object sender, EventArgs e)
     {
+      SizeMode = ThumbnailBox.SizeMode;
+
       ActiveControl = ffmpeg;
       var folders = Settings.Default.outputFolders;
       if (folders != null && folders.Count > 0)
@@ -148,13 +151,6 @@ namespace ffmpeg_command_builder
         return;
       }
 
-      if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
-      {
-        MessageBox.Show("ハードウェアデコーダーでクロップを行う場合は、動画のサイズを指定する必要があります。");
-        VideoWidth.Focus();
-        return;
-      }
-
       if (FileListBindingSource.Count > 0)
       {
         btnSubmitInvoke.Enabled = false;
@@ -163,7 +159,12 @@ namespace ffmpeg_command_builder
           command.OutputBaseName(FileName.Text);
 
         OnBeginProcess();
-        CreateFFmpegProcess(command)?.Begin();
+        var process = CreateFFmpegProcess(command);
+        if (process == null)
+          return;
+
+        process.PreProcess += RuntimeSetting;
+        process.Begin();
       }
     }
 
@@ -187,14 +188,10 @@ namespace ffmpeg_command_builder
 
     private void btnApply_Click(object sender, EventArgs e)
     {
-      if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
-      {
-        MessageBox.Show("ハードウェアデコーダーでクロップを行う場合は、動画のサイズを指定する必要があります。");
-        VideoWidth.Focus();
-        return;
-      }
-
       var ffcommand = CreateCommand(chkAudioOnly.Checked);
+      string sampleName = "sample.mp4";
+
+      RuntimeSetting(ffcommand, sampleName);
 
       if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
       {
@@ -203,7 +200,7 @@ namespace ffmpeg_command_builder
         cbOutputDir.SelectedItem = item;
       }
 
-      Commandlines.Text = ffcommand.GetCommandLine("sample.mp4");
+      Commandlines.Text = ffcommand.GetCommandLine(sampleName);
     }
 
     private void chkConstantQuality_CheckedChanged(object sender, EventArgs e)
@@ -255,7 +252,7 @@ namespace ffmpeg_command_builder
       bool isChecked = chkAudioOnly.Checked;
       VideoFrameRate.Enabled = LookAhead.Enabled = UseVideoEncoder.Enabled = cbPreset.Enabled = vBitrate.Enabled = chkConstantQuality.Enabled = !isChecked;
       chkFilterDeInterlace.Enabled = chkUseHWDecoder.Enabled = !isChecked;
-      CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = LayoutBox.Enabled = !isChecked;
+      CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isChecked;
       if (!chkUseHWDecoder.Enabled)
         chkUseHWDecoder.Checked = false;
 
@@ -306,7 +303,6 @@ namespace ffmpeg_command_builder
       }
 
       FileListBindingSource.ResetBindings(false);
-
       btnSubmitInvoke.Enabled = true;
     }
 
@@ -349,7 +345,7 @@ namespace ffmpeg_command_builder
 
       using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
       {
-        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList));
+        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting));
       }
 
       BatchList.Clear();
@@ -376,13 +372,6 @@ namespace ffmpeg_command_builder
       }
 
       AddDirectoryListItem();
-
-      if (chkCrop.Checked && chkUseHWDecoder.Checked && (VideoWidth.Value <= 0 || VideoHeight.Value <= 0))
-      {
-        MessageBox.Show("ハードウェアデコーダーでクロップを行う場合は、動画のサイズを指定する必要があります。");
-        VideoWidth.Focus();
-        return;
-      }
 
       if (FileListBindingSource.Count > 0)
       {
@@ -425,13 +414,22 @@ namespace ffmpeg_command_builder
       bool isCopy = codec.Name == "copy";
       bool isCpu = codec.GpuSuffix == "cpu";
 
-      CropBox.Enabled = LayoutBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
+      CropBox.Enabled = ResizeBox.Enabled = RotateBox.Enabled = !isCopy;
       cbPreset.Enabled = chkConstantQuality.Enabled = vBitrate.Enabled = !isCopy;
       LookAhead.Enabled = chkUseHWDecoder.Enabled = OpenEncoderHelp.Enabled = !isCopy;
       chkUseHWDecoder.Enabled = !isCpu;
       DeInterlaceBox.Enabled = OthersBox.Enabled = !isCopy;
+      VideoFrameRate.Enabled = !isCopy;
 
       InitPresetAndDevice(codec);
+
+      if (FileContainer.Items.Count > 0)
+      {
+        if (codec.Name == "gif")
+          FileContainer.SelectedValue = ".gif";
+        else
+          FileContainer.SelectedIndex = 0;
+      }
     }
 
     private void btnFFmpeg_Click(object sender, EventArgs e)
@@ -506,7 +504,6 @@ namespace ffmpeg_command_builder
       foreach (var control in CropBox.Controls.OfType<NumericUpDown>())
         control.Enabled = bChecked;
 
-      VideoWidth.Enabled = VideoHeight.Enabled = (bChecked && chkUseHWDecoder.Checked);
       if (bChecked)
         CropWidth.Focus();
     }
@@ -529,7 +526,6 @@ namespace ffmpeg_command_builder
     private void chkUseHWDecoder_CheckedChanged(object sender, EventArgs e)
     {
       var codec = HWDecoder.SelectedValue as Codec;
-      VideoWidth.Enabled = VideoHeight.Enabled = chkCrop.Checked && chkUseHWDecoder.Checked && codec.GpuSuffix == "cuvid";
       HWDecoder.Enabled = chkUseHWDecoder.Checked;
 
       if (chkUseHWDecoder.Checked)
@@ -653,7 +649,7 @@ namespace ffmpeg_command_builder
           throw new Exception("出力ディレクトリを指定してください。");
 
         var re = new Regex(@"%\d*d");
-        if (!re.IsMatch(FileName.Text) && !re.IsMatch(FilePrefix.Text) && !re.IsMatch(FileSuffix.Text))
+        if (!useTiledImage.Checked && !re.IsMatch(FileName.Text) && !re.IsMatch(FilePrefix.Text) && !re.IsMatch(FileSuffix.Text))
           throw new Exception("画像出力の際は、%d などの連番号フォーマットが含まれている必要があります。");
 
         if (InputFileList.Count < 1)
@@ -665,33 +661,7 @@ namespace ffmpeg_command_builder
 
         var command = new ffmpeg_command(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text);
 
-        List<string> list = ["-vsync vfr"];
-        List<string> vfilter = [];
-        if (FrameRate.Value > 0)
-          vfilter.Add($"fps=fps=1/{FrameRate.Value}:round=down");
-
-        if (CropTB.Value > 0 && CropLR.Value > 0)
-          vfilter.Add($"crop=iw-{CropLR.Value * 2}:ih-{CropTB.Value * 2}:{CropLR.Value}:{CropTB.Value}");
-        else if (CropTB.Value <= 0 && CropLR.Value > 0)
-          vfilter.Add($"crop=iw-{CropLR.Value * 2}:ih:{CropLR.Value}:0");
-        else if (CropTB.Value > 0 && CropLR.Value <= 0)
-          vfilter.Add($"crop=iw:ih-{CropTB.Value * 2}:0:{CropTB.Value}");
-
-        if (ImageWidth.Value > 0 && ImageHeight.Value > 0)
-          vfilter.Add($"scale={ImageWidth.Value}:{ImageHeight.Value}");
-
-        if(useTiledImage.Checked)
-          vfilter.Add($"tile={TileColumns.Value}x{TileRows.Value}");
-
-        if (vfilter.Count > 0)
-          list.Add($"-vf \"{string.Join(',', vfilter.ToArray())}\"");
-
-        if (codec == "mjpeg")
-          list.Add("-q:v 5");
-
-        Debug.WriteLine(string.Join(' ',list.ToArray()));
-
-        if(!Directory.Exists(cbOutputDir.Text))
+        if (!Directory.Exists(cbOutputDir.Text))
           Directory.CreateDirectory(cbOutputDir.Text);
 
         command
@@ -699,7 +669,6 @@ namespace ffmpeg_command_builder
           .To(ImageTo.Text)
           .vcodec(codec)
           .acodec(null)
-          .setOptions(list)
           .OutputDirectory(cbOutputDir.Text)
           .OutputPrefix(FilePrefix.Text)
           .OutputSuffix(FileSuffix.Text)
@@ -713,7 +682,90 @@ namespace ffmpeg_command_builder
         command.MultiFileProcess = InputFileList.Count > 1;
 
         OnBeginProcess();
-        CreateFFmpegProcess(command)?.Begin();
+        var process = CreateFFmpegProcess(command);
+        if (process == null)
+          return;
+
+        process.PreProcess += (command, filename) =>
+        {
+          command.clearOptions();
+
+          List<string> list = ["-vsync vfr"];
+          List<string> vfilter = [];
+          if (FrameRate.Value > 0)
+            vfilter.Add($"fps=fps=1/{FrameRate.Value}:round=up");
+
+          if (codec == "mjpeg")
+            list.Add("-q:v 5");
+
+          var ffprobe = ffprobe_process.CreateInstance(filename);
+          var container = ffprobe.getContainerProperty();
+          var stream = ffprobe.getStreamProperties().FirstOrDefault(stream => stream.codec_type == "video");
+          if (stream == null)
+            return;
+
+          decimal? aspect = stream.width / stream.height;
+
+          if (CropTB.Value > 0 && CropLR.Value > 0)
+            vfilter.Add($"crop=iw-{CropLR.Value * 2}:ih-{CropTB.Value * 2}:{CropLR.Value}:{CropTB.Value}");
+          else if (CropTB.Value <= 0 && CropLR.Value > 0)
+            vfilter.Add($"crop=iw-{CropLR.Value * 2}:ih:{CropLR.Value}:0");
+          else if (CropTB.Value > 0 && CropLR.Value <= 0)
+            vfilter.Add($"crop=iw:ih-{CropTB.Value * 2}:0:{CropTB.Value}");
+
+          decimal w = ImageWidth.Value;
+          decimal h = ImageHeight.Value;
+
+          if (w > 0 && h > 0)
+            vfilter.Add($"scale={w}:{h}");
+          else if (w > 0 && h <= 0)
+            vfilter.Add($"scale={w}:-1");
+          else if (w <= 0 && h > 0)
+            vfilter.Add($"scale=-1:{h}");
+
+          decimal duration = container.duration ?? 0m;
+          decimal ss = MediaProperty.ConvertDuration(ImageSS.Text) ?? 0;
+          decimal to = MediaProperty.ConvertDuration(ImageTo.Text) ?? 0;
+          if (ss > to)
+            ss = 0;
+          if (ss == to)
+            ss = to = 0;
+
+          if (ss > 0 && to > 0)
+            duration = to - ss;
+          else if (ss > 0 && to <= 0)
+            duration -= ss;
+          else if (ss <= 0 && to > 0)
+            duration = to;
+
+          decimal per = FrameRate.Value;
+          decimal frames = Math.Ceiling(duration / per);
+
+          decimal col = TileColumns.Value;
+          decimal row = TileRows.Value;
+          if (useTiledImage.Checked)
+          {
+            if (col > 0 || row > 0)
+            {
+              if (col > 0 && row <= 0)
+                row = Math.Ceiling(frames / col);
+              else if (col <= 0 && row > 0)
+                col = Math.Ceiling(frames / row);
+            }
+            else
+            {
+              col = 6;
+              row = 5;
+            }
+            vfilter.Add($"tile={col}x{row}");
+          }
+
+          if (vfilter.Count > 0)
+            list.Add($"-vf \"{string.Join(',', vfilter.ToArray())}\"");
+
+          command.setOptions(list);
+        };
+        process.Begin();
       }
       catch (Exception exception)
       {
@@ -793,6 +845,37 @@ namespace ffmpeg_command_builder
     private void CookieAttn_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
       CustomProcess.ShellExecute("https://github.com/yt-dlp/yt-dlp/issues/7271");
+    }
+
+    private void CommandSaveImage_Click(object sender, EventArgs e)
+    {
+      var image = ThumbnailBox.Image;
+      if (image != null)
+      {
+        var modal = new SaveFileDialog()
+        {
+          DefaultExt = "jpg",
+          Filter = "JPEGファイル|*.png",
+          Title = "名前を付けて画像を保存",
+          OverwritePrompt = true
+        };
+
+        if (DialogResult.OK == modal.ShowDialog())
+          image.Save(modal.FileName);
+      }
+    }
+
+    private void useTiledImage_CheckedChanged(object sender, EventArgs e)
+    {
+      TileColumns.Enabled = TileRows.Enabled = useTiledImage.Checked;
+    }
+
+    private void ThumbnailBox_Click(object sender, EventArgs e)
+    {
+      if (ThumbnailBox.Image == null)
+        return;
+
+      ThumbnailBox.SizeMode = SizeMode = SizeMode == PictureBoxSizeMode.Zoom ? PictureBoxSizeMode.StretchImage : PictureBoxSizeMode.Zoom;
     }
   }
 }

@@ -23,30 +23,35 @@ namespace ffmpeg_command_builder
       );
     }
 
-    private static RedirectedProcess CreateRedirectedProcess(string filename,ffmpeg_command command)
+    protected static RedirectedProcess CreateRedirectedProcess(string filename,ffmpeg_command command)
     {
-      var redirected = new RedirectedProcess(command.ffmpegPath, command.GetCommandLineArguments(filename));
+      var arguments = command.GetCommandLineArguments(filename);
+      var execfile = command.ffmpegPath;
+      Debug.WriteLine($"{execfile} {arguments}");
+      var redirected = new RedirectedProcess(execfile, arguments);
       var process = redirected.Current as CustomProcess;
       process.CustomFileName = filename;
       process.StartInfo.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
+      process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
+      process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
       return redirected;
     }
 
     // instances
     // ---------------------------------------------------------------------------------------
-    BindingSource FileList;
+    protected BindingSource FileList;
 
-    public RedirectedProcess Redirected { get; private set; }
+    public RedirectedProcess Redirected { get; protected set; }
 
     private StreamWriter LogWriter;
-    private Encoding CP932;
 
     public event Action<string> ProcessExit;
     public event Action<string> ReceiveData;
     public event Action ProcessesDone;
+    public event Action<ffmpeg_command,string> PreProcess;
 
-    public ffmpeg_command Command { get; private set; }
+    public ffmpeg_command Command { get; protected set; }
     public string LogFileName { get; set; } = GetLogFileName();
 
     public ffmpeg_process(ffmpeg_command command,IEnumerable<string> list)
@@ -54,20 +59,16 @@ namespace ffmpeg_command_builder
 
     public ffmpeg_process(ffmpeg_command command,BindingSource bs)
     {
-      try
-      {
-        CP932 = Encoding.GetEncoding(932);
-      }
-      catch
-      {
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        CP932 = Encoding.GetEncoding(932);
-      }
       Command = command;
       FileList = bs;
     }
 
-    public void Begin()
+    public ffmpeg_process()
+    {
+      throw new ArgumentException();
+    }
+
+    public virtual void Begin()
     {
       if (Redirected != null && !Redirected.Current.HasExited)
         throw new Exception("現在実行中のプロセスが終了するまで新しいプロセスを開始できません。");
@@ -78,11 +79,21 @@ namespace ffmpeg_command_builder
       CreateProcess();
     }
 
-    private void CreateProcess()
+    protected virtual void CreateProcess()
     {
       var filename = FileList.OfType<StringListItem>().FirstOrDefault()?.Value;
       if (filename == null)
         throw new Exception("no file");
+
+      if (!File.Exists(filename))
+      {
+        OnProcessExit(filename);
+        Redirected = null;
+        CreateProcess();
+        return;
+      }
+
+      OnPreProcess(Command, filename);
 
       Redirected = CreateRedirectedProcess(filename,Command);
       Redirected.ProcessExited += OnProcessExited;
@@ -95,10 +106,12 @@ namespace ffmpeg_command_builder
       }
     }
 
-    public void One(string filename)
+    public virtual void One(string filename)
     {
       if (!string.IsNullOrEmpty(LogFileName))
         LogWriter = new StreamWriter(LogFileName, false);
+
+      OnPreProcess(Command, filename);
 
       Redirected = CreateRedirectedProcess(filename,Command);
       Redirected.ProcessExited += OnAllProcessExited;
@@ -117,8 +130,7 @@ namespace ffmpeg_command_builder
       if (string.IsNullOrEmpty(data))
         return;
 
-      byte[] bytes = CP932.GetBytes(data);
-      LogWriter?.WriteLine(Encoding.UTF8.GetString(bytes));
+      LogWriter?.WriteLine(data);
     }
 
     private void OnProcessExited(object sender, EventArgs e)
@@ -171,6 +183,9 @@ namespace ffmpeg_command_builder
     {
       ProcessesDone?.Invoke();
     }
-
+    protected void OnPreProcess(ffmpeg_command command,string filename)
+    {
+      PreProcess?.Invoke(command,filename);
+    }
   }
 }

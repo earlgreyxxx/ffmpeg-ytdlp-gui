@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ffmpeg_command_builder
@@ -22,7 +23,15 @@ namespace ffmpeg_command_builder
 
     private IEnumerable<string> CreateArguments(string[] additionalOptions = null)
     {
-      var options = new List<string>() { Url };
+      var options = new List<string>()
+      { 
+        Url,
+        "-w",
+        "--encoding UTF-8",
+        "--no-continue",
+        "--no-mtime",
+        "--progress-delta 1"
+      };
 
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
@@ -54,6 +63,9 @@ namespace ffmpeg_command_builder
       if (formats == null)
         throw new Exception("ダウンロードする対象が指定されていません。");
 
+      psi.StandardOutputEncoding = Encoding.UTF8;
+      psi.StandardErrorEncoding = Encoding.UTF8;
+
       await StartAsync(string.Join(' ',CreateArguments(formats).ToArray()));
     }
 
@@ -62,7 +74,12 @@ namespace ffmpeg_command_builder
       if (Url == null)
         return null;
 
-      var options = new List<string>() { Url, "-j" };
+      var options = new List<string>()
+      {
+        Url,
+        "-j"
+      };
+
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
       else if (!string.IsNullOrEmpty(CookieBrowser))

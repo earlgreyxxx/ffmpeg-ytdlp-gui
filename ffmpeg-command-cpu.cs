@@ -138,7 +138,11 @@ namespace ffmpeg_command_builder
         foreach (var option in AdditionalOptions)
           yield return option.Trim();
 
-      yield return options["acodec"];
+      if (string.IsNullOrEmpty(options["acodec"]))
+        yield return "-an";
+      else
+        yield return options["acodec"];
+
       if (options.ContainsKey("b:a") && !string.IsNullOrEmpty(options["b:a"]))
         yield return options["b:a"];
     }
