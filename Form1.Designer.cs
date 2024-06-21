@@ -39,7 +39,7 @@
       linkLabel1 = new System.Windows.Forms.LinkLabel();
       btnClearSS = new System.Windows.Forms.Button();
       btnClearTo = new System.Windows.Forms.Button();
-      FindSaveBatchFile = new System.Windows.Forms.OpenFileDialog();
+      FindSaveBatchFile = new System.Windows.Forms.SaveFileDialog();
       CodecBox = new System.Windows.Forms.GroupBox();
       label7 = new System.Windows.Forms.Label();
       chkUseHWDecoder = new System.Windows.Forms.CheckBox();
@@ -1332,10 +1332,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 418);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1403,7 +1403,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -2078,14 +2078,14 @@
       ImageContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { CommandSaveImage });
       ImageContextMenu.Name = "ImageContextMenu";
       ImageContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      ImageContextMenu.Size = new System.Drawing.Size(125, 26);
+      ImageContextMenu.Size = new System.Drawing.Size(181, 48);
       // 
       // CommandSaveImage
       // 
       CommandSaveImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       CommandSaveImage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       CommandSaveImage.Name = "CommandSaveImage";
-      CommandSaveImage.Size = new System.Drawing.Size(124, 22);
+      CommandSaveImage.Size = new System.Drawing.Size(180, 22);
       CommandSaveImage.Text = "画像保存";
       CommandSaveImage.Click += CommandSaveImage_Click;
       // 
@@ -2256,7 +2256,7 @@
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox txtTo;
     private System.Windows.Forms.GroupBox CuttingBox;
-    private System.Windows.Forms.OpenFileDialog FindSaveBatchFile;
+    private System.Windows.Forms.SaveFileDialog FindSaveBatchFile;
     private System.Windows.Forms.GroupBox CodecBox;
     private System.Windows.Forms.CheckBox chkFilterDeInterlace;
     private System.Windows.Forms.RadioButton rbResizeHD;

@@ -855,8 +855,9 @@ namespace ffmpeg_command_builder
         var modal = new SaveFileDialog()
         {
           DefaultExt = "jpg",
-          Filter = "JPEGファイル|*.png",
+          Filter = "JPEGファイル|*.jpg|PNGファイル|*.png",
           Title = "名前を付けて画像を保存",
+          FileName = $"{mediaInfo.title}-thumbnail",
           OverwritePrompt = true
         };
 
