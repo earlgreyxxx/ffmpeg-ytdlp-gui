@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -42,6 +43,9 @@ namespace ffmpeg_command_builder
         throw new Exception("指定されたファイルが存在しません");
 
       FileName = filepath;
+      psi.StandardErrorEncoding = Encoding.UTF8;
+      psi.StandardOutputEncoding = Encoding.UTF8;
+      psi.StandardInputEncoding = Encoding.UTF8;
 
       ProcessExited += (s, e) => Debug.WriteLine("ffprobeプロセス終了");
     }
