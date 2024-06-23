@@ -144,6 +144,8 @@
       SubmitCopy = new System.Windows.Forms.Button();
       SubmitConcat = new System.Windows.Forms.Button();
       Image2Box = new System.Windows.Forms.GroupBox();
+      ImageFreeOptions = new System.Windows.Forms.TextBox();
+      label11 = new System.Windows.Forms.Label();
       useTiledImage = new System.Windows.Forms.CheckBox();
       TileRows = new System.Windows.Forms.NumericUpDown();
       CropTB = new System.Windows.Forms.NumericUpDown();
@@ -170,6 +172,7 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      DurationTime = new System.Windows.Forms.Label();
       chkAfterDownload = new System.Windows.Forms.CheckBox();
       CookieAttn = new System.Windows.Forms.LinkLabel();
       StopDownload = new System.Windows.Forms.Button();
@@ -359,7 +362,6 @@
       // 
       // FindSaveBatchFile
       // 
-      FindSaveBatchFile.CheckFileExists = false;
       FindSaveBatchFile.CheckPathExists = false;
       FindSaveBatchFile.DefaultExt = "cmd";
       FindSaveBatchFile.FileName = "ffmpeg-batch.cmd";
@@ -1309,10 +1311,10 @@
       // FreeOptions
       // 
       FreeOptions.HideSelection = false;
-      FreeOptions.Location = new System.Drawing.Point(11, 22);
+      FreeOptions.Location = new System.Drawing.Point(16, 22);
       FreeOptions.Name = "FreeOptions";
       FreeOptions.PlaceholderText = "カンマ、セミコロン、コロンで区切ってください";
-      FreeOptions.Size = new System.Drawing.Size(286, 19);
+      FreeOptions.Size = new System.Drawing.Size(281, 19);
       FreeOptions.TabIndex = 0;
       // 
       // OthersBox
@@ -1332,10 +1334,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 22);
+      PageUtility.Location = new System.Drawing.Point(4, 27);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 418);
+      PageUtility.Size = new System.Drawing.Size(832, 413);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1403,7 +1405,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1508,6 +1510,8 @@
       // 
       // Image2Box
       // 
+      Image2Box.Controls.Add(ImageFreeOptions);
+      Image2Box.Controls.Add(label11);
       Image2Box.Controls.Add(useTiledImage);
       Image2Box.Controls.Add(TileRows);
       Image2Box.Controls.Add(CropTB);
@@ -1540,10 +1544,27 @@
       Image2Box.TabStop = false;
       Image2Box.Text = "画像生成                                   ";
       // 
+      // ImageFreeOptions
+      // 
+      ImageFreeOptions.Location = new System.Drawing.Point(90, 91);
+      ImageFreeOptions.Name = "ImageFreeOptions";
+      ImageFreeOptions.PlaceholderText = "カンマ、セミコロン、コロンで区切ってください";
+      ImageFreeOptions.Size = new System.Drawing.Size(268, 19);
+      ImageFreeOptions.TabIndex = 11;
+      // 
+      // label11
+      // 
+      label11.AutoSize = true;
+      label11.Location = new System.Drawing.Point(13, 94);
+      label11.Name = "label11";
+      label11.Size = new System.Drawing.Size(72, 12);
+      label11.TabIndex = 10;
+      label11.Text = "追加オプション";
+      // 
       // useTiledImage
       // 
       useTiledImage.AutoSize = true;
-      useTiledImage.Location = new System.Drawing.Point(380, 93);
+      useTiledImage.Location = new System.Drawing.Point(382, 92);
       useTiledImage.Name = "useTiledImage";
       useTiledImage.Size = new System.Drawing.Size(97, 16);
       useTiledImage.TabIndex = 9;
@@ -1554,7 +1575,7 @@
       // TileRows
       // 
       TileRows.Enabled = false;
-      TileRows.Location = new System.Drawing.Point(565, 90);
+      TileRows.Location = new System.Drawing.Point(567, 91);
       TileRows.Name = "TileRows";
       TileRows.Size = new System.Drawing.Size(64, 19);
       TileRows.TabIndex = 8;
@@ -1581,7 +1602,7 @@
       // TileColumns
       // 
       TileColumns.Enabled = false;
-      TileColumns.Location = new System.Drawing.Point(479, 90);
+      TileColumns.Location = new System.Drawing.Point(481, 91);
       TileColumns.Name = "TileColumns";
       TileColumns.Size = new System.Drawing.Size(64, 19);
       TileColumns.TabIndex = 8;
@@ -1691,7 +1712,7 @@
       // label33
       // 
       label33.AutoSize = true;
-      label33.Location = new System.Drawing.Point(549, 94);
+      label33.Location = new System.Drawing.Point(551, 94);
       label33.Name = "label33";
       label33.Size = new System.Drawing.Size(17, 12);
       label33.TabIndex = 1;
@@ -1776,6 +1797,7 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(DurationTime);
       PageDownloader.Controls.Add(chkAfterDownload);
       PageDownloader.Controls.Add(CookieAttn);
       PageDownloader.Controls.Add(StopDownload);
@@ -1801,6 +1823,18 @@
       PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
+      // 
+      // DurationTime
+      // 
+      DurationTime.BackColor = System.Drawing.Color.White;
+      DurationTime.Location = new System.Drawing.Point(332, 302);
+      DurationTime.Name = "DurationTime";
+      DurationTime.Padding = new System.Windows.Forms.Padding(5);
+      DurationTime.Size = new System.Drawing.Size(107, 30);
+      DurationTime.TabIndex = 41;
+      DurationTime.Text = "00:00:00.0000";
+      DurationTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      DurationTime.Visible = false;
       // 
       // chkAfterDownload
       // 
@@ -1971,7 +2005,7 @@
       // 
       MediaTitle.AutoEllipsis = true;
       MediaTitle.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      MediaTitle.Location = new System.Drawing.Point(15, 338);
+      MediaTitle.Location = new System.Drawing.Point(13, 338);
       MediaTitle.Name = "MediaTitle";
       MediaTitle.Size = new System.Drawing.Size(426, 69);
       MediaTitle.TabIndex = 12;
@@ -2078,14 +2112,14 @@
       ImageContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { CommandSaveImage });
       ImageContextMenu.Name = "ImageContextMenu";
       ImageContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      ImageContextMenu.Size = new System.Drawing.Size(181, 48);
+      ImageContextMenu.Size = new System.Drawing.Size(125, 26);
       // 
       // CommandSaveImage
       // 
       CommandSaveImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       CommandSaveImage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       CommandSaveImage.Name = "CommandSaveImage";
-      CommandSaveImage.Size = new System.Drawing.Size(180, 22);
+      CommandSaveImage.Size = new System.Drawing.Size(124, 22);
       CommandSaveImage.Text = "画像保存";
       CommandSaveImage.Click += CommandSaveImage_Click;
       // 
@@ -2429,6 +2463,9 @@
     private System.Windows.Forms.RadioButton rbResizeSD;
     private System.Windows.Forms.CheckBox chkAfterDownload;
     private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.TextBox ImageFreeOptions;
+    private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.Label DurationTime;
   }
 }
 

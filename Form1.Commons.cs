@@ -732,6 +732,7 @@ namespace ffmpeg_command_builder
       ytdlp = null;
       mediaInfo = null;
       DownloadFileName = null;
+      DurationTime.Visible = false;
     }
 
     private void YtdlpPreDownload()
@@ -778,6 +779,8 @@ namespace ffmpeg_command_builder
           {
             ThumbnailBox.ContextMenuStrip = ImageContextMenu;
             ThumbnailBox.Image = Image.FromStream(pngStream);
+            DurationTime.Text = mediaInfo.GetDurationTime();
+            DurationTime.Visible = true;
           }
         }
 

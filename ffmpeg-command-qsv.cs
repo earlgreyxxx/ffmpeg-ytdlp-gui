@@ -51,6 +51,7 @@ namespace ffmpeg_command_builder
     {
       yield return "-hide_banner";
       yield return "-y";
+      yield return "-loglevel info";
 
       if (!bAudioOnly)
       {

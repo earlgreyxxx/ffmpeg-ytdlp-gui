@@ -13,6 +13,7 @@ namespace ffmpeg_command_builder
 
     public event Action<string> DataReceived;
     public event Action ProcessExit;
+    public event Action CloseWindow;
 
     public RedirectedProcess Redirected { get; private set; }
 
@@ -115,6 +116,11 @@ namespace ffmpeg_command_builder
     public virtual void OnProcessExit()
     {
       ProcessExit?.Invoke();
+    }
+
+    public virtual void OnCloseWindow()
+    {
+      CloseWindow?.Invoke();
     }
   }
 }

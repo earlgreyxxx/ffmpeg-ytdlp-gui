@@ -674,6 +674,15 @@ namespace ffmpeg_command_builder
           .OutputSuffix(FileSuffix.Text)
           .OutputContainer(extension);
 
+        List<string> additionals = null; ;
+        if (ImageFreeOptions.Text.Trim().Length > 0)
+        {
+          additionals = ImageFreeOptions.Text.Trim().Split(
+            new char[] { ',', ';', ':' },
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+          ).ToList();
+        }
+
         Debug.WriteLine(command.GetCommandLine("sample.mp4"));
 
         if (FileName.Text.Trim() != "元ファイル名")
@@ -689,6 +698,8 @@ namespace ffmpeg_command_builder
         process.PreProcess += (command, filename) =>
         {
           command.clearOptions();
+          if(additionals != null && additionals.Count > 0)
+            command.setOptions(additionals);
 
           List<string> list = ["-vsync vfr"];
           List<string> vfilter = [];

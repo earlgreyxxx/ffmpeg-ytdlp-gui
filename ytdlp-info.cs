@@ -86,6 +86,19 @@ namespace ffmpeg_command_builder
       }
       return null;
     }
+
+    public string GetDurationTime()
+    {
+      TimeSpan rv = TimeSpan.Zero;
+
+      if (duration == 0)
+        return rv.ToString();
+
+      decimal ns = duration * 10000000;
+      rv = new TimeSpan((long)ns);
+
+      return rv.ToString();
+    }
   }
 
   /// <summary>
