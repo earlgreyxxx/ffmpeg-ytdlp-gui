@@ -394,7 +394,7 @@ namespace ffmpeg_command_builder
       if (IsOpenStderr.Checked)
       {
         var form = new StdoutForm();
-        process.ReceiveData += data =>
+        Action<string> dataReceiver = data =>
         {
           if (string.IsNullOrEmpty(data))
             return;
@@ -404,12 +404,32 @@ namespace ffmpeg_command_builder
           else
             form.Invoke(() => form.WriteLine(data));
         };
-        process.ProcessesDone += () => form.Invoke(form.OnProcessExit);
+        Action processDone = () => form.Invoke(form.OnProcessExit);
+
+        process.ReceiveData += dataReceiver ;
+        process.ProcessesDone += processDone;
+
+        form.CustomButton.Visible = true;
+        form.CustomButton.Text = "出力を中断して閉じる";
+        form.CustomButtonClick += (sender,e) =>
+        {
+          process.ReceiveData -= dataReceiver;
+          process.ProcessesDone -= processDone;
+          form.Release();
+          form.Close();
+          form = null;
+        };
+
         form.Show();
       }
 
       Proceeding = process;
       return process;
+    }
+
+    private void Form_CloseWindow()
+    {
+      throw new NotImplementedException();
     }
 
     private ffmpeg_command CreateFFMpegCommandInstance()
@@ -729,9 +749,9 @@ namespace ffmpeg_command_builder
       VideoOnlyFormatSource.Clear();
       MovieFormatSource.Clear();
 
-      ytdlp = null;
-      mediaInfo = null;
-      DownloadFileName = null;
+      //ytdlp = null;
+      //mediaInfo = null;
+      //DownloadFileName = null;
       DurationTime.Visible = false;
     }
 
@@ -919,6 +939,9 @@ namespace ffmpeg_command_builder
 
           form.Show();
         }
+        
+        /// todo
+        /// キューに追加
 
         if (separatedDownload)
         {

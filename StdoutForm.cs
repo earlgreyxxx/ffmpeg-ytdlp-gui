@@ -10,12 +10,17 @@ namespace ffmpeg_command_builder
   {
     public bool Pause { get; private set; } = false;
     public List<string> LogData { get; private set; } = new List<string>();
+    public Button CustomButton
+    {
+      get => _CustomButton;
+      private set => throw new Exception("can not set button instance");
+    }
+    public RedirectedProcess Redirected { get; private set; }
 
     public event Action<string> DataReceived;
     public event Action ProcessExit;
-    public event Action CloseWindow;
+    public event Action<object, MouseEventArgs> CustomButtonClick;
 
-    public RedirectedProcess Redirected { get; private set; }
 
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
     private static partial Regex IsExecutableFile();
@@ -26,9 +31,8 @@ namespace ffmpeg_command_builder
 
       ProcessExit += () =>
       {
-        BtnClose.Enabled = BtnSubmitSaveFile.Enabled = true;
-        BtnToggleReader.Enabled = false;
-        
+        Release();
+
         if (LogData.Count > 0)
         {
           StdOutAndErrorView.AppendText("\r\n");
@@ -43,7 +47,9 @@ namespace ffmpeg_command_builder
       DataReceived += data => WriteLine(data);
       ProcessExit += () =>
       {
-        BtnClose.Enabled = BtnSubmitSaveFile.Enabled = Pause = true;
+        Release();
+        Pause = true;
+
         StdOutAndErrorView.Focus();
       };
 
@@ -61,6 +67,17 @@ namespace ffmpeg_command_builder
     public void WriteLine(object data)
     {
       StdOutAndErrorView.AppendText($"{data.ToString()}\r\n");
+    }
+
+    public void Release()
+    {
+      BtnClose.Enabled = BtnSubmitSaveFile.Enabled = true;
+      BtnToggleReader.Enabled = false;
+    }
+    public void Lock()
+    {
+      BtnClose.Enabled = BtnSubmitSaveFile.Enabled = false;
+      BtnToggleReader.Enabled = true ;
     }
 
     private void BtnClose_Click(object sender, EventArgs e)
@@ -96,16 +113,24 @@ namespace ffmpeg_command_builder
       if (!Pause)
         return;
 
-      if (DialogResult.Cancel == SaveFileDlg.ShowDialog())
+      var dlg = new SaveFileDialog()
+      {
+        FileName = "output.log",
+        Filter = "テキストファイル|*.log,*.txt",
+        OkRequiresInteraction = true,
+        Title = "ログを保存します。",
+      };
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      string filename = SaveFileDlg.FileName;
+      string filename = dlg.FileName;
       using (var sw = new StreamWriter(filename, false))
       {
         foreach (var line in StdOutAndErrorView.Lines)
           await sw.WriteLineAsync(line);
       }
-      SaveFileDlg.FileName = string.Empty;
+      dlg.FileName = string.Empty;
     }
 
     public virtual void OnDataReceived(string data)
@@ -118,9 +143,9 @@ namespace ffmpeg_command_builder
       ProcessExit?.Invoke();
     }
 
-    public virtual void OnCloseWindow()
+    public virtual void OnCustomButtonClick(object sender, EventArgs e)
     {
-      CloseWindow?.Invoke();
+      CustomButtonClick?.Invoke(sender, (MouseEventArgs)e);
     }
   }
 }

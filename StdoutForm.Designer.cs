@@ -32,7 +32,7 @@
       BtnClose = new System.Windows.Forms.Button();
       BtnToggleReader = new System.Windows.Forms.Button();
       BtnSubmitSaveFile = new System.Windows.Forms.Button();
-      SaveFileDlg = new System.Windows.Forms.SaveFileDialog();
+      _CustomButton = new System.Windows.Forms.Button();
       SuspendLayout();
       // 
       // StdOutAndErrorView
@@ -55,10 +55,10 @@
       // 
       BtnClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
       BtnClose.Enabled = false;
-      BtnClose.Location = new System.Drawing.Point(797, 453);
+      BtnClose.Location = new System.Drawing.Point(781, 453);
       BtnClose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       BtnClose.Name = "BtnClose";
-      BtnClose.Size = new System.Drawing.Size(64, 29);
+      BtnClose.Size = new System.Drawing.Size(80, 30);
       BtnClose.TabIndex = 1;
       BtnClose.TabStop = false;
       BtnClose.Text = " 閉じる";
@@ -68,9 +68,9 @@
       // BtnToggleReader
       // 
       BtnToggleReader.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-      BtnToggleReader.Location = new System.Drawing.Point(716, 453);
+      BtnToggleReader.Location = new System.Drawing.Point(698, 453);
       BtnToggleReader.Name = "BtnToggleReader";
-      BtnToggleReader.Size = new System.Drawing.Size(75, 29);
+      BtnToggleReader.Size = new System.Drawing.Size(80, 30);
       BtnToggleReader.TabIndex = 2;
       BtnToggleReader.Text = "読込中断";
       BtnToggleReader.UseVisualStyleBackColor = true;
@@ -82,23 +82,32 @@
       BtnSubmitSaveFile.Enabled = false;
       BtnSubmitSaveFile.Location = new System.Drawing.Point(12, 453);
       BtnSubmitSaveFile.Name = "BtnSubmitSaveFile";
-      BtnSubmitSaveFile.Size = new System.Drawing.Size(75, 29);
+      BtnSubmitSaveFile.Size = new System.Drawing.Size(80, 30);
       BtnSubmitSaveFile.TabIndex = 3;
       BtnSubmitSaveFile.Text = "保存";
       BtnSubmitSaveFile.UseVisualStyleBackColor = true;
       BtnSubmitSaveFile.Click += BtnSubmitSaveFile_Click;
       // 
-      // SaveFileDlg
+      // _CustomButton
       // 
-      SaveFileDlg.Filter = "テキストファイル|*.log,*.txt";
-      SaveFileDlg.OkRequiresInteraction = true;
-      SaveFileDlg.Title = "ログを保存します。";
+      _CustomButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+      _CustomButton.AutoSize = true;
+      _CustomButton.Location = new System.Drawing.Point(592, 453);
+      _CustomButton.Name = "_CustomButton";
+      _CustomButton.Padding = new System.Windows.Forms.Padding(4);
+      _CustomButton.Size = new System.Drawing.Size(86, 30);
+      _CustomButton.TabIndex = 4;
+      _CustomButton.Text = "カスタムボタン";
+      _CustomButton.UseVisualStyleBackColor = true;
+      _CustomButton.Visible = false;
+      _CustomButton.Click += OnCustomButtonClick;
       // 
       // StdoutForm
       // 
       AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       ClientSize = new System.Drawing.Size(873, 493);
+      Controls.Add(_CustomButton);
       Controls.Add(BtnSubmitSaveFile);
       Controls.Add(BtnToggleReader);
       Controls.Add(BtnClose);
@@ -122,6 +131,6 @@
     private System.Windows.Forms.Button BtnClose;
     private System.Windows.Forms.Button BtnToggleReader;
     private System.Windows.Forms.Button BtnSubmitSaveFile;
-    private System.Windows.Forms.SaveFileDialog SaveFileDlg;
+    private System.Windows.Forms.Button _CustomButton;
   }
 }
