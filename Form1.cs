@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Specialized;
 
 namespace ffmpeg_command_builder
 {
@@ -19,7 +20,7 @@ namespace ffmpeg_command_builder
 
   public partial class Form1 : Form
   {
-    private const int SaveFolderLength = 15;
+    private const int MemoryLength = 20;
 
     private Dictionary<string, StringListItems> PresetList;
     private Dictionary<string, CodecListItems> HardwareDecoders;
@@ -45,6 +46,11 @@ namespace ffmpeg_command_builder
       ChangeCurrentDirectory();
     }
 
+    private void ThumbnailBox_ChangeUICues(object sender, UICuesEventArgs e)
+    {
+      throw new NotImplementedException();
+    }
+
     private void Form1_Load(object sender, EventArgs e)
     {
       SizeMode = ThumbnailBox.SizeMode;
@@ -63,6 +69,8 @@ namespace ffmpeg_command_builder
           }
         }
       }
+      cbOutputDir.Sorted = false;
+      cbOutputDir.SelectedIndex = 0;
 
       if (Settings.Default.ffmpeg?.Count > 0)
       {
@@ -70,6 +78,28 @@ namespace ffmpeg_command_builder
           ffmpeg.Items.Add(item);
 
         ffmpeg.SelectedIndex = 0;
+      }
+
+      if (Settings.Default.downloadUrls?.Count > 0)
+      {
+        foreach (string item in Settings.Default.downloadUrls)
+        {
+          var pair = item.Split('｜');
+          if(pair.Length >= 2)
+            UrlBindingSource.Add(new StringListItem(pair[0], pair[1]));
+        }
+
+        DownloadUrl.SelectedIndex = -1;
+      }
+
+      if(Settings.Default.downloadFileNames?.Count > 0)
+      {
+        foreach(string item in Settings.Default.downloadFileNames)
+          OutputFileFormatBindingSource.Add(item);
+      }
+      else
+      {
+        OutputFileFormatBindingSource.Add("%(title)s-%(id)s.%(ext)s");
       }
 
       var radio = (ResizeBox.Controls[$"rbResize{Settings.Default.resize}"] as RadioButton) ?? rbResizeNone;
@@ -109,25 +139,30 @@ namespace ffmpeg_command_builder
       Settings.Default.HelpWidth = HelpFormSize.Width;
       Settings.Default.bitrate = vBitrate.Value;
 
-      var checks = new List<string>();
-      var items = OutputDirectoryList.OrderByDescending(item => (DateTime)item.Data).Take(SaveFolderLength);
-      foreach (var item in items)
-      {
-        if (Directory.Exists(item.Value) && !checks.Contains(item.Value))
-        {
-          checks.Add(item.Value);
-          Settings.Default.outputFolders.Add($"{item.Value}|{((DateTime)item.Data).ToString()}");
-        }
-      }
+      var items =
+        OutputDirectoryList
+          .Where(item => Directory.Exists(item.Value))
+          .OrderByDescending(item => (DateTime)item.Data)
+          .Take(MemoryLength)
+          .Select(item => $"{item.Value}|{((DateTime)item.Data).ToString()}");
 
-      foreach (string item in ffmpeg.Items)
-      {
-        if (!string.IsNullOrEmpty(item) && !Settings.Default.ffmpeg.Contains(item))
-          Settings.Default.ffmpeg.Add(item);
-      }
+      Settings.Default.outputFolders = [.. items];
+
+      // ffmpegパス
+      Settings.Default.ffmpeg = [.. ffmpeg.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
+
+      // ダウンロードURL
+      var urls = UrlBindingSource.DataSource as StringListItems;
+      var urllist = new StringCollection();
+      urllist.AddRange(urls.TakeLast(MemoryLength).Reverse().Select(item => $"{item.Value}｜{item.Label}").ToArray());
+      Settings.Default.downloadUrls = urllist;
 
       var radio = GetCheckedRadioButton(ResizeBox);
       Settings.Default.resize = radio.Name.Substring(8);
+
+      // 出力ファイル名形式
+      var formats = OutputFileFormatBindingSource.DataSource as List<string>;
+      Settings.Default.downloadFileNames = [.. formats.TakeLast(MemoryLength).Reverse()];
 
       Settings.Default.Save();
     }
@@ -176,14 +211,10 @@ namespace ffmpeg_command_builder
       if (DialogResult.Cancel == FindFolder.ShowDialog())
         return;
 
-      var item = new StringListItem(FindFolder.SelectedPath, DateTime.Now);
-      var same = OutputDirectoryList.FirstOrDefault(item => item.Value == FindFolder.SelectedPath);
-      if (same == null)
-        DirectoryListBindingSource.Add(item);
+      if (OutputDirectoryList.Any(item => item.Value == FindFolder.SelectedPath))
+        cbOutputDir.SelectedValue = FindFolder.SelectedPath;
       else
-        item = same;
-
-      cbOutputDir.SelectedItem = item;
+        cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(FindFolder.SelectedPath, DateTime.Now));
     }
 
     private void btnApply_Click(object sender, EventArgs e)
@@ -194,11 +225,7 @@ namespace ffmpeg_command_builder
       RuntimeSetting(ffcommand, sampleName);
 
       if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
-      {
-        var item = new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now);
-        DirectoryListBindingSource.Add(item);
-        cbOutputDir.SelectedItem = item;
-      }
+        cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now));
 
       Commandlines.Text = ffcommand.GetCommandLine(sampleName);
     }
@@ -807,19 +834,34 @@ namespace ffmpeg_command_builder
       YtdlpClearDownload();
     }
 
-    private async void SubmitSepareatedDownload_Click(object sender, EventArgs e)
-    {
-      await YtdlpInvokeDownload(true);
-    }
-
     private async void SubmitDownload_Click(object sender, EventArgs e)
     {
-      await YtdlpInvokeDownload();
+      var button = (Button)sender;
+      
+      var format = OutputFileFormat.Text;
+      var list = OutputFileFormatBindingSource.DataSource as List<string>;
+      if (false == list.Any(item => item == format))
+        OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
+
+      if (button.Tag.GetType().Name != "Boolean")
+        throw new Exception("not boolean type");
+
+      var isSeparate = (bool)button.Tag;
+
+      await YtdlpInvokeDownload(isSeparate);
     }
 
     private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
     {
-      await YtdlpParseDownloadUrl();
+      var url = DownloadUrl.Text;
+      var mi = await YtdlpParseDownloadUrl(url);
+
+      if (mi == null)
+        return;
+
+      var list = UrlBindingSource.DataSource as StringListItems;
+      if (false == list.Any(item => item.Label == url))
+        DownloadUrl.SelectedIndex = UrlBindingSource.Add(new StringListItem(mi.title,url,mi));
     }
 
     private void Tab_SelectedIndexChanged(object sender, EventArgs e)
@@ -866,10 +908,11 @@ namespace ffmpeg_command_builder
         var modal = new SaveFileDialog()
         {
           DefaultExt = "jpg",
-          Filter = "JPEGファイル|*.jpg|PNGファイル|*.png",
-          Title = "名前を付けて画像を保存",
+          InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
           FileName = $"{mediaInfo.title}-thumbnail",
-          OverwritePrompt = true
+          Filter = "JPEGファイル|*.jpg|PNGファイル|*.png",
+          OverwritePrompt = true,
+          Title = "名前を付けて画像を保存",
         };
 
         if (DialogResult.OK == modal.ShowDialog())

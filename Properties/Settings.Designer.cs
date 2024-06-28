@@ -275,18 +275,6 @@ namespace ffmpeg_command_builder.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%(title)s-%(id)s.%(ext)s")]
-        public string downloadFileName {
-            get {
-                return ((string)(this["downloadFileName"]));
-            }
-            set {
-                this["downloadFileName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public decimal tileRows {
             get {
@@ -342,6 +330,28 @@ namespace ffmpeg_command_builder.Properties {
             }
             set {
                 this["downloadCompleted"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection downloadUrls {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["downloadUrls"]));
+            }
+            set {
+                this["downloadUrls"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection downloadFileNames {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["downloadFileNames"]));
+            }
+            set {
+                this["downloadFileNames"] = value;
             }
         }
     }

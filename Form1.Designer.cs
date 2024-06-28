@@ -172,6 +172,8 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      OutputFileFormat = new System.Windows.Forms.ComboBox();
+      DownloadUrl = new System.Windows.Forms.ComboBox();
       DurationTime = new System.Windows.Forms.Label();
       chkAfterDownload = new System.Windows.Forms.CheckBox();
       CookieAttn = new System.Windows.Forms.LinkLabel();
@@ -189,7 +191,6 @@
       LinkYdlOutputTemplate = new System.Windows.Forms.LinkLabel();
       UseCookie = new System.Windows.Forms.ComboBox();
       MediaTitle = new System.Windows.Forms.Label();
-      OutputFileFormat = new System.Windows.Forms.TextBox();
       SubmitOpenCookie = new System.Windows.Forms.Button();
       ThumbnailBox = new System.Windows.Forms.PictureBox();
       SubmitClearUrl = new System.Windows.Forms.Button();
@@ -198,7 +199,6 @@
       label29 = new System.Windows.Forms.Label();
       label0 = new System.Windows.Forms.Label();
       label24 = new System.Windows.Forms.Label();
-      DownloadUrl = new System.Windows.Forms.TextBox();
       ImageContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
       OutputBox = new System.Windows.Forms.GroupBox();
@@ -212,6 +212,8 @@
       VideoOnlyFormatSource = new System.Windows.Forms.BindingSource(components);
       AudioOnlyFormatSource = new System.Windows.Forms.BindingSource(components);
       MovieFormatSource = new System.Windows.Forms.BindingSource(components);
+      UrlBindingSource = new System.Windows.Forms.BindingSource(components);
+      OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -259,6 +261,8 @@
       ((System.ComponentModel.ISupportInitialize)VideoOnlyFormatSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)AudioOnlyFormatSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)MovieFormatSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -633,9 +637,10 @@
       // cbOutputDir
       // 
       cbOutputDir.DisplayMember = "Label";
+      cbOutputDir.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
-      cbOutputDir.Size = new System.Drawing.Size(284, 20);
+      cbOutputDir.Size = new System.Drawing.Size(284, 21);
       cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
@@ -1334,10 +1339,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 418);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1405,7 +1410,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1797,6 +1802,8 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(OutputFileFormat);
+      PageDownloader.Controls.Add(DownloadUrl);
       PageDownloader.Controls.Add(DurationTime);
       PageDownloader.Controls.Add(chkAfterDownload);
       PageDownloader.Controls.Add(CookieAttn);
@@ -1807,7 +1814,6 @@
       PageDownloader.Controls.Add(LinkYdlOutputTemplate);
       PageDownloader.Controls.Add(UseCookie);
       PageDownloader.Controls.Add(MediaTitle);
-      PageDownloader.Controls.Add(OutputFileFormat);
       PageDownloader.Controls.Add(SubmitOpenCookie);
       PageDownloader.Controls.Add(ThumbnailBox);
       PageDownloader.Controls.Add(SubmitClearUrl);
@@ -1816,7 +1822,6 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Controls.Add(DownloadUrl);
       PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
@@ -1824,10 +1829,31 @@
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
+      // OutputFileFormat
+      // 
+      OutputFileFormat.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      OutputFileFormat.FormattingEnabled = true;
+      OutputFileFormat.Items.AddRange(new object[] { "%(title)s-%(id)s.%(ext)s" });
+      OutputFileFormat.Location = new System.Drawing.Point(461, 377);
+      OutputFileFormat.Name = "OutputFileFormat";
+      OutputFileFormat.Size = new System.Drawing.Size(348, 28);
+      OutputFileFormat.TabIndex = 43;
+      // 
+      // DownloadUrl
+      // 
+      DownloadUrl.DisplayMember = "Label";
+      DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      DownloadUrl.FormattingEnabled = true;
+      DownloadUrl.Location = new System.Drawing.Point(98, 15);
+      DownloadUrl.Name = "DownloadUrl";
+      DownloadUrl.Size = new System.Drawing.Size(578, 28);
+      DownloadUrl.TabIndex = 42;
+      DownloadUrl.ValueMember = "Value";
+      // 
       // DurationTime
       // 
       DurationTime.BackColor = System.Drawing.Color.White;
-      DurationTime.Location = new System.Drawing.Point(332, 302);
+      DurationTime.Location = new System.Drawing.Point(323, 298);
       DurationTime.Name = "DurationTime";
       DurationTime.Padding = new System.Windows.Forms.Padding(5);
       DurationTime.Size = new System.Drawing.Size(107, 30);
@@ -1861,7 +1887,7 @@
       // StopDownload
       // 
       StopDownload.Enabled = false;
-      StopDownload.Location = new System.Drawing.Point(666, 319);
+      StopDownload.Location = new System.Drawing.Point(658, 319);
       StopDownload.Name = "StopDownload";
       StopDownload.Size = new System.Drawing.Size(152, 23);
       StopDownload.TabIndex = 11;
@@ -1898,6 +1924,7 @@
       SubmitDownload.Name = "SubmitDownload";
       SubmitDownload.Size = new System.Drawing.Size(350, 26);
       SubmitDownload.TabIndex = 6;
+      SubmitDownload.Tag = false;
       SubmitDownload.Text = "ダウンロード開始";
       SubmitDownload.UseVisualStyleBackColor = true;
       SubmitDownload.Click += SubmitDownload_Click;
@@ -1932,9 +1959,10 @@
       SubmitSeparatedDownload.Name = "SubmitSeparatedDownload";
       SubmitSeparatedDownload.Size = new System.Drawing.Size(350, 26);
       SubmitSeparatedDownload.TabIndex = 6;
+      SubmitSeparatedDownload.Tag = true;
       SubmitSeparatedDownload.Text = "ダウンロード開始";
       SubmitSeparatedDownload.UseVisualStyleBackColor = true;
-      SubmitSeparatedDownload.Click += SubmitSepareatedDownload_Click;
+      SubmitSeparatedDownload.Click += SubmitDownload_Click;
       // 
       // label30
       // 
@@ -1970,18 +1998,19 @@
       // CookiePath
       // 
       CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+      CookiePath.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       CookiePath.Location = new System.Drawing.Point(554, 55);
       CookiePath.Name = "CookiePath";
       CookiePath.PlaceholderText = "Netscape形式のCookieファイル";
       CookiePath.ReadOnly = true;
-      CookiePath.Size = new System.Drawing.Size(211, 19);
+      CookiePath.Size = new System.Drawing.Size(211, 20);
       CookiePath.TabIndex = 15;
       // 
       // LinkYdlOutputTemplate
       // 
       LinkYdlOutputTemplate.AutoSize = true;
       LinkYdlOutputTemplate.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
-      LinkYdlOutputTemplate.Location = new System.Drawing.Point(554, 364);
+      LinkYdlOutputTemplate.Location = new System.Drawing.Point(569, 362);
       LinkYdlOutputTemplate.Name = "LinkYdlOutputTemplate";
       LinkYdlOutputTemplate.Size = new System.Drawing.Size(124, 12);
       LinkYdlOutputTemplate.TabIndex = 14;
@@ -1993,10 +2022,11 @@
       // 
       UseCookie.DisplayMember = "Label";
       UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      UseCookie.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       UseCookie.FormattingEnabled = true;
       UseCookie.Location = new System.Drawing.Point(135, 54);
       UseCookie.Name = "UseCookie";
-      UseCookie.Size = new System.Drawing.Size(110, 20);
+      UseCookie.Size = new System.Drawing.Size(110, 21);
       UseCookie.TabIndex = 13;
       UseCookie.ValueMember = "Value";
       UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
@@ -2005,19 +2035,11 @@
       // 
       MediaTitle.AutoEllipsis = true;
       MediaTitle.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      MediaTitle.Location = new System.Drawing.Point(13, 338);
+      MediaTitle.Location = new System.Drawing.Point(14, 338);
       MediaTitle.Name = "MediaTitle";
-      MediaTitle.Size = new System.Drawing.Size(426, 69);
+      MediaTitle.Size = new System.Drawing.Size(416, 69);
       MediaTitle.TabIndex = 12;
       MediaTitle.Text = "メディアタイトル";
-      // 
-      // OutputFileFormat
-      // 
-      OutputFileFormat.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      OutputFileFormat.Location = new System.Drawing.Point(450, 382);
-      OutputFileFormat.Name = "OutputFileFormat";
-      OutputFileFormat.Size = new System.Drawing.Size(368, 25);
-      OutputFileFormat.TabIndex = 11;
       // 
       // SubmitOpenCookie
       // 
@@ -2034,9 +2056,9 @@
       // 
       ThumbnailBox.BackColor = System.Drawing.Color.Black;
       ThumbnailBox.InitialImage = null;
-      ThumbnailBox.Location = new System.Drawing.Point(13, 92);
+      ThumbnailBox.Location = new System.Drawing.Point(14, 94);
       ThumbnailBox.Name = "ThumbnailBox";
-      ThumbnailBox.Size = new System.Drawing.Size(426, 240);
+      ThumbnailBox.Size = new System.Drawing.Size(416, 234);
       ThumbnailBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       ThumbnailBox.TabIndex = 9;
       ThumbnailBox.TabStop = false;
@@ -2055,7 +2077,7 @@
       // label28
       // 
       label28.AutoSize = true;
-      label28.Location = new System.Drawing.Point(447, 364);
+      label28.Location = new System.Drawing.Point(462, 362);
       label28.Name = "label28";
       label28.Size = new System.Drawing.Size(99, 12);
       label28.TabIndex = 5;
@@ -2097,15 +2119,6 @@
       label24.Size = new System.Drawing.Size(82, 12);
       label24.TabIndex = 5;
       label24.Text = "ダウンロードURL";
-      // 
-      // DownloadUrl
-      // 
-      DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      DownloadUrl.Location = new System.Drawing.Point(98, 14);
-      DownloadUrl.Name = "DownloadUrl";
-      DownloadUrl.Size = new System.Drawing.Size(578, 28);
-      DownloadUrl.TabIndex = 4;
-      DownloadUrl.Leave += DownloadUrl_Leave;
       // 
       // ImageContextMenu
       // 
@@ -2277,6 +2290,8 @@
       ((System.ComponentModel.ISupportInitialize)VideoOnlyFormatSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)AudioOnlyFormatSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)MovieFormatSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -2418,7 +2433,6 @@
     private System.Windows.Forms.CheckBox Overwrite;
     private System.Windows.Forms.TabPage PageDownloader;
     private System.Windows.Forms.Label label24;
-    private System.Windows.Forms.TextBox DownloadUrl;
     private System.Windows.Forms.Button SubmitClearUrl;
     private System.Windows.Forms.Button SubmitDownload;
     private System.Windows.Forms.Button SubmitConfirmFormat;
@@ -2427,7 +2441,6 @@
     private System.Windows.Forms.ComboBox AudioOnlyFormat;
     private System.Windows.Forms.Label label23;
     private System.Windows.Forms.ComboBox MovieFormat;
-    private System.Windows.Forms.TextBox OutputFileFormat;
     private System.Windows.Forms.Label MediaTitle;
     private System.Windows.Forms.ComboBox UseCookie;
     private System.Windows.Forms.Label label0;
@@ -2466,6 +2479,10 @@
     private System.Windows.Forms.TextBox ImageFreeOptions;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.Label DurationTime;
+    private System.Windows.Forms.ComboBox DownloadUrl;
+    private System.Windows.Forms.BindingSource UrlBindingSource;
+    private System.Windows.Forms.ComboBox OutputFileFormat;
+    private System.Windows.Forms.BindingSource OutputFileFormatBindingSource;
   }
 }
 

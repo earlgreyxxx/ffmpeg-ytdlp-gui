@@ -90,7 +90,6 @@ namespace ffmpeg_command_builder
       ImageWidth.DataBindings.Add("Value", Settings.Default, "imageWidth");
       IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
       LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
-      OutputFileFormat.DataBindings.Add("Text", Settings.Default, "downloadFileName");
       Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
       TileColumns.DataBindings.Add("Value", Settings.Default, "tileColumns");
       TileRows.DataBindings.Add("Value", Settings.Default, "tileRows");
@@ -326,8 +325,19 @@ namespace ffmpeg_command_builder
       VideoOnlyFormat.DataSource = VideoOnlyFormatSource;
       MovieFormatSource.DataSource = new StringListItems();
       MovieFormat.DataSource = MovieFormatSource;
+
+      UrlBindingSource.DataSource = new StringListItems();
+      DownloadUrl.DataSource = UrlBindingSource;
+
+      OutputFileFormatBindingSource.DataSource = new List<string>();
+      OutputFileFormat.DataSource = OutputFileFormatBindingSource;
     }
 
+    /// <summary>
+    /// ffmpegpプロセス起動前に実行
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="filename"></param>
     private void RuntimeSetting(ffmpeg_command command, string filename)
     {
       if (command.bAudioOnly)
@@ -712,11 +722,7 @@ namespace ffmpeg_command_builder
     private void AddDirectoryListItem()
     {
       if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
-      {
-        var listitem = new StringListItem(cbOutputDir.Text, DateTime.Now);
-        DirectoryListBindingSource.Add(listitem);
-        cbOutputDir.SelectedItem = listitem;
-      }
+        cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, DateTime.Now));
     }
 
     /// <summary>
@@ -749,9 +755,9 @@ namespace ffmpeg_command_builder
       VideoOnlyFormatSource.Clear();
       MovieFormatSource.Clear();
 
-      //ytdlp = null;
-      //mediaInfo = null;
-      //DownloadFileName = null;
+      ytdlp = null;
+      mediaInfo = null;
+      DownloadFileName = null;
       DurationTime.Visible = false;
     }
 
@@ -769,12 +775,12 @@ namespace ffmpeg_command_builder
       StopDownload.Enabled = false;
     }
 
-    private async Task YtdlpParseDownloadUrl()
+    private async Task<MediaInformation> YtdlpParseDownloadUrl(string url)
     {
+      MediaInformation mi = null;
       try
       {
         Tab.Enabled = false;
-        var url = DownloadUrl.Text.Trim();
         if (url.Length == 0)
           throw new Exception("URLが入力されていません。");
 
@@ -787,7 +793,7 @@ namespace ffmpeg_command_builder
           ytdlp.CookieBrowser = cookieKind;
 
         OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
-        mediaInfo = await ytdlp.getMediaInformation();
+        mi = mediaInfo = await ytdlp.getMediaInformation();
         OutputStderr.Text = "";
 
         if (mediaInfo == null)
@@ -804,7 +810,7 @@ namespace ffmpeg_command_builder
           }
         }
 
-        DownloadUrl.Enabled = false;
+        //DownloadUrl.Enabled = false;
         MediaTitle.Text = mediaInfo.title;
 
         // format_id 構築
@@ -861,6 +867,8 @@ namespace ffmpeg_command_builder
       {
         Tab.Enabled = true;
       }
+
+      return mi;
     }
 
     private async Task YtdlpInvokeDownload(bool separatedDownload = false)
