@@ -8,7 +8,13 @@ namespace ffmpeg_command_builder
 {
   public partial class StdoutForm : Form
   {
-    public bool Pause { get; private set; } = false;
+    private bool _imp_pause = false;
+    public bool Pause
+    {
+      get => _imp_pause;
+      set => _imp_pause = BtnSubmitSaveFile.Enabled = value;
+    }
+
     public List<string> LogData { get; private set; } = new List<string>();
     public Button CustomButton
     {
@@ -104,8 +110,6 @@ namespace ffmpeg_command_builder
       LogData.Clear();
 
       Pause = !Pause;
-
-      BtnSubmitSaveFile.Enabled = Pause;
     }
 
     private async void BtnSubmitSaveFile_Click(object sender, EventArgs e)
@@ -117,8 +121,9 @@ namespace ffmpeg_command_builder
       {
         FileName = "output.log",
         Filter = "テキストファイル|*.log,*.txt",
+        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
         OkRequiresInteraction = true,
-        Title = "ログを保存します。",
+        Title = "ログを保存します。"
       };
 
       if (DialogResult.Cancel == dlg.ShowDialog())
@@ -140,6 +145,7 @@ namespace ffmpeg_command_builder
 
     public virtual void OnProcessExit()
     {
+      Pause = true;
       ProcessExit?.Invoke();
     }
 

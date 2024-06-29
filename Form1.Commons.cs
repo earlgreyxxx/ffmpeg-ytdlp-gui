@@ -940,6 +940,7 @@ namespace ffmpeg_command_builder
             {
               var button = form.Controls["BtnClose"] as Button;
               button.Enabled = true;
+              form.Pause = true;
             });
 
             ytdlp = null;
