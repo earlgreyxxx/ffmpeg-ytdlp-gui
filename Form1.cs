@@ -69,7 +69,6 @@ namespace ffmpeg_command_builder
           }
         }
       }
-      cbOutputDir.Sorted = false;
       cbOutputDir.SelectedIndex = 0;
 
       if (Settings.Default.ffmpeg?.Count > 0)
@@ -80,17 +79,18 @@ namespace ffmpeg_command_builder
         ffmpeg.SelectedIndex = 0;
       }
 
-      if (Settings.Default.downloadUrls?.Count > 0)
-      {
-        foreach (string item in Settings.Default.downloadUrls)
-        {
-          var pair = item.Split('｜');
-          if(pair.Length >= 2)
-            UrlBindingSource.Add(new StringListItem(pair[0], pair[1]));
-        }
+      /// ダウンロードURLのロード
+      //if (Settings.Default.downloadUrls?.Count > 0)
+      //{
+      //  foreach (string item in Settings.Default.downloadUrls)
+      //  {
+      //    var pair = item.Split('｜');
+      //    if(pair.Length >= 2)
+      //      UrlBindingSource.Add(new StringListItem(pair[0], pair[1]));
+      //  }
 
-        DownloadUrl.SelectedIndex = -1;
-      }
+      //  DownloadUrl.SelectedIndex = -1;
+      //}
 
       if(Settings.Default.downloadFileNames?.Count > 0)
       {
@@ -133,8 +133,8 @@ namespace ffmpeg_command_builder
         e.Cancel = true;
         return;
       }
-      Settings.Default.outputFolders = [];
-      Settings.Default.ffmpeg = [];
+      Settings.Default.outputFolders = null;
+      Settings.Default.ffmpeg = null;
       Settings.Default.HelpHeight = HelpFormSize.Height;
       Settings.Default.HelpWidth = HelpFormSize.Width;
       Settings.Default.bitrate = vBitrate.Value;
@@ -144,6 +144,7 @@ namespace ffmpeg_command_builder
           .Where(item => Directory.Exists(item.Value))
           .OrderByDescending(item => (DateTime)item.Data)
           .Take(MemoryLength)
+          .OrderBy(item => item.Value)
           .Select(item => $"{item.Value}|{((DateTime)item.Data).ToString()}");
 
       Settings.Default.outputFolders = [.. items];
@@ -152,10 +153,10 @@ namespace ffmpeg_command_builder
       Settings.Default.ffmpeg = [.. ffmpeg.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
 
       // ダウンロードURL
-      var urls = UrlBindingSource.DataSource as StringListItems;
-      var urllist = new StringCollection();
-      urllist.AddRange(urls.TakeLast(MemoryLength).Reverse().Select(item => $"{item.Value}｜{item.Label}").ToArray());
-      Settings.Default.downloadUrls = urllist;
+      //var urls = UrlBindingSource.DataSource as StringListItems;
+      //var urllist = new StringCollection();
+      //urllist.AddRange(urls.TakeLast(MemoryLength).Reverse().Select(item => $"{item.Value}｜{item.Label}").ToArray());
+      //Settings.Default.downloadUrls = urllist;
 
       var radio = GetCheckedRadioButton(ResizeBox);
       Settings.Default.resize = radio.Name.Substring(8);
