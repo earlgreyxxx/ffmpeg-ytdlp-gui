@@ -1840,14 +1840,15 @@
       // 
       // DownloadUrl
       // 
-      DownloadUrl.DisplayMember = "Label";
+      DownloadUrl.DisplayMember = "Item1";
       DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       DownloadUrl.FormattingEnabled = true;
       DownloadUrl.Location = new System.Drawing.Point(98, 15);
       DownloadUrl.Name = "DownloadUrl";
       DownloadUrl.Size = new System.Drawing.Size(578, 28);
       DownloadUrl.TabIndex = 42;
-      DownloadUrl.ValueMember = "Value";
+      DownloadUrl.ValueMember = "Item2";
+      DownloadUrl.SelectedIndexChanged += DownloadUrl_SelectedIndexChanged;
       // 
       // DurationTime
       // 

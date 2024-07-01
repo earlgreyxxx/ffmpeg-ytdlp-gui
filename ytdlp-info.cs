@@ -67,7 +67,7 @@ namespace ffmpeg_command_builder
       }
     }
 
-    public async Task<Stream> GetThumbnailImage()
+    public async Task<Stream> GetThumbnailStream()
     {
       if (thumbnail != null)
       {
@@ -85,6 +85,24 @@ namespace ffmpeg_command_builder
         }
       }
       return null;
+    }
+
+    public async Task<System.Drawing.Image> GetThumbnailImage()
+    {
+      Stream stream = await GetThumbnailStream();
+      if (stream == null)
+        return null;
+
+      System.Drawing.Image rv;
+      using (stream)
+      {
+        if (stream == null)
+          return null;
+
+        rv = System.Drawing.Image.FromStream(stream);
+      }
+
+      return rv;
     }
 
     public string GetDurationTime()

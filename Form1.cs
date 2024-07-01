@@ -17,6 +17,8 @@ namespace ffmpeg_command_builder
   using StringListItem = ListItem<string>;
   using StringListItems = List<ListItem<string>>;
   using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
+  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
+  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
 
   public partial class Form1 : Form
   {
@@ -92,9 +94,9 @@ namespace ffmpeg_command_builder
       //  DownloadUrl.SelectedIndex = -1;
       //}
 
-      if(Settings.Default.downloadFileNames?.Count > 0)
+      if (Settings.Default.downloadFileNames?.Count > 0)
       {
-        foreach(string item in Settings.Default.downloadFileNames)
+        foreach (string item in Settings.Default.downloadFileNames)
           OutputFileFormatBindingSource.Add(item);
       }
       else
@@ -726,7 +728,7 @@ namespace ffmpeg_command_builder
         process.PreProcess += (command, filename) =>
         {
           command.clearOptions();
-          if(additionals != null && additionals.Count > 0)
+          if (additionals != null && additionals.Count > 0)
             command.setOptions(additionals);
 
           List<string> list = ["-vsync vfr"];
@@ -838,7 +840,8 @@ namespace ffmpeg_command_builder
     private async void SubmitDownload_Click(object sender, EventArgs e)
     {
       var button = (Button)sender;
-      
+      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
+
       var format = OutputFileFormat.Text;
       var list = OutputFileFormatBindingSource.DataSource as List<string>;
       if (false == list.Any(item => item == format))
@@ -849,20 +852,88 @@ namespace ffmpeg_command_builder
 
       var isSeparate = (bool)button.Tag;
 
-      await YtdlpInvokeDownload(isSeparate);
+      await YtdlpInvokeDownload(ytdlpItem, isSeparate);
     }
 
     private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
     {
       var url = DownloadUrl.Text;
-      var mi = await YtdlpParseDownloadUrl(url);
+      var ytdlpItem = await YtdlpParseDownloadUrl(url);
 
-      if (mi == null)
+      if (ytdlpItem == null)
         return;
 
-      var list = UrlBindingSource.DataSource as StringListItems;
-      if (false == list.Any(item => item.Label == url))
-        DownloadUrl.SelectedIndex = UrlBindingSource.Add(new StringListItem(mi.title,url,mi));
+      var list = UrlBindingSource.DataSource as YtdlpItems;
+      if (false == list.Any(item => item.Item1 == url))
+      {
+        DownloadUrl.SelectedIndex = UrlBindingSource.Add(ytdlpItem);
+        DownloadUrl_SelectedIndexChanged(DownloadUrl, new EventArgs());
+      }
+    }
+
+    private void DownloadUrl_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      if (DownloadUrl.SelectedIndex < 0)
+        return;
+
+      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
+      var mi = ytdlpItem.Item2;
+      var image = ytdlpItem.Item3;
+
+      string time = mi.GetDurationTime();
+
+      ThumbnailBox.ContextMenuStrip = ImageContextMenu;
+      ThumbnailBox.Image = ytdlpItem.Item3;
+      DurationTime.Text = time;
+      DurationTime.Visible = true;
+
+      //DownloadUrl.Enabled = false;
+      MediaTitle.Text = mi.title;
+
+      // format_id 構築
+      VideoOnlyFormatSource.Clear();
+      VideoOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+      AudioOnlyFormatSource.Clear();
+      AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+      MovieFormatSource.Clear();
+
+      foreach (var format in mi.formats)
+      {
+        if (format.vcodec == "none" && format.acodec != "none")
+          AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        else if (format.acodec == "none" && format.vcodec != "none")
+          VideoOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        else if (format.acodec != "none" && format.vcodec != "none")
+          MovieFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+      }
+
+      MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
+
+      // requested_formats? があれば
+      if (mi.requested_formats.Count > 0)
+      {
+        var items = mi.requested_formats.Select(f => new
+        {
+          Value = f.format_id,
+          Label = f.ToString(),
+          Video = f.acodec == "none",
+          Audio = f.vcodec == "none",
+        });
+
+        foreach (var item in items)
+        {
+          ComboBox cb = null;
+          if (item.Video)
+            cb = VideoOnlyFormat;
+          else if (item.Audio)
+            cb = AudioOnlyFormat;
+
+          cb.SelectedValue = item.Value;
+        }
+      }
+
+      SubmitDownload.Enabled = true;
+      SubmitSeparatedDownload.Enabled = true;
     }
 
     private void Tab_SelectedIndexChanged(object sender, EventArgs e)

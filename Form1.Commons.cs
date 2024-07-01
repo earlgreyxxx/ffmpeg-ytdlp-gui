@@ -19,6 +19,8 @@ namespace ffmpeg_command_builder
   using StringListItems = List<ListItem<string>>;
   using DecimalListItem = ListItem<decimal>;
   using DecimalListItems = List<ListItem<decimal>>;
+  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
+  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
 
   partial class Form1 : Form
   {
@@ -326,7 +328,7 @@ namespace ffmpeg_command_builder
       MovieFormatSource.DataSource = new StringListItems();
       MovieFormat.DataSource = MovieFormatSource;
 
-      UrlBindingSource.DataSource = new StringListItems();
+      UrlBindingSource.DataSource = new YtdlpItems();
       DownloadUrl.DataSource = UrlBindingSource;
 
       OutputFileFormatBindingSource.DataSource = new List<string>();
@@ -734,7 +736,6 @@ namespace ffmpeg_command_builder
     /// ダウンロードプロセス
     /// </summary>
     private ytdlp_process ytdlp = null;
-    private string DownloadFileName = null;
     private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
     private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
 
@@ -757,14 +758,12 @@ namespace ffmpeg_command_builder
 
       ytdlp = null;
       mediaInfo = null;
-      DownloadFileName = null;
       DurationTime.Visible = false;
     }
 
     private void YtdlpPreDownload()
     {
       ytdlp = null;
-      DownloadFileName = null;
       SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
       StopDownload.Enabled = true;
     }
@@ -775,8 +774,9 @@ namespace ffmpeg_command_builder
       StopDownload.Enabled = false;
     }
 
-    private async Task<MediaInformation> YtdlpParseDownloadUrl(string url)
+    private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
     {
+      YtdlpItem ytdlpItem = null;
       MediaInformation mi = null;
       try
       {
@@ -784,7 +784,11 @@ namespace ffmpeg_command_builder
         if (url.Length == 0)
           throw new Exception("URLが入力されていません。");
 
-        var ytdlp = new ytdlp_process() { Url = url };
+        var ytdlp = new ytdlp_process()
+        {
+          Url = url,
+          DownloadFile = string.Empty
+        };
 
         var cookieKind = UseCookie.SelectedValue.ToString();
         if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
@@ -793,71 +797,15 @@ namespace ffmpeg_command_builder
           ytdlp.CookieBrowser = cookieKind;
 
         OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
-        mi = mediaInfo = await ytdlp.getMediaInformation();
+        mi = await ytdlp.getMediaInformation();
         OutputStderr.Text = "";
 
-        if (mediaInfo == null)
+        if (mi == null)
           throw new Exception("解析に失敗しました。");
 
-        using (var pngStream = await mediaInfo.GetThumbnailImage())
-        {
-          if (pngStream != null)
-          {
-            ThumbnailBox.ContextMenuStrip = ImageContextMenu;
-            ThumbnailBox.Image = Image.FromStream(pngStream);
-            DurationTime.Text = mediaInfo.GetDurationTime();
-            DurationTime.Visible = true;
-          }
-        }
+        Image image = await mi.GetThumbnailImage();
 
-        //DownloadUrl.Enabled = false;
-        MediaTitle.Text = mediaInfo.title;
-
-        // format_id 構築
-        VideoOnlyFormatSource.Clear();
-        VideoOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
-        AudioOnlyFormatSource.Clear();
-        AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
-
-        MovieFormatSource.Clear();
-
-        foreach (var format in mediaInfo.formats)
-        {
-          if (format.vcodec == "none" && format.acodec != "none")
-            AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
-          else if (format.acodec == "none" && format.vcodec != "none")
-            VideoOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
-          else if (format.acodec != "none" && format.vcodec != "none")
-            MovieFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
-        }
-
-        MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
-
-        // requested_formats? があれば
-        if (mediaInfo.requested_formats.Count > 0)
-        {
-          var items = mediaInfo.requested_formats.Select(f => new
-          {
-            Value = f.format_id,
-            Label = f.ToString(),
-            Video = f.acodec == "none",
-            Audio = f.vcodec == "none",
-          });
-
-          foreach (var item in items)
-          {
-            ComboBox cb = null;
-            if (item.Video)
-              cb = VideoOnlyFormat;
-            else if (item.Audio)
-              cb = AudioOnlyFormat;
-
-            cb.SelectedValue = item.Value;
-          }
-        }
-
-        SubmitDownload.Enabled = true;
-        SubmitSeparatedDownload.Enabled = true;
+        ytdlpItem = new YtdlpItem(url,mi,image);
       }
       catch (Exception exception)
       {
@@ -868,14 +816,15 @@ namespace ffmpeg_command_builder
         Tab.Enabled = true;
       }
 
-      return mi;
+      return ytdlpItem;
     }
 
-    private async Task YtdlpInvokeDownload(bool separatedDownload = false)
+    private async Task YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
     {
       StdoutForm form = null;
+      var mediainfo = ytdlpItem.Item2;
 
-      if (mediaInfo == null)
+      if ( mediainfo == null)
         return;
 
       try
@@ -888,7 +837,7 @@ namespace ffmpeg_command_builder
 
         ytdlp = new ytdlp_process()
         {
-          Url = mediaInfo.webpage_url,
+          Url = mediainfo.webpage_url,
           OutputPath = outputdir
         };
 
@@ -910,11 +859,11 @@ namespace ffmpeg_command_builder
           ytdlp.StdOutReceived += YtdlpReceiver;
           ytdlp.ProcessExited += (s, e) => Invoke(() =>
           {
-            Debug.WriteLine($"exitcode = {ytdlp.ExitCode},DownloadName = {DownloadFileName}");
+            Debug.WriteLine($"exitcode = {ytdlp.ExitCode},DownloadName = {ytdlp.DownloadFile}");
 
-            if (ytdlp.ExitCode == 0 && !string.IsNullOrEmpty(DownloadFileName))
+            if (ytdlp.ExitCode == 0 && !string.IsNullOrEmpty(ytdlp.DownloadFile))
             {
-              FileListBindingSource.Add(new StringListItem(DownloadFileName));
+              FileListBindingSource.Add(new StringListItem(ytdlp.DownloadFile));
               btnSubmitInvoke.Enabled = true;
             }
           });
@@ -986,14 +935,14 @@ namespace ffmpeg_command_builder
       var match = DownloadRegex.Match(data);
       if (match.Success)
       {
-        DownloadFileName = match.Groups["filename"].Value;
+        ytdlp.DownloadFile = match.Groups["filename"].Value;
       }
       else
       {
         match = MergerRegex.Match(data);
         if (match.Success)
         {
-          DownloadFileName = match.Groups["filename"].Value;
+          ytdlp.DownloadFile = match.Groups["filename"].Value;
           ytdlp.StdOutReceived -= YtdlpReceiver;
         }
       }

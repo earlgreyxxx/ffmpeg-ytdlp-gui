@@ -15,6 +15,7 @@ namespace ffmpeg_command_builder
     public string CookiePath { get; set; }
     public string OutputPath { get; set; }
     public string OutputFile { get; set; }
+    public string DownloadFile { get; set; }
 
     public ytdlp_process() : base("yt-dlp")
     {
