@@ -974,14 +974,23 @@ namespace ffmpeg_command_builder
 
     private void CommandSaveImage_Click(object sender, EventArgs e)
     {
+      var item = DownloadUrl.SelectedItem as YtdlpItem;
+      if (item == null)
+        return;
+
+      var mi = item.Item2;
       var image = ThumbnailBox.Image;
+
+      if (item.Item3 != image)
+        return;
+      
       if (image != null)
       {
         var modal = new SaveFileDialog()
         {
           DefaultExt = "jpg",
           InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-          FileName = $"{mediaInfo.title}-thumbnail",
+          FileName = $"{mi.title}-thumbnail",
           Filter = "JPEGファイル|*.jpg|PNGファイル|*.png",
           OverwritePrompt = true,
           Title = "名前を付けて画像を保存",
@@ -995,14 +1004,6 @@ namespace ffmpeg_command_builder
     private void useTiledImage_CheckedChanged(object sender, EventArgs e)
     {
       TileColumns.Enabled = TileRows.Enabled = useTiledImage.Checked;
-    }
-
-    private void ThumbnailBox_Click(object sender, EventArgs e)
-    {
-      if (ThumbnailBox.Image == null)
-        return;
-
-      ThumbnailBox.SizeMode = SizeMode = SizeMode == PictureBoxSizeMode.Zoom ? PictureBoxSizeMode.StretchImage : PictureBoxSizeMode.Zoom;
     }
   }
 }

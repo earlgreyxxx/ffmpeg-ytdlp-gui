@@ -2062,7 +2062,6 @@
       ThumbnailBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       ThumbnailBox.TabIndex = 9;
       ThumbnailBox.TabStop = false;
-      ThumbnailBox.Click += ThumbnailBox_Click;
       // 
       // SubmitClearUrl
       // 
