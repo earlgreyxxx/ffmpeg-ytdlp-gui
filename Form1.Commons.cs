@@ -852,22 +852,19 @@ namespace ffmpeg_command_builder
           ytdlp.CookieBrowser = cookieKind;
 
         ytdlp.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
-        ytdlp.ProcessExited += (s, e) => Invoke(YtdlpPostDownload);
+        ytdlp.StdOutReceived += YtdlpReceiver;
 
-        if (chkAfterDownload.Checked)
+        ytdlp.ProcessExited += (s, e) => Invoke(() =>
         {
-          ytdlp.StdOutReceived += YtdlpReceiver;
-          ytdlp.ProcessExited += (s, e) => Invoke(() =>
-          {
-            Debug.WriteLine($"exitcode = {ytdlp.ExitCode},DownloadName = {ytdlp.DownloadFile}");
+          Debug.WriteLine($"exitcode = {ytdlp.ExitCode},DownloadName = {ytdlp.DownloadFile}");
 
-            if (ytdlp.ExitCode == 0 && !string.IsNullOrEmpty(ytdlp.DownloadFile))
-            {
-              FileListBindingSource.Add(new StringListItem(ytdlp.DownloadFile));
-              btnSubmitInvoke.Enabled = true;
-            }
-          });
-        }
+          YtdlpPostDownload();
+          if (ytdlp.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(ytdlp.DownloadFile))
+          {
+            FileListBindingSource.Add(new StringListItem(ytdlp.DownloadFile));
+            btnSubmitInvoke.Enabled = true;
+          }
+        });
 
         if (IsOpenStderr.Checked)
         {
