@@ -377,7 +377,11 @@ namespace ffmpeg_command_builder
       }
     }
 
+    /// <summary>
+    /// ffmpegプロセス
+    /// </summary>
     private ffmpeg_process Proceeding;
+
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
       command.Overwrite = Overwrite.Checked;
@@ -728,11 +732,6 @@ namespace ffmpeg_command_builder
     }
 
     /// <summary>
-    /// ダウンロードメディア情報
-    /// </summary>
-    private MediaInformation mediaInfo = null;
-
-    /// <summary>
     /// ダウンロードプロセス
     /// </summary>
     private ytdlp_process ytdlp = null;
@@ -757,7 +756,6 @@ namespace ffmpeg_command_builder
       MovieFormatSource.Clear();
 
       ytdlp = null;
-      mediaInfo = null;
       DurationTime.Visible = false;
     }
 
@@ -780,11 +778,10 @@ namespace ffmpeg_command_builder
       MediaInformation mi = null;
       try
       {
-        Tab.Enabled = false;
         if (url.Length == 0)
           throw new Exception("URLが入力されていません。");
 
-        var ytdlp = new ytdlp_process()
+        var parser = new ytdlp_process()
         {
           Url = url,
           DownloadFile = string.Empty
@@ -792,12 +789,12 @@ namespace ffmpeg_command_builder
 
         var cookieKind = UseCookie.SelectedValue.ToString();
         if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
-          ytdlp.CookiePath = CookiePath.Text;
+          parser.CookiePath = CookiePath.Text;
         else if (cookieKind != "none" && cookieKind != "file")
-          ytdlp.CookieBrowser = cookieKind;
+          parser.CookieBrowser = cookieKind;
 
         OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
-        mi = await ytdlp.getMediaInformation();
+        mi = await parser.getMediaInformation();
         OutputStderr.Text = "";
 
         if (mi == null)
@@ -810,10 +807,6 @@ namespace ffmpeg_command_builder
       catch (Exception exception)
       {
         MessageBox.Show(exception.Message);
-      }
-      finally
-      {
-        Tab.Enabled = true;
       }
 
       return ytdlpItem;
