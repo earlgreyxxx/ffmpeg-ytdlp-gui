@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace ffmpeg_command_builder
+namespace jp.ptsv.library
 {
   /// <summary>
   /// 標準入出力をリダイレクトしたプロセスを表すヘルパークラス

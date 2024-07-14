@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace ffmpeg_command_builder
+namespace jp.ptsv.library
 {
   internal class CustomProcess : Process
   {

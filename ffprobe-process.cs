@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ffmpeg_command_builder
+namespace jp.ptsv.library
 {
   internal class ffprobe_process : RedirectedProcess
   {
