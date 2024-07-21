@@ -736,8 +736,32 @@ namespace ffmpeg_command_builder
     /// ダウンロードプロセス
     /// </summary>
     private ytdlp_process ytdlp = null;
+    private ObservableQueue<ytdlp_process> ytdlps = new ObservableQueue<ytdlp_process>();
     private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
     private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
+
+    private void InitializeYtdlpQueue()
+    {
+      ytdlps.Enqueued += (sender, e) =>
+      {
+        var q = sender as ObservableQueue<ytdlp_process>;
+
+        if (ytdlp == null)
+          q.Dequeue();
+      };
+
+      ytdlps.Dequeued += (sender, e) =>
+      {
+        var q = sender as ObservableQueue<ytdlp_process>;
+        ytdlp = e.data;
+        ytdlp.ProcessExited += (sender, e) =>
+        {
+          ytdlp = q.Count > 0 ? q.Dequeue() : null;
+        };
+
+        ytdlp.DownloadAsync();
+      };
+    }
 
     private void YtdlpClearDownload()
     {
@@ -762,15 +786,15 @@ namespace ffmpeg_command_builder
 
     private void YtdlpPreDownload()
     {
-      ytdlp = null;
-      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
-      StopDownload.Enabled = true;
+      //ytdlp = null;
+      //SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
+      //StopDownload.Enabled = true;
     }
 
     private void YtdlpPostDownload()
     {
-      SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
-      StopDownload.Enabled = false;
+      //SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
+      //StopDownload.Enabled = false;
     }
 
     private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
@@ -813,7 +837,7 @@ namespace ffmpeg_command_builder
       return ytdlpItem;
     }
 
-    private async Task YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
+    private void YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
     {
       StdoutForm form = null;
       var mediainfo = ytdlpItem.Item2;
@@ -829,10 +853,14 @@ namespace ffmpeg_command_builder
         if (!Directory.Exists(outputdir))
           Directory.CreateDirectory(outputdir);
 
-        ytdlp = new ytdlp_process()
+        var ytdlp = new ytdlp_process()
         {
           Url = mediainfo.webpage_url,
-          OutputPath = outputdir
+          OutputPath = outputdir,
+          Separated = separatedDownload,
+          VideoFormat = VideoOnlyFormat.SelectedValue.ToString(),
+          AudioFormat = AudioOnlyFormat.SelectedValue.ToString(),
+          MovieFormat = MovieFormat.SelectedValue.ToString()
         };
 
         if (!string.IsNullOrEmpty(OutputFileFormat.Text))
@@ -888,23 +916,10 @@ namespace ffmpeg_command_builder
 
           form.Show();
         }
-        
+
         /// todo
         /// キューに追加
-
-        if (separatedDownload)
-        {
-          await ytdlp.DownloadAsync(
-            VideoOnlyFormat.SelectedValue.ToString(),
-            AudioOnlyFormat.SelectedValue.ToString()
-          );
-        }
-        else
-        {
-          await ytdlp.DownloadAsync(
-            MovieFormat.SelectedValue.ToString()
-          );
-        }
+        ytdlps.Enqueue(ytdlp);
       }
       catch (Exception exception)
       {

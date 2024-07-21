@@ -10,14 +10,14 @@ namespace ffmpeg_command_builder
 {
   internal class ObservableQueue<T> : Queue<T>
   {
-    public event Action<object,QueueEventArgs> Enqueued;
-    public event Action<object,QueueEventArgs> Dequeued;
-    protected virtual void OnEnqueue(QueueEventArgs e)
+    public event Action<object,QueueEventArgs<T>> Enqueued;
+    public event Action<object,QueueEventArgs<T>> Dequeued;
+    protected virtual void OnEnqueue(QueueEventArgs<T> e)
     {
       Enqueued?.Invoke(this,e);
     }
 
-    protected virtual void OnDequeue(QueueEventArgs e)
+    protected virtual void OnDequeue(QueueEventArgs<T> e)
     {
       Dequeued?.Invoke(this,e);
     }
@@ -25,28 +25,30 @@ namespace ffmpeg_command_builder
     public new void Enqueue(T item)
     {
       base.Enqueue(item);
-      OnEnqueue(new QueueEventArgs("enqueued"));
+      OnEnqueue(new QueueEventArgs<T>("enqueued",item));
     }
 
     public new T Dequeue()
     {
       T item = base.Dequeue();
-      OnDequeue(new QueueEventArgs("dequeued"));
+      OnDequeue(new QueueEventArgs<T>("dequeued", item));
       return item;
     }
   }
 
-  internal class QueueEventArgs : EventArgs
+  internal class QueueEventArgs<T> : EventArgs
   {
-    private string data;
-    public QueueEventArgs(string occure)
+    private string EventKind;
+    public T data { get; private set; }
+    public QueueEventArgs(string kind,T item)
     {
-      data = occure;
+      data = item;
+      EventKind = kind;
     }
 
     public override string ToString()
     {
-      return data;
+      return EventKind;
     }
   }
 }

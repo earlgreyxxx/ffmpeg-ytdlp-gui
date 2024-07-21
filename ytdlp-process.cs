@@ -17,6 +17,10 @@ namespace ffmpeg_command_builder
     public string OutputPath { get; set; }
     public string OutputFile { get; set; }
     public string DownloadFile { get; set; }
+    public bool Separated { get; set; }
+    public string AudioFormat { private get; set; }
+    public string VideoFormat { private get; set; }
+    public string MovieFormat { private get; set; }
 
     public ytdlp_process() : base("yt-dlp")
     {
@@ -52,18 +56,20 @@ namespace ffmpeg_command_builder
       return options;
     }
 
-    public async Task DownloadAsync(string fid1, string fid2 = null)
+    public async void DownloadAsync()
     {
       var sb = new List<string>();
 
-      if (!string.IsNullOrEmpty(fid1))
-        sb.Add(fid1);
-      if (!string.IsNullOrEmpty(fid2))
-        sb.Add(fid2);
+      if (!Separated && !string.IsNullOrEmpty(MovieFormat))
+        sb.Add(MovieFormat);
+      else if(Separated && !string.IsNullOrEmpty(VideoFormat))
+        sb.Add(VideoFormat);
+      else if(Separated && !string.IsNullOrEmpty(AudioFormat))
+        sb.Add(AudioFormat);
+      else
+        throw new Exception("ダウンロードする対象が指定されていません。");
 
       string[] formats = sb.Count > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : null;
-      if (formats == null)
-        throw new Exception("ダウンロードする対象が指定されていません。");
 
       psi.StandardOutputEncoding = Encoding.UTF8;
       psi.StandardErrorEncoding = Encoding.UTF8;

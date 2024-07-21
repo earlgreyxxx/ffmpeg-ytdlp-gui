@@ -45,6 +45,7 @@ namespace ffmpeg_command_builder
       InitializeComponent();
       InitializeSettingsBinding();
       InitializeDataSource();
+      InitializeYtdlpQueue();
 
       ChangeCurrentDirectory();
     }
@@ -838,7 +839,7 @@ namespace ffmpeg_command_builder
       YtdlpClearDownload();
     }
 
-    private async void SubmitDownload_Click(object sender, EventArgs e)
+    private void SubmitDownload_Click(object sender, EventArgs e)
     {
       var button = (Button)sender;
       var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
@@ -853,7 +854,7 @@ namespace ffmpeg_command_builder
 
       var isSeparate = (bool)button.Tag;
 
-      await YtdlpInvokeDownload(ytdlpItem, isSeparate);
+      YtdlpInvokeDownload(ytdlpItem, isSeparate);
     }
 
     private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
