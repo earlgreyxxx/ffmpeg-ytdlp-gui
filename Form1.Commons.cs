@@ -800,7 +800,7 @@ namespace ffmpeg_command_builder
     private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
     {
       YtdlpItem ytdlpItem = null;
-      MediaInformation mi = null;
+      MediaInformation mediaInfo;
       try
       {
         if (url.Length == 0)
@@ -819,15 +819,15 @@ namespace ffmpeg_command_builder
           parser.CookieBrowser = cookieKind;
 
         OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
-        mi = await parser.getMediaInformation();
+        mediaInfo = await parser.getMediaInformation();
         OutputStderr.Text = "";
 
-        if (mi == null)
+        if (mediaInfo == null)
           throw new Exception("解析に失敗しました。");
 
-        Image image = await mi.GetThumbnailImage();
+        Image image = await mediaInfo.GetThumbnailImage();
 
-        ytdlpItem = new YtdlpItem(url,mi,image);
+        ytdlpItem = new YtdlpItem(url,mediaInfo,image);
       }
       catch (Exception exception)
       {
@@ -840,9 +840,9 @@ namespace ffmpeg_command_builder
     private void YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
     {
       StdoutForm form = null;
-      var mediainfo = ytdlpItem.Item2;
+      var mediaInfo = ytdlpItem.Item2;
 
-      if ( mediainfo == null)
+      if ( mediaInfo == null)
         return;
 
       try
@@ -855,7 +855,7 @@ namespace ffmpeg_command_builder
 
         var ytdlp = new ytdlp_process()
         {
-          Url = mediainfo.webpage_url,
+          Url = mediaInfo.webpage_url,
           OutputPath = outputdir,
           Separated = separatedDownload,
           VideoFormat = VideoOnlyFormat.SelectedValue.ToString(),
