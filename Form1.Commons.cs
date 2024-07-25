@@ -742,6 +742,7 @@ namespace ffmpeg_command_builder
 
     private void InitializeYtdlpQueue()
     {
+      // キューにytdlpプロセスを入れた時
       ytdlps.Enqueued += (sender, e) =>
       {
         var q = sender as ObservableQueue<ytdlp_process>;
@@ -750,14 +751,12 @@ namespace ffmpeg_command_builder
           q.Dequeue();
       };
 
+      // キューからytdlpプロセスを取り出す時
       ytdlps.Dequeued += (sender, e) =>
       {
         var q = sender as ObservableQueue<ytdlp_process>;
         ytdlp = e.data;
-        ytdlp.ProcessExited += (sender, e) =>
-        {
-          ytdlp = q.Count > 0 ? q.Dequeue() : null;
-        };
+        ytdlp.ProcessExited += (sender, e) => ytdlp = q.Count > 0 ? q.Dequeue() : null;
 
         ytdlp.DownloadAsync();
       };
@@ -853,37 +852,37 @@ namespace ffmpeg_command_builder
         if (!Directory.Exists(outputdir))
           Directory.CreateDirectory(outputdir);
 
-        var ytdlp = new ytdlp_process()
+        var downloader = new ytdlp_process()
         {
           Url = mediaInfo.webpage_url,
           OutputPath = outputdir,
           Separated = separatedDownload,
-          VideoFormat = VideoOnlyFormat.SelectedValue.ToString(),
-          AudioFormat = AudioOnlyFormat.SelectedValue.ToString(),
-          MovieFormat = MovieFormat.SelectedValue.ToString()
+          VideoFormat = VideoOnlyFormat.SelectedValue?.ToString(),
+          AudioFormat = AudioOnlyFormat.SelectedValue?.ToString(),
+          MovieFormat = MovieFormat.SelectedValue?.ToString()
         };
 
         if (!string.IsNullOrEmpty(OutputFileFormat.Text))
-          ytdlp.OutputFile = OutputFileFormat.Text;
+          downloader.OutputFile = OutputFileFormat.Text;
 
         var cookieKind = UseCookie.SelectedValue.ToString();
 
         if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
-          ytdlp.CookiePath = CookiePath.Text;
+          downloader.CookiePath = CookiePath.Text;
         else if (cookieKind != "none" && cookieKind != "file")
-          ytdlp.CookieBrowser = cookieKind;
+          downloader.CookieBrowser = cookieKind;
 
-        ytdlp.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
-        ytdlp.StdOutReceived += YtdlpReceiver;
+        downloader.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
+        downloader.StdOutReceived += YtdlpReceiver;
 
-        ytdlp.ProcessExited += (s, e) => Invoke(() =>
+        downloader.ProcessExited += (s, e) => Invoke(() =>
         {
-          Debug.WriteLine($"exitcode = {ytdlp.ExitCode},DownloadName = {ytdlp.DownloadFile}");
+          Debug.WriteLine($"exitcode = {downloader.ExitCode},DownloadName = {downloader.DownloadFile}");
 
           YtdlpPostDownload();
-          if (ytdlp.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(ytdlp.DownloadFile))
+          if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
           {
-            FileListBindingSource.Add(new StringListItem(ytdlp.DownloadFile));
+            FileListBindingSource.Add(new StringListItem(downloader.DownloadFile));
             btnSubmitInvoke.Enabled = true;
           }
         });
@@ -900,9 +899,9 @@ namespace ffmpeg_command_builder
               form.Invoke(form.WriteLine, [data]);
           };
 
-          ytdlp.StdOutReceived += receiver;
-          ytdlp.StdErrReceived += receiver;
-          ytdlp.ProcessExited += (s,e) =>
+          downloader.StdOutReceived += receiver;
+          downloader.StdErrReceived += receiver;
+          downloader.ProcessExited += (s,e) =>
           {
             form.Invoke(() =>
             {
@@ -919,7 +918,7 @@ namespace ffmpeg_command_builder
 
         /// todo
         /// キューに追加
-        ytdlps.Enqueue(ytdlp);
+        ytdlps.Enqueue(downloader);
       }
       catch (Exception exception)
       {
