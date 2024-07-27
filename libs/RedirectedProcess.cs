@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace jp.ptsv.library
+namespace ffmpeg_ytdlp_gui.libs
 {
   /// <summary>
   /// 標準入出力をリダイレクトしたプロセスを表すヘルパークラス

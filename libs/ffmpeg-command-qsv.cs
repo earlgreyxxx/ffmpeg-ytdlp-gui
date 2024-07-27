@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui.libs
 {
   internal class ffmpeg_command_qsv : ffmpeg_command
   {

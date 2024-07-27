@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using jp.ptsv.library;
+using ffmpeg_ytdlp_gui.libs;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui
 {
   public partial class StdoutForm : Form
   {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui
 {
   internal static class Program
   {

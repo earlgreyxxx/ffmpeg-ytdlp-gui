@@ -1,5 +1,4 @@
-﻿using ffmpeg_command_builder.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -10,9 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
-using jp.ptsv.library;
+using ffmpeg_ytdlp_gui.libs;
+using ffmpeg_ytdlp_gui.Properties;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui
 {
   using CodecListItem = ListItem<Codec>;
   using CodecListItems = List<ListItem<Codec>>;
@@ -783,19 +783,6 @@ namespace ffmpeg_command_builder
       DurationTime.Visible = false;
     }
 
-    private void YtdlpPreDownload()
-    {
-      //ytdlp = null;
-      //SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = false;
-      //StopDownload.Enabled = true;
-    }
-
-    private void YtdlpPostDownload()
-    {
-      //SubmitDownload.Enabled = SubmitSeparatedDownload.Enabled = true;
-      //StopDownload.Enabled = false;
-    }
-
     private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
     {
       YtdlpItem ytdlpItem = null;
@@ -846,8 +833,6 @@ namespace ffmpeg_command_builder
 
       try
       {
-        YtdlpPreDownload();
-
         var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
         if (!Directory.Exists(outputdir))
           Directory.CreateDirectory(outputdir);
@@ -879,7 +864,6 @@ namespace ffmpeg_command_builder
         {
           Debug.WriteLine($"exitcode = {downloader.ExitCode},DownloadName = {downloader.DownloadFile}");
 
-          YtdlpPostDownload();
           if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
           {
             FileListBindingSource.Add(new StringListItem(downloader.DownloadFile));
@@ -928,10 +912,6 @@ namespace ffmpeg_command_builder
           var button = form.Controls["BtnClose"] as Button;
           button.Enabled = true;
         }
-      }
-      finally
-      {
-        YtdlpPostDownload();
       }
     }
 

@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace jp.ptsv.library
+namespace ffmpeg_ytdlp_gui.libs
 {
   internal class ffprobe_process : RedirectedProcess
   {

@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui.libs
 {
   /// <summary>
   /// MediaInformationクラス

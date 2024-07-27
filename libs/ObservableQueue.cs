@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui.libs
 {
   internal class ObservableQueue<T> : Queue<T>
   {

@@ -1,4 +1,4 @@
-﻿namespace ffmpeg_command_builder
+﻿namespace ffmpeg_ytdlp_gui
 {
   partial class StdoutForm
   {

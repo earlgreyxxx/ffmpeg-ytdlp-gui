@@ -1,4 +1,4 @@
-﻿namespace ffmpeg_command_builder
+﻿namespace ffmpeg_ytdlp_gui
 {
   partial class Form1
   {
@@ -1886,7 +1886,6 @@
       // 
       // StopDownload
       // 
-      StopDownload.Enabled = false;
       StopDownload.Location = new System.Drawing.Point(658, 319);
       StopDownload.Name = "StopDownload";
       StopDownload.Size = new System.Drawing.Size(152, 23);

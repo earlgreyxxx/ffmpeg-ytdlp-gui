@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui.libs
 {
   using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
 

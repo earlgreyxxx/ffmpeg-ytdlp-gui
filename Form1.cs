@@ -1,5 +1,4 @@
-﻿using ffmpeg_command_builder.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,10 +8,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Collections.Specialized;
-using jp.ptsv.library;
+using ffmpeg_ytdlp_gui.libs;
+using ffmpeg_ytdlp_gui.Properties;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui
 {
   using CodecListItems = List<ListItem<Codec>>;
   using StringListItem = ListItem<string>;
@@ -72,8 +71,8 @@ namespace ffmpeg_command_builder
             DirectoryListBindingSource.Add(item);
           }
         }
+        cbOutputDir.SelectedIndex = 0;
       }
-      cbOutputDir.SelectedIndex = 0;
 
       if (Settings.Default.ffmpeg?.Count > 0)
       {
@@ -82,19 +81,6 @@ namespace ffmpeg_command_builder
 
         ffmpeg.SelectedIndex = 0;
       }
-
-      /// ダウンロードURLのロード
-      //if (Settings.Default.downloadUrls?.Count > 0)
-      //{
-      //  foreach (string item in Settings.Default.downloadUrls)
-      //  {
-      //    var pair = item.Split('｜');
-      //    if(pair.Length >= 2)
-      //      UrlBindingSource.Add(new StringListItem(pair[0], pair[1]));
-      //  }
-
-      //  DownloadUrl.SelectedIndex = -1;
-      //}
 
       if (Settings.Default.downloadFileNames?.Count > 0)
       {

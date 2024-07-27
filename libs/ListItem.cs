@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace jp.ptsv.library
+namespace ffmpeg_ytdlp_gui.libs
 {
   internal class ListItem<T>(T value, string label = null, object data = null) : ICloneable
   {

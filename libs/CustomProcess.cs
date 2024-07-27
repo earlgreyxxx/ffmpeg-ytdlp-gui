@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace jp.ptsv.library
+namespace ffmpeg_ytdlp_gui.libs
 {
   internal class CustomProcess : Process
   {

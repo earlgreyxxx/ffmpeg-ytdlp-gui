@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ffmpeg_command_builder
+namespace ffmpeg_ytdlp_gui.libs
 {
   internal class Codec : ICloneable
   {
