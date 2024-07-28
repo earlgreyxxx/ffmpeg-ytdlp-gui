@@ -23,7 +23,7 @@ namespace ffmpeg_ytdlp_gui
   using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
   using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
 
-  partial class Form1 : Form
+  partial class Form1
   {
     // Static members
     // ---------------------------------------------------------------------------------
@@ -736,9 +736,16 @@ namespace ffmpeg_ytdlp_gui
     /// ダウンロードプロセス
     /// </summary>
     private ytdlp_process ytdlp = null;
+    private StdoutForm ytdlpfm = null;
     private ObservableQueue<ytdlp_process> ytdlps = new ObservableQueue<ytdlp_process>();
+
     private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
     private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
+
+    private void WriteQueueCount(int count)
+    {
+      QueueCount.Text = $"Download Queue: {count}";
+    }
 
     private void InitializeYtdlpQueue()
     {
@@ -746,19 +753,48 @@ namespace ffmpeg_ytdlp_gui
       ytdlps.Enqueued += (sender, e) =>
       {
         var q = sender as ObservableQueue<ytdlp_process>;
+        WriteQueueCount(q.Count);
 
         if (ytdlp == null)
           q.Dequeue();
       };
 
       // キューからytdlpプロセスを取り出す時
+      Action formAction = () =>
+      {
+        var button = ytdlpfm.Controls["BtnClose"] as Button;
+        button.Enabled = false;
+        ytdlpfm.Pause = false;
+      };
+
       ytdlps.Dequeued += (sender, e) =>
       {
         var q = sender as ObservableQueue<ytdlp_process>;
         ytdlp = e.data;
-        ytdlp.ProcessExited += (sender, e) => ytdlp = q.Count > 0 ? q.Dequeue() : null;
+        ytdlp.ProcessExited += (sender, e) =>
+        {
+          if (q.Count > 0)
+          {
+            ytdlp = q.Dequeue();
+          }
+          else
+          {
+            ytdlp = null;
+            if (IsOpenStderr.Checked && ytdlpfm != null)
+              ytdlpfm = null;
+          }
+        };
+
+        if (IsOpenStderr.Checked)
+        {
+          if (ytdlpfm.InvokeRequired)
+            ytdlpfm.Invoke(formAction);
+          else
+            formAction();
+        }
 
         ytdlp.DownloadAsync();
+        WriteQueueCount(q.Count);
       };
     }
 
@@ -825,7 +861,6 @@ namespace ffmpeg_ytdlp_gui
 
     private void YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
     {
-      StdoutForm form = null;
       var mediaInfo = ytdlpItem.Item2;
 
       if ( mediaInfo == null)
@@ -873,31 +908,37 @@ namespace ffmpeg_ytdlp_gui
 
         if (IsOpenStderr.Checked)
         {
-          form = new StdoutForm();
+          if (ytdlpfm == null)
+          {
+            ytdlpfm = new StdoutForm();
+            ytdlpfm.FormClosed += (sender, e) => ytdlpfm = null;
+          }
 
           Action<string> receiver = data =>
           {
-            if (form.Pause)
-              form.LogData.Add(data);
+            if (ytdlpfm.Pause)
+              ytdlpfm.LogData.Add(data);
             else
-              form.Invoke(form.WriteLine, [data]);
+              ytdlpfm.Invoke(ytdlpfm.WriteLine, [data]);
           };
 
           downloader.StdOutReceived += receiver;
           downloader.StdErrReceived += receiver;
           downloader.ProcessExited += (s,e) =>
           {
-            form.Invoke(() =>
-            {
-              var button = form.Controls["BtnClose"] as Button;
-              button.Enabled = true;
-              form.Pause = true;
-            });
+            if(ytdlps.Count <= 0)
+              ytdlpfm.Invoke(() =>
+              {
+                var button = ytdlpfm.Controls["BtnClose"] as Button;
+                button.Enabled = true;
+                ytdlpfm.Pause = true;
+              });
 
             ytdlp = null;
           };
 
-          form.Show();
+          if(!ytdlpfm.Visible)
+            ytdlpfm.Show();
         }
 
         /// todo
@@ -907,12 +948,17 @@ namespace ffmpeg_ytdlp_gui
       catch (Exception exception)
       {
         MessageBox.Show(exception.Message,"エラー");
-        if (form != null)
+        if (ytdlpfm != null)
         {
-          var button = form.Controls["BtnClose"] as Button;
+          var button = ytdlpfm.Controls["BtnClose"] as Button;
           button.Enabled = true;
         }
       }
+    }
+
+    private void Ytdlpfm_FormClosed(object sender, FormClosedEventArgs e)
+    {
+      throw new NotImplementedException();
     }
 
     private void YtdlpReceiver(string data)
