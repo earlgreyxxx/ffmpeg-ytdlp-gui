@@ -60,13 +60,20 @@ namespace ffmpeg_ytdlp_gui.libs
       var sb = new List<string>();
 
       if (!Separated && !string.IsNullOrEmpty(MovieFormat))
+      {
         sb.Add(MovieFormat);
-      else if(Separated && !string.IsNullOrEmpty(VideoFormat))
-        sb.Add(VideoFormat);
-      else if(Separated && !string.IsNullOrEmpty(AudioFormat))
-        sb.Add(AudioFormat);
+      }
+      else if(Separated && (!string.IsNullOrEmpty(VideoFormat) || !string.IsNullOrEmpty(AudioFormat)))
+      {
+        if (!string.IsNullOrEmpty(VideoFormat))
+          sb.Add(VideoFormat);
+        if (!string.IsNullOrEmpty(AudioFormat))
+          sb.Add(AudioFormat);
+      }
       else
+      {
         throw new Exception("ダウンロードする対象が指定されていません。");
+      }
 
       string[] formats = sb.Count > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : null;
 
