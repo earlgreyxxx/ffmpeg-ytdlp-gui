@@ -735,6 +735,7 @@ namespace ffmpeg_ytdlp_gui
     /// <summary>
     /// ダウンロードプロセス
     /// </summary>
+    object _lock = new object();
     private ytdlp_process ytdlp = null;
     private StdoutForm ytdlpfm = null;
     private ObservableQueue<ytdlp_process> ytdlps = new ObservableQueue<ytdlp_process>();
@@ -742,21 +743,21 @@ namespace ffmpeg_ytdlp_gui
     private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
     private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
 
-    private void WriteQueueCount(int count)
-    {
-      QueueCount.Text = $"Download Queue: {count}";
-    }
-
     private void InitializeYtdlpQueue()
     {
+      Action<int> WriteQueueStatus = count => QueueCount.Text = $"Download Queue: {count}";
+
       // キューにytdlpプロセスを入れた時
       ytdlps.Enqueued += (sender, e) =>
       {
         var q = sender as ObservableQueue<ytdlp_process>;
-        WriteQueueCount(q.Count);
+        WriteQueueStatus(q.Count);
 
-        if (ytdlp == null)
-          q.Dequeue();
+        lock (_lock)
+        {
+          if (ytdlp == null)
+            q.Dequeue();
+        }
       };
 
       // キューからytdlpプロセスを取り出す時
@@ -773,15 +774,18 @@ namespace ffmpeg_ytdlp_gui
         ytdlp = e.data;
         ytdlp.ProcessExited += (sender, e) =>
         {
-          if (q.Count > 0)
+          lock (_lock)
           {
-            ytdlp = q.Dequeue();
-          }
-          else
-          {
-            ytdlp = null;
-            if (IsOpenStderr.Checked && ytdlpfm != null)
-              ytdlpfm = null;
+            if (q.Count > 0)
+            {
+              q.Dequeue();
+            }
+            else
+            {
+              ytdlp = null;
+              if (IsOpenStderr.Checked && ytdlpfm != null)
+                ytdlpfm = null;
+            }
           }
         };
 
@@ -794,7 +798,7 @@ namespace ffmpeg_ytdlp_gui
         }
 
         ytdlp.DownloadAsync();
-        WriteQueueCount(q.Count);
+        WriteQueueStatus(q.Count);
       };
     }
 
@@ -815,7 +819,6 @@ namespace ffmpeg_ytdlp_gui
       VideoOnlyFormatSource.Clear();
       MovieFormatSource.Clear();
 
-      ytdlp = null;
       DurationTime.Visible = false;
     }
 
@@ -943,7 +946,10 @@ namespace ffmpeg_ytdlp_gui
 
         /// todo
         /// キューに追加
-        ytdlps.Enqueue(downloader);
+        lock (_lock)
+        {
+          ytdlps.Enqueue(downloader);
+        }
       }
       catch (Exception exception)
       {
