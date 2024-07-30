@@ -1112,7 +1112,7 @@
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(672, 18);
+      OutputStderr.Size = new System.Drawing.Size(703, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1828,10 +1828,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -1872,6 +1872,8 @@
       // chkAfterDownload
       // 
       chkAfterDownload.AutoSize = true;
+      chkAfterDownload.Checked = true;
+      chkAfterDownload.CheckState = System.Windows.Forms.CheckState.Checked;
       chkAfterDownload.Location = new System.Drawing.Point(462, 323);
       chkAfterDownload.Name = "chkAfterDownload";
       chkAfterDownload.Size = new System.Drawing.Size(151, 16);
@@ -2174,6 +2176,8 @@
       // IsOpenStderr
       // 
       IsOpenStderr.AutoSize = true;
+      IsOpenStderr.Checked = true;
+      IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
       IsOpenStderr.Location = new System.Drawing.Point(12, 99);
       IsOpenStderr.Name = "IsOpenStderr";
       IsOpenStderr.Size = new System.Drawing.Size(164, 16);

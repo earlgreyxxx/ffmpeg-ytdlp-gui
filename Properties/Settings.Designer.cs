@@ -239,7 +239,7 @@ namespace ffmpeg_ytdlp_gui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool openStderr {
             get {
                 return ((bool)(this["openStderr"]));
@@ -323,7 +323,7 @@ namespace ffmpeg_ytdlp_gui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool downloadCompleted {
             get {
                 return ((bool)(this["downloadCompleted"]));
