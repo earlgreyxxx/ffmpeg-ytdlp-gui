@@ -802,26 +802,6 @@ namespace ffmpeg_ytdlp_gui
       };
     }
 
-    private void YtdlpClearDownload()
-    {
-      DownloadUrl.Text = string.Empty;
-      DownloadUrl.Enabled = true;
-      DownloadUrl.Focus();
-
-      MediaTitle.Text = string.Empty;
-      ThumbnailBox.Image = null;
-      ThumbnailBox.ContextMenuStrip = null;
-
-      SubmitDownload.Enabled = false;
-      SubmitSeparatedDownload.Enabled = true;
-
-      AudioOnlyFormatSource.Clear();
-      VideoOnlyFormatSource.Clear();
-      MovieFormatSource.Clear();
-
-      DurationTime.Visible = false;
-    }
-
     private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
     {
       YtdlpItem ytdlpItem = null;

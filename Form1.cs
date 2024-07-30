@@ -820,11 +820,6 @@ namespace ffmpeg_ytdlp_gui
       }
     }
 
-    private void SubmitClearUrl_Click(object sender, EventArgs e)
-    {
-      YtdlpClearDownload();
-    }
-
     private void SubmitDownload_Click(object sender, EventArgs e)
     {
       var button = (Button)sender;

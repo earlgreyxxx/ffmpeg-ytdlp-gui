@@ -194,7 +194,6 @@
       MediaTitle = new System.Windows.Forms.Label();
       SubmitOpenCookie = new System.Windows.Forms.Button();
       ThumbnailBox = new System.Windows.Forms.PictureBox();
-      SubmitClearUrl = new System.Windows.Forms.Button();
       label28 = new System.Windows.Forms.Label();
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       label29 = new System.Windows.Forms.Label();
@@ -1822,7 +1821,6 @@
       PageDownloader.Controls.Add(MediaTitle);
       PageDownloader.Controls.Add(SubmitOpenCookie);
       PageDownloader.Controls.Add(ThumbnailBox);
-      PageDownloader.Controls.Add(SubmitClearUrl);
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Controls.Add(label29);
@@ -1852,7 +1850,7 @@
       DownloadUrl.FormattingEnabled = true;
       DownloadUrl.Location = new System.Drawing.Point(98, 15);
       DownloadUrl.Name = "DownloadUrl";
-      DownloadUrl.Size = new System.Drawing.Size(578, 28);
+      DownloadUrl.Size = new System.Drawing.Size(623, 28);
       DownloadUrl.TabIndex = 42;
       DownloadUrl.ValueMember = "Item2";
       DownloadUrl.SelectedIndexChanged += DownloadUrl_SelectedIndexChanged;
@@ -1897,7 +1895,7 @@
       // 
       StopDownload.Location = new System.Drawing.Point(658, 319);
       StopDownload.Name = "StopDownload";
-      StopDownload.Size = new System.Drawing.Size(152, 23);
+      StopDownload.Size = new System.Drawing.Size(151, 23);
       StopDownload.TabIndex = 11;
       StopDownload.Text = "進行中のダウンロードを中止";
       StopDownload.UseVisualStyleBackColor = true;
@@ -2071,16 +2069,6 @@
       ThumbnailBox.TabIndex = 9;
       ThumbnailBox.TabStop = false;
       // 
-      // SubmitClearUrl
-      // 
-      SubmitClearUrl.Location = new System.Drawing.Point(682, 13);
-      SubmitClearUrl.Name = "SubmitClearUrl";
-      SubmitClearUrl.Size = new System.Drawing.Size(59, 31);
-      SubmitClearUrl.TabIndex = 7;
-      SubmitClearUrl.Text = "クリア";
-      SubmitClearUrl.UseVisualStyleBackColor = true;
-      SubmitClearUrl.Click += SubmitClearUrl_Click;
-      // 
       // label28
       // 
       label28.AutoSize = true;
@@ -2092,9 +2080,9 @@
       // 
       // SubmitConfirmFormat
       // 
-      SubmitConfirmFormat.Location = new System.Drawing.Point(747, 13);
+      SubmitConfirmFormat.Location = new System.Drawing.Point(727, 13);
       SubmitConfirmFormat.Name = "SubmitConfirmFormat";
-      SubmitConfirmFormat.Size = new System.Drawing.Size(72, 31);
+      SubmitConfirmFormat.Size = new System.Drawing.Size(92, 31);
       SubmitConfirmFormat.TabIndex = 6;
       SubmitConfirmFormat.Text = "URL解析";
       SubmitConfirmFormat.UseVisualStyleBackColor = true;
@@ -2442,7 +2430,6 @@
     private System.Windows.Forms.CheckBox Overwrite;
     private System.Windows.Forms.TabPage PageDownloader;
     private System.Windows.Forms.Label label24;
-    private System.Windows.Forms.Button SubmitClearUrl;
     private System.Windows.Forms.Button SubmitDownload;
     private System.Windows.Forms.Button SubmitConfirmFormat;
     private System.Windows.Forms.PictureBox ThumbnailBox;
