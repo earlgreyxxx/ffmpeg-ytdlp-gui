@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class ytdlp_process : RedirectedProcess
+  public class ytdlp_process : RedirectedProcess
   {
     public string Url { get; set; }
     public string CookieBrowser { get; set; } = "";

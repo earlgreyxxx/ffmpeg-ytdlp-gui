@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class ffmpeg_command_cuda : ffmpeg_command,IEnumerable<string>
+  public class ffmpeg_command_cuda : ffmpeg_command,IEnumerable<string>
   {
     private bool HardwareCrop = false;
 

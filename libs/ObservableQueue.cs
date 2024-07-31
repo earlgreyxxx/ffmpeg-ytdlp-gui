@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class ObservableQueue<T> : Queue<T>
+  public class ObservableQueue<T> : Queue<T>
   {
     public event Action<object,QueueEventArgs<T>> Enqueued;
     public event Action<object,QueueEventArgs<T>> Dequeued;
@@ -31,7 +31,7 @@ namespace ffmpeg_ytdlp_gui.libs
     }
   }
 
-  internal class QueueEventArgs<T> : EventArgs
+  public class QueueEventArgs<T> : EventArgs
   {
     private string EventKind;
     public T data { get; private set; }

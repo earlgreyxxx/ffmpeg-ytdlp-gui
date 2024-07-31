@@ -10,7 +10,7 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   using StringListItem = ListItem<string>;
 
-  internal class ffmpeg_process
+  public class ffmpeg_process
   {
     // statics
     // ---------------------------------------------------------------------------------------

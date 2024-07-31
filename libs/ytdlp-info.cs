@@ -15,7 +15,7 @@ namespace ffmpeg_ytdlp_gui.libs
   /// <summary>
   /// MediaInformationクラス
   /// </summary>
-  internal class MediaInformation
+  public class MediaInformation
   {
     public string description { set; get; }
     public decimal duration { set; get; }
@@ -122,7 +122,7 @@ namespace ffmpeg_ytdlp_gui.libs
   /// <summary>
   /// MediaFormatクラス
   /// </summary>
-  internal class MediaFormat : IEnumerable<KeyValuePair<string, string>>
+  public class MediaFormat : IEnumerable<KeyValuePair<string, string>>
   {
     public string resolution { set; get; }
     public string format_id { set; get; }

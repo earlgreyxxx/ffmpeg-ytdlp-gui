@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class ffmpeg_command_qsv : ffmpeg_command
+  public class ffmpeg_command_qsv : ffmpeg_command
   {
     public ffmpeg_command_qsv(string ffmpegPath = "") : base(ffmpegPath)
     {

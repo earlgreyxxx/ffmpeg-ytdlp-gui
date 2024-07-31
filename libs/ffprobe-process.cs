@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class ffprobe_process : RedirectedProcess
+  public class ffprobe_process : RedirectedProcess
   {
     // Statics
     // ----------------------------------------------------------------------
@@ -143,7 +143,7 @@ namespace ffmpeg_ytdlp_gui.libs
     }
   }
 
-  internal class MediaProperty
+  public class MediaProperty
   {
     // Statics
 
@@ -247,7 +247,7 @@ namespace ffmpeg_ytdlp_gui.libs
     }
   }
 
-  internal class MediaContainerProperty : MediaProperty
+  public class MediaContainerProperty : MediaProperty
   {
     // Instances
     public decimal? bit_rate { get; protected set; }
@@ -267,7 +267,7 @@ namespace ffmpeg_ytdlp_gui.libs
     }
   }
 
-  internal class MediaStreamProperty : MediaProperty
+  public class MediaStreamProperty : MediaProperty
   {
     public decimal? bits_per_sample { get; protected set; }
     public decimal? channels { get; protected set; }

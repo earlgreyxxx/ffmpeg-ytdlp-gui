@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class Codec : ICloneable
+  public class Codec : ICloneable
   {
     public string Name { get; set; }
     public string GpuSuffix { get; set; }

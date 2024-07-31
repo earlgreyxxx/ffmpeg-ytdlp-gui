@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  internal class ListItem<T>(T value, string label = null, object data = null) : ICloneable
+  public class ListItem<T>(T value, string label = null, object data = null) : ICloneable
   {
     public static List<ListItem<T>> GetList(IEnumerable<KeyValuePair<string, T>> enumerable)
     {

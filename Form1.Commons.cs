@@ -5,10 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Diagnostics;
 using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
 
@@ -20,7 +17,6 @@ namespace ffmpeg_ytdlp_gui
   using StringListItems = List<ListItem<string>>;
   using DecimalListItem = ListItem<decimal>;
   using DecimalListItems = List<ListItem<decimal>>;
-  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
   using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
 
   partial class Form1
@@ -69,7 +65,7 @@ namespace ffmpeg_ytdlp_gui
           )
         );
       }
-      deviceList.Add(new StringListItem("cpu","CPU(Software)"));
+      deviceList.Add(new StringListItem("cpu", "CPU(Software)"));
       return deviceList;
     }
 
@@ -387,7 +383,7 @@ namespace ffmpeg_ytdlp_gui
     {
       command.Overwrite = Overwrite.Checked;
 
-      var process = new ffmpeg_process(command,FileListBindingSource);
+      var process = new ffmpeg_process(command, FileListBindingSource);
       process.ReceiveData += data => Invoke(() => OutputStderr.Text = data);
       process.ProcessExit += filename => Invoke(() =>
       {
@@ -423,12 +419,12 @@ namespace ffmpeg_ytdlp_gui
         };
         Action processDone = () => form.Invoke(form.OnProcessExit);
 
-        process.ReceiveData += dataReceiver ;
+        process.ReceiveData += dataReceiver;
         process.ProcessesDone += processDone;
 
         form.CustomButton.Visible = true;
         form.CustomButton.Text = "出力を中断して閉じる";
-        form.CustomButtonClick += (sender,e) =>
+        form.CustomButtonClick += (sender, e) =>
         {
           process.ReceiveData -= dataReceiver;
           process.ProcessesDone -= processDone;
@@ -458,7 +454,7 @@ namespace ffmpeg_ytdlp_gui
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
       else if (codec.GpuSuffix == "qsv")
         ffcommand = new ffmpeg_command_qsv(ffmpeg.Text);
-      else if(codec.Name != "copy" && codec.GpuSuffix == "cpu")
+      else if (codec.Name != "copy" && codec.GpuSuffix == "cpu")
         ffcommand = new ffmpeg_command_cpu(ffmpeg.Text);
       else
         ffcommand = new ffmpeg_command(ffmpeg.Text);
@@ -583,7 +579,7 @@ namespace ffmpeg_ytdlp_gui
         .OutputSuffix(FileSuffix.Text)
         .OutputContainer(FileContainer.SelectedValue.ToString());
 
-      var deinterlaces = new List<string>() { "bwdif","yadif","bob","adaptive" };
+      var deinterlaces = new List<string>() { "bwdif", "yadif", "bob", "adaptive" };
 
       if (chkFilterDeInterlace.Checked)
       {
@@ -649,9 +645,9 @@ namespace ffmpeg_ytdlp_gui
       Proceeding.Kill(stopAll);
     }
 
-    private void OpenOutputView(string executable, string arg,string formTitle = "ffmpeg outputs")
+    private void OpenOutputView(string executable, string arg, string formTitle = "ffmpeg outputs")
     {
-      if(!File.Exists(executable))
+      if (!File.Exists(executable))
       {
         var exepathes = CustomProcess.FindInPath(executable);
         if (exepathes.Length <= 0)
@@ -707,7 +703,7 @@ namespace ffmpeg_ytdlp_gui
 
       cbDevices.SelectedIndex = cbDevices.FindString(hardwareName);
 
-      if(chkConstantQuality.Checked)
+      if (chkConstantQuality.Checked)
       {
         vQualityLabel.Text = codec.GpuSuffix switch
         {
@@ -730,245 +726,6 @@ namespace ffmpeg_ytdlp_gui
     {
       if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, DateTime.Now));
-    }
-
-    /// <summary>
-    /// ダウンロードプロセス
-    /// </summary>
-    object _lock = new object();
-    private ytdlp_process ytdlp = null;
-    private StdoutForm ytdlpfm = null;
-    private ObservableQueue<ytdlp_process> ytdlps = new ObservableQueue<ytdlp_process>();
-
-    private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
-    private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
-
-    private void InitializeYtdlpQueue()
-    {
-      Action<int> WriteQueueStatus = count => QueueCount.Text = $"Download Queue: {count}";
-
-      // キューにytdlpプロセスを入れた時
-      ytdlps.Enqueued += (sender, e) =>
-      {
-        var q = sender as ObservableQueue<ytdlp_process>;
-        WriteQueueStatus(q.Count);
-
-        lock (_lock)
-        {
-          if (ytdlp == null)
-            q.Dequeue();
-        }
-      };
-
-      // キューからytdlpプロセスを取り出す時
-      Action formAction = () =>
-      {
-        var button = ytdlpfm.Controls["BtnClose"] as Button;
-        button.Enabled = false;
-        ytdlpfm.Pause = false;
-      };
-
-      ytdlps.Dequeued += (sender, e) =>
-      {
-        var q = sender as ObservableQueue<ytdlp_process>;
-        ytdlp = e.data;
-        ytdlp.ProcessExited += (sender, e) =>
-        {
-          lock (_lock)
-          {
-            if (q.Count > 0)
-            {
-              q.Dequeue();
-            }
-            else
-            {
-              ytdlp = null;
-              if (IsOpenStderr.Checked && ytdlpfm != null)
-                ytdlpfm = null;
-            }
-          }
-        };
-
-        if (IsOpenStderr.Checked)
-        {
-          if (ytdlpfm.InvokeRequired)
-            ytdlpfm.Invoke(formAction);
-          else
-            formAction();
-        }
-
-        ytdlp.DownloadAsync();
-        WriteQueueStatus(q.Count);
-      };
-    }
-
-    private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
-    {
-      YtdlpItem ytdlpItem = null;
-      MediaInformation mediaInfo;
-      try
-      {
-        if (url.Length == 0)
-          throw new Exception("URLが入力されていません。");
-
-        var parser = new ytdlp_process()
-        {
-          Url = url,
-          DownloadFile = string.Empty
-        };
-
-        var cookieKind = UseCookie.SelectedValue.ToString();
-        if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
-          parser.CookiePath = CookiePath.Text;
-        else if (cookieKind != "none" && cookieKind != "file")
-          parser.CookieBrowser = cookieKind;
-
-        OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
-        mediaInfo = await parser.getMediaInformation();
-        OutputStderr.Text = "";
-
-        if (mediaInfo == null)
-          throw new Exception("解析に失敗しました。");
-
-        Image image = await mediaInfo.GetThumbnailImage();
-
-        ytdlpItem = new YtdlpItem(url,mediaInfo,image);
-      }
-      catch (Exception exception)
-      {
-        MessageBox.Show(exception.Message);
-      }
-
-      return ytdlpItem;
-    }
-
-    private void YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
-    {
-      var mediaInfo = ytdlpItem.Item2;
-
-      if ( mediaInfo == null)
-        return;
-
-      try
-      {
-        var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
-        if (!Directory.Exists(outputdir))
-          Directory.CreateDirectory(outputdir);
-
-        var downloader = new ytdlp_process()
-        {
-          Url = mediaInfo.webpage_url,
-          OutputPath = outputdir,
-          Separated = separatedDownload,
-          VideoFormat = VideoOnlyFormat.SelectedValue?.ToString(),
-          AudioFormat = AudioOnlyFormat.SelectedValue?.ToString(),
-          MovieFormat = MovieFormat.SelectedValue?.ToString()
-        };
-
-        if (!string.IsNullOrEmpty(OutputFileFormat.Text))
-          downloader.OutputFile = OutputFileFormat.Text;
-
-        var cookieKind = UseCookie.SelectedValue.ToString();
-
-        if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
-          downloader.CookiePath = CookiePath.Text;
-        else if (cookieKind != "none" && cookieKind != "file")
-          downloader.CookieBrowser = cookieKind;
-
-        downloader.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
-        downloader.StdOutReceived += YtdlpReceiver;
-
-        downloader.ProcessExited += (s, e) => Invoke(() =>
-        {
-          Debug.WriteLine($"exitcode = {downloader.ExitCode},DownloadName = {downloader.DownloadFile}");
-
-          if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
-          {
-            FileListBindingSource.Add(new StringListItem(downloader.DownloadFile));
-            btnSubmitInvoke.Enabled = true;
-          }
-        });
-
-        if (IsOpenStderr.Checked)
-        {
-          if (ytdlpfm == null)
-          {
-            ytdlpfm = new StdoutForm();
-            ytdlpfm.FormClosed += (sender, e) => ytdlpfm = null;
-          }
-
-          Action<string> receiver = data =>
-          {
-            if (ytdlpfm.Pause)
-              ytdlpfm.LogData.Add(data);
-            else
-              ytdlpfm.Invoke(ytdlpfm.WriteLine, [data]);
-          };
-
-          downloader.StdOutReceived += receiver;
-          downloader.StdErrReceived += receiver;
-          downloader.ProcessExited += (s,e) =>
-          {
-            if(ytdlps.Count <= 0)
-              ytdlpfm.Invoke(() =>
-              {
-                var button = ytdlpfm.Controls["BtnClose"] as Button;
-                button.Enabled = true;
-                ytdlpfm.Pause = true;
-              });
-
-            ytdlp = null;
-          };
-
-          if(!ytdlpfm.Visible)
-            ytdlpfm.Show();
-        }
-
-        /// todo
-        /// キューに追加
-        lock (_lock)
-        {
-          ytdlps.Enqueue(downloader);
-        }
-      }
-      catch (Exception exception)
-      {
-        MessageBox.Show(exception.Message,"エラー");
-        if (ytdlpfm != null)
-        {
-          var button = ytdlpfm.Controls["BtnClose"] as Button;
-          button.Enabled = true;
-        }
-      }
-    }
-
-    private void Ytdlpfm_FormClosed(object sender, FormClosedEventArgs e)
-    {
-      throw new NotImplementedException();
-    }
-
-    private void YtdlpReceiver(string data)
-    {
-      var match = DownloadRegex.Match(data);
-      if (match.Success)
-      {
-        ytdlp.DownloadFile = match.Groups["filename"].Value;
-      }
-      else
-      {
-        match = MergerRegex.Match(data);
-        if (match.Success)
-        {
-          ytdlp.DownloadFile = match.Groups["filename"].Value;
-          ytdlp.StdOutReceived -= YtdlpReceiver;
-        }
-      }
-    }
-
-    private void YtdlpAbortDownload()
-    {
-      if (ytdlp != null)
-        ytdlp.Interrupt();
     }
   }
 }
