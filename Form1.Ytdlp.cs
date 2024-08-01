@@ -191,6 +191,9 @@ namespace ffmpeg_ytdlp_gui
 
           Action<string> receiver = data =>
           {
+            if (ytdlpfm == null)
+              return;
+
             if (ytdlpfm.Pause)
               ytdlpfm.LogData.Add(data);
             else
