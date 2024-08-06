@@ -12,7 +12,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
   public partial class ffmpeg_command : IEnumerable<string>
   {
-    public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string> callback = null)
+    public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string>? callback = null)
     {
       var sb = new StringBuilder();
       var commandlines = list.SelectMany(
@@ -36,9 +36,9 @@ namespace ffmpeg_ytdlp_gui.libs
 
     // instances
     protected int FileIndex = 1;
-    private string _file_prefix;
-    private string _file_suffix;
-    private string _file_base;
+    private string? _file_prefix;
+    private string? _file_suffix;
+    private string? _file_base;
     private Encoding CP932;
 
     [GeneratedRegex(@"^(?:\d{2}:)?\d{2}:\d{2}(?:\.\d+)?$")]
@@ -56,40 +56,40 @@ namespace ffmpeg_ytdlp_gui.libs
     [GeneratedRegex(@"[;,]+")]
     protected static partial Regex SplitCommaColon();
 
-    protected Dictionary<string, string> filters;
-    protected Dictionary<string, string> options;
-    protected string InputPath;
+    protected Dictionary<string, string?> filters;
+    protected Dictionary<string, string?> options;
+    protected string? InputPath;
 
-    public string OutputPath { get; set; }
-    public string OutputExtension { get; set; }
-    public string ffmpegPath { get; set; }
-    public bool bAudioOnly { get; set; }
-    public string EncoderType { get; set; }
-    public int IndexOfGpuDevice { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
-    public IEnumerable<string> AdditionalOptions { get; } = new List<string>();
-    public IEnumerable<string> AdditionalPreOptions { get; set; } = new List<string>();
+    public string? OutputPath { get; set; }
+    public string? OutputExtension { get; set; }
+    public string? ffmpegPath { get; set; }
+    public bool bAudioOnly { get; set; } = false;
+    public string? EncoderType { get; set; }
+    public int? IndexOfGpuDevice { get; set; }
+    public int? Width { get; set; }
+    public int? Height { get; set; }
+    public IEnumerable<string>? AdditionalOptions { get; } = new List<string>();
+    public IEnumerable<string>? AdditionalPreOptions { get; set; } = new List<string>();
     public bool MultiFileProcess { get; set; } = false;
     public bool IsLandscape { get; set; } = false;
     public bool Overwrite { get; set; } = false;
 
-    public string FilePrefix
+    public string? FilePrefix
     {
       get => _file_prefix;
-      set => _file_prefix = value.Trim();
+      set => _file_prefix = value?.Trim();
     }
-    public string FileSuffix
+    public string? FileSuffix
     {
       get => _file_suffix;
-      set => _file_suffix = value.Trim();
+      set => _file_suffix = value?.Trim();
     }
-    public string FileBase
+    public string? FileBase
     {
       get => _file_base;
       set
       {
-        _file_base = value.Trim();
+        _file_base = value?.Trim();
         FileIndex = 1;
       }
     }
@@ -106,24 +106,24 @@ namespace ffmpeg_ytdlp_gui.libs
       protected get
       {
         int rv = 0;
-        if (options.TryGetValue("lookahead",out string value))
-          rv = int.Parse(value);
+        if (options.TryGetValue("lookahead",out string? value))
+          rv = int.Parse(value ?? string.Empty);
 
         return rv;
       }
     }
-    public string Begin
+    public string? Begin
     {
-      get => options["ss"];
+      get => options["ss"]!;
       set => options["ss"] = EvalTimeString(value);
     }
-    public string End
+    public string? End
     {
-      get => options["to"];
+      get => options["to"]!;
       set => options["to"] = EvalTimeString(value);
     }
 
-    public string ACodec
+    public string? ACodec
     {
       set
       {
@@ -140,7 +140,7 @@ namespace ffmpeg_ytdlp_gui.libs
           this.options.Remove("b:a");
       }
     }
-    public string Preset
+    public string? Preset
     {
       set => options["preset"] = $"-preset {value}";
     }
@@ -163,7 +163,7 @@ namespace ffmpeg_ytdlp_gui.libs
       }
 
       filters = [];
-      options = new Dictionary<string, string>
+      options = new Dictionary<string, string?>
       {
         ["tag:v"] = "-tag:v hvc1",
         ["vcodec"] = "-c:v copy",
@@ -192,13 +192,13 @@ namespace ffmpeg_ytdlp_gui.libs
       yield return "-y";
       yield return "-loglevel info";
 
-      if (options.TryGetValue("ss",out string ss) && !string.IsNullOrEmpty(ss))
+      if (options.TryGetValue("ss",out string? ss) && !string.IsNullOrEmpty(ss))
         yield return $"-ss {ss}";
-      if (options.TryGetValue("to",out string to) && !string.IsNullOrEmpty(to))
+      if (options.TryGetValue("to",out string? to) && !string.IsNullOrEmpty(to))
         yield return $"-to {to}";
 
-      if(AdditionalPreOptions.Count() > 0)
-        foreach (var option in AdditionalPreOptions)
+      if(AdditionalPreOptions!.Count() > 0)
+        foreach (var option in AdditionalPreOptions!)
           yield return option.Trim();
 
       if(!string.IsNullOrEmpty(InputPath))
@@ -210,15 +210,15 @@ namespace ffmpeg_ytdlp_gui.libs
       }
       else
       {
-        yield return options["vcodec"];
+        yield return options["vcodec"] ?? string.Empty;
       }
 
-      if(AdditionalOptions.Count() > 0)
-        foreach(var option in AdditionalOptions)
+      if(AdditionalOptions!.Count() > 0)
+        foreach(var option in AdditionalOptions!)
           yield return option.Trim();
 
-      yield return options["acodec"];
-      if (options.TryGetValue("b:a", out string ba) && !string.IsNullOrEmpty(ba))
+      yield return options["acodec"] ?? string.Empty;
+      if (options.TryGetValue("b:a", out string? ba) && !string.IsNullOrEmpty(ba))
         yield return ba;
     }
 
@@ -239,7 +239,7 @@ namespace ffmpeg_ytdlp_gui.libs
       return this;
     }
 
-    public ffmpeg_command acodec(string strCodec)
+    public ffmpeg_command acodec(string? strCodec)
     {
       ACodec = strCodec;
       return this;
@@ -299,14 +299,14 @@ namespace ffmpeg_ytdlp_gui.libs
       filters.Remove(name);
       return this;
     }
-    public string getFilter(string name)
+    public string? getFilter(string name)
     {
       return filters.ContainsKey(name) && filters[name] != null ? filters[name] : null;
     }
 
     public ffmpeg_command setOptions(string options)
     {
-      var list = AdditionalOptions as List<string>;
+      var list = AdditionalOptions as List<string> ?? throw new NullReferenceException("Additional options were null");
       foreach (var option in SplitCommaColon().Split(options))
       {
         string str = option.Trim();
@@ -318,7 +318,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public ffmpeg_command setOptions(IEnumerable<string> options)
     {
-      var list = AdditionalOptions as List<string>;
+      var list = AdditionalOptions as List<string> ?? throw new NullReferenceException("Additional options were null");
       foreach (var option in options)
         if (!list.Contains(option))
           list.Add(option);
@@ -328,7 +328,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public ffmpeg_command clearOptions()
     {
-      var list = AdditionalOptions as List<string>;
+      var list = AdditionalOptions as List<string> ?? throw new NullReferenceException("Additional options were null");
       list.Clear();
 
       return this;
@@ -336,7 +336,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public ffmpeg_command setPreOptions(string options)
     {
-      var list = AdditionalPreOptions as List<string>;
+      var list = AdditionalPreOptions as List<string> ?? throw new NullReferenceException("Additional Pre options were null");
       foreach (var option in SplitCommaColon().Split(options))
       {
         string str = option.Trim();
@@ -347,7 +347,7 @@ namespace ffmpeg_ytdlp_gui.libs
     }
     public ffmpeg_command setPreOptions(IEnumerable<string> options)
     {
-      var list = AdditionalPreOptions as List<string>;
+      var list = AdditionalPreOptions as List<string> ?? throw new NullReferenceException("AdditionalPreOptions were null");
       foreach (var option in options)
         if (!list.Contains(option))
           list.Add(option);
@@ -424,8 +424,8 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public string GetCommandLine(string strInputPath)
     {
-      string command = ffmpegPath;
-      if (HasSpace().IsMatch(ffmpegPath))
+      string command = ffmpegPath ?? string.Empty;
+      if (HasSpace().IsMatch(ffmpegPath ?? string.Empty))
         command = $"\"{ffmpegPath}\"";
 
       return $"{command} {GetCommandLineArguments(strInputPath)}";
@@ -437,7 +437,7 @@ namespace ffmpeg_ytdlp_gui.libs
       var args = this.ToList();
 
       string strOutputFileName = CreateOutputFileName(strInputPath);
-      string strOutputFilePath = Path.Combine(OutputPath, strOutputFileName);
+      string strOutputFilePath = Path.Combine(OutputPath ?? string.Empty, strOutputFileName);
       if (strOutputFilePath == strInputPath)
         throw new Exception("入力ファイルと出力ファイルが同じです。");
 
@@ -459,9 +459,9 @@ namespace ffmpeg_ytdlp_gui.libs
       return sb.ToString();
     }
 
-    protected static string EvalTimeString(string strTime)
+    protected static string? EvalTimeString(string? strTime)
     {
-      string rv = null;
+      string? rv = null;
       if (!string.IsNullOrEmpty(strTime))
       {
         var m1 = IsDateTime().Match(strTime);
@@ -483,7 +483,7 @@ namespace ffmpeg_ytdlp_gui.libs
       {
         if (bAudioOnly)
         {
-          var m = IsWord().Match(options["acodec"]);
+          var m = IsWord().Match(options["acodec"] ?? string.Empty);
           if (m.Success)
           {
             switch (m.Captures[0].Value)
@@ -508,7 +508,7 @@ namespace ffmpeg_ytdlp_gui.libs
       }
 
       // ファイルが存在する場合は変更
-      string fullpath = Path.Combine(OutputPath,strOutputFileName);
+      string fullpath = Path.Combine(OutputPath ?? string.Empty,strOutputFileName);
       if(File.Exists(fullpath) && !Overwrite)
       {
         string filename = Path.GetFileNameWithoutExtension(strOutputFileName);
@@ -518,7 +518,7 @@ namespace ffmpeg_ytdlp_gui.libs
         do
         {
           newname = $"{filename}.{num++}{extension}";
-          fullpath = Path.Combine(OutputPath, newname);
+          fullpath = Path.Combine(OutputPath ?? string.Empty, newname);
         } while (File.Exists(fullpath));
 
         strOutputFileName = newname;

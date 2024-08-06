@@ -52,9 +52,9 @@ namespace ffmpeg_ytdlp_gui.libs
           yy = 0;
         }
         top = yy;
-        bottom = Height - (yy + height);
+        bottom = (Height ?? 0) - (yy + height);
         left = xx;
-        right = Width - (xx + width);
+        right = (Width ?? 0) - (xx + width);
 
         options["crop"] = $"{top}x{bottom}x{left}x{right}";
       }
@@ -82,8 +82,8 @@ namespace ffmpeg_ytdlp_gui.libs
       if (options.ContainsKey("to") && !string.IsNullOrEmpty(options["to"]))
         yield return $"-to {options["to"]}";
 
-      if (AdditionalPreOptions.Count() > 0)
-        foreach (var option in AdditionalPreOptions)
+      if (AdditionalPreOptions!.Count() > 0)
+        foreach (var option in AdditionalPreOptions!)
           yield return option.Trim();
 
       yield return $"-i \"{InputPath}\"";
@@ -109,7 +109,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
         if (filters.ContainsKey("scale"))
         {
-          string size = filters["scale"];
+          string? size = filters["scale"];
           string filter = IsLandscape ? $"-2:{size}" : $"{size}:-2";
           strFilters.Add($"scale={filter}");
         }
@@ -123,29 +123,29 @@ namespace ffmpeg_ytdlp_gui.libs
           yield return $"-filter:v \"{strFilter}\"";
         }
 
-        yield return options["vcodec"];
-        yield return options["preset"];
-        yield return options["b:v"];
-        yield return options["r:v"];
+        yield return options["vcodec"]!;
+        yield return options["preset"]!;
+        yield return options["b:v"]!;
+        yield return options["r:v"]!;
 
         if (options.ContainsKey("lookahead") && !string.IsNullOrEmpty(options["lookahead"]))
           yield return $"-rc-lookahead {options["lookahead"]}";
 
         if (options.ContainsKey("tag:v"))
-          yield return options["tag:v"];
+          yield return options["tag:v"]!;
       }
 
-      if (AdditionalOptions.Count() > 0)
-        foreach (var option in AdditionalOptions)
+      if (AdditionalOptions!.Count() > 0)
+        foreach (var option in AdditionalOptions!)
           yield return option.Trim();
 
       if (string.IsNullOrEmpty(options["acodec"]))
         yield return "-an";
       else
-        yield return options["acodec"];
+        yield return options["acodec"]!;
 
       if (options.ContainsKey("b:a") && !string.IsNullOrEmpty(options["b:a"]))
-        yield return options["b:a"];
+        yield return options["b:a"]!;
     }
   }
 }

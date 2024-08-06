@@ -11,8 +11,8 @@ using ffmpeg_ytdlp_gui.libs;
 namespace ffmpeg_ytdlp_gui
 {
   using StringListItem = ListItem<string>;
-  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
-  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
+  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image?>;
+  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
 
   partial class Form1 
   {
@@ -20,9 +20,9 @@ namespace ffmpeg_ytdlp_gui
     /// ダウンロードプロセス
     /// </summary>
     object _lock = new object();
-    private ytdlp_process ytdlp = null;
-    private StdoutForm ytdlpfm = null;
-    private ObservableQueue<ytdlp_process> ytdlps = new ObservableQueue<ytdlp_process>();
+    private ytdlp_process? ytdlp = null;
+    private StdoutForm? ytdlpfm = null;
+    private ObservableQueue<ytdlp_process>? ytdlps = new ObservableQueue<ytdlp_process>();
 
     private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
     private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
@@ -32,9 +32,9 @@ namespace ffmpeg_ytdlp_gui
       Action<int> WriteQueueStatus = count => QueueCount.Text = $"Download Queue: {count}";
 
       // キューにytdlpプロセスを入れた時
-      ytdlps.Enqueued += (sender, e) =>
+      ytdlps!.Enqueued += (sender, e) =>
       {
-        var q = sender as ObservableQueue<ytdlp_process>;
+        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException("sender is null");
         WriteQueueStatus(q.Count);
 
         lock (_lock)
@@ -47,14 +47,14 @@ namespace ffmpeg_ytdlp_gui
       // キューからytdlpプロセスを取り出す時
       Action formAction = () =>
       {
-        var button = ytdlpfm.Controls["BtnClose"] as Button;
+        var button = ytdlpfm!.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
         button.Enabled = false;
         ytdlpfm.Pause = false;
       };
 
       ytdlps.Dequeued += (sender, e) =>
       {
-        var q = sender as ObservableQueue<ytdlp_process>;
+        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException("sender is null");
         ytdlp = e.data;
         ytdlp.ProcessExited += (sender, e) =>
         {
@@ -75,7 +75,7 @@ namespace ffmpeg_ytdlp_gui
 
         if (IsOpenStderr.Checked)
         {
-          if (ytdlpfm.InvokeRequired)
+          if (ytdlpfm!.InvokeRequired)
             ytdlpfm.Invoke(formAction);
           else
             formAction();
@@ -86,10 +86,10 @@ namespace ffmpeg_ytdlp_gui
       };
     }
 
-    private async Task<YtdlpItem> YtdlpParseDownloadUrl(string url)
+    private async Task<YtdlpItem?> YtdlpParseDownloadUrl(string url)
     {
-      YtdlpItem ytdlpItem = null;
-      MediaInformation mediaInfo;
+      YtdlpItem? ytdlpItem = null;
+      MediaInformation? mediaInfo;
       try
       {
         if (url.Length == 0)
@@ -101,7 +101,7 @@ namespace ffmpeg_ytdlp_gui
           DownloadFile = string.Empty
         };
 
-        var cookieKind = UseCookie.SelectedValue.ToString();
+        var cookieKind = UseCookie.SelectedValue?.ToString();
         if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
           parser.CookiePath = CookiePath.Text;
         else if (cookieKind != "none" && cookieKind != "file")
@@ -114,7 +114,7 @@ namespace ffmpeg_ytdlp_gui
         if (mediaInfo == null)
           throw new Exception("解析に失敗しました。");
 
-        Image image = await mediaInfo.GetThumbnailImage();
+        Image? image = await mediaInfo.GetThumbnailImage();
 
         ytdlpItem = new YtdlpItem(url,mediaInfo,image);
       }
@@ -126,8 +126,9 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private void YtdlpInvokeDownload(YtdlpItem ytdlpItem,bool separatedDownload = false)
+    private void YtdlpInvokeDownload(YtdlpItem? ytdlpItem,bool separatedDownload = false)
     {
+      if (ytdlpItem == null) throw new NullReferenceException("YtdlpItem is null");
       var mediaInfo = ytdlpItem.Item2;
 
       if ( mediaInfo == null)
@@ -152,7 +153,7 @@ namespace ffmpeg_ytdlp_gui
         if (!string.IsNullOrEmpty(OutputFileFormat.Text))
           downloader.OutputFile = OutputFileFormat.Text;
 
-        var cookieKind = UseCookie.SelectedValue.ToString();
+        var cookieKind = UseCookie.SelectedValue?.ToString();
 
         if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
           downloader.CookiePath = CookiePath.Text;
@@ -204,10 +205,10 @@ namespace ffmpeg_ytdlp_gui
           downloader.StdErrReceived += receiver;
           downloader.ProcessExited += (s,e) =>
           {
-            if(ytdlps.Count <= 0)
+            if(ytdlps!.Count <= 0)
               ytdlpfm.Invoke(() =>
               {
-                var button = ytdlpfm.Controls["BtnClose"] as Button;
+                var button = ytdlpfm.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
                 button.Enabled = true;
                 ytdlpfm.Pause = true;
               });
@@ -223,7 +224,7 @@ namespace ffmpeg_ytdlp_gui
         /// キューに追加
         lock (_lock)
         {
-          ytdlps.Enqueue(downloader);
+          ytdlps!.Enqueue(downloader);
         }
       }
       catch (Exception exception)
@@ -231,7 +232,7 @@ namespace ffmpeg_ytdlp_gui
         MessageBox.Show(exception.Message,"エラー");
         if (ytdlpfm != null)
         {
-          var button = ytdlpfm.Controls["BtnClose"] as Button;
+          var button = ytdlpfm.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
           button.Enabled = true;
         }
       }
@@ -242,15 +243,15 @@ namespace ffmpeg_ytdlp_gui
       var match = DownloadRegex.Match(data);
       if (match.Success)
       {
-        ytdlp.DownloadFile = match.Groups["filename"].Value;
+        ytdlp!.DownloadFile = match.Groups["filename"].Value;
       }
       else
       {
         match = MergerRegex.Match(data);
         if (match.Success)
         {
-          ytdlp.DownloadFile = match.Groups["filename"].Value;
-          ytdlp.StdOutReceived -= YtdlpReceiver;
+          ytdlp!.DownloadFile = match.Groups["filename"].Value;
+          ytdlp!.StdOutReceived -= YtdlpReceiver;
         }
       }
     }

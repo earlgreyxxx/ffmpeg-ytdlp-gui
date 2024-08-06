@@ -32,8 +32,8 @@ namespace ffmpeg_ytdlp_gui.libs
 
     // Instances
     // ----------------------------------------------------------------------
-    private MediaContainerProperty containerProperty;
-    private List<MediaStreamProperty> streamProperties;
+    private MediaContainerProperty? containerProperty;
+    private List<MediaStreamProperty>? streamProperties;
 
     public string FileName { get; private set; }
 
@@ -50,14 +50,14 @@ namespace ffmpeg_ytdlp_gui.libs
       ProcessExited += (s, e) => Debug.WriteLine("ffprobeプロセス終了");
     }
 
-    public IEnumerable<MediaStreamProperty> getStreamProperties()
+    public IEnumerable<MediaStreamProperty>? getStreamProperties()
     {
-      return streamProperties ?? null;
+      return streamProperties;
     }
 
-    public MediaContainerProperty getContainerProperty()
+    public MediaContainerProperty? getContainerProperty()
     {
-      return containerProperty ?? null;
+      return containerProperty;
     }
 
     public bool Initialize()
@@ -200,7 +200,7 @@ namespace ffmpeg_ytdlp_gui.libs
     /// <param name="mcp"></param>
     /// <param name="msp"></param>
     /// <returns></returns>
-    public static bool Factory(string jsonText,out MediaContainerProperty mcp,out List<MediaStreamProperty> msp)
+    public static bool Factory(string jsonText,out MediaContainerProperty? mcp,out List<MediaStreamProperty>? msp)
     {
       mcp = null;
       msp = new List<MediaStreamProperty>();
@@ -226,6 +226,9 @@ namespace ffmpeg_ytdlp_gui.libs
 
     protected static void FillProperty<T>(T obj,JsonElement element)
     {
+      if (obj == null)
+        throw new NullReferenceException("First argument(obj) must not be null");
+
       foreach (var pi in obj.GetType().GetProperties())
       {
         if (element.TryGetProperty(pi.Name, out JsonElement el))
@@ -235,7 +238,7 @@ namespace ffmpeg_ytdlp_gui.libs
             case JsonValueKind.String:
               pi.SetValue(
                 obj,
-                pi.PropertyType.FullName != "System.String" ? decimal.Parse(el.GetString()) : el.GetString()
+                pi.PropertyType.FullName != "System.String" ? decimal.Parse(el.GetString()!) : el.GetString()
               );
               break;
             case JsonValueKind.Number:
@@ -257,10 +260,10 @@ namespace ffmpeg_ytdlp_gui.libs
     public decimal? nb_streams { get; protected set; }
     public decimal? probe_score { get; protected set; }
     public decimal? size { get; protected set; }
-    public string filename { get; protected set; }
-    public string format_long_name { get; protected set; }
-    public string format_name { get; protected set; }
-    public string start_time { get; protected set; }
+    public string? filename { get; protected set; }
+    public string? format_long_name { get; protected set; }
+    public string? format_name { get; protected set; }
+    public string? start_time { get; protected set; }
     public MediaContainerProperty(JsonElement je)
     {
       FillProperty(this, je);
@@ -284,26 +287,26 @@ namespace ffmpeg_ytdlp_gui.libs
     public decimal? refs { get; protected set; }
     public decimal? start_pts { get; protected set; }
     public decimal? width { get; protected set; }
-    public string avg_frame_rate { get; protected set; }
-    public string channel_layout { get; protected set; }
-    public string codec_long_name { get; protected set; }
-    public string codec_name { get; protected set; }
-    public string codec_tag { get; protected set; }
-    public string codec_tag_string { get; protected set; }
-    public string codec_type { get; protected set; }
-    public string color_primaries { get; protected set; }
-    public string color_range { get; protected set; }
-    public string color_space { get; protected set; }
-    public string color_transfer { get; protected set; }
-    public string display_aspect_ratio { get; protected set; }
-    public string pix_fmt { get; protected set; }
-    public string profile { get; protected set; }
-    public string r_frame_rate { get; protected set; }
-    public string sample_aspect_ratio { get; protected set; }
-    public string sample_fmt { get; protected set; }
-    public string sample_rate { get; protected set; }
-    public string start_time { get; protected set; }
-    public string time_base { get; protected set; }
+    public string? avg_frame_rate { get; protected set; }
+    public string? channel_layout { get; protected set; }
+    public string? codec_long_name { get; protected set; }
+    public string? codec_name { get; protected set; }
+    public string? codec_tag { get; protected set; }
+    public string? codec_tag_string { get; protected set; }
+    public string? codec_type { get; protected set; }
+    public string? color_primaries { get; protected set; }
+    public string? color_range { get; protected set; }
+    public string? color_space { get; protected set; }
+    public string? color_transfer { get; protected set; }
+    public string? display_aspect_ratio { get; protected set; }
+    public string? pix_fmt { get; protected set; }
+    public string? profile { get; protected set; }
+    public string? r_frame_rate { get; protected set; }
+    public string? sample_aspect_ratio { get; protected set; }
+    public string? sample_fmt { get; protected set; }
+    public string? sample_rate { get; protected set; }
+    public string? start_time { get; protected set; }
+    public string? time_base { get; protected set; }
 
     public MediaStreamProperty(JsonElement je)
     {

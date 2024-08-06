@@ -17,7 +17,7 @@ namespace ffmpeg_ytdlp_gui
   using StringListItems = List<ListItem<string>>;
   using DecimalListItem = ListItem<decimal>;
   using DecimalListItems = List<ListItem<decimal>>;
-  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
+  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
 
   partial class Form1
   {
@@ -46,7 +46,7 @@ namespace ffmpeg_ytdlp_gui
       return (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
     }
 
-    private static List<ManagementObject> GpuDevices;
+    private static List<ManagementObject>? GpuDevices;
     private static StringListItems GetGPUDeviceList()
     {
       if (GpuDevices == null)
@@ -60,7 +60,7 @@ namespace ffmpeg_ytdlp_gui
       {
         deviceList.Add(
           new StringListItem(
-            device["AdapterCompatibility"].ToString(),
+            device["AdapterCompatibility"].ToString() ?? "Unknown",
             device["Name"].ToString()
           )
         );
@@ -69,7 +69,7 @@ namespace ffmpeg_ytdlp_gui
       return deviceList;
     }
 
-    private static void ChangeCurrentDirectory(string dir = null)
+    private static void ChangeCurrentDirectory(string? dir = null)
     {
       if (string.IsNullOrEmpty(dir))
         dir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
@@ -353,16 +353,19 @@ namespace ffmpeg_ytdlp_gui
         var ffprobe = ffprobe_process.CreateInstance(filename);
         var stream = ffprobe.getStreamProperties()?.FirstOrDefault(msp => msp.codec_type == "video");
 
-        command.IsLandscape = stream.width > stream.height;
-        command.Width = (int)stream.width;
-        command.Height = (int)stream.height;
+        if (stream != null)
+        {
+          command.IsLandscape = stream.width > stream.height;
+          command.Width = (int?)stream.width!;
+          command.Height = (int?)stream.height!;
+        }
       }
 
       if (chkCrop.Checked)
       {
-        if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue.ToString().EndsWith("_cuvid"))
+        if (chkUseHWDecoder.Checked && HWDecoder.SelectedValue!.ToString()!.EndsWith("_cuvid"))
           command
-            .size(command.Width, command.Height)
+            .size(command.Width ?? 0, command.Height ?? 0)
             .crop(true, CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
         else
           command.crop(CropWidth.Value, CropHeight.Value, CropX.Value, CropY.Value);
@@ -377,7 +380,7 @@ namespace ffmpeg_ytdlp_gui
     /// <summary>
     /// ffmpegプロセス
     /// </summary>
-    private ffmpeg_process Proceeding;
+    private ffmpeg_process? Proceeding;
 
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
     {
@@ -449,7 +452,7 @@ namespace ffmpeg_ytdlp_gui
     {
       ffmpeg_command ffcommand;
 
-      var codec = UseVideoEncoder.SelectedValue as Codec;
+      var codec = UseVideoEncoder.SelectedValue as Codec ?? throw new NullReferenceException("UseVideoEncoder is null");
       if (codec.GpuSuffix == "nvenc")
         ffcommand = new ffmpeg_command_cuda(ffmpeg.Text);
       else if (codec.GpuSuffix == "qsv")
@@ -471,10 +474,10 @@ namespace ffmpeg_ytdlp_gui
         .OutputDirectory(cbOutputDir.Text)
         .OutputPrefix(FilePrefix.Text)
         .OutputSuffix(FileSuffix.Text)
-        .OutputContainer(FileContainer.SelectedValue.ToString());
+        .OutputContainer(FileContainer.SelectedValue?.ToString() ?? "mp4");
 
       if (chkEncodeAudio.Checked)
-        ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
+        ffcommand.acodec(UseAudioEncoder.SelectedValue?.ToString() ?? "").aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
@@ -483,7 +486,7 @@ namespace ffmpeg_ytdlp_gui
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.To(txtTo.Text);
 
-      if (InputFileList.Count > 1)
+      if (InputFileList!.Count > 1)
         ffcommand.MultiFileProcess = true;
 
       return ffcommand;
@@ -501,20 +504,20 @@ namespace ffmpeg_ytdlp_gui
       if (!string.IsNullOrEmpty(txtTo.Text))
         ffcommand.End = txtTo.Text;
 
-      if (InputFileList.Count > 1)
+      if (InputFileList!.Count > 1)
         ffcommand.MultiFileProcess = true;
 
       var codec = UseVideoEncoder.SelectedValue as Codec;
-      if (codec.Name == "copy")
+      if (codec!.Name == "copy")
       {
         ffcommand
           .OutputDirectory(cbOutputDir.Text)
           .OutputPrefix(FilePrefix.Text)
           .OutputSuffix(FileSuffix.Text)
-          .OutputContainer(FileContainer.SelectedValue.ToString());
+          .OutputContainer(FileContainer.SelectedValue?.ToString() ?? "");
 
         if (chkEncodeAudio.Checked)
-          ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
+          ffcommand.acodec(UseAudioEncoder.SelectedValue?.ToString()!).aBitrate((int)aBitrate.Value);
         else
           ffcommand.acodec("copy").aBitrate(0);
 
@@ -522,7 +525,7 @@ namespace ffmpeg_ytdlp_gui
       }
 
       ffcommand.vcodec(
-        UseVideoEncoder.SelectedValue.ToString(),
+        UseVideoEncoder.SelectedValue?.ToString()!,
         cbDevices.Items.Count > 1 ? cbDevices.SelectedIndex : 0
       );
 
@@ -531,7 +534,7 @@ namespace ffmpeg_ytdlp_gui
         ffcommand
           .vBitrate((int)vBitrate.Value, chkConstantQuality.Checked)
           .lookAhead((int)LookAhead.Value)
-          .preset(cbPreset.SelectedValue.ToString());
+          .preset(cbPreset.SelectedValue?.ToString()!);
       }
 
       var vfr = (decimal?)VideoFrameRate.SelectedValue;
@@ -564,12 +567,12 @@ namespace ffmpeg_ytdlp_gui
       }
 
       if (chkUseHWDecoder.Checked)
-        ffcommand.hwdecoder(HWDecoder.SelectedValue.ToString());
+        ffcommand.hwdecoder(HWDecoder.SelectedValue?.ToString()!);
 
       if (codec.Name == "gif")
         ffcommand.acodec(null);
       else if (chkEncodeAudio.Checked)
-        ffcommand.acodec(UseAudioEncoder.SelectedValue.ToString()).aBitrate((int)aBitrate.Value);
+        ffcommand.acodec(UseAudioEncoder.SelectedValue?.ToString()!).aBitrate((int)aBitrate.Value);
       else
         ffcommand.acodec("copy").aBitrate(0);
 
@@ -577,13 +580,13 @@ namespace ffmpeg_ytdlp_gui
         .OutputDirectory(cbOutputDir.Text)
         .OutputPrefix(FilePrefix.Text)
         .OutputSuffix(FileSuffix.Text)
-        .OutputContainer(FileContainer.SelectedValue.ToString());
+        .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
       var deinterlaces = new List<string>() { "bwdif", "yadif", "bob", "adaptive" };
 
       if (chkFilterDeInterlace.Checked)
       {
-        string value = cbDeinterlaceAlg.SelectedValue.ToString();
+        string value = cbDeinterlaceAlg.SelectedValue?.ToString()!;
         if (cbDeinterlaceAlg.Text == "bwdif")
         {
           ffcommand.setFilter("bwdif", value);
@@ -603,7 +606,7 @@ namespace ffmpeg_ytdlp_gui
           ffcommand.removeFilter(name);
       }
 
-      var tag = int.Parse(GetCheckedRadioButton(ResizeBox).Tag as string);
+      var tag = int.Parse(GetCheckedRadioButton(ResizeBox)?.Tag as string ?? "");
       var size = tag switch
       {
         0 => 0,
@@ -617,7 +620,7 @@ namespace ffmpeg_ytdlp_gui
       else
         ffcommand.removeFilter("scale");
 
-      var rotate = int.Parse(GetCheckedRadioButton(RotateBox).Tag.ToString());
+      var rotate = int.Parse(GetCheckedRadioButton(RotateBox)?.Tag?.ToString()!);
       if (rotate == 0)
         ffcommand.removeFilter("transpose");
       else
@@ -629,7 +632,7 @@ namespace ffmpeg_ytdlp_gui
       return ffcommand;
     }
 
-    private static RadioButton GetCheckedRadioButton(GroupBox groupBox)
+    private static RadioButton? GetCheckedRadioButton(GroupBox groupBox)
     {
       return groupBox.Controls.OfType<RadioButton>().FirstOrDefault(radio => radio.Checked);
     }
@@ -642,7 +645,7 @@ namespace ffmpeg_ytdlp_gui
       if (stopAll)
         FileListBindingSource.Clear();
 
-      Proceeding.Kill(stopAll);
+      Proceeding?.Kill(stopAll);
     }
 
     private void OpenOutputView(string executable, string arg, string formTitle = "ffmpeg outputs")
@@ -662,7 +665,7 @@ namespace ffmpeg_ytdlp_gui
         form.Height = HelpFormSize.Height;
       }
 
-      form.Shown += (s, e) => form.Redirected.Start();
+      form.Shown += (s, e) => form?.Redirected?.Start();
       form.FormClosing += (s, e) =>
       {
         HelpFormSize.Width = form.Width;
@@ -674,7 +677,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void InitPresetAndDevice(Codec codec)
     {
-      if (!PresetList.ContainsKey(codec.FullName))
+      if (!PresetList!.ContainsKey(codec.FullName))
       {
         cbPreset.DataSource = null;
         return;
@@ -724,7 +727,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void AddDirectoryListItem()
     {
-      if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
+      if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList!.Any(item => item.Value == cbOutputDir.Text))
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, DateTime.Now));
     }
   }

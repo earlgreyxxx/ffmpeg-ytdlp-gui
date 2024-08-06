@@ -5,8 +5,8 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   public class ObservableQueue<T> : Queue<T>
   {
-    public event Action<object,QueueEventArgs<T>> Enqueued;
-    public event Action<object,QueueEventArgs<T>> Dequeued;
+    public event Action<object,QueueEventArgs<T>>? Enqueued;
+    public event Action<object,QueueEventArgs<T>>? Dequeued;
     protected virtual void OnEnqueue(QueueEventArgs<T> e)
     {
       Enqueued?.Invoke(this,e);

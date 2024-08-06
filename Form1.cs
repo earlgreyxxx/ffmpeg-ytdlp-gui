@@ -24,14 +24,14 @@ namespace ffmpeg_ytdlp_gui
   {
     private const int MemoryLength = 20;
 
-    private Dictionary<string, StringListItems> PresetList;
-    private Dictionary<string, CodecListItems> HardwareDecoders;
-    private StringListItems DeInterlacesCuvid;
-    private StringListItems InputFileList;
-    private StringListItems OutputDirectoryList;
+    private Dictionary<string, StringListItems>? PresetList;
+    private Dictionary<string, CodecListItems>? HardwareDecoders;
+    private StringListItems? DeInterlacesCuvid;
+    private StringListItems? InputFileList;
+    private StringListItems? OutputDirectoryList;
     private Size HelpFormSize = new(0, 0);
-    private FFmpegBatchList BatchList;
-    private PictureBoxSizeMode SizeMode;
+    private FFmpegBatchList? BatchList;
+    private PictureBoxSizeMode? SizeMode;
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -62,10 +62,10 @@ namespace ffmpeg_ytdlp_gui
       var folders = Settings.Default.outputFolders;
       if (folders != null && folders.Count > 0)
       {
-        foreach (string info in folders)
+        foreach (string? info in folders)
         {
-          var items = info.Split(['|']);
-          if (items.Length == 2)
+          var items = info!.Split(['|']);
+          if (items!.Length == 2)
           {
             var item = new StringListItem(items[0], DateTime.Parse(items[1]));
             DirectoryListBindingSource.Add(item);
@@ -76,15 +76,15 @@ namespace ffmpeg_ytdlp_gui
 
       if (Settings.Default.ffmpeg?.Count > 0)
       {
-        foreach (string item in Settings.Default.ffmpeg)
-          ffmpeg.Items.Add(item);
+        foreach (string? item in Settings.Default.ffmpeg)
+          ffmpeg.Items.Add(item!);
 
         ffmpeg.SelectedIndex = 0;
       }
 
       if (Settings.Default.downloadFileNames?.Count > 0)
       {
-        foreach (string item in Settings.Default.downloadFileNames)
+        foreach (string? item in Settings.Default.downloadFileNames)
           OutputFileFormatBindingSource.Add(item);
       }
       else
@@ -104,8 +104,8 @@ namespace ffmpeg_ytdlp_gui
 
       FileName.SelectedIndex = 0;
 
-      chkCrop_CheckedChanged(null, null);
-      cbDevices_SelectedIndexChanged(null, null);
+      chkCrop_CheckedChanged(this, new EventArgs());
+      cbDevices_SelectedIndexChanged(this, new EventArgs());
 
       HelpFormSize.Width = Settings.Default.HelpWidth;
       HelpFormSize.Height = Settings.Default.HelpHeight;
@@ -131,11 +131,11 @@ namespace ffmpeg_ytdlp_gui
 
       var items =
         OutputDirectoryList
-          .Where(item => Directory.Exists(item.Value))
-          .OrderByDescending(item => (DateTime)item.Data)
+          ?.Where(item => Directory.Exists(item.Value))
+          .OrderByDescending(item => (DateTime?)item.Data)
           .Take(MemoryLength)
           .OrderBy(item => item.Value)
-          .Select(item => $"{item.Value}|{((DateTime)item.Data).ToString()}");
+          .Select(item => $"{item.Value}|{((DateTime?)item.Data).ToString()}");
 
       Settings.Default.outputFolders = [.. items];
 
@@ -149,11 +149,11 @@ namespace ffmpeg_ytdlp_gui
       //Settings.Default.downloadUrls = urllist;
 
       var radio = GetCheckedRadioButton(ResizeBox);
-      Settings.Default.resize = radio.Name.Substring(8);
+      Settings.Default.resize = radio!.Name.Substring(8);
 
       // 出力ファイル名形式
       var formats = OutputFileFormatBindingSource.DataSource as List<string>;
-      Settings.Default.downloadFileNames = [.. formats.TakeLast(MemoryLength).Reverse()];
+      Settings.Default.downloadFileNames = [.. formats?.TakeLast(MemoryLength).Reverse()];
 
       Settings.Default.Save();
     }
@@ -202,7 +202,7 @@ namespace ffmpeg_ytdlp_gui
       if (DialogResult.Cancel == FindFolder.ShowDialog())
         return;
 
-      if (OutputDirectoryList.Any(item => item.Value == FindFolder.SelectedPath))
+      if (OutputDirectoryList!.Any(item => item.Value == FindFolder.SelectedPath))
         cbOutputDir.SelectedValue = FindFolder.SelectedPath;
       else
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(FindFolder.SelectedPath, DateTime.Now));
@@ -215,7 +215,7 @@ namespace ffmpeg_ytdlp_gui
 
       RuntimeSetting(ffcommand, sampleName);
 
-      if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList.Any(item => item.Value == cbOutputDir.Text))
+      if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList!.Any(item => item.Value == cbOutputDir.Text))
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now));
 
       Commandlines.Text = ffcommand.GetCommandLine(sampleName);
@@ -232,7 +232,7 @@ namespace ffmpeg_ytdlp_gui
 
       if (chkConstantQuality.Checked)
       {
-        var codec = UseVideoEncoder.SelectedValue as Codec;
+        var codec = UseVideoEncoder.SelectedValue as Codec ?? throw new NullReferenceException("codec is null");
         vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "CQ";
       }
       else
@@ -298,17 +298,17 @@ namespace ffmpeg_ytdlp_gui
         UseAudioEncoder.Enabled = false;
 
       if (!isChecked)
-        UseVideoEncoder_SelectedIndexChanged(null, null);
+        UseVideoEncoder_SelectedIndexChanged(this, new EventArgs());
     }
 
     private void DropArea_DragDrop(object sender, DragEventArgs e)
     {
-      if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+      if (!e.Data!.GetDataPresent(DataFormats.FileDrop))
         return;
 
-      string[] dragFilePathArr = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+      string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
 
-      foreach (var filePath in dragFilePathArr)
+      foreach (var filePath in dragFilePathArr!)
       {
         if (IsFile(filePath))
           FileListBindingSource.Add(new StringListItem(filePath));
@@ -363,7 +363,7 @@ namespace ffmpeg_ytdlp_gui
 
       using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
       {
-        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting));
+        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList ?? throw new NullReferenceException("BatchList is null"), RuntimeSetting));
       }
 
       BatchList.Clear();
@@ -410,7 +410,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitBatchClear_Click(object sender, EventArgs e)
     {
-      BatchList.Clear();
+      BatchList!.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = false;
     }
@@ -427,7 +427,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void UseVideoEncoder_SelectedIndexChanged(object sender, EventArgs e)
     {
-      var codec = UseVideoEncoder.SelectedValue as Codec;
+      var codec = UseVideoEncoder.SelectedValue as Codec ?? throw new NullReferenceException("Codec is null");
       // copyの場合は、動画品質指定はすべてdisabledにする。
       bool isCopy = codec.Name == "copy";
       bool isCpu = codec.GpuSuffix == "cpu";
@@ -531,7 +531,7 @@ namespace ffmpeg_ytdlp_gui
       var m = IsIntelOrNvidia().Match(cbDevices.Text);
       string key = m.Success ? m.Groups[1].Value.ToLower() : "cpu";
 
-      var decodersItems = HardwareDecoders[key];
+      var decodersItems = HardwareDecoders![key];
 
       HWDecoder.DataSource = decodersItems;
       DecoderHelpList.DataSource = decodersItems.Select(decoder => decoder.Clone()).ToList();
@@ -548,12 +548,12 @@ namespace ffmpeg_ytdlp_gui
 
       if (chkUseHWDecoder.Checked)
       {
-        foreach (var algo in DeInterlacesCuvid)
+        foreach (var algo in DeInterlacesCuvid!)
           DeInterlaceListBindingSource.Add(algo);
       }
       else
       {
-        foreach (var algo in DeInterlacesCuvid)
+        foreach (var algo in DeInterlacesCuvid!)
           DeInterlaceListBindingSource.Remove(algo);
       }
       DeInterlaceListBindingSource.ResetBindings(false);
@@ -561,7 +561,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void OpenEncoderHelp_Click(object sender, EventArgs e)
     {
-      var encoder = EncoderHelpList.SelectedValue.ToString();
+      var encoder = EncoderHelpList.SelectedValue?.ToString();
       if (encoder == "copy")
         return;
 
@@ -570,7 +570,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void OpenDecoderHelp_Click(object sender, EventArgs e)
     {
-      var decoder = DecoderHelpList.SelectedValue.ToString();
+      var decoder = DecoderHelpList.SelectedValue?.ToString();
       OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h decoder={decoder}");
     }
 
@@ -596,12 +596,12 @@ namespace ffmpeg_ytdlp_gui
           .OutputDirectory(cbOutputDir.Text)
           .OutputPrefix(FilePrefix.Text)
           .OutputSuffix(FileSuffix.Text)
-          .OutputContainer(FileContainer.SelectedValue.ToString());
+          .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 
-        command.MultiFileProcess = InputFileList.Count > 1;
+        command.MultiFileProcess = InputFileList!.Count > 1;
 
         OnBeginProcess();
         CreateFFmpegProcess(command)?.Begin();
@@ -610,17 +610,17 @@ namespace ffmpeg_ytdlp_gui
 
     private void SubmitConcat_Click(object sender, EventArgs e)
     {
-      string listfile = null;
+      string? listfile = null;
       try
       {
-        if (InputFileList.Count <= 1)
+        if (InputFileList!.Count <= 1)
           throw new Exception("二つ以上の入力ファイルが必要です。");
 
         if (FileName.Text.Trim() == "元ファイル名")
           throw new Exception("元ファイル名は使用できません、出力ファイル名を指定してください。");
 
         listfile = Path.Combine(
-          Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")),
+          Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")!),
           $"ffmpeg-command-builder-{Process.GetCurrentProcess().Id}.txt"
         );
 
@@ -643,7 +643,7 @@ namespace ffmpeg_ytdlp_gui
           .OutputPrefix(FilePrefix.Text)
           .OutputBaseName(FileName.Text)
           .OutputSuffix(FileSuffix.Text)
-          .OutputContainer(FileContainer.SelectedValue.ToString());
+          .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
         OnBeginProcess();
         CreateFFmpegProcess(command)?.One(listfile);
@@ -670,11 +670,11 @@ namespace ffmpeg_ytdlp_gui
         if (!useTiledImage.Checked && !re.IsMatch(FileName.Text) && !re.IsMatch(FilePrefix.Text) && !re.IsMatch(FileSuffix.Text))
           throw new Exception("画像出力の際は、%d などの連番号フォーマットが含まれている必要があります。");
 
-        if (InputFileList.Count < 1)
+        if (InputFileList!.Count < 1)
           throw new Exception("一つ以上の入力ファイルが必要です。");
 
-        var imagetype = ImageType.SelectedItem as StringListItem;
-        string extension = imagetype.Data.ToString();
+        var imagetype = ImageType.SelectedItem as StringListItem ?? throw new NullReferenceException("SelectedItem is null");
+        string extension = imagetype.Data?.ToString()!;
         string codec = imagetype.Value;
 
         var command = new ffmpeg_command(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text);
@@ -692,7 +692,7 @@ namespace ffmpeg_ytdlp_gui
           .OutputSuffix(FileSuffix.Text)
           .OutputContainer(extension);
 
-        List<string> additionals = null; ;
+        List<string>? additionals = null;
         if (ImageFreeOptions.Text.Trim().Length > 0)
         {
           additionals = ImageFreeOptions.Text.Trim().Split(
@@ -729,7 +729,7 @@ namespace ffmpeg_ytdlp_gui
 
           var ffprobe = ffprobe_process.CreateInstance(filename);
           var container = ffprobe.getContainerProperty();
-          var stream = ffprobe.getStreamProperties().FirstOrDefault(stream => stream.codec_type == "video");
+          var stream = ffprobe.getStreamProperties()?.FirstOrDefault(stream => stream.codec_type == "video");
           if (stream == null)
             return;
 
@@ -752,7 +752,7 @@ namespace ffmpeg_ytdlp_gui
           else if (w <= 0 && h > 0)
             vfilter.Add($"scale=-1:{h}");
 
-          decimal duration = container.duration ?? 0m;
+          decimal duration = container?.duration ?? 0m;
           decimal ss = MediaProperty.ConvertDuration(ImageSS.Text) ?? 0;
           decimal to = MediaProperty.ConvertDuration(ImageTo.Text) ?? 0;
           if (ss > to)
@@ -822,20 +822,20 @@ namespace ffmpeg_ytdlp_gui
 
     private void SubmitDownload_Click(object sender, EventArgs e)
     {
-      var button = (Button)sender;
-      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
+      var button = (Button)sender ?? throw new NullReferenceException("button is null");
+      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem ?? throw new NullReferenceException("SelectedItem is null");
 
       var format = OutputFileFormat.Text;
-      var list = OutputFileFormatBindingSource.DataSource as List<string>;
+      var list = OutputFileFormatBindingSource.DataSource as List<string> ?? throw new NullReferenceException("Datasource is null");
       if (false == list.Any(item => item == format))
         OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
 
-      if (button.Tag.GetType().Name != "Boolean")
+      if (button.Tag!.GetType().Name != "Boolean")
         throw new Exception("not boolean type");
 
       var isSeparate = (bool)button.Tag;
 
-      YtdlpInvokeDownload(ytdlpItem, isSeparate);
+      YtdlpInvokeDownload(ytdlpItem!, isSeparate);
     }
 
     private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
@@ -846,7 +846,7 @@ namespace ffmpeg_ytdlp_gui
       if (ytdlpItem == null)
         return;
 
-      var list = UrlBindingSource.DataSource as YtdlpItems;
+      var list = UrlBindingSource.DataSource as YtdlpItems ?? throw new NullReferenceException("YtdlpItems is null");
       if (false == list.Any(item => item.Item1 == url))
       {
         DownloadUrl.SelectedIndex = UrlBindingSource.Add(ytdlpItem);
@@ -859,7 +859,7 @@ namespace ffmpeg_ytdlp_gui
       if (DownloadUrl.SelectedIndex < 0)
         return;
 
-      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
+      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem ?? throw new NullReferenceException("SelectedItem is null");
       var mi = ytdlpItem.Item2;
       var image = ytdlpItem.Item3;
 
@@ -880,8 +880,11 @@ namespace ffmpeg_ytdlp_gui
       AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
       MovieFormatSource.Clear();
 
-      foreach (var format in mi.formats)
+      foreach (var format in mi.formats!)
       {
+        if(format == null || format.format_id == null)
+          continue;
+
         if (format.vcodec == "none" && format.acodec != "none")
           AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
         else if (format.acodec == "none" && format.vcodec != "none")
@@ -893,7 +896,7 @@ namespace ffmpeg_ytdlp_gui
       MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
 
       // requested_formats? があれば
-      if (mi.requested_formats.Count > 0)
+      if (mi.requested_formats!.Count > 0)
       {
         var items = mi.requested_formats.Select(f => new
         {
@@ -905,11 +908,13 @@ namespace ffmpeg_ytdlp_gui
 
         foreach (var item in items)
         {
-          ComboBox cb = null;
+          ComboBox? cb = null;
           if (item.Video)
             cb = VideoOnlyFormat;
           else if (item.Audio)
             cb = AudioOnlyFormat;
+          else
+            continue;
 
           cb.SelectedValue = item.Value;
         }
@@ -933,7 +938,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void UseCookie_SelectedIndexChanged(object sender, EventArgs e)
     {
-      var value = UseCookie.SelectedValue.ToString();
+      var value = UseCookie.SelectedValue?.ToString() ?? "none";
       CookieAttn.Visible = value != "none" && value != "file" && value != "firefox";
     }
 

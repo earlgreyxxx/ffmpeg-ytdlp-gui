@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -17,15 +18,15 @@ namespace ffmpeg_ytdlp_gui.libs
   /// </summary>
   public class MediaInformation
   {
-    public string description { set; get; }
-    public decimal duration { set; get; }
-    public string id { get; set; }
-    public string thumbnail { set; get; }
-    public string title { set; get; }
-    public string webpage_url { set; get; }
-    public string format_id { set; get; }
-    public List<MediaFormat> formats { get; set; } = new List<MediaFormat>();
-    public List<MediaFormat> requested_formats {  set; get; } = new List<MediaFormat>();
+    public string? description { set; get; }
+    public decimal? duration { set; get; }
+    public string? id { get; set; }
+    public string? thumbnail { set; get; }
+    public string? title { set; get; }
+    public string? webpage_url { set; get; }
+    public string? format_id { set; get; }
+    public List<MediaFormat>? formats { get; set; } = new List<MediaFormat>();
+    public List<MediaFormat>? requested_formats {  set; get; } = new List<MediaFormat>();
 
     private string _json_text;
     public MediaInformation(string json)
@@ -67,7 +68,7 @@ namespace ffmpeg_ytdlp_gui.libs
       }
     }
 
-    public async Task<Stream> GetThumbnailStream()
+    public async Task<Stream?> GetThumbnailStream()
     {
       if (thumbnail != null)
       {
@@ -87,9 +88,9 @@ namespace ffmpeg_ytdlp_gui.libs
       return null;
     }
 
-    public async Task<System.Drawing.Image> GetThumbnailImage()
+    public async Task<System.Drawing.Image?> GetThumbnailImage()
     {
-      Stream stream = await GetThumbnailStream();
+      Stream? stream = await GetThumbnailStream();
       if (stream == null)
         return null;
 
@@ -112,8 +113,8 @@ namespace ffmpeg_ytdlp_gui.libs
       if (duration == 0)
         return rv.ToString();
 
-      decimal ns = duration * 10000000;
-      rv = new TimeSpan((long)ns);
+      decimal? ns = duration * 10000000;
+      rv = new TimeSpan((long)(ns ?? 0));
 
       return rv.ToString();
     }
@@ -124,25 +125,25 @@ namespace ffmpeg_ytdlp_gui.libs
   /// </summary>
   public class MediaFormat : IEnumerable<KeyValuePair<string, string>>
   {
-    public string resolution { set; get; }
-    public string format_id { set; get; }
-    public string format_note { set; get; }
-    public string format { set; get; }
-    public string vcodec { set; get; }
-    public string acodec { set; get; }
-    public string url {set; get; }
+    public string? resolution { set; get; }
+    public string? format_id { set; get; }
+    public string? format_note { set; get; }
+    public string? format { set; get; }
+    public string? vcodec { set; get; }
+    public string? acodec { set; get; }
+    public string? url {set; get; }
     public decimal? rows { set; get; }
     public decimal? cols { set; get; }
     public decimal? fps { set; get; }
     public decimal? width { set; get; }
     public decimal? height { set; get; }
-    public string ext { set; get; }
+    public string? ext { set; get; }
     public decimal? filesize { set; get; }
     public decimal? filesize_approx { set; get; }
     public decimal? vbr { set; get; }
     public decimal? abr { set; get; }
     public decimal? tbr { set; get; }
-    public string protocol { set; get; }
+    public string? protocol { set; get; }
 
     public MediaFormat(JsonElement el)
     {
@@ -171,7 +172,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public override string ToString()
     {
       var sb = new StringBuilder();
-      if (format_id.Length > 16)
+      if (format_id?.Length > 16)
       {
         var str = format_id.Substring(0, 15) + "…";
         sb.Append($"[{str}]");
@@ -198,7 +199,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
     {
       foreach (var pi in GetType().GetProperties())
-        yield return new KeyValuePair<string, string>(pi.Name, pi.GetValue(this)?.ToString());
+        yield return new KeyValuePair<string, string>(pi.Name, pi.GetValue(this)?.ToString() ?? "");
     }
 
     IEnumerator IEnumerable.GetEnumerator()

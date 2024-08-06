@@ -18,7 +18,7 @@ namespace ffmpeg_ytdlp_gui.libs
     static extern bool FreeConsole();
 
     [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-    static extern bool SetConsoleCtrlHandler(ConsoleEventHandler handlerRoutine, bool add);
+    static extern bool SetConsoleCtrlHandler(ConsoleEventHandler? handlerRoutine, bool add);
 
     [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
     static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
@@ -29,12 +29,12 @@ namespace ffmpeg_ytdlp_gui.libs
     const uint CTRL_BRAKE_EVENT = 1;
 
     public Process Current { get; private set; } = new CustomProcess();
-    public event Action<object, EventArgs> ProcessExited;
-    public event Action<string> StdOutReceived;
-    public event Action<string> StdErrReceived;
-    public StreamWriter StdInWriter { get; protected set; }
+    public event Action<object, EventArgs>? ProcessExited;
+    public event Action<string>? StdOutReceived;
+    public event Action<string>? StdErrReceived;
+    public StreamWriter? StdInWriter { get; protected set; }
     public bool Exited { private set; get; } = false;
-    public string Command { get; protected set; }
+    public string? Command { get; protected set; }
 
     public int ExitCode 
     {
@@ -51,9 +51,9 @@ namespace ffmpeg_ytdlp_gui.libs
       UseShellExecute = false
     };
 
-    private void default_Process_Exited(object sender, EventArgs e)
+    private void default_Process_Exited(object? sender, EventArgs e)
     {
-      StdInWriter.Dispose();
+      StdInWriter?.Dispose();
       StdInWriter = null;
       Exited = Current.HasExited;
     }
@@ -108,8 +108,8 @@ namespace ffmpeg_ytdlp_gui.libs
     /// <returns></returns>
     public Task StartAsync(string arguments = "")
     {
-      if(!Start(arguments))
-        return null;
+      if (!Start(arguments))
+        throw new Exception("process can not be started.");
 
        return Current.WaitForExitAsync();
     }
@@ -160,9 +160,9 @@ namespace ffmpeg_ytdlp_gui.libs
       StdErrReceived?.Invoke(message);
     }
 
-    protected virtual void OnProcessExited(object sender, EventArgs e)
+    protected virtual void OnProcessExited(object? sender, EventArgs e)
     {
-      ProcessExited?.Invoke(sender, e);
+      ProcessExited?.Invoke(sender ?? throw new NullReferenceException("sender is null"), e);
     }
   }
 

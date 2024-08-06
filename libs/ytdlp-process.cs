@@ -10,27 +10,27 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   public class ytdlp_process : RedirectedProcess
   {
-    public string Url { get; set; }
-    public string CookieBrowser { get; set; } = "";
-    public string CookiePath { get; set; }
-    public string OutputPath { get; set; }
-    public string OutputFile { get; set; }
-    public string DownloadFile { get; set; }
+    public string? Url { get; set; }
+    public string? CookieBrowser { get; set; } = "";
+    public string? CookiePath { get; set; }
+    public string? OutputPath { get; set; }
+    public string? OutputFile { get; set; }
+    public string? DownloadFile { get; set; }
     public bool Separated { get; set; }
-    public string AudioFormat { private get; set; }
-    public string VideoFormat { private get; set; }
-    public string MovieFormat { private get; set; }
+    public string? AudioFormat { private get; set; }
+    public string? VideoFormat { private get; set; }
+    public string? MovieFormat { private get; set; }
 
     public ytdlp_process() : base("yt-dlp")
     {
       ProcessExited += (s, e) => Debug.WriteLine("yt-dlpプロセス終了");
     }
 
-    private IEnumerable<string> CreateArguments(string[] additionalOptions = null)
+    private IEnumerable<string> CreateArguments(string[]? additionalOptions = null)
     {
       var options = new List<string>()
       { 
-        Url,
+        Url ?? throw new NullReferenceException("URL not null"),
         "-w",
         "--encoding UTF-8",
         "--no-continue",
@@ -75,7 +75,7 @@ namespace ffmpeg_ytdlp_gui.libs
         throw new Exception("ダウンロードする対象が指定されていません。");
       }
 
-      string[] formats = sb.Count > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : null;
+      string[]? formats = sb.Count > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : null;
 
       psi.StandardOutputEncoding = Encoding.UTF8;
       psi.StandardErrorEncoding = Encoding.UTF8;
@@ -83,10 +83,10 @@ namespace ffmpeg_ytdlp_gui.libs
       await StartAsync(string.Join(' ',CreateArguments(formats).ToArray()));
     }
 
-    public async Task<MediaInformation> getMediaInformation()
+    public async Task<MediaInformation?> getMediaInformation()
     {
       if (Url == null)
-        return null;
+        throw new NullReferenceException("URL not specified");
 
       var options = new List<string>()
       {
@@ -101,7 +101,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
       var log = new List<string>();
       var arguments = string.Join(' ', options.ToArray());
-      MediaInformation info = null;
+      MediaInformation? info = null;
 
       Debug.WriteLine($"{Command} {arguments}");
 

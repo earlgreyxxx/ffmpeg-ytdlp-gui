@@ -22,11 +22,11 @@ namespace ffmpeg_ytdlp_gui
       get => _CustomButton;
       private set => throw new Exception("can not set button instance");
     }
-    public RedirectedProcess Redirected { get; private set; }
+    public RedirectedProcess? Redirected { get; private set; }
 
-    public event Action<string> DataReceived;
-    public event Action ProcessExit;
-    public event Action<object, MouseEventArgs> CustomButtonClick;
+    public event Action<string>? DataReceived;
+    public event Action? ProcessExit;
+    public event Action<object, MouseEventArgs>? CustomButtonClick;
 
 
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
@@ -100,7 +100,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void ToggleReader_Click(object sender, EventArgs e)
     {
-      Button btn = sender as Button;
+      Button btn = sender as Button ?? throw new Exception("sender not button");
 
       btn.Text = Pause ? "読込中断" : "読込再開";
       if (Pause)
