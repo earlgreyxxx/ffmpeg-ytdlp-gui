@@ -506,11 +506,6 @@ namespace ffmpeg_ytdlp_gui
       CustomProcess.ShellExecute(filename);
     }
 
-    private void ClearFileList_Click(object sender, EventArgs e)
-    {
-      FileListBindingSource.Clear();
-    }
-
     private void chkFilterDeInterlace_CheckedChanged(object sender, EventArgs e)
     {
       cbDeinterlaceAlg.Enabled = chkFilterDeInterlace.Checked;
@@ -882,7 +877,7 @@ namespace ffmpeg_ytdlp_gui
 
       foreach (var format in mi.formats!)
       {
-        if(format == null || format.format_id == null)
+        if (format == null || format.format_id == null)
           continue;
 
         if (format.vcodec == "none" && format.acodec != "none")
@@ -971,7 +966,7 @@ namespace ffmpeg_ytdlp_gui
 
       if (item.Item3 != image)
         return;
-      
+
       if (image != null)
       {
         var modal = new SaveFileDialog()
@@ -992,6 +987,26 @@ namespace ffmpeg_ytdlp_gui
     private void useTiledImage_CheckedChanged(object sender, EventArgs e)
     {
       TileColumns.Enabled = TileRows.Enabled = useTiledImage.Checked;
+    }
+
+    private void FileListBindingSource_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
+    {
+      var bs = sender as BindingSource;
+      if (bs?.Count > 0 && FileList.ContextMenuStrip == null)
+        FileList.ContextMenuStrip = FileListMenu;
+      else if (bs?.Count == 0 && FileList.ContextMenuStrip != null)
+        FileList.ContextMenuStrip = null;
+    }
+
+    private void FileListMenuItemClear_Click(object sender, EventArgs e)
+    {
+      FileListBindingSource.Clear();
+    }
+
+    private void FileListMenuItemDelete_Click(object sender, EventArgs e)
+    {
+      foreach(var item in FileList.SelectedItems.Cast<object>().Select(item => item).ToArray())
+        FileListBindingSource.Remove(item);
     }
   }
 }

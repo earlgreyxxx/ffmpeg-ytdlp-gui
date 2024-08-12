@@ -94,12 +94,14 @@
       btnApply = new System.Windows.Forms.Button();
       OpenInputFile = new System.Windows.Forms.OpenFileDialog();
       FileList = new System.Windows.Forms.ListBox();
+      FileListMenu = new System.Windows.Forms.ContextMenuStrip(components);
+      FileListMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
+      FileListMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
       btnStop = new System.Windows.Forms.Button();
       btnStopAll = new System.Windows.Forms.Button();
       DeInterlaceBox = new System.Windows.Forms.GroupBox();
       cbDevices = new System.Windows.Forms.ComboBox();
       InputBox = new System.Windows.Forms.Panel();
-      ClearFileList = new System.Windows.Forms.Button();
       btnFFmpeg = new System.Windows.Forms.Button();
       label8 = new System.Windows.Forms.Label();
       OpenFFMpegFileDlg = new System.Windows.Forms.OpenFileDialog();
@@ -223,6 +225,7 @@
       ((System.ComponentModel.ISupportInitialize)LookAhead).BeginInit();
       ((System.ComponentModel.ISupportInitialize)aBitrate).BeginInit();
       ((System.ComponentModel.ISupportInitialize)vBitrate).BeginInit();
+      FileListMenu.SuspendLayout();
       DeInterlaceBox.SuspendLayout();
       InputBox.SuspendLayout();
       StatusBar.SuspendLayout();
@@ -970,6 +973,7 @@
       FileList.ItemHeight = 12;
       FileList.Location = new System.Drawing.Point(0, 42);
       FileList.Name = "FileList";
+      FileList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
       FileList.Size = new System.Drawing.Size(419, 88);
       FileList.Sorted = true;
       FileList.TabIndex = 29;
@@ -978,6 +982,27 @@
       FileList.DragDrop += DropArea_DragDrop;
       FileList.DragEnter += DropArea_DragEnter;
       FileList.MouseDoubleClick += DropArea_MouseDoubleClick;
+      // 
+      // FileListMenu
+      // 
+      FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemDelete, FileListMenuItemClear });
+      FileListMenu.Name = "FileListMenu";
+      FileListMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+      FileListMenu.Size = new System.Drawing.Size(233, 48);
+      // 
+      // FileListMenuItemDelete
+      // 
+      FileListMenuItemDelete.Name = "FileListMenuItemDelete";
+      FileListMenuItemDelete.Size = new System.Drawing.Size(232, 22);
+      FileListMenuItemDelete.Text = "選択済みのファイルをクリア";
+      FileListMenuItemDelete.Click += FileListMenuItemDelete_Click;
+      // 
+      // FileListMenuItemClear
+      // 
+      FileListMenuItemClear.Name = "FileListMenuItemClear";
+      FileListMenuItemClear.Size = new System.Drawing.Size(232, 22);
+      FileListMenuItemClear.Text = "全てのファイルをクリア";
+      FileListMenuItemClear.Click += FileListMenuItemClear_Click;
       // 
       // btnStop
       // 
@@ -1031,23 +1056,10 @@
       // 
       InputBox.Controls.Add(label3);
       InputBox.Controls.Add(FileList);
-      InputBox.Controls.Add(ClearFileList);
       InputBox.Location = new System.Drawing.Point(8, 485);
       InputBox.Name = "InputBox";
       InputBox.Size = new System.Drawing.Size(419, 130);
       InputBox.TabIndex = 34;
-      // 
-      // ClearFileList
-      // 
-      ClearFileList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-      ClearFileList.Location = new System.Drawing.Point(344, 7);
-      ClearFileList.Name = "ClearFileList";
-      ClearFileList.Size = new System.Drawing.Size(75, 24);
-      ClearFileList.TabIndex = 34;
-      ClearFileList.TabStop = false;
-      ClearFileList.Text = "クリア";
-      ClearFileList.UseVisualStyleBackColor = true;
-      ClearFileList.Click += ClearFileList_Click;
       // 
       // btnFFmpeg
       // 
@@ -1231,6 +1243,10 @@
       chkCrop.Text = "処理する";
       chkCrop.UseVisualStyleBackColor = true;
       chkCrop.CheckedChanged += chkCrop_CheckedChanged;
+      // 
+      // FileListBindingSource
+      // 
+      FileListBindingSource.ListChanged += FileListBindingSource_ListChanged;
       // 
       // Tab
       // 
@@ -1826,10 +1842,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 413);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2238,6 +2254,7 @@
       ((System.ComponentModel.ISupportInitialize)LookAhead).EndInit();
       ((System.ComponentModel.ISupportInitialize)aBitrate).EndInit();
       ((System.ComponentModel.ISupportInitialize)vBitrate).EndInit();
+      FileListMenu.ResumeLayout(false);
       DeInterlaceBox.ResumeLayout(false);
       DeInterlaceBox.PerformLayout();
       InputBox.ResumeLayout(false);
@@ -2352,7 +2369,6 @@
     private System.Windows.Forms.NumericUpDown resizeTo;
     private System.Windows.Forms.RadioButton rbResizeNum;
     private System.Windows.Forms.Button OpenLogFile;
-    private System.Windows.Forms.Button ClearFileList;
     private System.Windows.Forms.ComboBox cbDeinterlaceAlg;
     private System.Windows.Forms.Label vQualityLabel;
     private System.Windows.Forms.Label aQualityLabel;
@@ -2480,6 +2496,9 @@
     private System.Windows.Forms.ComboBox OutputFileFormat;
     private System.Windows.Forms.BindingSource OutputFileFormatBindingSource;
     private System.Windows.Forms.ToolStripStatusLabel QueueCount;
+    private System.Windows.Forms.ContextMenuStrip FileListMenu;
+    private System.Windows.Forms.ToolStripMenuItem FileListMenuItemDelete;
+    private System.Windows.Forms.ToolStripMenuItem FileListMenuItemClear;
   }
 }
 
