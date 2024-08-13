@@ -175,6 +175,7 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      linkLabel3 = new System.Windows.Forms.LinkLabel();
       OutputFileFormat = new System.Windows.Forms.ComboBox();
       DownloadUrl = new System.Windows.Forms.ComboBox();
       DurationTime = new System.Windows.Forms.Label();
@@ -216,6 +217,7 @@
       MovieFormatSource = new System.Windows.Forms.BindingSource(components);
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
+      linkLabel4 = new System.Windows.Forms.LinkLabel();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -1360,10 +1362,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 418);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1431,7 +1433,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1823,6 +1825,7 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(linkLabel3);
       PageDownloader.Controls.Add(OutputFileFormat);
       PageDownloader.Controls.Add(DownloadUrl);
       PageDownloader.Controls.Add(DurationTime);
@@ -1842,12 +1845,24 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
+      // 
+      // linkLabel3
+      // 
+      linkLabel3.AutoSize = true;
+      linkLabel3.Location = new System.Drawing.Point(567, 361);
+      linkLabel3.Name = "linkLabel3";
+      linkLabel3.Size = new System.Drawing.Size(53, 12);
+      linkLabel3.TabIndex = 44;
+      linkLabel3.TabStop = true;
+      linkLabel3.Tag = "OutputFileFormat";
+      linkLabel3.Text = "リスト編集";
+      linkLabel3.LinkClicked += EditListItems;
       // 
       // OutputFileFormat
       // 
@@ -2032,7 +2047,7 @@
       // 
       LinkYdlOutputTemplate.AutoSize = true;
       LinkYdlOutputTemplate.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
-      LinkYdlOutputTemplate.Location = new System.Drawing.Point(569, 362);
+      LinkYdlOutputTemplate.Location = new System.Drawing.Point(685, 362);
       LinkYdlOutputTemplate.Name = "LinkYdlOutputTemplate";
       LinkYdlOutputTemplate.Size = new System.Drawing.Size(124, 12);
       LinkYdlOutputTemplate.TabIndex = 14;
@@ -2149,6 +2164,7 @@
       // 
       // OutputBox
       // 
+      OutputBox.Controls.Add(linkLabel4);
       OutputBox.Controls.Add(Overwrite);
       OutputBox.Controls.Add(IsOpenStderr);
       OutputBox.Controls.Add(FilePrefix);
@@ -2165,7 +2181,7 @@
       OutputBox.Size = new System.Drawing.Size(407, 125);
       OutputBox.TabIndex = 44;
       OutputBox.TabStop = false;
-      OutputBox.Text = "出力フォルダとファイル";
+      OutputBox.Text = "出力フォルダとファイル　　　　　　　　　";
       // 
       // Overwrite
       // 
@@ -2216,6 +2232,18 @@
       // 
       OpenCookieFileDialog.FileName = "cookie.txt";
       OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
+      // 
+      // linkLabel4
+      // 
+      linkLabel4.AutoSize = true;
+      linkLabel4.Location = new System.Drawing.Point(117, 1);
+      linkLabel4.Name = "linkLabel4";
+      linkLabel4.Size = new System.Drawing.Size(53, 12);
+      linkLabel4.TabIndex = 44;
+      linkLabel4.TabStop = true;
+      linkLabel4.Tag = "cbOutputDir";
+      linkLabel4.Text = "リスト編集";
+      linkLabel4.LinkClicked += EditListItems;
       // 
       // Form1
       // 
@@ -2499,6 +2527,8 @@
     private System.Windows.Forms.ContextMenuStrip FileListMenu;
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemDelete;
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemClear;
+    private System.Windows.Forms.LinkLabel linkLabel3;
+    private System.Windows.Forms.LinkLabel linkLabel4;
   }
 }
 

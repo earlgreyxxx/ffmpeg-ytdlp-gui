@@ -1005,8 +1005,25 @@ namespace ffmpeg_ytdlp_gui
 
     private void FileListMenuItemDelete_Click(object sender, EventArgs e)
     {
-      foreach(var item in FileList.SelectedItems.Cast<object>().Select(item => item).ToArray())
+      foreach (var item in FileList.SelectedItems.Cast<object>().Select(item => item).ToArray())
         FileListBindingSource.Remove(item);
+    }
+
+    private void EditListItems(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      string target = (sender as LinkLabel)?.Tag?.ToString()!;
+
+      var controls = Controls.Find(target,true);
+      if (controls.Length > 0)
+      {
+        var cb = controls[0] as ComboBox;
+        var bindingSource = cb?.DataSource as BindingSource;
+        if (bindingSource != null)
+        {
+          var form = new ListEditor(bindingSource!);
+          form.ShowDialog();
+        }
+      }
     }
   }
 }
