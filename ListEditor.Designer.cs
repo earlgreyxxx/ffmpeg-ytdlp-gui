@@ -37,7 +37,7 @@
       // SubmitClose
       // 
       SubmitClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-      SubmitClose.Location = new System.Drawing.Point(358, 174);
+      SubmitClose.Location = new System.Drawing.Point(406, 215);
       SubmitClose.Name = "SubmitClose";
       SubmitClose.Size = new System.Drawing.Size(90, 26);
       SubmitClose.TabIndex = 0;
@@ -53,15 +53,14 @@
       ListEditItems.Location = new System.Drawing.Point(12, 12);
       ListEditItems.Name = "ListEditItems";
       ListEditItems.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-      ListEditItems.Size = new System.Drawing.Size(436, 148);
-      ListEditItems.Sorted = true;
+      ListEditItems.Size = new System.Drawing.Size(484, 184);
       ListEditItems.TabIndex = 1;
       ListEditItems.ValueMember = "Value";
       // 
       // SubmitDelete
       // 
       SubmitDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-      SubmitDelete.Location = new System.Drawing.Point(197, 174);
+      SubmitDelete.Location = new System.Drawing.Point(245, 215);
       SubmitDelete.Name = "SubmitDelete";
       SubmitDelete.Size = new System.Drawing.Size(75, 26);
       SubmitDelete.TabIndex = 2;
@@ -72,7 +71,7 @@
       // SubmitClear
       // 
       SubmitClear.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-      SubmitClear.Location = new System.Drawing.Point(278, 174);
+      SubmitClear.Location = new System.Drawing.Point(326, 215);
       SubmitClear.Name = "SubmitClear";
       SubmitClear.Size = new System.Drawing.Size(75, 26);
       SubmitClear.TabIndex = 3;
@@ -84,7 +83,7 @@
       // 
       AutoScaleDimensions = new System.Drawing.SizeF(7F, 18F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      ClientSize = new System.Drawing.Size(460, 212);
+      ClientSize = new System.Drawing.Size(508, 253);
       Controls.Add(SubmitClear);
       Controls.Add(SubmitDelete);
       Controls.Add(ListEditItems);
