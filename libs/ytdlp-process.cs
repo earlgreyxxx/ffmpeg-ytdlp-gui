@@ -10,6 +10,8 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   public class ytdlp_process : RedirectedProcess
   {
+    const string YTDLPNAME = "yt-dlp";
+
     public string? Url { get; set; }
     public string? CookieBrowser { get; set; } = "";
     public string? CookiePath { get; set; }
@@ -21,8 +23,11 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? VideoFormat { private get; set; }
     public string? MovieFormat { private get; set; }
 
-    public ytdlp_process() : base("yt-dlp")
+    public ytdlp_process() : base(YTDLPNAME)
     {
+      if (CustomProcess.FindInPath(YTDLPNAME).Length <= 0)
+        throw new Exception($"{YTDLPNAME} not found in PATH envrionment.");
+
       ProcessExited += (s, e) => Debug.WriteLine("yt-dlpプロセス終了");
     }
 
