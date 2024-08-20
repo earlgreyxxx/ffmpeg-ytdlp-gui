@@ -18,6 +18,7 @@ namespace ffmpeg_ytdlp_gui
   using DecimalListItem = ListItem<decimal>;
   using DecimalListItems = List<ListItem<decimal>>;
   using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
+  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>>;
 
   partial class Form1
   {
@@ -256,8 +257,15 @@ namespace ffmpeg_ytdlp_gui
       FileListBindingSource.DataSource = InputFileList = [];
       FileList.DataSource = FileListBindingSource;
 
-      DirectoryListBindingSource.DataSource = OutputDirectoryList = [];
+      ///
+      var set = new StringListItemsSet([],[]);
       cbOutputDir.DataSource = DirectoryListBindingSource;
+      DirectoryListBindingSource.DataSource = set;
+
+      // タブと連動して出力フォルダリストを変更
+      DirectoryListBindingSource.DataMember = "Item1";
+      OutputDirectoryList = set?.Item1 ?? throw new Exception("Item not initialize yet");
+      ///
 
       FileContainer.DataSource = new StringListItems()
       {

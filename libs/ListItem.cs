@@ -41,7 +41,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public override string ToString()
     {
-      return $"{Label}:{Value?.ToString()}";
+      return Label!;
     }
   }
 }

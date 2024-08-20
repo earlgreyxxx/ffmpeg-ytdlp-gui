@@ -641,14 +641,12 @@
       // 
       // cbOutputDir
       // 
-      cbOutputDir.DisplayMember = "Label";
       cbOutputDir.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
       cbOutputDir.Size = new System.Drawing.Size(284, 21);
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
-      cbOutputDir.ValueMember = "Value";
       // 
       // FileContainer
       // 
@@ -1845,10 +1843,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 413);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 

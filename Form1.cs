@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
+using System.Collections.Specialized;
 
 namespace ffmpeg_ytdlp_gui
 {
@@ -19,6 +20,7 @@ namespace ffmpeg_ytdlp_gui
   using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
   using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
   using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
+  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>>;
 
   public partial class Form1 : Form
   {
@@ -54,12 +56,8 @@ namespace ffmpeg_ytdlp_gui
       throw new NotImplementedException();
     }
 
-    private void Form1_Load(object sender, EventArgs e)
+    private void InitOutputFolder(StringCollection? folders)
     {
-      SizeMode = ThumbnailBox.SizeMode;
-
-      ActiveControl = ffmpeg;
-      var folders = Settings.Default.outputFolders;
       if (folders != null && folders.Count > 0)
       {
         foreach (string? info in folders)
@@ -71,8 +69,34 @@ namespace ffmpeg_ytdlp_gui
             DirectoryListBindingSource.Add(item);
           }
         }
-        cbOutputDir.SelectedIndex = 0;
       }
+    }
+
+    private IEnumerable<string> GetOutputFolders(StringListItems items)
+    {
+      return items.Where(item => Directory.Exists(item.Value))
+                  .OrderByDescending(item => (DateTime?)item.Data)
+                  .Take(MemoryLength)
+                  .OrderBy(item => item.Value)
+                  .Select(item => $"{item.Value}|{((DateTime?)item.Data).ToString()}");
+    }
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+      SizeMode = ThumbnailBox.SizeMode;
+      ActiveControl = ffmpeg;
+
+      // 元の値を退避
+      string backup = DirectoryListBindingSource.DataMember;
+      DirectoryListBindingSource.DataMember = "Item1";
+      InitOutputFolder(Settings.Default.outputFolders);
+
+      DirectoryListBindingSource.DataMember = "Item2";
+      InitOutputFolder(Settings.Default.downloadFolders);
+
+      // 元に戻す 
+      DirectoryListBindingSource.DataMember = backup;
+      cbOutputDir.SelectedIndex = 0;
 
       if (Settings.Default.ffmpeg?.Count > 0)
       {
@@ -129,15 +153,10 @@ namespace ffmpeg_ytdlp_gui
       Settings.Default.HelpWidth = HelpFormSize.Width;
       Settings.Default.bitrate = vBitrate.Value;
 
-      var items =
-        OutputDirectoryList
-          ?.Where(item => Directory.Exists(item.Value))
-          .OrderByDescending(item => (DateTime?)item.Data)
-          .Take(MemoryLength)
-          .OrderBy(item => item.Value)
-          .Select(item => $"{item.Value}|{((DateTime?)item.Data).ToString()}");
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet ?? throw new Exception("DataSource not initialized yet");
 
-      Settings.Default.outputFolders = [.. items];
+      Settings.Default.outputFolders = [.. GetOutputFolders(set.Item1)];
+      Settings.Default.downloadFolders = [.. GetOutputFolders(set.Item2)];
 
       // ffmpegパス
       Settings.Default.ffmpeg = [.. ffmpeg.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
@@ -202,8 +221,9 @@ namespace ffmpeg_ytdlp_gui
       if (DialogResult.Cancel == FindFolder.ShowDialog())
         return;
 
-      if (OutputDirectoryList!.Any(item => item.Value == FindFolder.SelectedPath))
-        cbOutputDir.SelectedValue = FindFolder.SelectedPath;
+      var selectedItem = OutputDirectoryList!.FirstOrDefault(item => item.Value == FindFolder.SelectedPath);
+      if (selectedItem != null)
+        cbOutputDir.SelectedItem = selectedItem;
       else
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(FindFolder.SelectedPath, DateTime.Now));
     }
@@ -924,6 +944,18 @@ namespace ffmpeg_ytdlp_gui
       bool IsNotDownloader = Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader";
       InputBox.Enabled = IsNotDownloader;
       FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = IsNotDownloader;
+
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet ?? throw new Exception("DataSource is not initialize yet");
+      if (IsNotDownloader)
+      {
+        DirectoryListBindingSource.DataMember = "Item1";
+        OutputDirectoryList = set?.Item1 ?? throw new Exception("Item not initialize");
+      }
+      else
+      {
+        DirectoryListBindingSource.DataMember = "Item2";
+        OutputDirectoryList = set?.Item2 ?? throw new Exception("Item not initialize");
+      }
     }
 
     private void LinkYdlOutputTemplate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
