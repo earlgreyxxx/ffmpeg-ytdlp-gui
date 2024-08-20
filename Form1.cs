@@ -96,7 +96,8 @@ namespace ffmpeg_ytdlp_gui
 
       // 元に戻す 
       DirectoryListBindingSource.DataMember = backup;
-      cbOutputDir.SelectedIndex = 0;
+      if(cbOutputDir.Items.Count > 0)
+        cbOutputDir.SelectedIndex = 0;
 
       if (Settings.Default.ffmpeg?.Count > 0)
       {
@@ -1052,8 +1053,18 @@ namespace ffmpeg_ytdlp_gui
         var bindingSource = cb?.DataSource as BindingSource;
         if (bindingSource != null)
         {
-          var form = new ListEditor(bindingSource!);
-          form.ShowDialog();
+          ListItemType type;
+          if (cb?.Name == "cbOutputDir")
+            type = ListItemType.FileOrDirectory;
+          else if (cb?.Name == "OutputFileFormat")
+            type = ListItemType.PlainText;
+          else
+            throw new Exception("Can not detect ListItemType");
+
+          using (var form = new ListEditor(bindingSource!, type))
+          {
+            form.ShowDialog();
+          }
         }
       }
     }
