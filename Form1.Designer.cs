@@ -175,6 +175,7 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      MediaTitle = new System.Windows.Forms.TextBox();
       linkLabel3 = new System.Windows.Forms.LinkLabel();
       OutputFileFormat = new System.Windows.Forms.ComboBox();
       DownloadUrl = new System.Windows.Forms.ComboBox();
@@ -194,7 +195,6 @@
       CookiePath = new System.Windows.Forms.TextBox();
       LinkYdlOutputTemplate = new System.Windows.Forms.LinkLabel();
       UseCookie = new System.Windows.Forms.ComboBox();
-      MediaTitle = new System.Windows.Forms.Label();
       SubmitOpenCookie = new System.Windows.Forms.Button();
       ThumbnailBox = new System.Windows.Forms.PictureBox();
       label28 = new System.Windows.Forms.Label();
@@ -1823,6 +1823,7 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(MediaTitle);
       PageDownloader.Controls.Add(linkLabel3);
       PageDownloader.Controls.Add(OutputFileFormat);
       PageDownloader.Controls.Add(DownloadUrl);
@@ -1835,7 +1836,6 @@
       PageDownloader.Controls.Add(CookiePath);
       PageDownloader.Controls.Add(LinkYdlOutputTemplate);
       PageDownloader.Controls.Add(UseCookie);
-      PageDownloader.Controls.Add(MediaTitle);
       PageDownloader.Controls.Add(SubmitOpenCookie);
       PageDownloader.Controls.Add(ThumbnailBox);
       PageDownloader.Controls.Add(label28);
@@ -1843,12 +1843,26 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
+      // 
+      // MediaTitle
+      // 
+      MediaTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      MediaTitle.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      MediaTitle.ImeMode = System.Windows.Forms.ImeMode.Disable;
+      MediaTitle.Location = new System.Drawing.Point(14, 338);
+      MediaTitle.Multiline = true;
+      MediaTitle.Name = "MediaTitle";
+      MediaTitle.PlaceholderText = "メディアタイトル";
+      MediaTitle.ReadOnly = true;
+      MediaTitle.Size = new System.Drawing.Size(416, 67);
+      MediaTitle.TabIndex = 0;
+      MediaTitle.TabStop = false;
       // 
       // linkLabel3
       // 
@@ -2065,16 +2079,6 @@
       UseCookie.TabIndex = 13;
       UseCookie.ValueMember = "Value";
       UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
-      // 
-      // MediaTitle
-      // 
-      MediaTitle.AutoEllipsis = true;
-      MediaTitle.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      MediaTitle.Location = new System.Drawing.Point(14, 338);
-      MediaTitle.Name = "MediaTitle";
-      MediaTitle.Size = new System.Drawing.Size(416, 69);
-      MediaTitle.TabIndex = 12;
-      MediaTitle.Text = "メディアタイトル";
       // 
       // SubmitOpenCookie
       // 
@@ -2479,7 +2483,6 @@
     private System.Windows.Forms.ComboBox AudioOnlyFormat;
     private System.Windows.Forms.Label label23;
     private System.Windows.Forms.ComboBox MovieFormat;
-    private System.Windows.Forms.Label MediaTitle;
     private System.Windows.Forms.ComboBox UseCookie;
     private System.Windows.Forms.Label label0;
     private System.Windows.Forms.Label label28;
@@ -2527,6 +2530,7 @@
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemClear;
     private System.Windows.Forms.LinkLabel linkLabel3;
     private System.Windows.Forms.LinkLabel linkLabel4;
+    private System.Windows.Forms.TextBox MediaTitle;
   }
 }
 

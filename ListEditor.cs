@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -110,8 +109,6 @@ namespace ffmpeg_ytdlp_gui
             break;
 
           case ListItemType.FileOrDirectory:
-            Debug.WriteLine(string.Join('|', dataObject.GetFormats()));
-
             if (dataObject.GetDataPresent(DataFormats.FileDrop))
             {
               var pathes = dataObject.GetData(DataFormats.FileDrop) as string[];
