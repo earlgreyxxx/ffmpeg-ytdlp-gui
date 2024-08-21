@@ -119,7 +119,7 @@ namespace ffmpeg_ytdlp_gui
                 throw new Exception("Data length is zero");
 
               foreach (var path in pathes!.Where(IsValidDirectory))
-                items?.Add(new StringListItem(path));
+                items?.Add(new StringListItem(path, DateTime.Now));
             }
             break;
 
