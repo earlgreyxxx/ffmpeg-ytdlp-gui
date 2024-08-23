@@ -167,25 +167,25 @@ namespace ffmpeg_ytdlp_gui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int HelpWidth {
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public int OutputWindowWidth {
             get {
-                return ((int)(this["HelpWidth"]));
+                return ((int)(this["OutputWindowWidth"]));
             }
             set {
-                this["HelpWidth"] = value;
+                this["OutputWindowWidth"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int HelpHeight {
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public int OutputWindowHeight {
             get {
-                return ((int)(this["HelpHeight"]));
+                return ((int)(this["OutputWindowHeight"]));
             }
             set {
-                this["HelpHeight"] = value;
+                this["OutputWindowHeight"] = value;
             }
         }
         

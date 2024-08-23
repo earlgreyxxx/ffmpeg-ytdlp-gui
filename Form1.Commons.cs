@@ -80,7 +80,7 @@ namespace ffmpeg_ytdlp_gui
 
     // Instance members
     // ---------------------------------------------------------------------------------
-   
+
     private void InitializeSettingsBinding()
     {
       CookiePath.DataBindings.Add("Text", Settings.Default, "cookiePath");
@@ -418,6 +418,9 @@ namespace ffmpeg_ytdlp_gui
       if (IsOpenStderr.Checked)
       {
         var form = new StdoutForm();
+        form.FormClosing += StdoutFormClosingAction;
+        form.Load += StdoutFormLoadAction;
+
         Action<string> dataReceiver = data =>
         {
           if (string.IsNullOrEmpty(data))
@@ -666,19 +669,9 @@ namespace ffmpeg_ytdlp_gui
       }
 
       var form = new StdoutForm(executable, arg, formTitle);
-
-      if (HelpFormSize.Width > 0 && HelpFormSize.Height > 0)
-      {
-        form.Width = HelpFormSize.Width;
-        form.Height = HelpFormSize.Height;
-      }
-
+      form.Load += StdoutFormLoadAction;
+      form.FormClosing += StdoutFormClosingAction;
       form.Shown += (s, e) => form?.Redirected?.Start();
-      form.FormClosing += (s, e) =>
-      {
-        HelpFormSize.Width = form.Width;
-        HelpFormSize.Height = form.Height;
-      };
 
       form.Show();
     }

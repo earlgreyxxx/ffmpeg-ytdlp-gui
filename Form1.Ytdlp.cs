@@ -180,6 +180,9 @@ namespace ffmpeg_ytdlp_gui
           {
             var form = ytdlpfm;
             ytdlpfm = new StdoutForm();
+            ytdlpfm.Load += StdoutFormLoadAction;
+            ytdlpfm.FormClosing += StdoutFormClosingAction;
+
             ytdlpfm.FormClosed += (sender, e) =>
             {
               // 新しい StdoutForm が生成されていなければ NULL を代入

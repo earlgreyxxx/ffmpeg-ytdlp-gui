@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
@@ -31,7 +32,7 @@ namespace ffmpeg_ytdlp_gui
     private StringListItems? DeInterlacesCuvid;
     private StringListItems? InputFileList;
     private StringListItems? OutputDirectoryList;
-    private Size HelpFormSize = new(0, 0);
+    private Size StdoutFormSize = new(0, 0);
     private FFmpegBatchList? BatchList;
     private PictureBoxSizeMode? SizeMode;
 
@@ -49,6 +50,35 @@ namespace ffmpeg_ytdlp_gui
       InitializeYtdlpQueue();
 
       ChangeCurrentDirectory();
+    }
+
+    /// <summary>
+    /// 出力フォームのサイズを設定
+    /// </summary>
+    private void StdoutFormLoadAction(Object? sender, EventArgs? e)
+    {
+      var form = sender as Form ?? throw new Exception("Form not initialized");
+
+      if (StdoutFormSize.Width > 0 && StdoutFormSize.Height > 0)
+      {
+        form.Width = StdoutFormSize.Width;
+        form.Height = StdoutFormSize.Height;
+      }
+    }
+
+    /// <summary>
+    /// 出力フォームのサイズを保存
+    /// </summary>
+    private readonly object _locking = new();
+    private void StdoutFormClosingAction(Object? sender, EventArgs? e)
+    {
+      var form = sender as Form ?? throw new Exception("Form not initialized");
+
+      lock (_locking)
+      {
+        StdoutFormSize.Width = form.Width;
+        StdoutFormSize.Height = form.Height;
+      }
     }
 
     private void ThumbnailBox_ChangeUICues(object sender, UICuesEventArgs e)
@@ -132,8 +162,8 @@ namespace ffmpeg_ytdlp_gui
       chkCrop_CheckedChanged(this, new EventArgs());
       cbDevices_SelectedIndexChanged(this, new EventArgs());
 
-      HelpFormSize.Width = Settings.Default.HelpWidth;
-      HelpFormSize.Height = Settings.Default.HelpHeight;
+      StdoutFormSize.Width = Settings.Default.OutputWindowWidth;
+      StdoutFormSize.Height = Settings.Default.OutputWindowHeight;
 
       FilePrefix.Text = FileSuffix.Text = string.Empty;
 
@@ -150,8 +180,8 @@ namespace ffmpeg_ytdlp_gui
       }
       Settings.Default.outputFolders = null;
       Settings.Default.ffmpeg = null;
-      Settings.Default.HelpHeight = HelpFormSize.Height;
-      Settings.Default.HelpWidth = HelpFormSize.Width;
+      Settings.Default.OutputWindowHeight = StdoutFormSize.Height;
+      Settings.Default.OutputWindowWidth = StdoutFormSize.Width;
       Settings.Default.bitrate = vBitrate.Value;
 
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet ?? throw new Exception("DataSource not initialized yet");
