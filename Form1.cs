@@ -96,7 +96,7 @@ namespace ffmpeg_ytdlp_gui
 
       // 元に戻す 
       DirectoryListBindingSource.DataMember = backup;
-      if(cbOutputDir.Items.Count > 0)
+      if (cbOutputDir.Items.Count > 0)
         cbOutputDir.SelectedIndex = 0;
 
       if (Settings.Default.ffmpeg?.Count > 0)
@@ -1046,25 +1046,33 @@ namespace ffmpeg_ytdlp_gui
     {
       string target = (sender as LinkLabel)?.Tag?.ToString()!;
 
-      var controls = Controls.Find(target,true);
+      var controls = Controls.Find(target, true);
       if (controls.Length > 0)
       {
         var cb = controls[0] as ComboBox;
         var bindingSource = cb?.DataSource as BindingSource;
         if (bindingSource != null)
         {
-          ListItemType type;
-          if (cb?.Name == "cbOutputDir")
-            type = ListItemType.FileOrDirectory;
-          else if (cb?.Name == "OutputFileFormat")
-            type = ListItemType.PlainText;
-          else
-            throw new Exception("Can not detect ListItemType");
+          Tuple<string, ListItemType> property;
 
-          using (var form = new ListEditor(bindingSource!, type))
-          {
-            form.ShowDialog();
-          }
+          if (cb?.Name == "cbOutputDir")
+            property = new Tuple<string, ListItemType>("出力フォルダ一覧", ListItemType.FileOrDirectory);
+          else if (cb?.Name == "OutputFileFormat")
+            property = new Tuple<string, ListItemType>("出力ファイル名テンプレート一覧", ListItemType.PlainText);
+          else
+            return;
+
+          var form = new ListEditor(bindingSource!, property.Item2);
+          var listbox = form.GetListEditorControl();
+
+          form.TopMost = true;
+          form.Text = property.Item1;
+          form.FormClosing += (s, e) => listbox.SelectionMode = SelectionMode.One;
+
+          listbox.SelectionMode = SelectionMode.MultiExtended;
+
+          form.ShowDialog();
+          bindingSource.ResetBindings(false);
         }
       }
     }

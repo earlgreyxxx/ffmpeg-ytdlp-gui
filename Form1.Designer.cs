@@ -1867,7 +1867,7 @@
       // linkLabel3
       // 
       linkLabel3.AutoSize = true;
-      linkLabel3.Location = new System.Drawing.Point(567, 361);
+      linkLabel3.Location = new System.Drawing.Point(597, 362);
       linkLabel3.Name = "linkLabel3";
       linkLabel3.Size = new System.Drawing.Size(53, 12);
       linkLabel3.TabIndex = 44;
@@ -2107,9 +2107,9 @@
       label28.AutoSize = true;
       label28.Location = new System.Drawing.Point(462, 362);
       label28.Name = "label28";
-      label28.Size = new System.Drawing.Size(99, 12);
+      label28.Size = new System.Drawing.Size(129, 12);
       label28.TabIndex = 5;
-      label28.Text = "保存ファイル名規則";
+      label28.Text = "出力ファイル名テンプレート";
       // 
       // SubmitConfirmFormat
       // 

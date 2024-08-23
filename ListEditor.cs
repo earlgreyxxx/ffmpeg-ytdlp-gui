@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -101,9 +102,11 @@ namespace ffmpeg_ytdlp_gui
               if (string.IsNullOrEmpty(lines))
                 throw new Exception("Data is empty or null");
 
-              foreach (var line in lines.Split(Environment.NewLine.ToCharArray()).Where(str => !string.IsNullOrEmpty(str.Trim())))
+              foreach (var _ in lines.Split(Environment.NewLine.ToCharArray()).Where(str => !string.IsNullOrEmpty(str.Trim())))
               {
-                items?.Add(line.Trim());
+                string line = _.Trim();
+                if (false == items?.Contains(line))
+                  items?.Add(line);
               }
             }
             break;
@@ -115,8 +118,12 @@ namespace ffmpeg_ytdlp_gui
               if (pathes == null || pathes?.Length <= 0)
                 throw new Exception("Data length is zero");
 
+              var srclist = items?.List;
               foreach (var path in pathes!.Where(IsValidDirectory))
-                items?.Add(new StringListItem(path, DateTime.Now));
+              {
+                if(false == srclist?.Cast<StringListItem>().Any(item => item.Value == path))
+                  items?.Add(new StringListItem(path, DateTime.Now));
+              }
             }
             break;
 
@@ -138,6 +145,11 @@ namespace ffmpeg_ytdlp_gui
     private void MenuItemPaste_Click(object sender, EventArgs e)
     {
       AddItems(Clipboard.GetDataObject());
+    }
+
+    public ListBox GetListEditorControl()
+    {
+      return ListEditItems;
     }
   }
 }

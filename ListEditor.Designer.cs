@@ -33,9 +33,9 @@
       ListEditItems = new System.Windows.Forms.ListBox();
       ContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       MenuItemPaste = new System.Windows.Forms.ToolStripMenuItem();
+      MenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
       SubmitDelete = new System.Windows.Forms.Button();
       SubmitClear = new System.Windows.Forms.Button();
-      MenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
       ContextMenu.SuspendLayout();
       SuspendLayout();
       // 
@@ -58,7 +58,6 @@
       ListEditItems.ImeMode = System.Windows.Forms.ImeMode.Disable;
       ListEditItems.Location = new System.Drawing.Point(12, 12);
       ListEditItems.Name = "ListEditItems";
-      ListEditItems.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
       ListEditItems.Size = new System.Drawing.Size(484, 184);
       ListEditItems.TabIndex = 1;
       ListEditItems.DragDrop += ListEditItems_DragDrop;
@@ -70,15 +69,22 @@
       ContextMenu.Name = "ContextMenu";
       ContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
       ContextMenu.ShowImageMargin = false;
-      ContextMenu.Size = new System.Drawing.Size(156, 70);
+      ContextMenu.Size = new System.Drawing.Size(117, 48);
       ContextMenu.Opening += ContextMenu_Opening;
       // 
       // MenuItemPaste
       // 
       MenuItemPaste.Name = "MenuItemPaste";
-      MenuItemPaste.Size = new System.Drawing.Size(155, 22);
+      MenuItemPaste.Size = new System.Drawing.Size(116, 22);
       MenuItemPaste.Text = "ペースト(&p)";
       MenuItemPaste.Click += MenuItemPaste_Click;
+      // 
+      // MenuItemDelete
+      // 
+      MenuItemDelete.Name = "MenuItemDelete";
+      MenuItemDelete.Size = new System.Drawing.Size(116, 22);
+      MenuItemDelete.Text = "削除";
+      MenuItemDelete.Click += SubmitDelete_Click;
       // 
       // SubmitDelete
       // 
@@ -102,13 +108,6 @@
       SubmitClear.UseVisualStyleBackColor = true;
       SubmitClear.Click += SubmitClear_Click;
       // 
-      // MenuItemDelete
-      // 
-      MenuItemDelete.Name = "MenuItemDelete";
-      MenuItemDelete.Size = new System.Drawing.Size(155, 22);
-      MenuItemDelete.Text = "削除";
-      MenuItemDelete.Click += SubmitDelete_Click;
-      // 
       // ListEditor
       // 
       AutoScaleDimensions = new System.Drawing.SizeF(7F, 18F);
@@ -124,7 +123,6 @@
       Name = "ListEditor";
       ShowIcon = false;
       ShowInTaskbar = false;
-      Text = "リスト編集";
       ContextMenu.ResumeLayout(false);
       ResumeLayout(false);
     }

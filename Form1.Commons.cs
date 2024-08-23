@@ -80,7 +80,7 @@ namespace ffmpeg_ytdlp_gui
 
     // Instance members
     // ---------------------------------------------------------------------------------
-
+   
     private void InitializeSettingsBinding()
     {
       CookiePath.DataBindings.Add("Text", Settings.Default, "cookiePath");
