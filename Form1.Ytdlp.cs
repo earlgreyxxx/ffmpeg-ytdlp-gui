@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -12,7 +11,6 @@ namespace ffmpeg_ytdlp_gui
 {
   using StringListItem = ListItem<string>;
   using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image?>;
-  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
 
   partial class Form1 
   {
