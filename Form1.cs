@@ -59,10 +59,7 @@ namespace ffmpeg_ytdlp_gui
       var form = sender as Form ?? throw new Exception("Form not initialized");
 
       if (StdoutFormSize.Width > 0 && StdoutFormSize.Height > 0)
-      {
-        form.Width = StdoutFormSize.Width;
-        form.Height = StdoutFormSize.Height;
-      }
+        form.Size = StdoutFormSize;
     }
 
     /// <summary>
@@ -75,8 +72,7 @@ namespace ffmpeg_ytdlp_gui
 
       lock (_locking)
       {
-        StdoutFormSize.Width = form.Width;
-        StdoutFormSize.Height = form.Height;
+        StdoutFormSize = form.Size;
       }
     }
 
@@ -226,20 +222,30 @@ namespace ffmpeg_ytdlp_gui
         return;
       }
 
-      if (FileListBindingSource.Count > 0)
+      try
       {
-        btnSubmitInvoke.Enabled = false;
-        var command = CreateCommand(chkAudioOnly.Checked);
-        if (FileName.Text.Trim() != "元ファイル名")
-          command.OutputBaseName(FileName.Text);
+        if (FileListBindingSource.Count > 0)
+        {
+          btnSubmitInvoke.Enabled = false;
+          var command = CreateCommand(chkAudioOnly.Checked);
+          if (FileName.Text.Trim() != "元ファイル名")
+            command.OutputBaseName(FileName.Text);
 
-        OnBeginProcess();
-        var process = CreateFFmpegProcess(command);
-        if (process == null)
-          return;
+          OnBeginProcess();
+          var process = CreateFFmpegProcess(command);
+          if (process == null)
+            return;
 
-        process.PreProcess += RuntimeSetting;
-        process.Begin();
+          process.PreProcess += RuntimeSetting;
+          process.Begin();
+        }
+      }
+      catch (Exception exception)
+      {
+        Proceeding = null;
+        MessageBox.Show($"{exception.Message}\nプログラムを終了します。");
+        Close();
+        return;
       }
     }
 
