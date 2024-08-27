@@ -24,7 +24,7 @@ namespace ffmpeg_ytdlp_gui.libs
             return command.GetCommandLine(path);
           }
         )
-      );
+      ).Where(commandline => !string.IsNullOrEmpty(commandline));
 
       sb.AppendLine("@ECHO OFF");
       foreach (var commandline in commandlines)
@@ -416,22 +416,25 @@ namespace ffmpeg_ytdlp_gui.libs
       return this;
     }
 
-    public string GetCommandLineArguments(string strInputPath)
+    public string? GetCommandLineArguments(string strInputPath)
     {
       var args = GetArguments(strInputPath);
-      return string.Join(" ", args.ToArray());
+
+      return args == null ? null : string.Join(" ", args.ToArray());
     }
 
-    public string GetCommandLine(string strInputPath)
+    public string? GetCommandLine(string strInputPath)
     {
       string command = ffmpegPath ?? string.Empty;
       if (HasSpace().IsMatch(ffmpegPath ?? string.Empty))
         command = $"\"{ffmpegPath}\"";
 
-      return $"{command} {GetCommandLineArguments(strInputPath)}";
+      var arguments = GetCommandLineArguments(strInputPath);
+
+      return arguments == null ? null : $"{command} {arguments}";
     }
 
-    public IEnumerable<string> GetArguments(string strInputPath)
+    public IEnumerable<string>? GetArguments(string strInputPath)
     {
       InputPath = strInputPath;
       var args = this.ToList();
@@ -439,7 +442,8 @@ namespace ffmpeg_ytdlp_gui.libs
       string strOutputFileName = CreateOutputFileName(strInputPath);
       string strOutputFilePath = Path.Combine(OutputPath ?? string.Empty, strOutputFileName);
       if (strOutputFilePath == strInputPath)
-        throw new Exception("入力ファイルと出力ファイルが同じです。");
+        return null;
+        //throw new Exception("入力ファイルと出力ファイルが同じです。");
 
       args.Add($"\"{strOutputFilePath}\"");
 
@@ -448,7 +452,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public string CreateBatch(string filename,IEnumerable<string> files)
     {
-      var commandlines = files.Select(file => GetCommandLine(file));
+      var commandlines = files.Select(file => GetCommandLine(file)).Where(file => !string.IsNullOrEmpty(file));
       var sb = new StringBuilder();
       sb.AppendLine("@ECHO OFF");
       foreach (var commandline in commandlines)

@@ -222,30 +222,20 @@ namespace ffmpeg_ytdlp_gui
         return;
       }
 
-      try
+      if (FileListBindingSource.Count > 0)
       {
-        if (FileListBindingSource.Count > 0)
-        {
-          btnSubmitInvoke.Enabled = false;
-          var command = CreateCommand(chkAudioOnly.Checked);
-          if (FileName.Text.Trim() != "元ファイル名")
-            command.OutputBaseName(FileName.Text);
+        btnSubmitInvoke.Enabled = false;
+        var command = CreateCommand(chkAudioOnly.Checked);
+        if (FileName.Text.Trim() != "元ファイル名")
+          command.OutputBaseName(FileName.Text);
 
-          OnBeginProcess();
-          var process = CreateFFmpegProcess(command);
-          if (process == null)
-            return;
+        OnBeginProcess();
+        var process = CreateFFmpegProcess(command);
+        if (process == null)
+          return;
 
-          process.PreProcess += RuntimeSetting;
-          process.Begin();
-        }
-      }
-      catch (Exception exception)
-      {
-        Proceeding = null;
-        MessageBox.Show($"{exception.Message}\nプログラムを終了します。");
-        Close();
-        return;
+        process.PreProcess += RuntimeSetting;
+        process.Begin();
       }
     }
 
@@ -274,7 +264,7 @@ namespace ffmpeg_ytdlp_gui
       if (!string.IsNullOrEmpty(cbOutputDir.Text) && cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList!.Any(item => item.Value == cbOutputDir.Text))
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, cbOutputDir.Text, DateTime.Now));
 
-      Commandlines.Text = ffcommand.GetCommandLine(sampleName);
+      Commandlines.Text = ffcommand.GetCommandLine(sampleName) ?? string.Empty;
     }
 
     private void chkConstantQuality_CheckedChanged(object sender, EventArgs e)
@@ -766,6 +756,9 @@ namespace ffmpeg_ytdlp_gui
 
         process.PreProcess += (command, filename) =>
         {
+          if (command == null)
+            return;
+
           command.clearOptions();
           if (additionals != null && additionals.Count > 0)
             command.setOptions(additionals);

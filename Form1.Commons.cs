@@ -345,8 +345,11 @@ namespace ffmpeg_ytdlp_gui
     /// </summary>
     /// <param name="command"></param>
     /// <param name="filename"></param>
-    private void RuntimeSetting(ffmpeg_command command, string filename)
+    private void RuntimeSetting(ffmpeg_command? command, string filename)
     {
+      if (command == null || !string.IsNullOrEmpty(filename))
+        return;
+
       if (command.bAudioOnly)
         return;
 
@@ -404,7 +407,7 @@ namespace ffmpeg_ytdlp_gui
 
         FileListBindingSource.Remove(item);
       });
-      process.ProcessesDone += () => Invoke(() =>
+      process.ProcessesDone += abnormal => Invoke(() =>
       {
         btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
         OpenLogFile.Enabled = true;
@@ -412,7 +415,8 @@ namespace ffmpeg_ytdlp_gui
           btnSubmitInvoke.Enabled = true;
 
         Proceeding = null;
-        MessageBox.Show("変換処理が終了しました。");
+        if(!abnormal)
+          MessageBox.Show("変換処理が終了しました。");
       });
 
       if (IsOpenStderr.Checked)
@@ -431,7 +435,7 @@ namespace ffmpeg_ytdlp_gui
           else
             form.Invoke(() => form.WriteLine(data));
         };
-        Action processDone = () => form.Invoke(form.OnProcessExit);
+        Action<bool> processDone = b => form.Invoke(form.OnProcessExit);
 
         process.ReceiveData += dataReceiver;
         process.ProcessesDone += processDone;

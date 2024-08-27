@@ -22,12 +22,16 @@ namespace ffmpeg_ytdlp_gui.libs
       );
     }
 
-    protected static RedirectedProcess CreateRedirectedProcess(string filename,ffmpeg_command command)
+    protected static RedirectedProcess? CreateRedirectedProcess(string filename,ffmpeg_command? command)
     {
-      var arguments = command.GetCommandLineArguments(filename);
-      var execfile = command.ffmpegPath ?? throw new NullReferenceException("ffmpegpath is null");
-      Debug.WriteLine($"{execfile} {arguments}");
-      var redirected = new RedirectedProcess(execfile, arguments);
+      string? arguments = command?.GetCommandLineArguments(filename) ?? null;
+      string? execfile = command?.ffmpegPath ?? null;
+
+      Debug.WriteLine($"{execfile} {arguments} on RedirectedProcess.CreateRedirectedProcess");
+      if (string.IsNullOrEmpty(arguments) || string.IsNullOrEmpty(execfile))
+        return null;
+
+      var redirected = new RedirectedProcess(execfile!, arguments);
       var process = redirected.Current as CustomProcess ?? throw new NullReferenceException("Current process is null");
       process.CustomFileName = filename;
       process.StartInfo.Environment.Add("AV_LOG_FORCE_NOCOLOR", "1");
@@ -39,7 +43,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
     // instances
     // ---------------------------------------------------------------------------------------
-    protected BindingSource? FileList;
+    protected BindingSource? FileListBindingSource;
 
     public RedirectedProcess? Redirected { get; protected set; }
 
@@ -47,8 +51,8 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public event Action<string>? ProcessExit;
     public event Action<string>? ReceiveData;
-    public event Action? ProcessesDone;
-    public event Action<ffmpeg_command,string>? PreProcess;
+    public event Action<bool>? ProcessesDone;
+    public event Action<ffmpeg_command?,string>? PreProcess;
 
     public ffmpeg_command? Command { get; protected set; }
     public string? LogFileName { get; set; } = GetLogFileName();
@@ -59,7 +63,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public ffmpeg_process(ffmpeg_command command,BindingSource bs)
     {
       Command = command;
-      FileList = bs;
+      FileListBindingSource = bs;
     }
 
     public ffmpeg_process()
@@ -75,12 +79,13 @@ namespace ffmpeg_ytdlp_gui.libs
       if (!string.IsNullOrEmpty(LogFileName))
         LogWriter = new StreamWriter(LogFileName, true);
 
-      CreateProcess();
+      if (false == CreateProcess() && FileListBindingSource?.Count > 0)
+        CreateProcess();
     }
 
-    protected virtual void CreateProcess()
+    protected virtual bool CreateProcess()
     {
-      var filename = FileList?.OfType<StringListItem>().FirstOrDefault()?.Value;
+      var filename = FileListBindingSource?.OfType<StringListItem>().FirstOrDefault()?.Value;
       if (filename == null)
         throw new Exception("no file");
 
@@ -89,20 +94,31 @@ namespace ffmpeg_ytdlp_gui.libs
         OnProcessExit(filename);
         Redirected = null;
         CreateProcess();
-        return;
+        return true;
       }
 
-      OnPreProcess(Command ?? throw new NullReferenceException("ffmpeg_command is null"), filename);
+      if (null == (Redirected = CreateRedirectedProcess(filename, Command)))
+      {
+        OnProcessesDone(true);
+        var item = FileListBindingSource?.OfType<StringListItem>().FirstOrDefault(item => filename == item.Value);
+        if (item != null)
+          FileListBindingSource?.Remove(item);
 
-      Redirected = CreateRedirectedProcess(filename,Command);
+        return false;
+      }
+
+      OnPreProcess(Command, filename);
+
       Redirected.ProcessExited += OnProcessExited;
       Redirected.StdErrReceived += WriteLog;
       Redirected.StdErrReceived += data => OnReceiveData(data);
       if (!Redirected.Start())
       {
         OnProcessExited(Redirected.Current, new EventArgs());
-        return;
+        return true;
       }
+
+      return true;
     }
 
     public virtual void One(string filename)
@@ -110,9 +126,14 @@ namespace ffmpeg_ytdlp_gui.libs
       if (!string.IsNullOrEmpty(LogFileName))
         LogWriter = new StreamWriter(LogFileName, false);
 
-      OnPreProcess(Command ?? throw new NullReferenceException("ffmpeg_command is null"), filename);
+      if (null == (Redirected = CreateRedirectedProcess(filename, Command)))
+      {
+        OnAllProcessExited(null, null);
+        return;
+      }
 
-      Redirected = CreateRedirectedProcess(filename,Command);
+      OnPreProcess(Command, filename);
+
       Redirected.ProcessExited += OnAllProcessExited;
       Redirected.StdErrReceived += WriteLog;
       Redirected.StdErrReceived += data => OnReceiveData(data);
@@ -132,15 +153,18 @@ namespace ffmpeg_ytdlp_gui.libs
       LogWriter?.WriteLine(data);
     }
 
-    private void OnProcessExited(object sender, EventArgs e)
+    private void OnProcessExited(object? sender, EventArgs? e)
     {
       try
       {
-        var process = Redirected?.Current as CustomProcess ?? throw new NullReferenceException("Current process is null");
-        string? filename = process.CustomFileName ?? throw new NullReferenceException("Custom process has no CustomFileName");
-        OnProcessExit(filename);
+        var process = Redirected?.Current as CustomProcess ?? null;
+        string? filename = process?.CustomFileName ?? null;
+        if (process != null && !string.IsNullOrEmpty(filename))
+          OnProcessExit(filename);
+
         Redirected = null;
-        CreateProcess();
+        if(false == CreateProcess())
+          throw new Exception("入力および出力のファイルパスが同じファイルを指しています。");
       }
       catch
       {
@@ -148,11 +172,11 @@ namespace ffmpeg_ytdlp_gui.libs
       }
     }
 
-    private void OnAllProcessExited(object sender, EventArgs e)
+    private void OnAllProcessExited(object? sender, EventArgs? e)
     {
       OnProcessesDone();
-      FileList?.Clear();
-      FileList?.ResetBindings(false);
+      FileListBindingSource?.Clear();
+      FileListBindingSource?.ResetBindings(false);
       LogWriter?.Flush();
       LogWriter?.Dispose();
       LogWriter = null;
@@ -161,7 +185,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public void Kill(bool stopAll = false)
     {
       if (stopAll)
-        FileList?.Clear();
+        FileListBindingSource?.Clear();
 
       if (Redirected == null || Redirected.Current.HasExited)
         return;
@@ -178,11 +202,11 @@ namespace ffmpeg_ytdlp_gui.libs
     {
       ReceiveData?.Invoke(data);
     }
-    public virtual void OnProcessesDone()
+    public virtual void OnProcessesDone(bool abnormal = false)
     {
-      ProcessesDone?.Invoke();
+      ProcessesDone?.Invoke(abnormal);
     }
-    protected void OnPreProcess(ffmpeg_command command,string filename)
+    protected void OnPreProcess(ffmpeg_command? command,string filename)
     {
       PreProcess?.Invoke(command,filename);
     }
