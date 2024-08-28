@@ -19,7 +19,7 @@ namespace ffmpeg_ytdlp_gui
       InitializeComponent();
     }
 
-    public ListEditor(BindingSource bindingSource,ListItemType type) : this()
+    public ListEditor(BindingSource bindingSource, ListItemType type) : this()
     {
       ListEditItems.DataSource = bindingSource;
       EditorItemType = type;
@@ -34,7 +34,7 @@ namespace ffmpeg_ytdlp_gui
     {
       var items = ListEditItems.DataSource as BindingSource;
       var result = MessageBox.Show("全て削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel);
-      if(result == DialogResult.OK)
+      if (result == DialogResult.OK)
         items?.Clear();
     }
 
@@ -73,15 +73,17 @@ namespace ffmpeg_ytdlp_gui
       {
         case ListItemType.PlainText:
           MenuItemPaste.Enabled = DataObject.GetDataPresent(DataFormats.UnicodeText);
+          MenuItemOpen.Enabled = MenuItemOpen.Visible = false;
           break;
 
         case ListItemType.FileOrDirectory:
           MenuItemPaste.Enabled = DataObject.GetDataPresent(DataFormats.FileDrop);
+          MenuItemOpen.Enabled = MenuItemOpen.Visible = true;
           break;
       }
     }
 
-    private Func<string, bool> IsValidDirectory = path => !string.IsNullOrEmpty(path) && 
+    private Func<string, bool> IsValidDirectory = path => !string.IsNullOrEmpty(path) &&
                                                           File.GetAttributes(path).HasFlag(FileAttributes.Directory) &&
                                                           Directory.Exists(path);
 
@@ -90,7 +92,7 @@ namespace ffmpeg_ytdlp_gui
       var items = ListEditItems.DataSource as BindingSource;
       try
       {
-        if(dataObject == null)
+        if (dataObject == null)
           throw new ArgumentNullException(nameof(dataObject));
 
         switch (EditorItemType)
@@ -121,7 +123,7 @@ namespace ffmpeg_ytdlp_gui
               var srclist = items?.List;
               foreach (var path in pathes!.Where(IsValidDirectory))
               {
-                if(false == srclist?.Cast<StringListItem>().Any(item => item.Value == path))
+                if (false == srclist?.Cast<StringListItem>().Any(item => item.Value == path))
                   items?.Add(new StringListItem(path, DateTime.Now));
               }
             }
@@ -150,6 +152,31 @@ namespace ffmpeg_ytdlp_gui
     public ListBox GetListEditorControl()
     {
       return ListEditItems;
+    }
+
+    private void ListEditItems_DoubleClick(object sender, EventArgs e)
+    {
+      var listbox = sender as ListBox;
+
+      switch (EditorItemType)
+      {
+        case ListItemType.FileOrDirectory:
+          var item = listbox?.SelectedItem as StringListItem;
+          if (item == null)
+            return;
+
+          CustomProcess.ShellExecute(item.Value);
+          break;
+
+        case ListItemType.PlainText:
+          break;
+      }
+    }
+
+    private void MenuItemOpen_Click(object sender, EventArgs e)
+    {
+      foreach(StringListItem item in ListEditItems.SelectedItems)
+        CustomProcess.ShellExecute(item.Value);
     }
   }
 }

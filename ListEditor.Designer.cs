@@ -36,6 +36,8 @@
       MenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
       SubmitDelete = new System.Windows.Forms.Button();
       SubmitClear = new System.Windows.Forms.Button();
+      MenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       ContextMenu.SuspendLayout();
       SuspendLayout();
       // 
@@ -62,27 +64,28 @@
       ListEditItems.TabIndex = 1;
       ListEditItems.DragDrop += ListEditItems_DragDrop;
       ListEditItems.DragEnter += ListEditItems_DragEnter;
+      ListEditItems.DoubleClick += ListEditItems_DoubleClick;
       // 
       // ContextMenu
       // 
-      ContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { MenuItemPaste, MenuItemDelete });
+      ContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { MenuItemOpen, MenuItemPaste, toolStripSeparator1, MenuItemDelete });
       ContextMenu.Name = "ContextMenu";
       ContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
       ContextMenu.ShowImageMargin = false;
-      ContextMenu.Size = new System.Drawing.Size(117, 48);
+      ContextMenu.Size = new System.Drawing.Size(156, 98);
       ContextMenu.Opening += ContextMenu_Opening;
       // 
       // MenuItemPaste
       // 
       MenuItemPaste.Name = "MenuItemPaste";
-      MenuItemPaste.Size = new System.Drawing.Size(116, 22);
+      MenuItemPaste.Size = new System.Drawing.Size(155, 22);
       MenuItemPaste.Text = "ペースト(&p)";
       MenuItemPaste.Click += MenuItemPaste_Click;
       // 
       // MenuItemDelete
       // 
       MenuItemDelete.Name = "MenuItemDelete";
-      MenuItemDelete.Size = new System.Drawing.Size(116, 22);
+      MenuItemDelete.Size = new System.Drawing.Size(155, 22);
       MenuItemDelete.Text = "削除";
       MenuItemDelete.Click += SubmitDelete_Click;
       // 
@@ -107,6 +110,18 @@
       SubmitClear.Text = "クリア";
       SubmitClear.UseVisualStyleBackColor = true;
       SubmitClear.Click += SubmitClear_Click;
+      // 
+      // MenuItemOpen
+      // 
+      MenuItemOpen.Name = "MenuItemOpen";
+      MenuItemOpen.Size = new System.Drawing.Size(155, 22);
+      MenuItemOpen.Text = "開く";
+      MenuItemOpen.Click += MenuItemOpen_Click;
+      // 
+      // toolStripSeparator1
+      // 
+      toolStripSeparator1.Name = "toolStripSeparator1";
+      toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
       // 
       // ListEditor
       // 
@@ -136,5 +151,7 @@
     private System.Windows.Forms.ContextMenuStrip ContextMenu;
     private System.Windows.Forms.ToolStripMenuItem MenuItemPaste;
     private System.Windows.Forms.ToolStripMenuItem MenuItemDelete;
+    private System.Windows.Forms.ToolStripMenuItem MenuItemOpen;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
   }
 }
