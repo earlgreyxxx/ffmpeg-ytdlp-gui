@@ -23,6 +23,16 @@ namespace ffmpeg_ytdlp_gui
     {
       ListEditItems.DataSource = bindingSource;
       EditorItemType = type;
+      switch (type)
+      {
+        case ListItemType.FileOrDirectory:
+          ContextMenuStrip = DirectoryContextMenu;
+          break;
+
+        case ListItemType.PlainText:
+          ContextMenuStrip = PlainTextContextMenu;
+          break;
+      }
     }
 
     private void SubmitClose_Click(object sender, EventArgs e)
@@ -72,13 +82,11 @@ namespace ffmpeg_ytdlp_gui
       switch (EditorItemType)
       {
         case ListItemType.PlainText:
-          MenuItemPaste.Enabled = DataObject.GetDataPresent(DataFormats.UnicodeText);
-          MenuItemOpen.Enabled = MenuItemOpen.Visible = false;
+          MenuItemDirectoryPaste.Enabled = DataObject.GetDataPresent(DataFormats.UnicodeText);
           break;
 
         case ListItemType.FileOrDirectory:
-          MenuItemPaste.Enabled = DataObject.GetDataPresent(DataFormats.FileDrop);
-          MenuItemOpen.Enabled = MenuItemOpen.Visible = true;
+          MenuItemDirectoryPaste.Enabled = DataObject.GetDataPresent(DataFormats.FileDrop);
           break;
       }
     }

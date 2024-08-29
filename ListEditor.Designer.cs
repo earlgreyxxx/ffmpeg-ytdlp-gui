@@ -31,14 +31,19 @@
       components = new System.ComponentModel.Container();
       SubmitClose = new System.Windows.Forms.Button();
       ListEditItems = new System.Windows.Forms.ListBox();
-      ContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
-      MenuItemPaste = new System.Windows.Forms.ToolStripMenuItem();
-      MenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
+      DirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+      MenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
+      MenuItemDirectoryPaste = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      MenuItemDirectoryDelete = new System.Windows.Forms.ToolStripMenuItem();
       SubmitDelete = new System.Windows.Forms.Button();
       SubmitClear = new System.Windows.Forms.Button();
-      MenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
-      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-      ContextMenu.SuspendLayout();
+      PlainTextContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+      MenuItemTextPaste = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+      MenuItemTextDelete = new System.Windows.Forms.ToolStripMenuItem();
+      DirectoryContextMenu.SuspendLayout();
+      PlainTextContextMenu.SuspendLayout();
       SuspendLayout();
       // 
       // SubmitClose
@@ -56,38 +61,50 @@
       // 
       ListEditItems.AllowDrop = true;
       ListEditItems.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-      ListEditItems.ContextMenuStrip = ContextMenu;
       ListEditItems.ImeMode = System.Windows.Forms.ImeMode.Disable;
       ListEditItems.Location = new System.Drawing.Point(12, 12);
       ListEditItems.Name = "ListEditItems";
       ListEditItems.Size = new System.Drawing.Size(484, 184);
+      ListEditItems.Sorted = true;
       ListEditItems.TabIndex = 1;
       ListEditItems.DragDrop += ListEditItems_DragDrop;
       ListEditItems.DragEnter += ListEditItems_DragEnter;
       ListEditItems.DoubleClick += ListEditItems_DoubleClick;
       // 
-      // ContextMenu
+      // DirectoryContextMenu
       // 
-      ContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { MenuItemOpen, MenuItemPaste, toolStripSeparator1, MenuItemDelete });
-      ContextMenu.Name = "ContextMenu";
-      ContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      ContextMenu.ShowImageMargin = false;
-      ContextMenu.Size = new System.Drawing.Size(156, 98);
-      ContextMenu.Opening += ContextMenu_Opening;
+      DirectoryContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { MenuItemOpen, MenuItemDirectoryPaste, toolStripSeparator1, MenuItemDirectoryDelete });
+      DirectoryContextMenu.Name = "ContextMenu";
+      DirectoryContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+      DirectoryContextMenu.ShowImageMargin = false;
+      DirectoryContextMenu.Size = new System.Drawing.Size(117, 76);
+      DirectoryContextMenu.Opening += ContextMenu_Opening;
       // 
-      // MenuItemPaste
+      // MenuItemOpen
       // 
-      MenuItemPaste.Name = "MenuItemPaste";
-      MenuItemPaste.Size = new System.Drawing.Size(155, 22);
-      MenuItemPaste.Text = "ペースト(&p)";
-      MenuItemPaste.Click += MenuItemPaste_Click;
+      MenuItemOpen.Name = "MenuItemOpen";
+      MenuItemOpen.Size = new System.Drawing.Size(116, 22);
+      MenuItemOpen.Text = "開く";
+      MenuItemOpen.Click += MenuItemOpen_Click;
       // 
-      // MenuItemDelete
+      // MenuItemDirectoryPaste
       // 
-      MenuItemDelete.Name = "MenuItemDelete";
-      MenuItemDelete.Size = new System.Drawing.Size(155, 22);
-      MenuItemDelete.Text = "削除";
-      MenuItemDelete.Click += SubmitDelete_Click;
+      MenuItemDirectoryPaste.Name = "MenuItemDirectoryPaste";
+      MenuItemDirectoryPaste.Size = new System.Drawing.Size(116, 22);
+      MenuItemDirectoryPaste.Text = "ペースト(&p)";
+      MenuItemDirectoryPaste.Click += MenuItemPaste_Click;
+      // 
+      // toolStripSeparator1
+      // 
+      toolStripSeparator1.Name = "toolStripSeparator1";
+      toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
+      // 
+      // MenuItemDirectoryDelete
+      // 
+      MenuItemDirectoryDelete.Name = "MenuItemDirectoryDelete";
+      MenuItemDirectoryDelete.Size = new System.Drawing.Size(116, 22);
+      MenuItemDirectoryDelete.Text = "削除";
+      MenuItemDirectoryDelete.Click += SubmitDelete_Click;
       // 
       // SubmitDelete
       // 
@@ -111,17 +128,33 @@
       SubmitClear.UseVisualStyleBackColor = true;
       SubmitClear.Click += SubmitClear_Click;
       // 
-      // MenuItemOpen
+      // PlainTextContextMenu
       // 
-      MenuItemOpen.Name = "MenuItemOpen";
-      MenuItemOpen.Size = new System.Drawing.Size(155, 22);
-      MenuItemOpen.Text = "開く";
-      MenuItemOpen.Click += MenuItemOpen_Click;
+      PlainTextContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { MenuItemTextPaste, toolStripSeparator2, MenuItemTextDelete });
+      PlainTextContextMenu.Name = "PlainTextcontextMenu";
+      PlainTextContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+      PlainTextContextMenu.ShowImageMargin = false;
+      PlainTextContextMenu.Size = new System.Drawing.Size(100, 54);
+      PlainTextContextMenu.Opening += ContextMenu_Opening;
       // 
-      // toolStripSeparator1
+      // MenuItemTextPaste
       // 
-      toolStripSeparator1.Name = "toolStripSeparator1";
-      toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
+      MenuItemTextPaste.Name = "MenuItemTextPaste";
+      MenuItemTextPaste.Size = new System.Drawing.Size(99, 22);
+      MenuItemTextPaste.Text = "ペースト";
+      MenuItemTextPaste.Click += MenuItemPaste_Click;
+      // 
+      // toolStripSeparator2
+      // 
+      toolStripSeparator2.Name = "toolStripSeparator2";
+      toolStripSeparator2.Size = new System.Drawing.Size(96, 6);
+      // 
+      // MenuItemTextDelete
+      // 
+      MenuItemTextDelete.Name = "MenuItemTextDelete";
+      MenuItemTextDelete.Size = new System.Drawing.Size(99, 22);
+      MenuItemTextDelete.Text = "削除";
+      MenuItemTextDelete.Click += SubmitDelete_Click;
       // 
       // ListEditor
       // 
@@ -138,7 +171,8 @@
       Name = "ListEditor";
       ShowIcon = false;
       ShowInTaskbar = false;
-      ContextMenu.ResumeLayout(false);
+      DirectoryContextMenu.ResumeLayout(false);
+      PlainTextContextMenu.ResumeLayout(false);
       ResumeLayout(false);
     }
 
@@ -148,10 +182,14 @@
     private System.Windows.Forms.ListBox ListEditItems;
     private System.Windows.Forms.Button SubmitDelete;
     private System.Windows.Forms.Button SubmitClear;
-    private System.Windows.Forms.ContextMenuStrip ContextMenu;
-    private System.Windows.Forms.ToolStripMenuItem MenuItemPaste;
-    private System.Windows.Forms.ToolStripMenuItem MenuItemDelete;
+    private System.Windows.Forms.ContextMenuStrip DirectoryContextMenu;
+    private System.Windows.Forms.ToolStripMenuItem MenuItemDirectoryPaste;
+    private System.Windows.Forms.ToolStripMenuItem MenuItemDirectoryDelete;
     private System.Windows.Forms.ToolStripMenuItem MenuItemOpen;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+    private System.Windows.Forms.ContextMenuStrip PlainTextContextMenu;
+    private System.Windows.Forms.ToolStripMenuItem MenuItemTextPaste;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+    private System.Windows.Forms.ToolStripMenuItem MenuItemTextDelete;
   }
 }

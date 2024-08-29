@@ -645,6 +645,7 @@
       cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
       cbOutputDir.Size = new System.Drawing.Size(284, 21);
+      cbOutputDir.Sorted = true;
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
       // 
@@ -1884,6 +1885,7 @@
       OutputFileFormat.Location = new System.Drawing.Point(461, 377);
       OutputFileFormat.Name = "OutputFileFormat";
       OutputFileFormat.Size = new System.Drawing.Size(348, 28);
+      OutputFileFormat.Sorted = true;
       OutputFileFormat.TabIndex = 43;
       // 
       // DownloadUrl
