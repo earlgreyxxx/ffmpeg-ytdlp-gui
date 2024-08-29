@@ -347,7 +347,7 @@ namespace ffmpeg_ytdlp_gui
     /// <param name="filename"></param>
     private void RuntimeSetting(ffmpeg_command? command, string filename)
     {
-      if (command == null || !string.IsNullOrEmpty(filename))
+      if (command == null || string.IsNullOrEmpty(filename))
         return;
 
       if (command.bAudioOnly)
