@@ -97,17 +97,19 @@ namespace ffmpeg_ytdlp_gui.libs
         return true;
       }
 
+      OnPreProcess(Command, filename);
+
       if (null == (Redirected = CreateRedirectedProcess(filename, Command)))
       {
         OnProcessesDone(true);
+        LogWriter?.Dispose();
+        LogWriter = null;
         var item = FileListBindingSource?.OfType<StringListItem>().FirstOrDefault(item => filename == item.Value);
         if (item != null)
           FileListBindingSource?.Remove(item);
 
         return false;
       }
-
-      OnPreProcess(Command, filename);
 
       Redirected.ProcessExited += OnProcessExited;
       Redirected.StdErrReceived += WriteLog;
@@ -126,13 +128,13 @@ namespace ffmpeg_ytdlp_gui.libs
       if (!string.IsNullOrEmpty(LogFileName))
         LogWriter = new StreamWriter(LogFileName, false);
 
+      OnPreProcess(Command, filename);
+
       if (null == (Redirected = CreateRedirectedProcess(filename, Command)))
       {
         OnAllProcessExited(null, null);
         return;
       }
-
-      OnPreProcess(Command, filename);
 
       Redirected.ProcessExited += OnAllProcessExited;
       Redirected.StdErrReceived += WriteLog;
