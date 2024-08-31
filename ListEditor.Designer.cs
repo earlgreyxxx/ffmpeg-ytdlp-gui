@@ -65,7 +65,6 @@
       ListEditItems.Location = new System.Drawing.Point(12, 12);
       ListEditItems.Name = "ListEditItems";
       ListEditItems.Size = new System.Drawing.Size(484, 184);
-      ListEditItems.Sorted = true;
       ListEditItems.TabIndex = 1;
       ListEditItems.DragDrop += ListEditItems_DragDrop;
       ListEditItems.DragEnter += ListEditItems_DragEnter;
