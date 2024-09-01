@@ -288,6 +288,7 @@
       txtSS.Size = new System.Drawing.Size(62, 19);
       txtSS.TabIndex = 4;
       txtSS.TabStop = false;
+      txtSS.Validating += TimeFormatValidating;
       // 
       // FindFolder
       // 
@@ -318,6 +319,7 @@
       txtTo.Size = new System.Drawing.Size(63, 19);
       txtTo.TabIndex = 6;
       txtTo.TabStop = false;
+      txtTo.Validating += TimeFormatValidating;
       // 
       // CuttingBox
       // 
@@ -1359,10 +1361,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 418);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1430,7 +1432,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1726,6 +1728,7 @@
       ImageTo.Name = "ImageTo";
       ImageTo.Size = new System.Drawing.Size(53, 19);
       ImageTo.TabIndex = 2;
+      ImageTo.Validating += TimeFormatValidating;
       // 
       // ImageSS
       // 
@@ -1733,6 +1736,7 @@
       ImageSS.Name = "ImageSS";
       ImageSS.Size = new System.Drawing.Size(55, 19);
       ImageSS.TabIndex = 2;
+      ImageSS.Validating += TimeFormatValidating;
       // 
       // label33
       // 
@@ -1842,10 +1846,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 413);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 

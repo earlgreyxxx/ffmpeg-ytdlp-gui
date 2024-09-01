@@ -24,6 +24,12 @@ namespace ffmpeg_ytdlp_gui
 
   public partial class Form1 : Form
   {
+    [GeneratedRegex(@"^(?:\d{2}:)?\d{2}:\d{2}(?:\.\d+)?$")]
+    private static partial Regex IsDateTime();
+
+    [GeneratedRegex(@"^\d+(?:\.\d+)?(?:s|ms|us)?$", RegexOptions.IgnoreCase, "ja-JP")]
+    private static partial Regex IsSecondTime();
+
     private const int MemoryLength = 20;
 
     private Dictionary<string, StringListItems>? PresetList;
@@ -1103,6 +1109,25 @@ namespace ffmpeg_ytdlp_gui
           bindingSource.ResetBindings(false);
         }
       }
+    }
+
+    private void TimeFormatValidating(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      var textbox = sender as TextBox;
+      if (textbox == null)
+      {
+        e.Cancel = true;
+        return;
+      }
+
+      var text = textbox.Text.Trim();
+      if(!string.IsNullOrEmpty(text) && !IsDateTime().IsMatch(text) && !IsSecondTime().IsMatch(text))
+      {
+        MessageBox.Show("入力されたテキストはフォーマットが異なります。\n正しいフォーマットで入力してください。");
+        e.Cancel = true;
+      }
+
+      textbox.Text = text;
     }
   }
 }
