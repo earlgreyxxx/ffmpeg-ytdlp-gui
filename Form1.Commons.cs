@@ -18,7 +18,7 @@ namespace ffmpeg_ytdlp_gui
   using DecimalListItem = ListItem<decimal>;
   using DecimalListItems = List<ListItem<decimal>>;
   using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
-  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>>;
+  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>, int[]>;
 
   partial class Form1
   {
@@ -258,7 +258,7 @@ namespace ffmpeg_ytdlp_gui
       FileList.DataSource = FileListBindingSource;
 
       ///
-      var set = new StringListItemsSet([],[]);
+      var set = new StringListItemsSet([], [], [-1,-1]);
       cbOutputDir.DataSource = DirectoryListBindingSource;
       DirectoryListBindingSource.DataSource = set;
 

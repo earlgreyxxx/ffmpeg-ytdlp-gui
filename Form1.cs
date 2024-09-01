@@ -20,7 +20,7 @@ namespace ffmpeg_ytdlp_gui
   using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
   using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
   using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
-  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>>;
+  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>, int[]>;
 
   public partial class Form1 : Form
   {
@@ -985,11 +985,13 @@ namespace ffmpeg_ytdlp_gui
       {
         DirectoryListBindingSource.DataMember = "Item1";
         OutputDirectoryList = set?.Item1 ?? throw new Exception("Item not initialize");
+        cbOutputDir.SelectedIndex = set.Item3[0];
       }
       else
       {
         DirectoryListBindingSource.DataMember = "Item2";
         OutputDirectoryList = set?.Item2 ?? throw new Exception("Item not initialize");
+        cbOutputDir.SelectedIndex = set.Item3[1];
       }
     }
 
@@ -1121,13 +1123,23 @@ namespace ffmpeg_ytdlp_gui
       }
 
       var text = textbox.Text.Trim();
-      if(!string.IsNullOrEmpty(text) && !IsDateTime().IsMatch(text) && !IsSecondTime().IsMatch(text))
+      if (!string.IsNullOrEmpty(text) && !IsDateTime().IsMatch(text) && !IsSecondTime().IsMatch(text))
       {
         MessageBox.Show("入力されたテキストはフォーマットが異なります。\n正しいフォーマットで入力してください。");
         e.Cancel = true;
       }
 
       textbox.Text = text;
+    }
+
+    private void cbOutputDir_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+
+      set?.Item3.SetValue(
+        cbOutputDir.SelectedIndex,
+        Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader" ? 0 : 1
+      );
     }
   }
 }

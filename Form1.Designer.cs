@@ -649,6 +649,7 @@
       cbOutputDir.Size = new System.Drawing.Size(284, 21);
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
+      cbOutputDir.SelectedIndexChanged += cbOutputDir_SelectedIndexChanged;
       // 
       // FileContainer
       // 
@@ -1361,10 +1362,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 22);
+      PageUtility.Location = new System.Drawing.Point(4, 27);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 418);
+      PageUtility.Size = new System.Drawing.Size(832, 413);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1432,7 +1433,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
