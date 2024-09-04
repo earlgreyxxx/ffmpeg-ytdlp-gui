@@ -907,7 +907,19 @@ namespace ffmpeg_ytdlp_gui
     private void DownloadUrl_SelectedIndexChanged(object sender, EventArgs e)
     {
       if (DownloadUrl.SelectedIndex < 0)
+      {
+        ThumbnailBox.ContextMenuStrip = null;
+        ThumbnailBox.Image = null;
+        DurationTime.Text = "00:00:00.0000";
+        DurationTime.Visible = false;
+        MediaTitle.Text = string.Empty;
+        VideoOnlyFormatSource.Clear();
+        AudioOnlyFormatSource.Clear();
+        MovieFormatSource.Clear();
+        SubmitDownload.Enabled = true;
+        SubmitSeparatedDownload.Enabled = true;
         return;
+      }
 
       var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem ?? throw new NullReferenceException("SelectedItem is null");
       var mi = ytdlpItem.Item2;
@@ -1091,12 +1103,21 @@ namespace ffmpeg_ytdlp_gui
         {
           Tuple<string, ListItemType> property;
 
-          if (cb?.Name == "cbOutputDir")
-            property = new Tuple<string, ListItemType>("出力フォルダ一覧", ListItemType.FileOrDirectory);
-          else if (cb?.Name == "OutputFileFormat")
-            property = new Tuple<string, ListItemType>("出力ファイル名テンプレート一覧", ListItemType.PlainText);
-          else
-            return;
+          switch(cb?.Name)
+          {
+            case "cbOutputDir":
+              property = new Tuple<string, ListItemType>("出力フォルダ一覧", ListItemType.FileOrDirectory);
+              break;
+            case "OutputFileFormat":
+              property = new Tuple<string, ListItemType>("出力ファイル名テンプレート一覧", ListItemType.PlainText);
+              break;
+            case "DownloadUrl":
+              property = new Tuple<string, ListItemType>("ダウンロードURL一覧", ListItemType.Url);
+              bindingSource.ListChanged += (s, e) => DownloadUrl_SelectedIndexChanged(DownloadUrl, new EventArgs());
+              break;
+            default:
+              return;
+          }
 
           var form = new ListEditor(bindingSource!, property.Item2);
           var listbox = form.GetListEditorControl();
@@ -1104,6 +1125,7 @@ namespace ffmpeg_ytdlp_gui
           form.TopMost = true;
           form.Text = property.Item1;
           form.FormClosing += (s, e) => listbox.SelectionMode = SelectionMode.One;
+          form.Owner = this;
 
           listbox.SelectionMode = SelectionMode.MultiExtended;
 

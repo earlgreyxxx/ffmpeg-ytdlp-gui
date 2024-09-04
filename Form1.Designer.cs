@@ -218,6 +218,7 @@
       MovieFormatSource = new System.Windows.Forms.BindingSource(components);
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
+      linkLabel5 = new System.Windows.Forms.LinkLabel();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -1827,6 +1828,7 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(linkLabel5);
       PageDownloader.Controls.Add(MediaTitle);
       PageDownloader.Controls.Add(linkLabel3);
       PageDownloader.Controls.Add(OutputFileFormat);
@@ -1895,9 +1897,9 @@
       DownloadUrl.DisplayMember = "Item1";
       DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       DownloadUrl.FormattingEnabled = true;
-      DownloadUrl.Location = new System.Drawing.Point(98, 15);
+      DownloadUrl.Location = new System.Drawing.Point(105, 16);
       DownloadUrl.Name = "DownloadUrl";
-      DownloadUrl.Size = new System.Drawing.Size(623, 28);
+      DownloadUrl.Size = new System.Drawing.Size(611, 28);
       DownloadUrl.TabIndex = 42;
       DownloadUrl.ValueMember = "Item2";
       DownloadUrl.SelectedIndexChanged += DownloadUrl_SelectedIndexChanged;
@@ -2146,7 +2148,7 @@
       // label24
       // 
       label24.AutoSize = true;
-      label24.Location = new System.Drawing.Point(10, 22);
+      label24.Location = new System.Drawing.Point(20, 16);
       label24.Name = "label24";
       label24.Size = new System.Drawing.Size(82, 12);
       label24.TabIndex = 5;
@@ -2254,6 +2256,18 @@
       // 
       OpenCookieFileDialog.FileName = "cookie.txt";
       OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
+      // 
+      // linkLabel5
+      // 
+      linkLabel5.AutoSize = true;
+      linkLabel5.Location = new System.Drawing.Point(46, 32);
+      linkLabel5.Name = "linkLabel5";
+      linkLabel5.Size = new System.Drawing.Size(53, 12);
+      linkLabel5.TabIndex = 45;
+      linkLabel5.TabStop = true;
+      linkLabel5.Tag = "DownloadUrl";
+      linkLabel5.Text = "リスト編集";
+      linkLabel5.LinkClicked += EditListItems;
       // 
       // Form1
       // 
@@ -2539,6 +2553,7 @@
     private System.Windows.Forms.LinkLabel linkLabel3;
     private System.Windows.Forms.LinkLabel linkLabel4;
     private System.Windows.Forms.TextBox MediaTitle;
+    private System.Windows.Forms.LinkLabel linkLabel5;
   }
 }
 

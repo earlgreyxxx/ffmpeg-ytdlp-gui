@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ffmpeg_ytdlp_gui.libs;
 
 namespace ffmpeg_ytdlp_gui
 {
   using StringListItem = ListItem<string>;
+  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image?>;
 
   public partial class ListEditor : Form
   {
@@ -21,6 +24,12 @@ namespace ffmpeg_ytdlp_gui
 
     public ListEditor(BindingSource bindingSource, ListItemType type) : this()
     {
+      if (type == ListItemType.Url)
+      {
+        ListEditItems.DisplayMember = "Item1";
+        ListEditItems.ValueMember = "Item1";
+      }
+
       ListEditItems.DataSource = bindingSource;
       EditorItemType = type;
       switch (type)
@@ -30,6 +39,7 @@ namespace ffmpeg_ytdlp_gui
           break;
 
         case ListItemType.PlainText:
+        case ListItemType.Url:
           ContextMenuStrip = PlainTextContextMenu;
           break;
       }
@@ -65,6 +75,7 @@ namespace ffmpeg_ytdlp_gui
       switch (EditorItemType)
       {
         case ListItemType.PlainText:
+        case ListItemType.Url:
           if (DataObject.GetDataPresent(DataFormats.UnicodeText))
             e.Effect = DragDropEffects.Copy;
           break;
@@ -82,6 +93,7 @@ namespace ffmpeg_ytdlp_gui
       switch (EditorItemType)
       {
         case ListItemType.PlainText:
+        case ListItemType.Url:
           MenuItemDirectoryPaste.Enabled = DataObject.GetDataPresent(DataFormats.UnicodeText);
           break;
 
@@ -95,11 +107,12 @@ namespace ffmpeg_ytdlp_gui
                                                           File.GetAttributes(path).HasFlag(FileAttributes.Directory) &&
                                                           Directory.Exists(path);
 
-    private void AddItems(IDataObject? dataObject)
+    private async Task AddItems(IDataObject? dataObject)
     {
-      var items = ListEditItems.DataSource as BindingSource;
       try
       {
+        var items = ListEditItems.DataSource as BindingSource ?? throw new Exception("DataSource is Null");
+
         if (dataObject == null)
           throw new ArgumentNullException(nameof(dataObject));
 
@@ -118,6 +131,40 @@ namespace ffmpeg_ytdlp_gui
                 if (false == items?.Contains(line))
                   items?.Add(line);
               }
+            }
+            break;
+
+          case ListItemType.Url:
+            if (dataObject.GetDataPresent(DataFormats.UnicodeText))
+            {
+              var owner = Owner as Form1;
+              var lines = dataObject.GetData(DataFormats.UnicodeText) as string;
+              if (string.IsNullOrEmpty(lines))
+                throw new Exception("Data is empty or null");
+
+              var ite = lines.Split(Environment.NewLine.ToCharArray())
+                             .Select(str => str.Trim())
+                             .Where(str => !string.IsNullOrEmpty(str));
+
+              Enabled = false;
+              foreach (var line in ite)
+              {
+                if (!Regex.IsMatch(line, "^https?://"))
+                {
+                  MessageBox.Show("URLのフォーマットが違います。");
+                  continue;
+                }
+
+                if (true == items!.List.Cast<YtdlpItem>().Any(item => item.Item1 == line))
+                  continue;
+
+                var item = await owner!.YtdlpParseDownloadUrl(line);
+                if (item == null)
+                  continue;
+
+                items?.Add(item);
+              }
+              Enabled = true;
             }
             break;
 
@@ -147,14 +194,14 @@ namespace ffmpeg_ytdlp_gui
       }
     }
 
-    private void ListEditItems_DragDrop(object sender, DragEventArgs e)
+    private async void ListEditItems_DragDrop(object sender, DragEventArgs e)
     {
-      AddItems(e.Data);
+      await AddItems(e.Data);
     }
 
-    private void MenuItemPaste_Click(object sender, EventArgs e)
+    private async void MenuItemPaste_Click(object sender, EventArgs e)
     {
-      AddItems(Clipboard.GetDataObject());
+      await AddItems(Clipboard.GetDataObject());
     }
 
     public ListBox GetListEditorControl()
@@ -169,11 +216,19 @@ namespace ffmpeg_ytdlp_gui
       switch (EditorItemType)
       {
         case ListItemType.FileOrDirectory:
-          var item = listbox?.SelectedItem as StringListItem;
-          if (item == null)
+          var stritem = listbox?.SelectedItem as StringListItem;
+          if (stritem == null)
             return;
 
-          CustomProcess.ShellExecute(item.Value);
+          CustomProcess.ShellExecute(stritem.Value);
+          break;
+
+        case ListItemType.Url:
+          var ytdlpitem = listbox?.SelectedItem as YtdlpItem;
+          if (ytdlpitem == null)
+            return;
+
+          CustomProcess.ShellExecute(ytdlpitem.Item1);
           break;
 
         case ListItemType.PlainText:

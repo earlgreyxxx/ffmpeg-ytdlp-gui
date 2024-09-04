@@ -84,7 +84,7 @@ namespace ffmpeg_ytdlp_gui
       };
     }
 
-    private async Task<YtdlpItem?> YtdlpParseDownloadUrl(string url)
+    public async Task<YtdlpItem?> YtdlpParseDownloadUrl(string url)
     {
       YtdlpItem? ytdlpItem = null;
       MediaInformation? mediaInfo;
