@@ -1847,10 +1847,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -1957,7 +1957,7 @@
       groupBox2.Size = new System.Drawing.Size(372, 89);
       groupBox2.TabIndex = 38;
       groupBox2.TabStop = false;
-      groupBox2.Text = "ムービー";
+      groupBox2.Text = "動画+音声";
       // 
       // MovieFormat
       // 
@@ -1994,7 +1994,7 @@
       groupBox1.Size = new System.Drawing.Size(370, 123);
       groupBox1.TabIndex = 37;
       groupBox1.TabStop = false;
-      groupBox1.Text = "動画＋音声";
+      groupBox1.Text = "メディア別";
       // 
       // label23
       // 
