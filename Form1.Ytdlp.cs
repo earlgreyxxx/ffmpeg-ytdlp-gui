@@ -124,7 +124,7 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private void YtdlpInvokeDownload(YtdlpItem? ytdlpItem,bool separatedDownload = false)
+    private async void YtdlpInvokeDownload(YtdlpItem? ytdlpItem,bool separatedDownload = false)
     {
       if (ytdlpItem == null) throw new NullReferenceException("YtdlpItem is null");
       var mediaInfo = ytdlpItem.Item2;
@@ -159,7 +159,11 @@ namespace ffmpeg_ytdlp_gui
           downloader.CookieBrowser = cookieKind;
 
         downloader.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
-        downloader.StdOutReceived += YtdlpReceiver;
+
+        OutputStderr.Text = "ダウンロードファイル名を取得しています。";
+
+        var parser = downloader.Clone();
+        downloader.DownloadFiles = await parser.GetDownloadFileNames();
 
         downloader.ProcessExited += (s, e) => Invoke(() =>
         {
@@ -235,24 +239,6 @@ namespace ffmpeg_ytdlp_gui
         {
           var button = ytdlpfm.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
           button.Enabled = true;
-        }
-      }
-    }
-
-    private void YtdlpReceiver(string data)
-    {
-      var match = DownloadRegex.Match(data);
-      if (match.Success)
-      {
-        ytdlp!.DownloadFile = match.Groups["filename"].Value;
-      }
-      else
-      {
-        match = MergerRegex.Match(data);
-        if (match.Success)
-        {
-          ytdlp!.DownloadFile = match.Groups["filename"].Value;
-          ytdlp!.StdOutReceived -= YtdlpReceiver;
         }
       }
     }
