@@ -8,8 +8,6 @@ using System.Windows.Forms;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  using StringListItem = ListItem<string>;
-
   public class ffmpeg_process
   {
     // statics

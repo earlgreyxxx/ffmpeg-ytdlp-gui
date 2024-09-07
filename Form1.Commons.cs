@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,15 +12,6 @@ using ffmpeg_ytdlp_gui.Properties;
 
 namespace ffmpeg_ytdlp_gui
 {
-  using CodecListItem = ListItem<Codec>;
-  using CodecListItems = List<ListItem<Codec>>;
-  using StringListItem = ListItem<string>;
-  using StringListItems = List<ListItem<string>>;
-  using DecimalListItem = ListItem<decimal>;
-  using DecimalListItems = List<ListItem<decimal>>;
-  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
-  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>, int[]>;
-
   partial class Form1
   {
     // Static members
@@ -338,6 +330,8 @@ namespace ffmpeg_ytdlp_gui
 
       OutputFileFormatBindingSource.DataSource = new List<string>();
       OutputFileFormat.DataSource = OutputFileFormatBindingSource;
+
+      Playlist.DataSource = PlaylistBindingSource;
     }
 
     /// <summary>
@@ -734,6 +728,74 @@ namespace ffmpeg_ytdlp_gui
     {
       if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList!.Any(item => item.Value == cbOutputDir.Text))
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, DateTime.Now));
+    }
+
+    private void SetDownloadFormats(YtdlpItem? ytdlpItem)
+    {
+      if (ytdlpItem == null)
+        return;
+
+      var mi = ytdlpItem?.Item2;
+      var image = ytdlpItem?.Item3;
+
+      string time = mi?.GetDurationTime() ?? "--:--:--";
+
+      ThumbnailBox.ContextMenuStrip = ImageContextMenu;
+      ThumbnailBox.Image = ytdlpItem?.Item3;
+      DurationTime.Text = time;
+      DurationTime.Visible = true;
+
+      MediaTitle.Text = mi?.title;
+
+      // format_id 構築
+      VideoOnlyFormatSource.Clear();
+      VideoOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+      AudioOnlyFormatSource.Clear();
+      AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+      MovieFormatSource.Clear();
+
+      foreach (var format in mi?.formats!)
+      {
+        if (format == null || format.format_id == null)
+          continue;
+
+        if (format.vcodec == "none" && format.acodec != "none")
+          AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        else if (format.acodec == "none" && format.vcodec != "none")
+          VideoOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        else if (format.acodec != "none" && format.vcodec != "none")
+          MovieFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+      }
+
+      MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
+
+      // requested_formats? があれば
+      if (mi.requested_formats!.Count > 0)
+      {
+        var items = mi.requested_formats.Select(f => new
+        {
+          Value = f.format_id,
+          Label = f.ToString(),
+          Video = f.acodec == "none",
+          Audio = f.vcodec == "none",
+        });
+
+        foreach (var item in items)
+        {
+          ComboBox? cb = null;
+          if (item.Video)
+            cb = VideoOnlyFormat;
+          else if (item.Audio)
+            cb = AudioOnlyFormat;
+          else
+            continue;
+
+          cb.SelectedValue = item.Value;
+        }
+      }
+
+      SubmitDownload.Enabled = true;
+      SubmitSeparatedDownload.Enabled = true;
     }
   }
 }

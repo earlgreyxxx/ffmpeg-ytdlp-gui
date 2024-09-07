@@ -8,8 +8,6 @@ using System.Text.RegularExpressions;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
-
   public partial class ffmpeg_command : IEnumerable<string>
   {
     public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string>? callback = null)

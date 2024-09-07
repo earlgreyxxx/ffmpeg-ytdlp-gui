@@ -1,16 +1,12 @@
 ﻿using ffmpeg_ytdlp_gui.libs;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ffmpeg_ytdlp_gui
 {
-  using StringListItem = ListItem<string>;
-  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image?>;
-
   partial class Form1 
   {
     /// <summary>
@@ -28,7 +24,7 @@ namespace ffmpeg_ytdlp_gui
       // キューにytdlpプロセスを入れた時
       ytdlps!.Enqueued += (sender, e) =>
       {
-        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException("sender is null");
+        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException(nameof(ObservableQueue<ytdlp_process>));
         WriteQueueStatus(q.Count);
 
         lock (_lock)
@@ -41,14 +37,14 @@ namespace ffmpeg_ytdlp_gui
       // キューからytdlpプロセスを取り出す時
       Action formAction = () =>
       {
-        var button = ytdlpfm!.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
+        var button = ytdlpfm!.Controls["BtnClose"] as Button ?? throw new NullReferenceException(nameof(Button));
         button.Enabled = false;
         ytdlpfm.Pause = false;
       };
 
       ytdlps.Dequeued += (sender, e) =>
       {
-        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException("sender is null");
+        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException(nameof(ObservableQueue<ytdlp_process>));
         ytdlp = e.data;
         ytdlp.ProcessExited += (sender, e) =>
         {
@@ -80,10 +76,16 @@ namespace ffmpeg_ytdlp_gui
       };
     }
 
+    /// <summary>
+    /// メディアURLのパース情報を取得し、フォームにセット
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
     public async Task<YtdlpItem?> YtdlpParseDownloadUrl(string url)
     {
       YtdlpItem? ytdlpItem = null;
       MediaInformation? mediaInfo;
+
       try
       {
         if (url.Length == 0)
@@ -92,7 +94,6 @@ namespace ffmpeg_ytdlp_gui
         var parser = new ytdlp_process()
         {
           Url = url,
-          DownloadFile = string.Empty
         };
 
         var cookieKind = UseCookie.SelectedValue?.ToString();
@@ -102,15 +103,24 @@ namespace ffmpeg_ytdlp_gui
           parser.CookieBrowser = cookieKind;
 
         OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
-        mediaInfo = await parser.getMediaInformation();
+        mediaInfo = await parser.GetMediaInformation();
         OutputStderr.Text = "";
 
         if (mediaInfo == null)
           throw new Exception("解析に失敗しました。");
 
-        Image? image = await mediaInfo.GetThumbnailImage();
+        var image = await mediaInfo.GetThumbnailImageAsync();
 
-        ytdlpItem = new YtdlpItem(url,mediaInfo,image);
+        ytdlpItem = new YtdlpItem(url, mediaInfo, image, null);
+      }
+      catch (MediaInformationException mediaInfoException) // URLがプレイリストだった場合
+      {
+        var mediaInformations = mediaInfoException.Data["MediaInformations"] as MediaInformation[];
+        OutputStderr.Text = "プレイリストが検出されました。";
+
+        ytdlpItem = new YtdlpItem(url, null, null, mediaInformations);
+        foreach (var mediaInformation in mediaInformations!)
+          await mediaInformation.LoadThumbnailImageAsync();
       }
       catch (Exception exception)
       {
@@ -120,14 +130,11 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private async void YtdlpInvokeDownload(YtdlpItem? ytdlpItem,bool separatedDownload = false)
+    private async void YtdlpInvokeDownload(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
     {
-      if (ytdlpItem == null) throw new NullReferenceException("YtdlpItem is null");
-      var mediaInfo = ytdlpItem.Item2;
-
-      if ( mediaInfo == null)
+      var mediaInfo = ytdlpItem?.Item2;
+      if (mediaInfo == null)
         return;
-
       try
       {
         var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
@@ -138,12 +145,18 @@ namespace ffmpeg_ytdlp_gui
         {
           Url = mediaInfo.webpage_url,
           OutputPath = outputdir,
+          VideoFormat = string.Empty,
+          AudioFormat = string.Empty,
+          MovieFormat = string.Empty,
           Separated = separatedDownload,
-          VideoFormat = VideoOnlyFormat.SelectedValue?.ToString(),
-          AudioFormat = AudioOnlyFormat.SelectedValue?.ToString(),
-          MovieFormat = MovieFormat.SelectedValue?.ToString(),
           JsonText = mediaInfo.JsonText
         };
+        if (!isDefaultDownload)
+        {
+          downloader.VideoFormat = VideoOnlyFormat.SelectedValue?.ToString();
+          downloader.AudioFormat = AudioOnlyFormat.SelectedValue?.ToString();
+          downloader.MovieFormat = MovieFormat.SelectedValue?.ToString();
+        }
 
         if (!string.IsNullOrEmpty(OutputFileFormat.Text))
           downloader.OutputFile = OutputFileFormat.Text;
@@ -235,16 +248,36 @@ namespace ffmpeg_ytdlp_gui
         MessageBox.Show(exception.Message,"エラー");
         if (ytdlpfm != null)
         {
-          var button = ytdlpfm.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
-          button.Enabled = true;
+          var button = ytdlpfm.Controls["BtnClose"] as Button;
+          if(button != null)
+            button.Enabled = true;
         }
       }
     }
 
-    private void YtdlpAbortDownload()
+    private void YtdlpAbortDownload(bool stopAll = true)
     {
-      if (ytdlp != null)
-        ytdlp.Interrupt();
+      ytdlps?.Clear();
+      ytdlp?.Interrupt();
+    }
+
+    private void EnablePlaylist(YtdlpItem item)
+    {
+      PlaylistBindingSource.DataSource = item.Item4;
+      PlaylistBindingSource.ResetBindings(false);
+      PlaylistGroup.Enabled = true;
+      Playlist_SelectedIndexChanged(Playlist, new EventArgs());
+    }
+
+    private void DisablePlaylist()
+    {
+      // clear Playlist listbox control
+      if (PlaylistGroup.Enabled)
+      {
+        PlaylistBindingSource.DataSource = null;
+        PlaylistBindingSource.ResetBindings(false);
+        PlaylistGroup.Enabled = false;
+      }
     }
   }
 }

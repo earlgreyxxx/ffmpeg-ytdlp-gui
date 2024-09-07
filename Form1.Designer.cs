@@ -175,6 +175,9 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      PlaylistGroup = new System.Windows.Forms.GroupBox();
+      PlayListDownloadAll = new System.Windows.Forms.Button();
+      Playlist = new System.Windows.Forms.ListBox();
       linkLabel5 = new System.Windows.Forms.LinkLabel();
       MediaTitle = new System.Windows.Forms.TextBox();
       linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -219,6 +222,7 @@
       MovieFormatSource = new System.Windows.Forms.BindingSource(components);
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
+      PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -257,6 +261,7 @@
       ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
       PageDownloader.SuspendLayout();
+      PlaylistGroup.SuspendLayout();
       groupBox2.SuspendLayout();
       groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
@@ -269,6 +274,7 @@
       ((System.ComponentModel.ISupportInitialize)MovieFormatSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -1257,7 +1263,7 @@
       Tab.Controls.Add(PageConvert);
       Tab.Controls.Add(PageUtility);
       Tab.Controls.Add(PageDownloader);
-      Tab.Location = new System.Drawing.Point(3, 40);
+      Tab.Location = new System.Drawing.Point(3, 42);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
       Tab.Padding = new System.Drawing.Point(0, 0);
@@ -1828,6 +1834,7 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(PlaylistGroup);
       PageDownloader.Controls.Add(linkLabel5);
       PageDownloader.Controls.Add(MediaTitle);
       PageDownloader.Controls.Add(linkLabel3);
@@ -1849,12 +1856,44 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
+      // 
+      // PlaylistGroup
+      // 
+      PlaylistGroup.Controls.Add(PlayListDownloadAll);
+      PlaylistGroup.Controls.Add(Playlist);
+      PlaylistGroup.Enabled = false;
+      PlaylistGroup.Location = new System.Drawing.Point(438, 82);
+      PlaylistGroup.Name = "PlaylistGroup";
+      PlaylistGroup.Size = new System.Drawing.Size(379, 129);
+      PlaylistGroup.TabIndex = 48;
+      PlaylistGroup.TabStop = false;
+      PlaylistGroup.Text = "プレイリスト検出";
+      // 
+      // PlayListDownloadAll
+      // 
+      PlayListDownloadAll.Location = new System.Drawing.Point(272, 92);
+      PlayListDownloadAll.Name = "PlayListDownloadAll";
+      PlayListDownloadAll.Size = new System.Drawing.Size(96, 26);
+      PlayListDownloadAll.TabIndex = 48;
+      PlayListDownloadAll.Text = "全てダウンロード";
+      PlayListDownloadAll.UseVisualStyleBackColor = true;
+      PlayListDownloadAll.Click += PlayListDownloadAll_Click;
+      // 
+      // Playlist
+      // 
+      Playlist.HorizontalScrollbar = true;
+      Playlist.ItemHeight = 12;
+      Playlist.Location = new System.Drawing.Point(11, 22);
+      Playlist.Name = "Playlist";
+      Playlist.Size = new System.Drawing.Size(357, 64);
+      Playlist.TabIndex = 47;
+      Playlist.SelectedIndexChanged += Playlist_SelectedIndexChanged;
       // 
       // linkLabel5
       // 
@@ -1885,7 +1924,7 @@
       // linkLabel3
       // 
       linkLabel3.AutoSize = true;
-      linkLabel3.Location = new System.Drawing.Point(597, 362);
+      linkLabel3.Location = new System.Drawing.Point(576, 361);
       linkLabel3.Name = "linkLabel3";
       linkLabel3.Size = new System.Drawing.Size(53, 12);
       linkLabel3.TabIndex = 44;
@@ -1899,9 +1938,9 @@
       OutputFileFormat.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       OutputFileFormat.FormattingEnabled = true;
       OutputFileFormat.Items.AddRange(new object[] { "%(title)s-%(id)s.%(ext)s" });
-      OutputFileFormat.Location = new System.Drawing.Point(461, 377);
+      OutputFileFormat.Location = new System.Drawing.Point(438, 377);
       OutputFileFormat.Name = "OutputFileFormat";
-      OutputFileFormat.Size = new System.Drawing.Size(348, 28);
+      OutputFileFormat.Size = new System.Drawing.Size(371, 28);
       OutputFileFormat.TabIndex = 43;
       // 
       // DownloadUrl
@@ -1933,7 +1972,7 @@
       chkAfterDownload.AutoSize = true;
       chkAfterDownload.Checked = true;
       chkAfterDownload.CheckState = System.Windows.Forms.CheckState.Checked;
-      chkAfterDownload.Location = new System.Drawing.Point(462, 323);
+      chkAfterDownload.Location = new System.Drawing.Point(441, 334);
       chkAfterDownload.Name = "chkAfterDownload";
       chkAfterDownload.Size = new System.Drawing.Size(151, 16);
       chkAfterDownload.TabIndex = 40;
@@ -1954,7 +1993,7 @@
       // 
       // StopDownload
       // 
-      StopDownload.Location = new System.Drawing.Point(658, 319);
+      StopDownload.Location = new System.Drawing.Point(664, 332);
       StopDownload.Name = "StopDownload";
       StopDownload.Size = new System.Drawing.Size(151, 23);
       StopDownload.TabIndex = 11;
@@ -1966,9 +2005,9 @@
       // 
       groupBox2.Controls.Add(MovieFormat);
       groupBox2.Controls.Add(SubmitDownload);
-      groupBox2.Location = new System.Drawing.Point(447, 216);
+      groupBox2.Location = new System.Drawing.Point(656, 217);
       groupBox2.Name = "groupBox2";
-      groupBox2.Size = new System.Drawing.Size(372, 89);
+      groupBox2.Size = new System.Drawing.Size(161, 109);
       groupBox2.TabIndex = 38;
       groupBox2.TabStop = false;
       groupBox2.Text = "動画+音声";
@@ -1977,19 +2016,20 @@
       // 
       MovieFormat.DisplayMember = "Label";
       MovieFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      MovieFormat.DropDownWidth = 250;
       MovieFormat.FormattingEnabled = true;
-      MovieFormat.Location = new System.Drawing.Point(14, 25);
+      MovieFormat.Location = new System.Drawing.Point(5, 21);
       MovieFormat.Name = "MovieFormat";
-      MovieFormat.Size = new System.Drawing.Size(348, 20);
+      MovieFormat.Size = new System.Drawing.Size(149, 20);
       MovieFormat.TabIndex = 10;
       MovieFormat.ValueMember = "Value";
       // 
       // SubmitDownload
       // 
       SubmitDownload.Enabled = false;
-      SubmitDownload.Location = new System.Drawing.Point(13, 52);
+      SubmitDownload.Location = new System.Drawing.Point(6, 73);
       SubmitDownload.Name = "SubmitDownload";
-      SubmitDownload.Size = new System.Drawing.Size(350, 26);
+      SubmitDownload.Size = new System.Drawing.Size(149, 26);
       SubmitDownload.TabIndex = 6;
       SubmitDownload.Tag = false;
       SubmitDownload.Text = "ダウンロード開始";
@@ -2003,9 +2043,9 @@
       groupBox1.Controls.Add(label30);
       groupBox1.Controls.Add(VideoOnlyFormat);
       groupBox1.Controls.Add(AudioOnlyFormat);
-      groupBox1.Location = new System.Drawing.Point(448, 87);
+      groupBox1.Location = new System.Drawing.Point(436, 217);
       groupBox1.Name = "groupBox1";
-      groupBox1.Size = new System.Drawing.Size(370, 123);
+      groupBox1.Size = new System.Drawing.Size(212, 109);
       groupBox1.TabIndex = 37;
       groupBox1.TabStop = false;
       groupBox1.Text = "メディア別";
@@ -2013,7 +2053,7 @@
       // label23
       // 
       label23.AutoSize = true;
-      label23.Location = new System.Drawing.Point(11, 32);
+      label23.Location = new System.Drawing.Point(11, 24);
       label23.Name = "label23";
       label23.Size = new System.Drawing.Size(29, 12);
       label23.TabIndex = 5;
@@ -2022,9 +2062,9 @@
       // SubmitSeparatedDownload
       // 
       SubmitSeparatedDownload.Enabled = false;
-      SubmitSeparatedDownload.Location = new System.Drawing.Point(13, 86);
+      SubmitSeparatedDownload.Location = new System.Drawing.Point(46, 73);
       SubmitSeparatedDownload.Name = "SubmitSeparatedDownload";
-      SubmitSeparatedDownload.Size = new System.Drawing.Size(350, 26);
+      SubmitSeparatedDownload.Size = new System.Drawing.Size(160, 26);
       SubmitSeparatedDownload.TabIndex = 6;
       SubmitSeparatedDownload.Tag = true;
       SubmitSeparatedDownload.Text = "ダウンロード開始";
@@ -2034,7 +2074,7 @@
       // label30
       // 
       label30.AutoSize = true;
-      label30.Location = new System.Drawing.Point(11, 61);
+      label30.Location = new System.Drawing.Point(11, 48);
       label30.Name = "label30";
       label30.Size = new System.Drawing.Size(29, 12);
       label30.TabIndex = 5;
@@ -2044,10 +2084,11 @@
       // 
       VideoOnlyFormat.DisplayMember = "Label";
       VideoOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      VideoOnlyFormat.DropDownWidth = 250;
       VideoOnlyFormat.FormattingEnabled = true;
-      VideoOnlyFormat.Location = new System.Drawing.Point(46, 29);
+      VideoOnlyFormat.Location = new System.Drawing.Point(46, 21);
       VideoOnlyFormat.Name = "VideoOnlyFormat";
-      VideoOnlyFormat.Size = new System.Drawing.Size(315, 20);
+      VideoOnlyFormat.Size = new System.Drawing.Size(160, 20);
       VideoOnlyFormat.TabIndex = 10;
       VideoOnlyFormat.ValueMember = "Value";
       // 
@@ -2055,10 +2096,11 @@
       // 
       AudioOnlyFormat.DisplayMember = "Label";
       AudioOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      AudioOnlyFormat.DropDownWidth = 250;
       AudioOnlyFormat.FormattingEnabled = true;
-      AudioOnlyFormat.Location = new System.Drawing.Point(46, 58);
+      AudioOnlyFormat.Location = new System.Drawing.Point(46, 45);
       AudioOnlyFormat.Name = "AudioOnlyFormat";
-      AudioOnlyFormat.Size = new System.Drawing.Size(315, 20);
+      AudioOnlyFormat.Size = new System.Drawing.Size(160, 20);
       AudioOnlyFormat.TabIndex = 10;
       AudioOnlyFormat.ValueMember = "Value";
       // 
@@ -2077,7 +2119,7 @@
       // 
       LinkYdlOutputTemplate.AutoSize = true;
       LinkYdlOutputTemplate.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
-      LinkYdlOutputTemplate.Location = new System.Drawing.Point(685, 362);
+      LinkYdlOutputTemplate.Location = new System.Drawing.Point(664, 361);
       LinkYdlOutputTemplate.Name = "LinkYdlOutputTemplate";
       LinkYdlOutputTemplate.Size = new System.Drawing.Size(124, 12);
       LinkYdlOutputTemplate.TabIndex = 14;
@@ -2123,7 +2165,7 @@
       // label28
       // 
       label28.AutoSize = true;
-      label28.Location = new System.Drawing.Point(462, 362);
+      label28.Location = new System.Drawing.Point(441, 361);
       label28.Name = "label28";
       label28.Size = new System.Drawing.Size(129, 12);
       label28.TabIndex = 5;
@@ -2269,6 +2311,14 @@
       OpenCookieFileDialog.FileName = "cookie.txt";
       OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
       // 
+      // UrlBindingSource
+      // 
+      UrlBindingSource.ListChanged += UrlBindingSource_ListChanged;
+      // 
+      // PlaylistBindingSource
+      // 
+      PlaylistBindingSource.DataMember = "Item4";
+      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2344,6 +2394,7 @@
       ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
       PageDownloader.ResumeLayout(false);
       PageDownloader.PerformLayout();
+      PlaylistGroup.ResumeLayout(false);
       groupBox2.ResumeLayout(false);
       groupBox1.ResumeLayout(false);
       groupBox1.PerformLayout();
@@ -2358,6 +2409,7 @@
       ((System.ComponentModel.ISupportInitialize)MovieFormatSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -2554,6 +2606,10 @@
     private System.Windows.Forms.LinkLabel linkLabel4;
     private System.Windows.Forms.TextBox MediaTitle;
     private System.Windows.Forms.LinkLabel linkLabel5;
+    private System.Windows.Forms.ListBox Playlist;
+    private System.Windows.Forms.BindingSource PlaylistBindingSource;
+    private System.Windows.Forms.GroupBox PlaylistGroup;
+    private System.Windows.Forms.Button PlayListDownloadAll;
   }
 }
 
