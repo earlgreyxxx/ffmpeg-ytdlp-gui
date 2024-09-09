@@ -14,14 +14,6 @@ namespace ffmpeg_ytdlp_gui.libs
   {
     // statics
     // ---------------------------------------------------------------------------------------
-    public static string GetLogFileName()
-    {
-      return Path.Combine(
-        Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")!),
-        $"ffmpeg-stderr-{Process.GetCurrentProcess().Id}.log"
-      );
-    }
-
     protected static RedirectedProcess? CreateRedirectedProcess(string filename,ffmpeg_command? command)
     {
       string? arguments = command?.GetCommandLineArguments(filename) ?? null;
@@ -55,7 +47,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public event Action<ffmpeg_command?,string>? PreProcess;
 
     public ffmpeg_command? Command { get; protected set; }
-    public string? LogFileName { get; set; } = GetLogFileName();
+    public string? LogFileName { get; set; } = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
 
     public ffmpeg_process(ffmpeg_command command,IEnumerable<string> list)
       : this(command,new BindingSource() { DataSource = list.ToList(), }) { }

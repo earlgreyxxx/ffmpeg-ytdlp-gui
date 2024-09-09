@@ -23,6 +23,30 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? VideoFormat { private get; set; }
     public string? MovieFormat { private get; set; }
 
+    private string? _json_text;
+    public string? JsonText
+    {
+      get
+      {
+        return _json_text;
+      }
+      set
+      {
+        _json_text = value;
+        if (!string.IsNullOrEmpty(value))
+        {
+          if(string.IsNullOrEmpty(JsonFileName))
+            JsonFileName = GetTemporaryFileName($"ytdlp.{Guid.NewGuid()}.", ".json");
+
+          using (var sw = new StreamWriter(JsonFileName, false))
+          {
+            sw.WriteLine(value);
+          }
+        }
+      }
+    }
+    public string? JsonFileName { get; private set; } 
+
     private string[]? _downloadfiles;
     public string[]? DownloadFiles
     {
@@ -33,7 +57,10 @@ namespace ffmpeg_ytdlp_gui.libs
       set
       {
         _downloadfiles = value;
-        DownloadFile = _downloadfiles?.GetValue(0) as string;
+        if(_downloadfiles != null)
+          DownloadFile = _downloadfiles?.GetValue(0) as string;
+        else
+          DownloadFile = null;
       }
     }
 
@@ -45,7 +72,13 @@ namespace ffmpeg_ytdlp_gui.libs
       ProcessExited += (s, e) => Debug.WriteLine("yt-dlpプロセス終了");
     }
 
-    public ytdlp_process Clone()
+    ~ytdlp_process()
+    {
+      if(!string.IsNullOrEmpty(JsonFileName) && File.Exists(JsonFileName))
+        File.Delete(JsonFileName);
+    }
+
+    private ytdlp_process Clone()
     {
       return new ytdlp_process()
       {
@@ -57,7 +90,7 @@ namespace ffmpeg_ytdlp_gui.libs
         AudioFormat = AudioFormat,
         VideoFormat = VideoFormat,
         MovieFormat = MovieFormat,
-        Separated = Separated
+        Separated = Separated,
       };
     }
 
@@ -65,13 +98,14 @@ namespace ffmpeg_ytdlp_gui.libs
     {
       var options = new List<string>()
       { 
-        Url ?? throw new NullReferenceException("URL not null"),
         "-w",
         "--encoding UTF-8",
         "--no-continue",
         "--no-mtime",
         "--progress-delta 1"
       };
+
+      options.Insert(0,string.IsNullOrEmpty(JsonText) ? (Url ?? throw new NullReferenceException("URL not null")) : $"--load-info-json \"{JsonFileName}\"");
 
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
@@ -117,8 +151,12 @@ namespace ffmpeg_ytdlp_gui.libs
 
       psi.StandardOutputEncoding = Encoding.UTF8;
       psi.StandardErrorEncoding = Encoding.UTF8;
+      psi.StandardInputEncoding = Encoding.UTF8;
 
-      await StartAsync(string.Join(' ',CreateArguments(formats).ToArray()));
+      var arguments = string.Join(' ', CreateArguments(formats).ToArray());
+      Debug.WriteLine($"{Command} {arguments}");
+      
+      await StartAsync(arguments);
     }
 
     public async Task<MediaInformation?> getMediaInformation()
@@ -146,7 +184,7 @@ namespace ffmpeg_ytdlp_gui.libs
       StdOutReceived += data => log.Add(data);
       ProcessExited += (s, e) =>
       {
-        if(Current.ExitCode == 0)
+        if (Current.ExitCode == 0)
           info = new MediaInformation(string.Join(string.Empty, log.ToArray()));
       };
 
@@ -154,16 +192,18 @@ namespace ffmpeg_ytdlp_gui.libs
       return info;
     }
 
-    public async Task<string[]?> GetDownloadFileNames()
+    public Task GetDownloadFileNames()
     {
-      if (Url == null)
+      var parser = Clone();
+
+      if (parser.Url == null)
         throw new NullReferenceException("URL not specified");
 
-      var options = new List<string>()
+      var options = new List<string?>()
       {
-        Url,
         "--print filename",
       };
+      options.Insert(0,string.IsNullOrEmpty(JsonText) ? parser.Url : $"--load-info-json \"{JsonFileName}\"");
       options.Add($"-f {string.Join('+', CreateFormatOptions().ToArray())}");
 
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
@@ -181,24 +221,19 @@ namespace ffmpeg_ytdlp_gui.libs
 
       Debug.WriteLine($"{Command} {arguments}");
 
-      StdOutReceived += data => log.Add(data);
-      ProcessExited += (s, e) =>
+      parser.StdOutReceived += data => log.Add(data);
+      parser.ProcessExited += (s, e) =>
       {
-        if (Current.ExitCode == 0)
+        if (parser.ExitCode == 0)
         {
           DownloadFiles = string.Join(string.Empty, log.ToArray())
                                 .Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
                                 .Select(filename => Path.Combine(OutputPath ?? string.Empty, filename))
                                 .ToArray();
-
-          if(DownloadFiles.Length > 0)
-            DownloadFile = DownloadFiles.FirstOrDefault();
         }
       };
 
-      await StartAsync(arguments);
-
-      return DownloadFiles;
+      return parser.StartAsync(arguments);
     }
   }
 }

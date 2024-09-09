@@ -549,7 +549,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void OpenLogFile_Click(object sender, EventArgs e)
     {
-      var filename = ffmpeg_process.GetLogFileName();
+      var filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
       if (!System.IO.File.Exists(filename))
       {
         MessageBox.Show("ログファイルが存在しません。");

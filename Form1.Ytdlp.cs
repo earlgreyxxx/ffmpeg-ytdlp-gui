@@ -22,9 +22,6 @@ namespace ffmpeg_ytdlp_gui
     private StdoutForm? ytdlpfm = null;
     private ObservableQueue<ytdlp_process>? ytdlps = new ObservableQueue<ytdlp_process>();
 
-    private readonly Regex DownloadRegex = new Regex(@"\[download\]\s+Destination:\s+(?<filename>.+)$");
-    private readonly Regex MergerRegex = new Regex(@"\[Merger\]\s+Merging formats into ""(?<filename>.+)""$");
-
     private void InitializeYtdlpQueue()
     {
       Action<int> WriteQueueStatus = count => QueueCount.Text = $"Download Queue: {count}";
@@ -145,7 +142,8 @@ namespace ffmpeg_ytdlp_gui
           Separated = separatedDownload,
           VideoFormat = VideoOnlyFormat.SelectedValue?.ToString(),
           AudioFormat = AudioOnlyFormat.SelectedValue?.ToString(),
-          MovieFormat = MovieFormat.SelectedValue?.ToString()
+          MovieFormat = MovieFormat.SelectedValue?.ToString(),
+          JsonText = mediaInfo.JsonText
         };
 
         if (!string.IsNullOrEmpty(OutputFileFormat.Text))
@@ -162,12 +160,23 @@ namespace ffmpeg_ytdlp_gui
 
         OutputStderr.Text = "ダウンロードファイル名を取得しています。";
 
-        var parser = downloader.Clone();
-        downloader.DownloadFiles = await parser.GetDownloadFileNames();
+        await downloader.GetDownloadFileNames();
+        if (string.IsNullOrEmpty(downloader.DownloadFile))
+        {
+          if (File.Exists(downloader.JsonFileName))
+            File.Delete(downloader.JsonFileName);
+
+          throw new Exception("ダウンロード名が決定できませんでした。");
+        }
 
         downloader.ProcessExited += (s, e) => Invoke(() =>
         {
           Debug.WriteLine($"exitcode = {downloader.ExitCode},DownloadName = {downloader.DownloadFile}");
+          if (File.Exists(downloader.JsonFileName))
+          {
+            File.Delete(downloader.JsonFileName);
+            Debug.WriteLine($"\"{downloader.JsonFileName}\" was deleted");
+          }
 
           if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
           {

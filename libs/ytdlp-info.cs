@@ -27,17 +27,31 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? format_id { set; get; }
     public List<MediaFormat>? formats { get; set; } = new List<MediaFormat>();
     public List<MediaFormat>? requested_formats {  set; get; } = new List<MediaFormat>();
+    public string? JsonText
+    {
+      private set {
+        _json_text = value;
+      }
+      get
+      {
+        return _json_text;
+      }
+    }
 
-    private string _json_text;
+    private string? _json_text;
+    
     public MediaInformation(string json)
     {
-      _json_text = json;
+      JsonText = json;
       Initialize();
     }
 
     private void Initialize()
     {
-      using (var document = JsonDocument.Parse(_json_text))
+      if(JsonText == null)
+        throw new ArgumentNullException(nameof(JsonText));
+
+      using (var document = JsonDocument.Parse(JsonText))
       {
         var root = document.RootElement;
         foreach (var pi in GetType().GetProperties())

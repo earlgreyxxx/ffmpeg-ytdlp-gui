@@ -11,6 +11,14 @@ namespace ffmpeg_ytdlp_gui.libs
   /// </summary>
   public class RedirectedProcess
   {
+    public static string GetTemporaryFileName(string prefix = "",string suffix = "")
+    {
+      return Path.Combine(
+        Environment.ExpandEnvironmentVariables(Environment.GetEnvironmentVariable("TEMP")!),
+        $"{prefix}{Process.GetCurrentProcess().Id}{suffix}"
+      );
+    }
+
     [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
     static extern bool AttachConsole(uint dwProcessId);
 
@@ -99,6 +107,19 @@ namespace ffmpeg_ytdlp_gui.libs
         StdInWriter = Current.StandardInput;
       }
       return rv;
+    }
+
+    /// <summary>
+    /// プロセスをブロックせずに終了まで待ちます。
+    /// </summary>
+    /// <returns>Task</returns>
+    /// <exception cref="Exception"></exception>
+    public Task WaitForExitAsync()
+    {
+      if (Current.HasExited)
+        throw new Exception("Process is already exited");
+
+      return Current.WaitForExitAsync();
     }
 
     /// <summary>
