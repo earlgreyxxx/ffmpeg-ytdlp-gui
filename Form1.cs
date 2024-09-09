@@ -1103,7 +1103,7 @@ namespace ffmpeg_ytdlp_gui
         {
           Tuple<string, ListItemType> property;
 
-          switch(cb?.Name)
+          switch (cb?.Name)
           {
             case "cbOutputDir":
               property = new Tuple<string, ListItemType>("出力フォルダ一覧", ListItemType.FileOrDirectory);

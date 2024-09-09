@@ -50,19 +50,37 @@ namespace ffmpeg_ytdlp_gui
       Close();
     }
 
+    private void ItemRemover(object item)
+    {
+      if (item?.GetType() == typeof(YtdlpItem))
+      {
+        var ytdlpItem = item as YtdlpItem;
+        if (ytdlpItem != null && ytdlpItem?.Item2 != null)
+          ytdlpItem?.Item3?.Dispose();
+      }
+    }
+
     private void SubmitClear_Click(object sender, EventArgs e)
     {
       var items = ListEditItems.DataSource as BindingSource;
       var result = MessageBox.Show("全て削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel);
       if (result == DialogResult.OK)
+      {
+        foreach (var item in ListEditItems.Items.Cast<object>().ToArray())
+          ItemRemover(item);
+
         items?.Clear();
+      }
     }
 
     private void SubmitDelete_Click(object sender, EventArgs e)
     {
       var items = ListEditItems.DataSource as BindingSource;
       foreach (var item in ListEditItems.SelectedItems.Cast<object>().ToArray())
+      {
         items?.Remove(item);
+        ItemRemover(item);
+      }
     }
 
     private void ListEditItems_DragEnter(object sender, DragEventArgs e)

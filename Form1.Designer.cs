@@ -175,6 +175,7 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      linkLabel5 = new System.Windows.Forms.LinkLabel();
       MediaTitle = new System.Windows.Forms.TextBox();
       linkLabel3 = new System.Windows.Forms.LinkLabel();
       OutputFileFormat = new System.Windows.Forms.ComboBox();
@@ -218,7 +219,6 @@
       MovieFormatSource = new System.Windows.Forms.BindingSource(components);
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
-      linkLabel5 = new System.Windows.Forms.LinkLabel();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -1849,12 +1849,24 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 413);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
+      // 
+      // linkLabel5
+      // 
+      linkLabel5.AutoSize = true;
+      linkLabel5.Location = new System.Drawing.Point(46, 32);
+      linkLabel5.Name = "linkLabel5";
+      linkLabel5.Size = new System.Drawing.Size(53, 12);
+      linkLabel5.TabIndex = 45;
+      linkLabel5.TabStop = true;
+      linkLabel5.Tag = "DownloadUrl";
+      linkLabel5.Text = "リスト編集";
+      linkLabel5.LinkClicked += EditListItems;
       // 
       // MediaTitle
       // 
@@ -2256,18 +2268,6 @@
       // 
       OpenCookieFileDialog.FileName = "cookie.txt";
       OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
-      // 
-      // linkLabel5
-      // 
-      linkLabel5.AutoSize = true;
-      linkLabel5.Location = new System.Drawing.Point(46, 32);
-      linkLabel5.Name = "linkLabel5";
-      linkLabel5.Size = new System.Drawing.Size(53, 12);
-      linkLabel5.TabIndex = 45;
-      linkLabel5.TabStop = true;
-      linkLabel5.Tag = "DownloadUrl";
-      linkLabel5.Text = "リスト編集";
-      linkLabel5.LinkClicked += EditListItems;
       // 
       // Form1
       // 
