@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Form1.Commons.resx" />
+    <EmbeddedResource Remove="Form1.Ytdlp.resx" />
     <EmbeddedResource Remove="StdoutForm.ja-JP.resx" />
   </ItemGroup>
   <ItemGroup>

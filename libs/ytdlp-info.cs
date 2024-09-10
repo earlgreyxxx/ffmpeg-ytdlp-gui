@@ -1,15 +1,12 @@
-﻿using System;
+﻿using SixLabors.ImageSharp;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
@@ -27,18 +24,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? format_id { set; get; }
     public List<MediaFormat>? formats { get; set; } = new List<MediaFormat>();
     public List<MediaFormat>? requested_formats {  set; get; } = new List<MediaFormat>();
-    public string? JsonText
-    {
-      private set {
-        _json_text = value;
-      }
-      get
-      {
-        return _json_text;
-      }
-    }
-
-    private string? _json_text;
+    public string? JsonText {  private set; get; }
     
     public MediaInformation(string json)
     {

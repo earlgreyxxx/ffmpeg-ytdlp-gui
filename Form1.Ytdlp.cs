@@ -1,11 +1,10 @@
-﻿using System;
+﻿using ffmpeg_ytdlp_gui.libs;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ffmpeg_ytdlp_gui.libs;
 
 namespace ffmpeg_ytdlp_gui
 {
@@ -162,21 +161,11 @@ namespace ffmpeg_ytdlp_gui
 
         await downloader.GetDownloadFileNames();
         if (string.IsNullOrEmpty(downloader.DownloadFile))
-        {
-          if (File.Exists(downloader.JsonFileName))
-            File.Delete(downloader.JsonFileName);
-
           throw new Exception("ダウンロード名が決定できませんでした。");
-        }
 
         downloader.ProcessExited += (s, e) => Invoke(() =>
         {
           Debug.WriteLine($"exitcode = {downloader.ExitCode},DownloadName = {downloader.DownloadFile}");
-          if (File.Exists(downloader.JsonFileName))
-          {
-            File.Delete(downloader.JsonFileName);
-            Debug.WriteLine($"\"{downloader.JsonFileName}\" was deleted");
-          }
 
           if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
           {
