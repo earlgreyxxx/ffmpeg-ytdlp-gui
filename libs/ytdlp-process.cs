@@ -10,6 +10,8 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   public class ytdlp_process : RedirectedProcess
   {
+    private static readonly Encoding UTF8N = new UTF8Encoding(false);
+
     const string YTDLPNAME = "yt-dlp";
 
     public string? Url { get; set; }
@@ -24,7 +26,6 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? MovieFormat { private get; set; }
 
     public string? JsonText {  get; set; }
-    private Encoding encoding = new UTF8Encoding(false);
 
     private string[]? _downloadfiles;
     public string[]? DownloadFiles
@@ -122,9 +123,9 @@ namespace ffmpeg_ytdlp_gui.libs
 
       string[] formats = sb.Count() > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : [];
 
-      psi.StandardOutputEncoding = encoding;
-      psi.StandardErrorEncoding = encoding;
-      psi.StandardInputEncoding = encoding;
+      psi.StandardOutputEncoding = UTF8N;
+      psi.StandardErrorEncoding = UTF8N;
+      psi.StandardInputEncoding = UTF8N;
 
       var arguments = string.Join(' ', CreateArguments(formats).ToArray());
       Debug.WriteLine($"{Command} {arguments}");
@@ -166,9 +167,9 @@ namespace ffmpeg_ytdlp_gui.libs
           info = new MediaInformation(string.Join(string.Empty, log.ToArray()));
       };
 
-      psi.StandardOutputEncoding = encoding;
-      psi.StandardErrorEncoding = encoding;
-      psi.StandardInputEncoding = encoding;
+      psi.StandardOutputEncoding = UTF8N;
+      psi.StandardErrorEncoding = UTF8N;
+      psi.StandardInputEncoding = UTF8N;
 
       await StartAsync(arguments);
       return info;
@@ -203,9 +204,9 @@ namespace ffmpeg_ytdlp_gui.libs
 
       Debug.WriteLine($"{Command} {arguments}");
 
-      parser.psi.StandardOutputEncoding = encoding;
-      parser.psi.StandardErrorEncoding = encoding;
-      parser.psi.StandardInputEncoding = encoding;
+      parser.psi.StandardOutputEncoding = UTF8N;
+      parser.psi.StandardErrorEncoding = UTF8N;
+      parser.psi.StandardInputEncoding = UTF8N;
 
       parser.StdOutReceived += data => log.Add(data);
       parser.ProcessExited += (s, e) =>
