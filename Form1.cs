@@ -885,14 +885,13 @@ namespace ffmpeg_ytdlp_gui
     private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
     {
       var url = DownloadUrl.Text;
-      var ytdlpItem = await YtdlpParseDownloadUrl(url);
-
-      if (ytdlpItem == null)
-        return;
-
       var list = UrlBindingSource.DataSource as YtdlpItems ?? throw new NullReferenceException("YtdlpItems is null");
-      if (false == list.Any(item => item.Item1 == url))
+      if (false == list.Any(item => item?.Item1 == url))
       {
+        var ytdlpItem = await YtdlpParseDownloadUrl(url);
+        if (ytdlpItem == null)
+          return;
+
         DownloadUrl.SelectedIndex = UrlBindingSource.Add(ytdlpItem);
         DownloadUrl_SelectedIndexChanged(DownloadUrl, new EventArgs());
       }
