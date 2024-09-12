@@ -865,7 +865,9 @@ namespace ffmpeg_ytdlp_gui
     private void SubmitDownload_Click(object sender, EventArgs e)
     {
       var button = (Button)sender ?? throw new NullReferenceException("button is null");
-      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem ?? throw new NullReferenceException("SelectedItem is null");
+      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
+      if (ytdlpItem == null)
+        return;
 
       var format = OutputFileFormat.Text;
       var list = OutputFileFormatBindingSource.DataSource as List<string> ?? throw new NullReferenceException("Datasource is null");
@@ -908,8 +910,8 @@ namespace ffmpeg_ytdlp_gui
         VideoOnlyFormatSource.Clear();
         AudioOnlyFormatSource.Clear();
         MovieFormatSource.Clear();
-        SubmitDownload.Enabled = true;
-        SubmitSeparatedDownload.Enabled = true;
+        SubmitDownload.Enabled = false;
+        SubmitSeparatedDownload.Enabled = false;
         return;
       }
 
