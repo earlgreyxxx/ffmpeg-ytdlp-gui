@@ -11,15 +11,6 @@ using ffmpeg_ytdlp_gui.Properties;
 
 namespace ffmpeg_ytdlp_gui
 {
-  using CodecListItem = ListItem<Codec>;
-  using CodecListItems = List<ListItem<Codec>>;
-  using StringListItem = ListItem<string>;
-  using StringListItems = List<ListItem<string>>;
-  using DecimalListItem = ListItem<decimal>;
-  using DecimalListItems = List<ListItem<decimal>>;
-  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image?>>;
-  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>, int[]>;
-
   partial class Form1
   {
     // Static members

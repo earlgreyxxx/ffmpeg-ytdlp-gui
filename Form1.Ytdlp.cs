@@ -8,9 +8,6 @@ using System.Windows.Forms;
 
 namespace ffmpeg_ytdlp_gui
 {
-  using StringListItem = ListItem<string>;
-  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image?>;
-
   partial class Form1 
   {
     /// <summary>

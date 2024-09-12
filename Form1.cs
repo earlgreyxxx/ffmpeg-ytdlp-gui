@@ -14,14 +14,6 @@ using System.Collections.Specialized;
 
 namespace ffmpeg_ytdlp_gui
 {
-  using CodecListItems = List<ListItem<Codec>>;
-  using StringListItem = ListItem<string>;
-  using StringListItems = List<ListItem<string>>;
-  using FFmpegBatchList = Dictionary<ffmpeg_command, IEnumerable<string>>;
-  using YtdlpItem = Tuple<string, MediaInformation, System.Drawing.Image>;
-  using YtdlpItems = List<Tuple<string, MediaInformation, System.Drawing.Image>>;
-  using StringListItemsSet = Tuple<List<ListItem<string>>, List<ListItem<string>>, int[]>;
-
   public partial class Form1 : Form
   {
     [GeneratedRegex(@"^(?:\d{2}:)?\d{2}:\d{2}(?:\.\d+)?$")]
