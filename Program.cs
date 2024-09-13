@@ -18,40 +18,41 @@ namespace ffmpeg_ytdlp_gui
     [STAThread]
     static void Main()
     {
-      string appname = "FFMPEG-YTDLP-GUI";
-      var eventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, $"event-{appname}");
-      bool terminate = false;
       bool mutexCreated;
-
-      Mutex mutex = new Mutex(true, $"mutex-{appname}", out mutexCreated);
+      string appname = "FFMPEG-YTDLP-GUI";
+      using Mutex mutex = new Mutex(true, $"mutex-{appname}", out mutexCreated);
+      using var hEvent = new EventWaitHandle(false, EventResetMode.AutoReset, $"event-{appname}");
+      using var cts = new CancellationTokenSource();
 
       try
       {
         if (!mutexCreated)
         {
-          using (eventHandle)
-          {
-            eventHandle.Set();
-          }
+          hEvent.Set();
           return;
         }
         else
         {
           Task.Run(() =>
           {
-            while(true)
+            try
             {
-              eventHandle.WaitOne();
-
-              if (terminate)
-                break;
-
-              using (var process = Process.GetCurrentProcess())
+              var token = cts.Token;
+              while (true)
               {
+                token.ThrowIfCancellationRequested();
+                hEvent.WaitOne();
+                token.ThrowIfCancellationRequested();
+
+                using var process = Process.GetCurrentProcess();
                 var hWnd = process.MainWindowHandle;
-                if(hWnd != IntPtr.Zero)
+                if (hWnd != IntPtr.Zero)
                   SetForegroundWindow(hWnd);
               }
+            }
+            catch (OperationCanceledException)
+            {
+              Debug.WriteLine("Exit event waiting loop");
             }
           });
         }
@@ -59,16 +60,14 @@ namespace ffmpeg_ytdlp_gui
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         Application.Run(new Form1());
-
-        terminate = true;
-        eventHandle.Set();
       }
       finally
       {
+        cts.Cancel();
+        hEvent.Set();
+
         if(mutexCreated)
           mutex.ReleaseMutex();
-
-        mutex.Dispose();
       }
     }
 
