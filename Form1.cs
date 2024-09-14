@@ -1163,12 +1163,21 @@ namespace ffmpeg_ytdlp_gui
 
       foreach (var mediaInfo in ytdlpItem.Item4)
       {
-        if(mediaInfo == null || mediaInfo.webpage_url == null)
+        if (mediaInfo == null || mediaInfo.webpage_url == null)
           continue;
 
-        var item = new YtdlpItem(mediaInfo.webpage_url,mediaInfo,mediaInfo.image,null);
+        var item = new YtdlpItem(mediaInfo.webpage_url, mediaInfo, mediaInfo.image, null);
         YtdlpInvokeDownload(item, false, true);
       }
+    }
+
+    private void DummyProgressBar_VisibleChanged(object sender, EventArgs e)
+    {
+      var pb = sender as ToolStripProgressBar;
+      if (pb == null)
+        return;
+
+      pb.Width = pb.Visible ? 150 : 1;
     }
   }
 }

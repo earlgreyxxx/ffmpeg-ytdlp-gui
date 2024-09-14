@@ -109,6 +109,7 @@
       ffmpeg = new System.Windows.Forms.ComboBox();
       StatusBar = new System.Windows.Forms.StatusStrip();
       OutputStderr = new System.Windows.Forms.ToolStripStatusLabel();
+      DummyProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       QueueCount = new System.Windows.Forms.ToolStripStatusLabel();
       CropBox = new System.Windows.Forms.GroupBox();
       CropLabel4 = new System.Windows.Forms.Label();
@@ -1119,7 +1120,7 @@
       // 
       // StatusBar
       // 
-      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, QueueCount });
+      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, DummyProgressBar, QueueCount });
       StatusBar.Location = new System.Drawing.Point(3, 625);
       StatusBar.Name = "StatusBar";
       StatusBar.Size = new System.Drawing.Size(840, 23);
@@ -1136,6 +1137,15 @@
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // DummyProgressBar
+      // 
+      DummyProgressBar.AutoSize = false;
+      DummyProgressBar.Name = "DummyProgressBar";
+      DummyProgressBar.Size = new System.Drawing.Size(0, 17);
+      DummyProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+      DummyProgressBar.Visible = false;
+      DummyProgressBar.VisibleChanged += DummyProgressBar_VisibleChanged;
       // 
       // QueueCount
       // 
@@ -1856,10 +1866,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 413);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2610,6 +2620,7 @@
     private System.Windows.Forms.BindingSource PlaylistBindingSource;
     private System.Windows.Forms.GroupBox PlaylistGroup;
     private System.Windows.Forms.Button PlayListDownloadAll;
+    private System.Windows.Forms.ToolStripProgressBar DummyProgressBar;
   }
 }
 
