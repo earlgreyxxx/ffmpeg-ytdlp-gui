@@ -98,6 +98,8 @@ namespace ffmpeg_ytdlp_gui
         else if (cookieKind != "none" && cookieKind != "file")
           parser.CookieBrowser = cookieKind;
 
+        OnPreParseMediaUrl();
+
         OutputStderr.Text = "ダウンロード先の情報の取得及び解析中...";
         mediaInfo = await parser.getMediaInformation();
         OutputStderr.Text = "";
@@ -112,6 +114,10 @@ namespace ffmpeg_ytdlp_gui
       catch (Exception exception)
       {
         MessageBox.Show(exception.Message);
+      }
+      finally
+      {
+        OnPostParseMediaUrl();
       }
 
       return ytdlpItem;
@@ -240,8 +246,18 @@ namespace ffmpeg_ytdlp_gui
 
     private void YtdlpAbortDownload()
     {
-      if (ytdlp != null)
-        ytdlp.Interrupt();
+      ytdlps?.Clear();
+      ytdlp?.Interrupt();
+    }
+
+    private void OnPreParseMediaUrl()
+    {
+      DummyProgressBar.Visible = true;
+    }
+
+    private void OnPostParseMediaUrl()
+    {
+      DummyProgressBar.Visible = false;
     }
   }
 }

@@ -541,7 +541,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void OpenLogFile_Click(object sender, EventArgs e)
     {
-      var filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
+      var filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-", ".log");
       if (!System.IO.File.Exists(filename))
       {
         MessageBox.Show("ログファイルが存在しません。");
@@ -882,13 +882,14 @@ namespace ffmpeg_ytdlp_gui
       YtdlpInvokeDownload(ytdlpItem!, isSeparate);
     }
 
-    private async void SubmitConfirmFormat_Click(object sender, EventArgs e)
+    private async void SubmitParseUrl_Click(object sender, EventArgs e)
     {
       var url = DownloadUrl.Text;
       var list = UrlBindingSource.DataSource as YtdlpItems ?? throw new NullReferenceException("YtdlpItems is null");
       if (false == list.Any(item => item?.Item1 == url))
       {
         var ytdlpItem = await YtdlpParseDownloadUrl(url);
+
         if (ytdlpItem == null)
           return;
 
@@ -1155,6 +1156,15 @@ namespace ffmpeg_ytdlp_gui
         cbOutputDir.SelectedIndex,
         Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader" ? 0 : 1
       );
+    }
+
+    private void DummyProgressBar_VisibleChanged(object sender, EventArgs e)
+    {
+      var pb = sender as ToolStripProgressBar;
+      if (pb == null)
+        return;
+
+      pb.Width = pb.Visible ? 150 : 1;
     }
   }
 }

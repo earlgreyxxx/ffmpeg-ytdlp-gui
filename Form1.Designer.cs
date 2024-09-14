@@ -109,6 +109,7 @@
       ffmpeg = new System.Windows.Forms.ComboBox();
       StatusBar = new System.Windows.Forms.StatusStrip();
       OutputStderr = new System.Windows.Forms.ToolStripStatusLabel();
+      DummyProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       QueueCount = new System.Windows.Forms.ToolStripStatusLabel();
       CropBox = new System.Windows.Forms.GroupBox();
       CropLabel4 = new System.Windows.Forms.Label();
@@ -1113,7 +1114,7 @@
       // 
       // StatusBar
       // 
-      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, QueueCount });
+      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, DummyProgressBar, QueueCount });
       StatusBar.Location = new System.Drawing.Point(3, 625);
       StatusBar.Name = "StatusBar";
       StatusBar.Size = new System.Drawing.Size(840, 23);
@@ -1126,10 +1127,19 @@
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(703, 18);
+      OutputStderr.Size = new System.Drawing.Size(670, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // DummyProgressBar
+      // 
+      DummyProgressBar.AutoSize = false;
+      DummyProgressBar.Name = "DummyProgressBar";
+      DummyProgressBar.Size = new System.Drawing.Size(0, 17);
+      DummyProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+      DummyProgressBar.Visible = false;
+      DummyProgressBar.VisibleChanged += DummyProgressBar_VisibleChanged;
       // 
       // QueueCount
       // 
@@ -1849,10 +1859,10 @@
       PageDownloader.Controls.Add(label29);
       PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2137,7 +2147,7 @@
       SubmitConfirmFormat.TabIndex = 6;
       SubmitConfirmFormat.Text = "URL解析";
       SubmitConfirmFormat.UseVisualStyleBackColor = true;
-      SubmitConfirmFormat.Click += SubmitConfirmFormat_Click;
+      SubmitConfirmFormat.Click += SubmitParseUrl_Click;
       // 
       // label29
       // 
@@ -2554,6 +2564,7 @@
     private System.Windows.Forms.LinkLabel linkLabel4;
     private System.Windows.Forms.TextBox MediaTitle;
     private System.Windows.Forms.LinkLabel linkLabel5;
+    private System.Windows.Forms.ToolStripProgressBar DummyProgressBar;
   }
 }
 

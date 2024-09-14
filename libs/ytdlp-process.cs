@@ -164,7 +164,7 @@ namespace ffmpeg_ytdlp_gui.libs
       ProcessExited += (s, e) =>
       {
         if (Current.ExitCode == 0)
-          info = new MediaInformation(string.Join(string.Empty, log.ToArray()));
+          info = new MediaInformation(string.Join(string.Empty, log.FirstOrDefault()));
       };
 
       psi.StandardOutputEncoding = UTF8N;
@@ -213,10 +213,9 @@ namespace ffmpeg_ytdlp_gui.libs
       {
         if (parser.ExitCode == 0)
         {
-          DownloadFiles = string.Join(string.Empty, log.ToArray())
-                                .Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                                .Select(filename => Path.Combine(OutputPath ?? string.Empty, filename))
-                                .ToArray();
+          DownloadFiles = log.Where(line => !string.IsNullOrEmpty(line.Trim()))
+                             .Select(filename => Path.Combine(OutputPath ?? string.Empty, filename))
+                             .ToArray();
         }
       };
 
