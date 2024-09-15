@@ -853,14 +853,7 @@ namespace ffmpeg_ytdlp_gui
     private void DownloadUrl_Leave(object sender, EventArgs e)
     {
       if (DownloadUrl.Text.Length > 0 && !Regex.IsMatch(DownloadUrl.Text, "^https?://"))
-      {
-        var tooltip = new ToolTip();
-        tooltip.SetToolTip(DownloadUrl, "フォーマットエラー");
-        tooltip.AutomaticDelay = 10;
-        tooltip.Show("正しいURLを入力してください。", DownloadUrl);
-        DownloadUrl.Focus();
-        Task.Delay(5000).ContinueWith(_ => Invoke(() => tooltip.Hide(DownloadUrl)));
-      }
+        TooltipShow(DownloadUrl,"フォーマットエラー");
     }
 
     private void SubmitDownload_Click(object sender, EventArgs e)
@@ -973,7 +966,8 @@ namespace ffmpeg_ytdlp_gui
     private void UseCookie_SelectedIndexChanged(object sender, EventArgs e)
     {
       var value = UseCookie.SelectedValue?.ToString() ?? "none";
-      CookieAttn.Visible = value != "none" && value != "file" && value != "firefox";
+      if (value != "none" && value != "file" && value != "firefox")
+        MessageBox.Show("予め選択されたブラウザを全て終了させてください。","ブラウザのCookie使用について");
     }
 
     private void SubmitOpenCookie_Click(object sender, EventArgs e)
@@ -987,11 +981,6 @@ namespace ffmpeg_ytdlp_gui
     private void StopDownload_Click(object sender, EventArgs e)
     {
       YtdlpAbortDownload();
-    }
-
-    private void CookieAttn_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-      CustomProcess.ShellExecute("https://github.com/yt-dlp/yt-dlp/issues/7271");
     }
 
     private void CommandSaveImage_Click(object sender, EventArgs e)

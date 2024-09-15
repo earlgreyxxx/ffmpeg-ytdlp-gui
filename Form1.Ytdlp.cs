@@ -157,6 +157,12 @@ namespace ffmpeg_ytdlp_gui
           Separated = separatedDownload,
           JsonText = mediaInfo.JsonText
         };
+        if (isDefaultDownload)
+        {
+          var radio = GetCheckedRadioButton(PlaylistGroup);
+          downloader.MovieFormat = (radio?.Tag as string) ?? string.Empty;
+        }
+
         if (!isDefaultDownload)
         {
           downloader.VideoFormat = VideoOnlyFormat.SelectedValue?.ToString();

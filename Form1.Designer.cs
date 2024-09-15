@@ -176,7 +176,15 @@
       label14 = new System.Windows.Forms.Label();
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
+      CookieBox = new System.Windows.Forms.GroupBox();
+      label0 = new System.Windows.Forms.Label();
+      label29 = new System.Windows.Forms.Label();
+      SubmitOpenCookie = new System.Windows.Forms.Button();
+      UseCookie = new System.Windows.Forms.ComboBox();
+      CookiePath = new System.Windows.Forms.TextBox();
       PlaylistGroup = new System.Windows.Forms.GroupBox();
+      DownloadBestQuality = new System.Windows.Forms.RadioButton();
+      DownloadWorstQuality = new System.Windows.Forms.RadioButton();
       PlayListDownloadAll = new System.Windows.Forms.Button();
       Playlist = new System.Windows.Forms.ListBox();
       linkLabel5 = new System.Windows.Forms.LinkLabel();
@@ -186,7 +194,6 @@
       DownloadUrl = new System.Windows.Forms.ComboBox();
       DurationTime = new System.Windows.Forms.Label();
       chkAfterDownload = new System.Windows.Forms.CheckBox();
-      CookieAttn = new System.Windows.Forms.LinkLabel();
       StopDownload = new System.Windows.Forms.Button();
       groupBox2 = new System.Windows.Forms.GroupBox();
       MovieFormat = new System.Windows.Forms.ComboBox();
@@ -197,15 +204,10 @@
       label30 = new System.Windows.Forms.Label();
       VideoOnlyFormat = new System.Windows.Forms.ComboBox();
       AudioOnlyFormat = new System.Windows.Forms.ComboBox();
-      CookiePath = new System.Windows.Forms.TextBox();
       LinkYdlOutputTemplate = new System.Windows.Forms.LinkLabel();
-      UseCookie = new System.Windows.Forms.ComboBox();
-      SubmitOpenCookie = new System.Windows.Forms.Button();
       ThumbnailBox = new System.Windows.Forms.PictureBox();
       label28 = new System.Windows.Forms.Label();
       SubmitConfirmFormat = new System.Windows.Forms.Button();
-      label29 = new System.Windows.Forms.Label();
-      label0 = new System.Windows.Forms.Label();
       label24 = new System.Windows.Forms.Label();
       ImageContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
@@ -262,6 +264,7 @@
       ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
       PageDownloader.SuspendLayout();
+      CookieBox.SuspendLayout();
       PlaylistGroup.SuspendLayout();
       groupBox2.SuspendLayout();
       groupBox1.SuspendLayout();
@@ -1844,6 +1847,7 @@
       // PageDownloader
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageDownloader.Controls.Add(CookieBox);
       PageDownloader.Controls.Add(PlaylistGroup);
       PageDownloader.Controls.Add(linkLabel5);
       PageDownloader.Controls.Add(MediaTitle);
@@ -1852,42 +1856,129 @@
       PageDownloader.Controls.Add(DownloadUrl);
       PageDownloader.Controls.Add(DurationTime);
       PageDownloader.Controls.Add(chkAfterDownload);
-      PageDownloader.Controls.Add(CookieAttn);
       PageDownloader.Controls.Add(StopDownload);
       PageDownloader.Controls.Add(groupBox2);
       PageDownloader.Controls.Add(groupBox1);
-      PageDownloader.Controls.Add(CookiePath);
       PageDownloader.Controls.Add(LinkYdlOutputTemplate);
-      PageDownloader.Controls.Add(UseCookie);
-      PageDownloader.Controls.Add(SubmitOpenCookie);
       PageDownloader.Controls.Add(ThumbnailBox);
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
-      PageDownloader.Controls.Add(label29);
-      PageDownloader.Controls.Add(label0);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
+      // CookieBox
+      // 
+      CookieBox.Controls.Add(label0);
+      CookieBox.Controls.Add(label29);
+      CookieBox.Controls.Add(SubmitOpenCookie);
+      CookieBox.Controls.Add(UseCookie);
+      CookieBox.Controls.Add(CookiePath);
+      CookieBox.Location = new System.Drawing.Point(438, 54);
+      CookieBox.Name = "CookieBox";
+      CookieBox.Size = new System.Drawing.Size(382, 83);
+      CookieBox.TabIndex = 49;
+      CookieBox.TabStop = false;
+      CookieBox.Text = "Cookieの使用";
+      // 
+      // label0
+      // 
+      label0.AutoSize = true;
+      label0.Location = new System.Drawing.Point(8, 25);
+      label0.Name = "label0";
+      label0.Size = new System.Drawing.Size(119, 12);
+      label0.TabIndex = 5;
+      label0.Text = "ブラウザのCookieを使用";
+      // 
+      // label29
+      // 
+      label29.AutoSize = true;
+      label29.Location = new System.Drawing.Point(8, 53);
+      label29.Name = "label29";
+      label29.Size = new System.Drawing.Size(93, 12);
+      label29.TabIndex = 5;
+      label29.Text = "Cookieファイルパス";
+      // 
+      // SubmitOpenCookie
+      // 
+      SubmitOpenCookie.Location = new System.Drawing.Point(315, 48);
+      SubmitOpenCookie.Name = "SubmitOpenCookie";
+      SubmitOpenCookie.Size = new System.Drawing.Size(49, 23);
+      SubmitOpenCookie.TabIndex = 36;
+      SubmitOpenCookie.TabStop = false;
+      SubmitOpenCookie.Text = "参照";
+      SubmitOpenCookie.UseVisualStyleBackColor = true;
+      SubmitOpenCookie.Click += SubmitOpenCookie_Click;
+      // 
+      // UseCookie
+      // 
+      UseCookie.DisplayMember = "Label";
+      UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      UseCookie.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      UseCookie.FormattingEnabled = true;
+      UseCookie.Location = new System.Drawing.Point(131, 21);
+      UseCookie.Name = "UseCookie";
+      UseCookie.Size = new System.Drawing.Size(232, 21);
+      UseCookie.TabIndex = 13;
+      UseCookie.ValueMember = "Value";
+      UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
+      // 
+      // CookiePath
+      // 
+      CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+      CookiePath.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      CookiePath.Location = new System.Drawing.Point(105, 49);
+      CookiePath.Name = "CookiePath";
+      CookiePath.PlaceholderText = "Netscape形式のcookieファイル";
+      CookiePath.ReadOnly = true;
+      CookiePath.Size = new System.Drawing.Size(208, 20);
+      CookiePath.TabIndex = 15;
+      // 
       // PlaylistGroup
       // 
+      PlaylistGroup.Controls.Add(DownloadBestQuality);
+      PlaylistGroup.Controls.Add(DownloadWorstQuality);
       PlaylistGroup.Controls.Add(PlayListDownloadAll);
       PlaylistGroup.Controls.Add(Playlist);
       PlaylistGroup.Enabled = false;
-      PlaylistGroup.Location = new System.Drawing.Point(438, 82);
+      PlaylistGroup.Location = new System.Drawing.Point(14, 54);
       PlaylistGroup.Name = "PlaylistGroup";
-      PlaylistGroup.Size = new System.Drawing.Size(379, 129);
+      PlaylistGroup.Size = new System.Drawing.Size(416, 111);
       PlaylistGroup.TabIndex = 48;
       PlaylistGroup.TabStop = false;
       PlaylistGroup.Text = "プレイリスト検出";
       // 
+      // DownloadBestQuality
+      // 
+      DownloadBestQuality.AutoSize = true;
+      DownloadBestQuality.Checked = true;
+      DownloadBestQuality.Location = new System.Drawing.Point(317, 53);
+      DownloadBestQuality.Name = "DownloadBestQuality";
+      DownloadBestQuality.Size = new System.Drawing.Size(95, 16);
+      DownloadBestQuality.TabIndex = 50;
+      DownloadBestQuality.TabStop = true;
+      DownloadBestQuality.Tag = "bv*+ba/b";
+      DownloadBestQuality.Text = "最高品質でDL";
+      DownloadBestQuality.UseVisualStyleBackColor = true;
+      // 
+      // DownloadWorstQuality
+      // 
+      DownloadWorstQuality.AutoSize = true;
+      DownloadWorstQuality.Location = new System.Drawing.Point(317, 31);
+      DownloadWorstQuality.Name = "DownloadWorstQuality";
+      DownloadWorstQuality.Size = new System.Drawing.Size(95, 16);
+      DownloadWorstQuality.TabIndex = 49;
+      DownloadWorstQuality.Tag = "wv*+wa/w";
+      DownloadWorstQuality.Text = "最低品質でDL";
+      DownloadWorstQuality.UseVisualStyleBackColor = true;
+      // 
       // PlayListDownloadAll
       // 
-      PlayListDownloadAll.Location = new System.Drawing.Point(272, 92);
+      PlayListDownloadAll.Location = new System.Drawing.Point(314, 78);
       PlayListDownloadAll.Name = "PlayListDownloadAll";
       PlayListDownloadAll.Size = new System.Drawing.Size(96, 26);
       PlayListDownloadAll.TabIndex = 48;
@@ -1897,11 +1988,12 @@
       // 
       // Playlist
       // 
+      Playlist.Font = new System.Drawing.Font("ＭＳ Ｐゴシック", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       Playlist.HorizontalScrollbar = true;
-      Playlist.ItemHeight = 12;
+      Playlist.ItemHeight = 13;
       Playlist.Location = new System.Drawing.Point(11, 22);
       Playlist.Name = "Playlist";
-      Playlist.Size = new System.Drawing.Size(357, 64);
+      Playlist.Size = new System.Drawing.Size(297, 82);
       Playlist.TabIndex = 47;
       Playlist.SelectedIndexChanged += Playlist_SelectedIndexChanged;
       // 
@@ -1920,14 +2012,15 @@
       // MediaTitle
       // 
       MediaTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      MediaTitle.Enabled = false;
       MediaTitle.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       MediaTitle.ImeMode = System.Windows.Forms.ImeMode.Disable;
-      MediaTitle.Location = new System.Drawing.Point(14, 338);
+      MediaTitle.Location = new System.Drawing.Point(438, 143);
       MediaTitle.Multiline = true;
       MediaTitle.Name = "MediaTitle";
       MediaTitle.PlaceholderText = "メディアタイトル";
       MediaTitle.ReadOnly = true;
-      MediaTitle.Size = new System.Drawing.Size(416, 67);
+      MediaTitle.Size = new System.Drawing.Size(380, 68);
       MediaTitle.TabIndex = 0;
       MediaTitle.TabStop = false;
       // 
@@ -1964,11 +2057,12 @@
       DownloadUrl.TabIndex = 42;
       DownloadUrl.ValueMember = "Item2";
       DownloadUrl.SelectedIndexChanged += DownloadUrl_SelectedIndexChanged;
+      DownloadUrl.Leave += DownloadUrl_Leave;
       // 
       // DurationTime
       // 
       DurationTime.BackColor = System.Drawing.Color.White;
-      DurationTime.Location = new System.Drawing.Point(323, 298);
+      DurationTime.Location = new System.Drawing.Point(323, 375);
       DurationTime.Name = "DurationTime";
       DurationTime.Padding = new System.Windows.Forms.Padding(5);
       DurationTime.Size = new System.Drawing.Size(107, 30);
@@ -1988,18 +2082,6 @@
       chkAfterDownload.TabIndex = 40;
       chkAfterDownload.Text = "完了後に変換リストへ追加";
       chkAfterDownload.UseVisualStyleBackColor = true;
-      // 
-      // CookieAttn
-      // 
-      CookieAttn.AutoSize = true;
-      CookieAttn.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
-      CookieAttn.Location = new System.Drawing.Point(249, 58);
-      CookieAttn.Name = "CookieAttn";
-      CookieAttn.Size = new System.Drawing.Size(187, 12);
-      CookieAttn.TabIndex = 39;
-      CookieAttn.TabStop = true;
-      CookieAttn.Text = "※事前にブラウザを全て閉じてください。";
-      CookieAttn.LinkClicked += CookieAttn_LinkClicked;
       // 
       // StopDownload
       // 
@@ -2114,17 +2196,6 @@
       AudioOnlyFormat.TabIndex = 10;
       AudioOnlyFormat.ValueMember = "Value";
       // 
-      // CookiePath
-      // 
-      CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-      CookiePath.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      CookiePath.Location = new System.Drawing.Point(554, 55);
-      CookiePath.Name = "CookiePath";
-      CookiePath.PlaceholderText = "Netscape形式のCookieファイル";
-      CookiePath.ReadOnly = true;
-      CookiePath.Size = new System.Drawing.Size(211, 20);
-      CookiePath.TabIndex = 15;
-      // 
       // LinkYdlOutputTemplate
       // 
       LinkYdlOutputTemplate.AutoSize = true;
@@ -2137,35 +2208,11 @@
       LinkYdlOutputTemplate.Text = "※OUTPUT TEMPLATE";
       LinkYdlOutputTemplate.LinkClicked += LinkYdlOutputTemplate_LinkClicked;
       // 
-      // UseCookie
-      // 
-      UseCookie.DisplayMember = "Label";
-      UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      UseCookie.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      UseCookie.FormattingEnabled = true;
-      UseCookie.Location = new System.Drawing.Point(135, 54);
-      UseCookie.Name = "UseCookie";
-      UseCookie.Size = new System.Drawing.Size(110, 21);
-      UseCookie.TabIndex = 13;
-      UseCookie.ValueMember = "Value";
-      UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
-      // 
-      // SubmitOpenCookie
-      // 
-      SubmitOpenCookie.Location = new System.Drawing.Point(769, 53);
-      SubmitOpenCookie.Name = "SubmitOpenCookie";
-      SubmitOpenCookie.Size = new System.Drawing.Size(49, 23);
-      SubmitOpenCookie.TabIndex = 36;
-      SubmitOpenCookie.TabStop = false;
-      SubmitOpenCookie.Text = "参照";
-      SubmitOpenCookie.UseVisualStyleBackColor = true;
-      SubmitOpenCookie.Click += SubmitOpenCookie_Click;
-      // 
       // ThumbnailBox
       // 
       ThumbnailBox.BackColor = System.Drawing.Color.Black;
       ThumbnailBox.InitialImage = null;
-      ThumbnailBox.Location = new System.Drawing.Point(14, 94);
+      ThumbnailBox.Location = new System.Drawing.Point(14, 171);
       ThumbnailBox.Name = "ThumbnailBox";
       ThumbnailBox.Size = new System.Drawing.Size(416, 234);
       ThumbnailBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -2190,24 +2237,6 @@
       SubmitConfirmFormat.Text = "URL解析";
       SubmitConfirmFormat.UseVisualStyleBackColor = true;
       SubmitConfirmFormat.Click += SubmitConfirmFormat_Click;
-      // 
-      // label29
-      // 
-      label29.AutoSize = true;
-      label29.Location = new System.Drawing.Point(478, 58);
-      label29.Name = "label29";
-      label29.Size = new System.Drawing.Size(74, 12);
-      label29.TabIndex = 5;
-      label29.Text = "Cookieファイル";
-      // 
-      // label0
-      // 
-      label0.AutoSize = true;
-      label0.Location = new System.Drawing.Point(10, 58);
-      label0.Name = "label0";
-      label0.Size = new System.Drawing.Size(119, 12);
-      label0.TabIndex = 5;
-      label0.Text = "ブラウザのCookieを使用";
       // 
       // label24
       // 
@@ -2404,7 +2433,10 @@
       ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
       PageDownloader.ResumeLayout(false);
       PageDownloader.PerformLayout();
+      CookieBox.ResumeLayout(false);
+      CookieBox.PerformLayout();
       PlaylistGroup.ResumeLayout(false);
+      PlaylistGroup.PerformLayout();
       groupBox2.ResumeLayout(false);
       groupBox1.ResumeLayout(false);
       groupBox1.PerformLayout();
@@ -2585,7 +2617,6 @@
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.Button SubmitSeparatedDownload;
     private System.Windows.Forms.Button StopDownload;
-    private System.Windows.Forms.LinkLabel CookieAttn;
     private System.Windows.Forms.NumericUpDown CropTB;
     private System.Windows.Forms.NumericUpDown CropLR;
     private System.Windows.Forms.Label label31;
@@ -2621,6 +2652,9 @@
     private System.Windows.Forms.GroupBox PlaylistGroup;
     private System.Windows.Forms.Button PlayListDownloadAll;
     private System.Windows.Forms.ToolStripProgressBar DummyProgressBar;
+    private System.Windows.Forms.GroupBox CookieBox;
+    private System.Windows.Forms.RadioButton DownloadBestQuality;
+    private System.Windows.Forms.RadioButton DownloadWorstQuality;
   }
 }
 

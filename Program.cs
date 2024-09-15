@@ -19,7 +19,11 @@ namespace ffmpeg_ytdlp_gui
     static void Main()
     {
       bool mutexCreated;
+#if DEBUG
+      string appname = "FFMPEG-YTDLP-GUI-DEBUG";
+#else
       string appname = "FFMPEG-YTDLP-GUI";
+#endif
       using Mutex mutex = new Mutex(true, $"mutex-{appname}", out mutexCreated);
       using var hEvent = new EventWaitHandle(false, EventResetMode.AutoReset, $"event-{appname}");
       using var cts = new CancellationTokenSource();

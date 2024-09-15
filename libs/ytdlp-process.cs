@@ -72,7 +72,7 @@ namespace ffmpeg_ytdlp_gui.libs
         "--progress-delta 1"
       };
 
-      options.Insert(0,string.IsNullOrEmpty(JsonText) ? (Url ?? throw new NullReferenceException("URL not null")) : "--load-info-json -");
+      options.Insert(0,string.IsNullOrEmpty(JsonText) ? ($"\"{Url}\"" ?? throw new NullReferenceException("URL not null")) : "--load-info-json -");
 
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
@@ -114,7 +114,7 @@ namespace ffmpeg_ytdlp_gui.libs
     {
       var sb = CreateFormatOptions();
 
-      string[] formats = sb.Count() > 0 ? [$"-f {string.Join('+', sb.ToArray())}"] : [];
+      string[] formats = sb.Count() > 0 ? [$"-f \"{string.Join('+', sb.ToArray())}\""] : [];
 
       psi.StandardOutputEncoding = UTF8N;
       psi.StandardErrorEncoding = UTF8N;
@@ -138,7 +138,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
       var options = new List<string>()
       {
-        Url,
+        $"\"{Url}\"",
         "-j"
       };
 
@@ -162,10 +162,6 @@ namespace ffmpeg_ytdlp_gui.libs
                       .Select(line => new MediaInformation(line));
         }
       };
-
-      psi.StandardOutputEncoding = UTF8N;
-      psi.StandardErrorEncoding = UTF8N;
-      psi.StandardInputEncoding = UTF8N;
 
       await StartAsync(arguments);
       return infoes;
@@ -195,11 +191,11 @@ namespace ffmpeg_ytdlp_gui.libs
       {
         "--print filename",
       };
-      options.Insert(0,string.IsNullOrEmpty(JsonText) ? parser.Url : "--load-info-json -");
+      options.Insert(0,string.IsNullOrEmpty(JsonText) ? $"\"{parser.Url}\"" : "--load-info-json -");
 
       var formats = CreateFormatOptions().ToArray();
       if(formats.Length > 0)
-        options.Add($"-f {string.Join('+', formats)}");
+        options.Add($"-f \"{string.Join('+', formats)}\"");
 
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
@@ -214,8 +210,6 @@ namespace ffmpeg_ytdlp_gui.libs
 
       Debug.WriteLine($"{Command} {arguments}");
 
-      parser.psi.StandardOutputEncoding = UTF8N;
-      parser.psi.StandardErrorEncoding = UTF8N;
       parser.psi.StandardInputEncoding = UTF8N;
 
       parser.StdOutReceived += data => log.Add(data);

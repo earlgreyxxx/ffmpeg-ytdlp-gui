@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
@@ -68,6 +69,17 @@ namespace ffmpeg_ytdlp_gui
         dir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
       Environment.CurrentDirectory = Environment.ExpandEnvironmentVariables(dir);
+    }
+
+    private static void TooltipShow(Control control,string text,int delay = 5000)
+    {
+      var form = control.FindForm();
+      var tooltip = new ToolTip();
+      tooltip.SetToolTip(control, text);
+      tooltip.AutomaticDelay = 10;
+      tooltip.Show("正しいURLを入力してください。", control);
+      control.Focus();
+      Task.Delay(delay).ContinueWith(_ => form?.Invoke(() => tooltip.Hide(control)));
     }
 
     // Instance members
