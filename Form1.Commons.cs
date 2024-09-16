@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
@@ -67,6 +69,17 @@ namespace ffmpeg_ytdlp_gui
         dir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
       Environment.CurrentDirectory = Environment.ExpandEnvironmentVariables(dir);
+    }
+
+    private static void TooltipShow(Control control,string text,int delay = 5000)
+    {
+      var form = control.FindForm();
+      var tooltip = new ToolTip();
+      tooltip.SetToolTip(control, text);
+      tooltip.AutomaticDelay = 10;
+      tooltip.Show("正しいURLを入力してください。", control);
+      control.Focus();
+      Task.Delay(delay).ContinueWith(_ => form?.Invoke(() => tooltip.Hide(control)));
     }
 
     // Instance members
@@ -329,6 +342,8 @@ namespace ffmpeg_ytdlp_gui
 
       OutputFileFormatBindingSource.DataSource = new List<string>();
       OutputFileFormat.DataSource = OutputFileFormatBindingSource;
+
+      Playlist.DataSource = PlaylistBindingSource;
     }
 
     /// <summary>
@@ -725,6 +740,74 @@ namespace ffmpeg_ytdlp_gui
     {
       if (cbOutputDir.SelectedIndex < 0 && !OutputDirectoryList!.Any(item => item.Value == cbOutputDir.Text))
         cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(cbOutputDir.Text, DateTime.Now));
+    }
+
+    private void SetDownloadFormats(YtdlpItem? ytdlpItem)
+    {
+      if (ytdlpItem == null)
+        return;
+
+      var mi = ytdlpItem?.Item2;
+      var image = ytdlpItem?.Item3;
+
+      string time = mi?.GetDurationTime() ?? "--:--:--";
+
+      ThumbnailBox.ContextMenuStrip = ImageContextMenu;
+      ThumbnailBox.Image = ytdlpItem?.Item3;
+      DurationTime.Text = time;
+      DurationTime.Visible = true;
+
+      MediaTitle.Text = mi?.title;
+
+      // format_id 構築
+      VideoOnlyFormatSource.Clear();
+      VideoOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+      AudioOnlyFormatSource.Clear();
+      AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
+      MovieFormatSource.Clear();
+
+      foreach (var format in mi?.formats!)
+      {
+        if (format == null || format.format_id == null)
+          continue;
+
+        if (format.vcodec == "none" && format.acodec != "none")
+          AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        else if (format.acodec == "none" && format.vcodec != "none")
+          VideoOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        else if (format.acodec != "none" && format.vcodec != "none")
+          MovieFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+      }
+
+      MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
+
+      // requested_formats? があれば
+      if (mi.requested_formats!.Count > 0)
+      {
+        var items = mi.requested_formats.Select(f => new
+        {
+          Value = f.format_id,
+          Label = f.ToString(),
+          Video = f.acodec == "none",
+          Audio = f.vcodec == "none",
+        });
+
+        foreach (var item in items)
+        {
+          ComboBox? cb = null;
+          if (item.Video)
+            cb = VideoOnlyFormat;
+          else if (item.Audio)
+            cb = AudioOnlyFormat;
+          else
+            continue;
+
+          cb.SelectedValue = item.Value;
+        }
+      }
+
+      SubmitDownload.Enabled = true;
+      SubmitSeparatedDownload.Enabled = true;
     }
   }
 }

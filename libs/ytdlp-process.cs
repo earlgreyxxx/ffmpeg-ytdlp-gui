@@ -19,29 +19,22 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? CookiePath { get; set; }
     public string? OutputPath { get; set; }
     public string? OutputFile { get; set; }
-    public string? DownloadFile { get; set; }
     public bool Separated { get; set; }
     public string? AudioFormat { private get; set; }
     public string? VideoFormat { private get; set; }
     public string? MovieFormat { private get; set; }
-
     public string? JsonText {  get; set; }
 
     private string[]? _downloadfiles;
+    public string? DownloadFile
+    {
+      get => _downloadfiles != null && _downloadfiles.Length > 0 ? _downloadfiles[0] : null;
+    }
+
     public string[]? DownloadFiles
     {
-      get
-      {
-        return _downloadfiles;
-      }
-      set
-      {
-        _downloadfiles = value;
-        if(_downloadfiles != null)
-          DownloadFile = _downloadfiles?.GetValue(0) as string;
-        else
-          DownloadFile = null;
-      }
+      get => _downloadfiles;
+      set => _downloadfiles = value;
     }
 
     public ytdlp_process() : base(YTDLPNAME)
@@ -138,7 +131,7 @@ namespace ffmpeg_ytdlp_gui.libs
       await WaitForExitAsync();
     }
 
-    public async Task<MediaInformation?> getMediaInformation()
+    public async Task<IEnumerable<MediaInformation>?> GetMediaInformations()
     {
       if (Url == null)
         throw new NullReferenceException("URL not specified");
@@ -156,7 +149,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
       var log = new List<string>();
       var arguments = string.Join(' ', options.ToArray());
-      MediaInformation? info = null;
+      IEnumerable<MediaInformation>? infoes = null;
 
       Debug.WriteLine($"{Command} {arguments}");
 
@@ -164,15 +157,27 @@ namespace ffmpeg_ytdlp_gui.libs
       ProcessExited += (s, e) =>
       {
         if (Current.ExitCode == 0)
-          info = new MediaInformation(string.Join(string.Empty, log.FirstOrDefault()));
+        {
+          infoes = log.Where(line => !string.IsNullOrEmpty(line?.Trim()))
+                      .Select(line => new MediaInformation(line));
+        }
       };
 
-      psi.StandardOutputEncoding = UTF8N;
-      psi.StandardErrorEncoding = UTF8N;
-      psi.StandardInputEncoding = UTF8N;
-
       await StartAsync(arguments);
-      return info;
+      return infoes;
+    }
+
+    public async Task<MediaInformation?> GetMediaInformation()
+    {
+      var infoes = await GetMediaInformations();
+
+      if (infoes == null || infoes.Count() == 0)
+        throw new Exception("GetMediaInformationメソッドがNULLを返したか、もしくは空でした。");
+
+      if (infoes.Count() > 1)
+        throw new MediaInformationException(infoes.ToArray());
+
+      return infoes.FirstOrDefault();
     }
 
     public Task GetDownloadFileNames()
@@ -203,12 +208,8 @@ namespace ffmpeg_ytdlp_gui.libs
       var log = new List<string>();
       var arguments = string.Join(' ', options.ToArray());
 
-      string[] filenames = [];
-
       Debug.WriteLine($"{Command} {arguments}");
 
-      //parser.psi.StandardOutputEncoding = UTF8N;
-      //parser.psi.StandardErrorEncoding = UTF8N;
       parser.psi.StandardInputEncoding = UTF8N;
 
       parser.StdOutReceived += data => log.Add(data);

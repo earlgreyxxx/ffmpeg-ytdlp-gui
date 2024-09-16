@@ -11,6 +11,7 @@ using System.Drawing;
 using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace ffmpeg_ytdlp_gui
 {
@@ -852,14 +853,7 @@ namespace ffmpeg_ytdlp_gui
     private void DownloadUrl_Leave(object sender, EventArgs e)
     {
       if (DownloadUrl.Text.Length > 0 && !Regex.IsMatch(DownloadUrl.Text, "^https?://"))
-      {
-        var tooltip = new ToolTip();
-        tooltip.SetToolTip(DownloadUrl, "フォーマットエラー");
-        tooltip.AutomaticDelay = 10;
-        tooltip.Show("正しいURLを入力してください。", DownloadUrl);
-        DownloadUrl.Focus();
-        Task.Delay(5000).ContinueWith(_ => Invoke(() => tooltip.Hide(DownloadUrl)));
-      }
+        TooltipShow(DownloadUrl,"フォーマットエラー");
     }
 
     private void SubmitDownload_Click(object sender, EventArgs e)
@@ -868,6 +862,16 @@ namespace ffmpeg_ytdlp_gui
       var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
       if (ytdlpItem == null)
         return;
+
+      if (PlaylistGroup.Enabled)
+      {
+        var mi = Playlist.SelectedItem as MediaInformation;
+        var url = mi?.webpage_url;
+        if (url == null)
+          return;
+
+        ytdlpItem = new YtdlpItem(url, mi, mi?.image, null);
+      }
 
       var format = OutputFileFormat.Text;
       var list = OutputFileFormatBindingSource.DataSource as List<string> ?? throw new NullReferenceException("Datasource is null");
@@ -889,7 +893,6 @@ namespace ffmpeg_ytdlp_gui
       if (false == list.Any(item => item?.Item1 == url))
       {
         var ytdlpItem = await YtdlpParseDownloadUrl(url);
-
         if (ytdlpItem == null)
           return;
 
@@ -915,69 +918,21 @@ namespace ffmpeg_ytdlp_gui
         return;
       }
 
-      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem ?? throw new NullReferenceException("SelectedItem is null");
-      var mi = ytdlpItem.Item2;
-      var image = ytdlpItem.Item3;
+      var item = DownloadUrl.SelectedItem as YtdlpItem;
 
-      string time = mi.GetDurationTime();
-
-      ThumbnailBox.ContextMenuStrip = ImageContextMenu;
-      ThumbnailBox.Image = ytdlpItem.Item3;
-      DurationTime.Text = time;
-      DurationTime.Visible = true;
-
-      //DownloadUrl.Enabled = false;
-      MediaTitle.Text = mi.title;
-
-      // format_id 構築
-      VideoOnlyFormatSource.Clear();
-      VideoOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
-      AudioOnlyFormatSource.Clear();
-      AudioOnlyFormatSource.Add(new StringListItem(string.Empty, "使用しない"));
-      MovieFormatSource.Clear();
-
-      foreach (var format in mi.formats!)
+      if (item?.Item4 != null)
       {
-        if (format == null || format.format_id == null)
-          continue;
-
-        if (format.vcodec == "none" && format.acodec != "none")
-          AudioOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
-        else if (format.acodec == "none" && format.vcodec != "none")
-          VideoOnlyFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
-        else if (format.acodec != "none" && format.vcodec != "none")
-          MovieFormatSource.Add(new StringListItem(format.format_id, format.ToString()));
+        // ytdlpItem is playlist, then expand to Playlist listbox control. 
+        Debug.WriteLine("This is playlist url");
+        EnablePlaylist(item);
+        return;
+      }
+      else if (PlaylistGroup.Enabled)
+      {
+        DisablePlaylist();
       }
 
-      MovieFormat.SelectedIndex = MovieFormatSource.Count - 1;
-
-      // requested_formats? があれば
-      if (mi.requested_formats!.Count > 0)
-      {
-        var items = mi.requested_formats.Select(f => new
-        {
-          Value = f.format_id,
-          Label = f.ToString(),
-          Video = f.acodec == "none",
-          Audio = f.vcodec == "none",
-        });
-
-        foreach (var item in items)
-        {
-          ComboBox? cb = null;
-          if (item.Video)
-            cb = VideoOnlyFormat;
-          else if (item.Audio)
-            cb = AudioOnlyFormat;
-          else
-            continue;
-
-          cb.SelectedValue = item.Value;
-        }
-      }
-
-      SubmitDownload.Enabled = true;
-      SubmitSeparatedDownload.Enabled = true;
+      SetDownloadFormats(item);
     }
 
     private void Tab_SelectedIndexChanged(object sender, EventArgs e)
@@ -998,6 +953,8 @@ namespace ffmpeg_ytdlp_gui
         DirectoryListBindingSource.DataMember = "Item2";
         OutputDirectoryList = set?.Item2 ?? throw new Exception("Item not initialize");
         cbOutputDir.SelectedIndex = set.Item3[1];
+
+        DownloadUrl.Focus();
       }
     }
 
@@ -1009,7 +966,8 @@ namespace ffmpeg_ytdlp_gui
     private void UseCookie_SelectedIndexChanged(object sender, EventArgs e)
     {
       var value = UseCookie.SelectedValue?.ToString() ?? "none";
-      CookieAttn.Visible = value != "none" && value != "file" && value != "firefox";
+      if (value != "none" && value != "file" && value != "firefox")
+        MessageBox.Show("予め選択されたブラウザを全て終了させてください。","ブラウザのCookie使用について");
     }
 
     private void SubmitOpenCookie_Click(object sender, EventArgs e)
@@ -1023,11 +981,6 @@ namespace ffmpeg_ytdlp_gui
     private void StopDownload_Click(object sender, EventArgs e)
     {
       YtdlpAbortDownload();
-    }
-
-    private void CookieAttn_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-      CustomProcess.ShellExecute("https://github.com/yt-dlp/yt-dlp/issues/7271");
     }
 
     private void CommandSaveImage_Click(object sender, EventArgs e)
@@ -1048,7 +1001,7 @@ namespace ffmpeg_ytdlp_gui
         {
           DefaultExt = "jpg",
           InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-          FileName = $"{mi.title}-thumbnail",
+          FileName = $"{mi?.title!}-thumbnail",
           Filter = "JPEGファイル|*.jpg|PNGファイル|*.png",
           OverwritePrompt = true,
           Title = "名前を付けて画像を保存",
@@ -1156,6 +1109,55 @@ namespace ffmpeg_ytdlp_gui
         cbOutputDir.SelectedIndex,
         Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader" ? 0 : 1
       );
+    }
+
+    private void Playlist_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      var listbox = sender as ListBox;
+      var item = listbox?.SelectedItem as MediaInformation;
+      var url = item?.webpage_url;
+      if (url == null)
+        return;
+
+      SetDownloadFormats(new YtdlpItem(url, item, item?.image, null));
+    }
+
+    private void UrlBindingSource_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      DisablePlaylist();
+      if (DownloadUrl.SelectedIndex >= 0)
+      {
+        var item = DownloadUrl.SelectedItem as YtdlpItem;
+        if (item != null && item.Item4 != null)
+          EnablePlaylist(item);
+      }
+      else
+      {
+        SubmitDownload.Enabled = false;
+        SubmitSeparatedDownload.Enabled = false;
+      }
+    }
+
+    private void PlayListDownloadAll_Click(object sender, EventArgs e)
+    {
+      var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
+
+      var format = OutputFileFormat.Text;
+      var list = OutputFileFormatBindingSource.DataSource as List<string>;
+      if (list == null || ytdlpItem?.Item4 == null)
+        return;
+
+      if (false == list.Any(item => item == format))
+        OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
+
+      foreach (var mediaInfo in ytdlpItem.Item4)
+      {
+        if (mediaInfo == null || mediaInfo.webpage_url == null)
+          continue;
+
+        var item = new YtdlpItem(mediaInfo.webpage_url, mediaInfo, mediaInfo.image, null);
+        YtdlpInvokeDownload(item, false, true);
+      }
     }
 
     private void DummyProgressBar_VisibleChanged(object sender, EventArgs e)

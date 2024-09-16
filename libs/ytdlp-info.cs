@@ -25,11 +25,18 @@ namespace ffmpeg_ytdlp_gui.libs
     public List<MediaFormat>? formats { get; set; } = new List<MediaFormat>();
     public List<MediaFormat>? requested_formats {  set; get; } = new List<MediaFormat>();
     public string? JsonText {  private set; get; }
+    public System.Drawing.Image? image { set; get; }
     
     public MediaInformation(string json)
     {
       JsonText = json;
       Initialize();
+    }
+
+    ~MediaInformation()
+    {
+      if (image != null)
+        image.Dispose();
     }
 
     private void Initialize()
@@ -68,6 +75,11 @@ namespace ffmpeg_ytdlp_gui.libs
       }
     }
 
+    public async Task LoadThumbnailImageAsync()
+    {
+      await GetThumbnailImageAsync();
+    }
+
     public async Task<Stream?> GetThumbnailStream()
     {
       if (thumbnail != null)
@@ -88,22 +100,18 @@ namespace ffmpeg_ytdlp_gui.libs
       return null;
     }
 
-    public async Task<System.Drawing.Image?> GetThumbnailImage()
+    public async Task<System.Drawing.Image?> GetThumbnailImageAsync()
     {
-      Stream? stream = await GetThumbnailStream();
+      using Stream? stream = await GetThumbnailStream();
       if (stream == null)
         return null;
 
-      System.Drawing.Image rv;
-      using (stream)
-      {
-        if (stream == null)
-          return null;
+      if (stream == null)
+        return null;
 
-        rv = System.Drawing.Image.FromStream(stream);
-      }
+      image = System.Drawing.Image.FromStream(stream);
 
-      return rv;
+      return image;
     }
 
     public string GetDurationTime()
@@ -117,6 +125,11 @@ namespace ffmpeg_ytdlp_gui.libs
       rv = new TimeSpan((long)(ns ?? 0));
 
       return rv.ToString();
+    }
+
+    public override string? ToString()
+    {
+      return title;
     }
   }
 
@@ -144,6 +157,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public decimal? abr { set; get; }
     public decimal? tbr { set; get; }
     public string? protocol { set; get; }
+    public string? container { set; get; }
 
     public MediaFormat(JsonElement el)
     {
@@ -172,26 +186,32 @@ namespace ffmpeg_ytdlp_gui.libs
     public override string ToString()
     {
       var sb = new StringBuilder();
-      if (format_id?.Length > 16)
-      {
-        var str = format_id.Substring(0, 15) + "…";
-        sb.Append($"[{str}]");
-      }
-      else
-      {
-        sb.Append($"[{format_id}]");
-      }
+      //if (format_id?.Length > 16)
+      //{
+      //  var str = format_id.Substring(0, 15) + "…";
+      //  sb.Append($"[{str}]");
+      //}
+      //else
+      //{
+      //  sb.Append($"[{format_id}]");
+      //}
 
       if (!string.IsNullOrEmpty(resolution) && resolution != "audio only")
-        sb.Append($" - {resolution}");
-      if (!string.IsNullOrEmpty(ext))
-        sb.Append($" - {ext}");
+        sb.Append($"{resolution}");
+
+      //if (fps != null && fps > 0)
+      //  sb.Append($"({fps}fps)");
+      //if (abr != null && abr > 0)
+      //  sb.Append($"({Math.Floor((decimal)abr)}kbs)");
+
       if (!string.IsNullOrEmpty(format_note))
-        sb.Append($"({format_note})");
+        sb.Append($" {format_note}");
       if (!string.IsNullOrEmpty(vcodec) && vcodec != "none")
-        sb.Append($" - {vcodec}");
+        sb.Append($" {vcodec}");
       if (!string.IsNullOrEmpty(acodec) && acodec != "none")
-        sb.Append($" - {acodec}");
+        sb.Append($" {acodec}");
+      if (!string.IsNullOrEmpty(container))
+        sb.Append($" {container}");
 
       return sb.ToString(); 
     }
@@ -205,6 +225,19 @@ namespace ffmpeg_ytdlp_gui.libs
     IEnumerator IEnumerable.GetEnumerator()
     {
       return this.GetEnumerator();
+    }
+  }
+
+  internal class MediaInformationException : Exception
+  {
+    public MediaInformationException(MediaInformation[]? data)
+    {
+      Data["MediaInformations"] = data;
+    }
+
+    public override string ToString()
+    {
+      return "複数のメディア(プレイリスト）が検出されました。exception.Data[MediaInformations]を参照してください。";
     }
   }
 }
