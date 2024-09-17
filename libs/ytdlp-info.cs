@@ -185,33 +185,27 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public override string ToString()
     {
-      var sb = new StringBuilder();
-      //if (format_id?.Length > 16)
-      //{
-      //  var str = format_id.Substring(0, 15) + "…";
-      //  sb.Append($"[{str}]");
-      //}
-      //else
-      //{
-      //  sb.Append($"[{format_id}]");
-      //}
+      var sb = new StringBuilder(
+        format_id?.Length > 16 ? $"[{format_id.Substring(0, 15) + "…"}] " : $"[{format_id}] "
+      );
 
       if (!string.IsNullOrEmpty(resolution) && resolution != "audio only")
         sb.Append($"{resolution}");
 
-      //if (fps != null && fps > 0)
-      //  sb.Append($"({fps}fps)");
-      //if (abr != null && abr > 0)
-      //  sb.Append($"({Math.Floor((decimal)abr)}kbs)");
-
+      if (fps != null && fps > 0)
+        sb.Append($" ({fps}fps)");
       if (!string.IsNullOrEmpty(format_note))
         sb.Append($" {format_note}");
       if (!string.IsNullOrEmpty(vcodec) && vcodec != "none")
         sb.Append($" {vcodec}");
+
       if (!string.IsNullOrEmpty(acodec) && acodec != "none")
         sb.Append($" {acodec}");
-      if (!string.IsNullOrEmpty(container))
-        sb.Append($" {container}");
+      if (abr != null && abr > 0)
+        sb.Append($"{Math.Floor((decimal)abr)}kbs");
+
+      if (!string.IsNullOrEmpty(ext))
+        sb.Append($" {ext}");
 
       return sb.ToString(); 
     }

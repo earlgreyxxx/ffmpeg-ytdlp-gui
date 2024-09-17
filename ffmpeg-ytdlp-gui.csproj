@@ -53,6 +53,7 @@
     <Compile Remove="ffmpeg-image-process.cs" />
     <Compile Remove="GlobalSuppressions.cs" />
     <Compile Remove="GlobalTypeAliaes.cs" />
+    <Compile Remove="libs\ComboBoxBindingSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Form1.Commons.resx" />

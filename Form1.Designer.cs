@@ -429,6 +429,7 @@
       HWDecoder.DisplayMember = "Label";
       HWDecoder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       HWDecoder.Enabled = false;
+      HWDecoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       HWDecoder.FormattingEnabled = true;
       HWDecoder.Location = new System.Drawing.Point(11, 150);
       HWDecoder.Name = "HWDecoder";
@@ -458,6 +459,7 @@
       // 
       UseAudioEncoder.DisplayMember = "Label";
       UseAudioEncoder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      UseAudioEncoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       UseAudioEncoder.FormattingEnabled = true;
       UseAudioEncoder.Location = new System.Drawing.Point(43, 44);
       UseAudioEncoder.Name = "UseAudioEncoder";
@@ -471,7 +473,7 @@
       UseVideoEncoder.BackColor = System.Drawing.SystemColors.Window;
       UseVideoEncoder.DisplayMember = "Label";
       UseVideoEncoder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      UseVideoEncoder.FlatStyle = System.Windows.Forms.FlatStyle.System;
+      UseVideoEncoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       UseVideoEncoder.Location = new System.Drawing.Point(43, 18);
       UseVideoEncoder.Name = "UseVideoEncoder";
       UseVideoEncoder.Size = new System.Drawing.Size(116, 20);
@@ -485,6 +487,7 @@
       cbDeinterlaceAlg.DisplayMember = "Label";
       cbDeinterlaceAlg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       cbDeinterlaceAlg.Enabled = false;
+      cbDeinterlaceAlg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       cbDeinterlaceAlg.FormattingEnabled = true;
       cbDeinterlaceAlg.Location = new System.Drawing.Point(89, 19);
       cbDeinterlaceAlg.Name = "cbDeinterlaceAlg";
@@ -654,6 +657,7 @@
       // 
       // cbOutputDir
       // 
+      cbOutputDir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       cbOutputDir.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       cbOutputDir.Location = new System.Drawing.Point(11, 21);
       cbOutputDir.Name = "cbOutputDir";
@@ -666,6 +670,7 @@
       // 
       FileContainer.DisplayMember = "Label";
       FileContainer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      FileContainer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileContainer.FormattingEnabled = true;
       FileContainer.Location = new System.Drawing.Point(328, 67);
       FileContainer.Name = "FileContainer";
@@ -696,6 +701,7 @@
       // 
       // FileName
       // 
+      FileName.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileName.FormattingEnabled = true;
       FileName.ItemHeight = 12;
       FileName.Items.AddRange(new object[] { "元ファイル名" });
@@ -821,6 +827,7 @@
       // VideoFrameRate
       // 
       VideoFrameRate.DisplayMember = "Label";
+      VideoFrameRate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       VideoFrameRate.FormattingEnabled = true;
       VideoFrameRate.Location = new System.Drawing.Point(295, 21);
       VideoFrameRate.Name = "VideoFrameRate";
@@ -908,6 +915,7 @@
       // 
       cbPreset.DisplayMember = "Label";
       cbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      cbPreset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       cbPreset.FormattingEnabled = true;
       cbPreset.Location = new System.Drawing.Point(411, 48);
       cbPreset.Name = "cbPreset";
@@ -1056,6 +1064,7 @@
       // 
       cbDevices.DisplayMember = "Label";
       cbDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      cbDevices.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       cbDevices.FormattingEnabled = true;
       cbDevices.Location = new System.Drawing.Point(17, 21);
       cbDevices.Name = "cbDevices";
@@ -1114,6 +1123,7 @@
       // 
       // ffmpeg
       // 
+      ffmpeg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       ffmpeg.FormattingEnabled = true;
       ffmpeg.Location = new System.Drawing.Point(112, 11);
       ffmpeg.Name = "ffmpeg";
@@ -1136,7 +1146,7 @@
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(670, 18);
+      OutputStderr.Size = new System.Drawing.Size(703, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1382,10 +1392,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 418);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1406,6 +1416,7 @@
       // 
       DecoderHelpList.DisplayMember = "Label";
       DecoderHelpList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      DecoderHelpList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       DecoderHelpList.FormattingEnabled = true;
       DecoderHelpList.Location = new System.Drawing.Point(533, 34);
       DecoderHelpList.Name = "DecoderHelpList";
@@ -1417,6 +1428,7 @@
       // 
       EncoderHelpList.DisplayMember = "Label";
       EncoderHelpList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      EncoderHelpList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       EncoderHelpList.FormattingEnabled = true;
       EncoderHelpList.Location = new System.Drawing.Point(178, 34);
       EncoderHelpList.Name = "EncoderHelpList";
@@ -1453,7 +1465,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 385);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1725,6 +1737,7 @@
       // 
       ImageType.DisplayMember = "Label";
       ImageType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      ImageType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       ImageType.FormattingEnabled = true;
       ImageType.Location = new System.Drawing.Point(695, 52);
       ImageType.Name = "ImageType";
@@ -1905,7 +1918,7 @@
       // 
       // SubmitOpenCookie
       // 
-      SubmitOpenCookie.Location = new System.Drawing.Point(315, 48);
+      SubmitOpenCookie.Location = new System.Drawing.Point(322, 48);
       SubmitOpenCookie.Name = "SubmitOpenCookie";
       SubmitOpenCookie.Size = new System.Drawing.Size(49, 23);
       SubmitOpenCookie.TabIndex = 36;
@@ -1918,11 +1931,12 @@
       // 
       UseCookie.DisplayMember = "Label";
       UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      UseCookie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       UseCookie.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       UseCookie.FormattingEnabled = true;
       UseCookie.Location = new System.Drawing.Point(131, 21);
       UseCookie.Name = "UseCookie";
-      UseCookie.Size = new System.Drawing.Size(232, 21);
+      UseCookie.Size = new System.Drawing.Size(240, 21);
       UseCookie.TabIndex = 13;
       UseCookie.ValueMember = "Value";
       UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
@@ -1935,7 +1949,7 @@
       CookiePath.Name = "CookiePath";
       CookiePath.PlaceholderText = "Netscape形式のcookieファイル";
       CookiePath.ReadOnly = true;
-      CookiePath.Size = new System.Drawing.Size(208, 20);
+      CookiePath.Size = new System.Drawing.Size(220, 20);
       CookiePath.TabIndex = 15;
       // 
       // PlaylistGroup
@@ -1988,12 +2002,12 @@
       // 
       // Playlist
       // 
-      Playlist.Font = new System.Drawing.Font("ＭＳ Ｐゴシック", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      Playlist.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       Playlist.HorizontalScrollbar = true;
-      Playlist.ItemHeight = 13;
+      Playlist.ItemHeight = 17;
       Playlist.Location = new System.Drawing.Point(11, 22);
       Playlist.Name = "Playlist";
-      Playlist.Size = new System.Drawing.Size(297, 82);
+      Playlist.Size = new System.Drawing.Size(297, 72);
       Playlist.TabIndex = 47;
       Playlist.SelectedIndexChanged += Playlist_SelectedIndexChanged;
       // 
@@ -2038,6 +2052,7 @@
       // 
       // OutputFileFormat
       // 
+      OutputFileFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       OutputFileFormat.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       OutputFileFormat.FormattingEnabled = true;
       OutputFileFormat.Items.AddRange(new object[] { "%(title)s-%(id)s.%(ext)s" });
@@ -2049,6 +2064,7 @@
       // DownloadUrl
       // 
       DownloadUrl.DisplayMember = "Item1";
+      DownloadUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       DownloadUrl.FormattingEnabled = true;
       DownloadUrl.Location = new System.Drawing.Point(105, 16);
@@ -2108,7 +2124,7 @@
       // 
       MovieFormat.DisplayMember = "Label";
       MovieFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      MovieFormat.DropDownWidth = 250;
+      MovieFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       MovieFormat.FormattingEnabled = true;
       MovieFormat.Location = new System.Drawing.Point(5, 21);
       MovieFormat.Name = "MovieFormat";
@@ -2176,7 +2192,7 @@
       // 
       VideoOnlyFormat.DisplayMember = "Label";
       VideoOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      VideoOnlyFormat.DropDownWidth = 250;
+      VideoOnlyFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       VideoOnlyFormat.FormattingEnabled = true;
       VideoOnlyFormat.Location = new System.Drawing.Point(46, 21);
       VideoOnlyFormat.Name = "VideoOnlyFormat";
@@ -2188,7 +2204,7 @@
       // 
       AudioOnlyFormat.DisplayMember = "Label";
       AudioOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      AudioOnlyFormat.DropDownWidth = 250;
+      AudioOnlyFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       AudioOnlyFormat.FormattingEnabled = true;
       AudioOnlyFormat.Location = new System.Drawing.Point(46, 45);
       AudioOnlyFormat.Name = "AudioOnlyFormat";
@@ -2321,6 +2337,7 @@
       // 
       // FilePrefix
       // 
+      FilePrefix.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FilePrefix.FormattingEnabled = true;
       FilePrefix.Location = new System.Drawing.Point(11, 67);
       FilePrefix.Name = "FilePrefix";
@@ -2330,6 +2347,7 @@
       // 
       // FileSuffix
       // 
+      FileSuffix.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileSuffix.FormattingEnabled = true;
       FileSuffix.Location = new System.Drawing.Point(256, 67);
       FileSuffix.Name = "FileSuffix";
@@ -2349,6 +2367,21 @@
       // 
       OpenCookieFileDialog.FileName = "cookie.txt";
       OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
+      // 
+      // VideoOnlyFormatSource
+      // 
+      VideoOnlyFormatSource.DataSourceChanged += VideoOnlyFormatSource_DataSourceChanged;
+      VideoOnlyFormatSource.ListChanged += VideoOnlyFormatSource_ListChanged;
+      // 
+      // AudioOnlyFormatSource
+      // 
+      AudioOnlyFormatSource.DataSourceChanged += AudioOnlyFormatSource_DataSourceChanged;
+      AudioOnlyFormatSource.ListChanged += AudioOnlyFormatSource_ListChanged;
+      // 
+      // MovieFormatSource
+      // 
+      MovieFormatSource.DataSourceChanged += MovieFormatSource_DataSourceChanged;
+      MovieFormatSource.ListChanged += MovieFormatSource_ListChanged;
       // 
       // UrlBindingSource
       // 

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -96,11 +97,8 @@ namespace ffmpeg_ytdlp_gui
           Url = url,
         };
 
-        var cookieKind = UseCookie.SelectedValue?.ToString();
-        if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
-          parser.CookiePath = CookiePath.Text;
-        else if (cookieKind != "none" && cookieKind != "file")
-          parser.CookieBrowser = cookieKind;
+        parser.CookieBrowser = UseCookie.SelectedValue?.ToString();
+        parser.CookiePath = CookiePath.Text;
 
         OnPreParseMediaUrl();
 
@@ -173,12 +171,8 @@ namespace ffmpeg_ytdlp_gui
         if (!string.IsNullOrEmpty(OutputFileFormat.Text))
           downloader.OutputFile = OutputFileFormat.Text;
 
-        var cookieKind = UseCookie.SelectedValue?.ToString();
-
-        if (cookieKind == "file" && !string.IsNullOrEmpty(CookiePath.Text) && File.Exists(CookiePath.Text))
-          downloader.CookiePath = CookiePath.Text;
-        else if (cookieKind != "none" && cookieKind != "file")
-          downloader.CookieBrowser = cookieKind;
+        downloader.CookieBrowser = UseCookie.SelectedValue?.ToString();
+        downloader.CookiePath = CookiePath.Text;
 
         downloader.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
 
@@ -300,6 +294,21 @@ namespace ffmpeg_ytdlp_gui
     private void OnPostParseMediaUrl()
     {
       DummyProgressBar.Visible = false;
+    }
+    
+    private void FormatSourceChange(ComboBox comboBox,BindingSource bindingSource)
+    {
+      int idle = 16;
+      var list = bindingSource.List;
+      if(list.Count == 0)
+        return;
+
+      var max = list.Cast<object>()
+                    .Select(item => TextRenderer.MeasureText((item.ToString() ?? string.Empty), comboBox.Font).Width + idle)
+                    .Max();
+
+      if(max > 0)
+        comboBox.DropDownWidth = max;
     }
   }
 }

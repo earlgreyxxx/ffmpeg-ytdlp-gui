@@ -853,7 +853,7 @@ namespace ffmpeg_ytdlp_gui
     private void DownloadUrl_Leave(object sender, EventArgs e)
     {
       if (DownloadUrl.Text.Length > 0 && !Regex.IsMatch(DownloadUrl.Text, "^https?://"))
-        TooltipShow(DownloadUrl,"フォーマットエラー");
+        TooltipShow(DownloadUrl, "フォーマットエラー");
     }
 
     private void SubmitDownload_Click(object sender, EventArgs e)
@@ -967,7 +967,7 @@ namespace ffmpeg_ytdlp_gui
     {
       var value = UseCookie.SelectedValue?.ToString() ?? "none";
       if (value != "none" && value != "file" && value != "firefox")
-        MessageBox.Show("予め選択されたブラウザを全て終了させてください。","ブラウザのCookie使用について");
+        MessageBox.Show("予め選択されたブラウザを全て終了させてください。", "ブラウザのCookie使用について");
     }
 
     private void SubmitOpenCookie_Click(object sender, EventArgs e)
@@ -1167,6 +1167,37 @@ namespace ffmpeg_ytdlp_gui
         return;
 
       pb.Width = pb.Visible ? 150 : 1;
+    }
+
+    private void VideoOnlyFormatSource_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      FormatSourceChange(VideoOnlyFormat, VideoOnlyFormatSource);
+    }
+
+    private void AudioOnlyFormatSource_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      FormatSourceChange(AudioOnlyFormat, AudioOnlyFormatSource);
+    }
+
+    private void MovieFormatSource_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      FormatSourceChange(MovieFormat, MovieFormatSource);
+    }
+
+    private void VideoOnlyFormatSource_DataSourceChanged(object sender, EventArgs e)
+    {
+      VideoOnlyFormat.DropDownWidth = VideoOnlyFormat.Width;
+    }
+
+    private void AudioOnlyFormatSource_DataSourceChanged(object sender, EventArgs e)
+    {
+
+      AudioOnlyFormat.DropDownWidth = AudioOnlyFormat.Width;
+    }
+
+    private void MovieFormatSource_DataSourceChanged(object sender, EventArgs e)
+    {
+      MovieFormat.DropDownWidth = MovieFormat.Width;
     }
   }
 }

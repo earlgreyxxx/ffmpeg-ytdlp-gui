@@ -15,7 +15,7 @@ namespace ffmpeg_ytdlp_gui.libs
     const string YTDLPNAME = "yt-dlp";
 
     public string? Url { get; set; }
-    public string? CookieBrowser { get; set; } = "";
+    public string? CookieBrowser { get; set; } = "none";
     public string? CookiePath { get; set; }
     public string? OutputPath { get; set; }
     public string? OutputFile { get; set; }
@@ -142,9 +142,9 @@ namespace ffmpeg_ytdlp_gui.libs
         "-j"
       };
 
-      if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
+      if (CookieBrowser == "file" && !string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
-      else if (!string.IsNullOrEmpty(CookieBrowser))
+      else if (!string.IsNullOrEmpty(CookieBrowser) && CookieBrowser != "none" && CookieBrowser != "file")
         options.Add($"--cookies-from-browser {CookieBrowser}");
 
       var log = new List<string>();
@@ -197,9 +197,9 @@ namespace ffmpeg_ytdlp_gui.libs
       if(formats.Length > 0)
         options.Add($"-f \"{string.Join('+', formats)}\"");
 
-      if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
+      if (CookieBrowser == "file" && !string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
-      else if (!string.IsNullOrEmpty(CookieBrowser))
+      else if (!string.IsNullOrEmpty(CookieBrowser) && CookieBrowser != "none" && CookieBrowser != "file")
         options.Add($"--cookies-from-browser {CookieBrowser}");
 
       if (!string.IsNullOrEmpty(OutputFile))
