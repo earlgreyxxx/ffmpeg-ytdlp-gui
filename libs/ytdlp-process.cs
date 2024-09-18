@@ -42,7 +42,7 @@ namespace ffmpeg_ytdlp_gui.libs
       if (CustomProcess.FindInPath(YTDLPNAME).Length <= 0)
         throw new Exception($"{YTDLPNAME} not found in PATH envrionment.");
 
-      ProcessExited += (s, e) => Debug.WriteLine("yt-dlpプロセス終了");
+      ProcessExited += (s, e) => Debug.WriteLine($"Exit code of yt-dlp is {(s as Process)?.ExitCode}");
     }
 
     private ytdlp_process Clone()
@@ -76,7 +76,7 @@ namespace ffmpeg_ytdlp_gui.libs
 
       if (!string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
         options.Add($"--cookies \"{CookiePath}\"");
-      else if (!string.IsNullOrEmpty(CookieBrowser))
+      else if (!string.IsNullOrEmpty(CookieBrowser) && CookieBrowser != "none" && CookieBrowser != "file")
         options.Add($"--cookies-from-browser {CookieBrowser}");
 
       if (!string.IsNullOrEmpty(OutputPath))
@@ -123,10 +123,9 @@ namespace ffmpeg_ytdlp_gui.libs
       var arguments = string.Join(' ', CreateArguments(formats).ToArray());
       Debug.WriteLine($"{Command} {arguments}");
       Start(arguments);
-      using (StdInWriter)
-      {
-        StdInWriter?.WriteLine(JsonText);
-      }
+
+      StdInWriter?.WriteLine(JsonText);
+      StdInWriter?.Dispose();
 
       await WaitForExitAsync();
     }
@@ -161,6 +160,10 @@ namespace ffmpeg_ytdlp_gui.libs
           infoes = log.Where(line => !string.IsNullOrEmpty(line?.Trim()))
                       .Select(line => new MediaInformation(line));
         }
+        else
+        {
+          infoes = null;
+        }
       };
 
       await StartAsync(arguments);
@@ -172,7 +175,7 @@ namespace ffmpeg_ytdlp_gui.libs
       var infoes = await GetMediaInformations();
 
       if (infoes == null || infoes.Count() == 0)
-        throw new Exception("GetMediaInformationメソッドがNULLを返したか、もしくは空でした。");
+        throw new Exception("YT-DLPがエラーを返し正常に終了できませんでした。");
 
       if (infoes.Count() > 1)
         throw new MediaInformationException(infoes.ToArray());
@@ -180,7 +183,7 @@ namespace ffmpeg_ytdlp_gui.libs
       return infoes.FirstOrDefault();
     }
 
-    public Task GetDownloadFileNames()
+    public async Task GetDownloadFileNames()
     {
       var parser = Clone();
 
@@ -189,7 +192,8 @@ namespace ffmpeg_ytdlp_gui.libs
 
       var options = new List<string?>()
       {
-        "--print filename",
+        "--encoding UTF-8",
+        "--print filename"
       };
       options.Insert(0,string.IsNullOrEmpty(JsonText) ? $"\"{parser.Url}\"" : "--load-info-json -");
 
@@ -210,6 +214,8 @@ namespace ffmpeg_ytdlp_gui.libs
 
       Debug.WriteLine($"{Command} {arguments}");
 
+      parser.psi.StandardOutputEncoding = UTF8N;
+      parser.psi.StandardErrorEncoding = UTF8N;
       parser.psi.StandardInputEncoding = UTF8N;
 
       parser.StdOutReceived += data => log.Add(data);
@@ -224,12 +230,10 @@ namespace ffmpeg_ytdlp_gui.libs
       };
 
       parser.Start(arguments);
-      using (var sw = parser.StdInWriter)
-      {
-        sw?.WriteLine(JsonText);
-      }
+      parser.StdInWriter?.WriteLine(JsonText);
+      parser.StdInWriter?.Dispose();
 
-      return parser.WaitForExitAsync();
+      await parser.WaitForExitAsync();
     }
   }
 }

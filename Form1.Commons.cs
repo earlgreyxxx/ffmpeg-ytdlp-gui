@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ffmpeg_ytdlp_gui
 {
@@ -16,6 +17,8 @@ namespace ffmpeg_ytdlp_gui
   {
     // Static members
     // ---------------------------------------------------------------------------------
+    static private readonly string TOAST_ID = "9998";
+
     [GeneratedRegex(@"\.(?:exe|cmd|ps1|bat)$")]
     private static partial Regex IsExecutableFile();
 
@@ -345,6 +348,72 @@ namespace ffmpeg_ytdlp_gui
       Playlist.DataSource = PlaylistBindingSource;
     }
 
+    private void InitializeToastNotify()
+    {
+      ToastNotificationManagerCompat.OnActivated += toastArgs =>
+      {
+        var args = ToastArguments.Parse(toastArgs.Argument);
+        var pageName = args.Get("page");
+
+        var pages = Controls.Find(pageName, true);
+        if (pages.Length <= 0)
+          return;
+
+        var page = pages[0] as TabPage;
+        if (page == null)
+          return;
+
+        Invoke(() => Tab.SelectedTab = page);
+      };
+    }
+
+    private void ToastShow(string message,string pageName = "PageConvert")
+    {
+      var lines = message.Split(['\n', '\r']);
+      if (lines.Length > 1)
+      {
+        var title = lines.First();
+        ToastShow(title, lines.Skip(1), pageName);
+        return;
+      }
+
+      new ToastContentBuilder()
+        .AddArgument("page", pageName)
+        .AddArgument("conversationId",TOAST_ID)
+        .AddText(message, AdaptiveTextStyle.Title)
+        .Show();
+    }
+
+    private void ToastShow(string title,string message,string pageName = "PageConvert")
+    {
+      var lines = message.Split(['\n', '\r']);
+      if (lines.Length > 1)
+      {
+        ToastShow(title, lines, pageName);
+        return;
+      }
+
+      new ToastContentBuilder()
+        .AddArgument("page", pageName)
+        .AddArgument("conversationId",TOAST_ID)
+        .AddText(title, AdaptiveTextStyle.Title)
+        .AddText(message)
+        .Show();
+    }
+
+    private void ToastShow(string title,IEnumerable<string> messages,string pageName = "pageConvert")
+    {
+      var toast = new ToastContentBuilder()
+                    .AddArgument("page", pageName)
+                    .AddArgument("conversationId",TOAST_ID)
+                    .AddText(Text);
+
+      foreach (var message in messages)
+        toast.AddText(message);
+
+      toast.Show();
+    }
+
     /// <summary>
     /// ffmpegpプロセス起動前に実行
     /// </summary>
@@ -398,7 +467,7 @@ namespace ffmpeg_ytdlp_gui
     /// </summary>
     private ffmpeg_process? Proceeding;
 
-    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command)
+    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,string tabpageName)
     {
       command.Overwrite = Overwrite.Checked;
 
@@ -420,8 +489,8 @@ namespace ffmpeg_ytdlp_gui
           btnSubmitInvoke.Enabled = true;
 
         Proceeding = null;
-        if(!abnormal)
-          MessageBox.Show("変換処理が終了しました。");
+        if (!abnormal)
+          ToastShow("変換処理が終了しました。",tabpageName);
       });
 
       if (IsOpenStderr.Checked)

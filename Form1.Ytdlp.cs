@@ -60,6 +60,8 @@ namespace ffmpeg_ytdlp_gui
               ytdlp = null;
               if (IsOpenStderr.Checked && ytdlpfm != null)
                 ytdlpfm = null;
+
+              ToastShow("ダウンロードキューが空になりました。", "PageDownloader");
             }
           }
         };

@@ -12,6 +12,7 @@ using ffmpeg_ytdlp_gui.libs;
 using ffmpeg_ytdlp_gui.Properties;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ffmpeg_ytdlp_gui
 {
@@ -46,8 +47,13 @@ namespace ffmpeg_ytdlp_gui
       InitializeSettingsBinding();
       InitializeDataSource();
       InitializeYtdlpQueue();
+      InitializeToastNotify();
 
       ChangeCurrentDirectory();
+#if DEBUG
+      CommandInvoker.Enabled = true;
+      CommandInvoker.Visible = true;
+#endif
     }
 
     /// <summary>
@@ -229,7 +235,7 @@ namespace ffmpeg_ytdlp_gui
           command.OutputBaseName(FileName.Text);
 
         OnBeginProcess();
-        var process = CreateFFmpegProcess(command);
+        var process = CreateFFmpegProcess(command,"PageConvert");
         if (process == null)
           return;
 
@@ -644,7 +650,7 @@ namespace ffmpeg_ytdlp_gui
         command.MultiFileProcess = InputFileList!.Count > 1;
 
         OnBeginProcess();
-        CreateFFmpegProcess(command)?.Begin();
+        CreateFFmpegProcess(command,"PageUtility")?.Begin();
       }
     }
 
@@ -686,7 +692,7 @@ namespace ffmpeg_ytdlp_gui
           .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
         OnBeginProcess();
-        CreateFFmpegProcess(command)?.One(listfile);
+        CreateFFmpegProcess(command,"PageUtility")?.One(listfile);
       }
       catch (Exception ex)
       {
@@ -749,7 +755,7 @@ namespace ffmpeg_ytdlp_gui
         command.MultiFileProcess = InputFileList.Count > 1;
 
         OnBeginProcess();
-        var process = CreateFFmpegProcess(command);
+        var process = CreateFFmpegProcess(command,"PageUtility");
         if (process == null)
           return;
 
@@ -847,7 +853,8 @@ namespace ffmpeg_ytdlp_gui
 
     private void CommandInvoker_Click(object sender, EventArgs e)
     {
-      OpenOutputView("git.exe", "help -a", "git help");
+      //OpenOutputView("git.exe", "help -a", "git help");
+      ToastShow("これはテストです。");
     }
 
     private void DownloadUrl_Leave(object sender, EventArgs e)
@@ -1039,7 +1046,9 @@ namespace ffmpeg_ytdlp_gui
 
     private void EditListItems(object sender, LinkLabelLinkClickedEventArgs e)
     {
-      string target = (sender as LinkLabel)?.Tag?.ToString()!;
+      string? target = (sender as LinkLabel)?.Tag?.ToString();
+      if(target == null)
+        return;
 
       var controls = Controls.Find(target, true);
       if (controls.Length > 0)
@@ -1066,7 +1075,7 @@ namespace ffmpeg_ytdlp_gui
               return;
           }
 
-          var form = new ListEditor(bindingSource!, property.Item2);
+          var form = new ListEditor(bindingSource, property.Item2);
           var listbox = form.GetListEditorControl();
 
           form.TopMost = true;
