@@ -310,8 +310,10 @@ namespace ffmpeg_ytdlp_gui
                     .Select(item => TextRenderer.MeasureText((item.ToString() ?? string.Empty), comboBox.Font).Width + idle)
                     .Max();
 
-      if(max > 0)
+      if (max > 0 && max > comboBox.Width)
         comboBox.DropDownWidth = max;
+      else
+        comboBox.DropDownWidth = comboBox.Width;
     }
   }
 }

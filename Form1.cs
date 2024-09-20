@@ -961,7 +961,7 @@ namespace ffmpeg_ytdlp_gui
     {
       string tabname = Tab.TabPages[Tab.SelectedIndex].Name;
       bool IsDownloader = tabname == "PageDownloader";
-      bool IsConverter = tabname == "PageConvert" && tabname == "PageUtility";
+      bool IsConverter = tabname == "PageConvert" || tabname == "PageUtility";
       bool IsSetting = tabname == "PageSetting";
 
       InputBox.Enabled = IsConverter;
@@ -984,7 +984,7 @@ namespace ffmpeg_ytdlp_gui
 
         DownloadUrl.Focus();
       }
-      else if(IsSetting)
+      else if (IsSetting)
       {
         DirectoryListBindingSource.DataMember = "Item3";
         OutputDirectoryList = [];
@@ -1222,6 +1222,21 @@ namespace ffmpeg_ytdlp_gui
       FormatSourceChange(MovieFormat, MovieFormatSource);
     }
 
+    private void OutputFileFormatBindingSource_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      FormatSourceChange(OutputFileFormat, OutputFileFormatBindingSource);
+    }
+
+    private void DirectoryListBindingSource_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      FormatSourceChange(cbOutputDir, DirectoryListBindingSource);
+    }
+
+    private void DirectoryListBindingSource_DataMemberChanged(object sender, EventArgs e)
+    {
+      FormatSourceChange(cbOutputDir, DirectoryListBindingSource);
+    }
+
     private void VideoOnlyFormatSource_DataSourceChanged(object sender, EventArgs e)
     {
       VideoOnlyFormat.DropDownWidth = VideoOnlyFormat.Width;
@@ -1229,13 +1244,22 @@ namespace ffmpeg_ytdlp_gui
 
     private void AudioOnlyFormatSource_DataSourceChanged(object sender, EventArgs e)
     {
-
       AudioOnlyFormat.DropDownWidth = AudioOnlyFormat.Width;
     }
 
     private void MovieFormatSource_DataSourceChanged(object sender, EventArgs e)
     {
       MovieFormat.DropDownWidth = MovieFormat.Width;
+    }
+
+    private void OutputFileFormatBindingSource_DataSourceChanged(object sender, EventArgs e)
+    {
+      OutputFileFormat.DropDownWidth = OutputFileFormat.Width;
+    }
+
+    private void DirectoryListBindingSource_DataSourceChanged(object sender, EventArgs e)
+    {
+      cbOutputDir.DropDownWidth = cbOutputDir.Width;
     }
   }
 }

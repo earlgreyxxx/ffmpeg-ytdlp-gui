@@ -1401,10 +1401,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 22);
+      PageUtility.Location = new System.Drawing.Point(4, 27);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 424);
+      PageUtility.Size = new System.Drawing.Size(832, 419);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1474,7 +1474,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -2042,6 +2042,7 @@
       MediaTitle.Name = "MediaTitle";
       MediaTitle.PlaceholderText = "メディアタイトル";
       MediaTitle.ReadOnly = true;
+      MediaTitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
       MediaTitle.Size = new System.Drawing.Size(380, 68);
       MediaTitle.TabIndex = 0;
       MediaTitle.TabStop = false;
@@ -2066,7 +2067,7 @@
       OutputFileFormat.Items.AddRange(new object[] { "%(title)s-%(id)s.%(ext)s" });
       OutputFileFormat.Location = new System.Drawing.Point(438, 377);
       OutputFileFormat.Name = "OutputFileFormat";
-      OutputFileFormat.Size = new System.Drawing.Size(371, 28);
+      OutputFileFormat.Size = new System.Drawing.Size(385, 28);
       OutputFileFormat.TabIndex = 43;
       // 
       // DownloadUrl
@@ -2431,6 +2432,9 @@
       // DirectoryListBindingSource
       // 
       DirectoryListBindingSource.Sort = "";
+      DirectoryListBindingSource.DataSourceChanged += DirectoryListBindingSource_DataSourceChanged;
+      DirectoryListBindingSource.DataMemberChanged += DirectoryListBindingSource_DataMemberChanged;
+      DirectoryListBindingSource.ListChanged += DirectoryListBindingSource_ListChanged;
       // 
       // OpenCookieFileDialog
       // 
@@ -2455,6 +2459,11 @@
       // UrlBindingSource
       // 
       UrlBindingSource.ListChanged += UrlBindingSource_ListChanged;
+      // 
+      // OutputFileFormatBindingSource
+      // 
+      OutputFileFormatBindingSource.DataSourceChanged += OutputFileFormatBindingSource_DataSourceChanged;
+      OutputFileFormatBindingSource.ListChanged += OutputFileFormatBindingSource_ListChanged;
       // 
       // PlaylistBindingSource
       // 
