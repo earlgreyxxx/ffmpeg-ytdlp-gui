@@ -1877,10 +1877,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 413);
+      PageDownloader.Size = new System.Drawing.Size(832, 418);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2026,7 +2026,6 @@
       // MediaTitle
       // 
       MediaTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      MediaTitle.Enabled = false;
       MediaTitle.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       MediaTitle.ImeMode = System.Windows.Forms.ImeMode.Disable;
       MediaTitle.Location = new System.Drawing.Point(438, 143);
