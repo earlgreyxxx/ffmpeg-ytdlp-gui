@@ -131,6 +131,7 @@ namespace ffmpeg_ytdlp_gui
       finally
       {
         OnPostParseMediaUrl();
+        OutputStderr.Text = string.Empty;
       }
 
       return ytdlpItem;
