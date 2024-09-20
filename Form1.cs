@@ -510,12 +510,24 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnFFmpeg_Click(object sender, EventArgs e)
     {
-      if (DialogResult.Cancel == OpenFFMpegFileDlg.ShowDialog())
+      OpenCommandFileDlg.Title = "ffmpeg実行ファイルを指定してください。";
+      if (DialogResult.Cancel == OpenCommandFileDlg.ShowDialog())
         return;
 
-      ffmpeg.Text = OpenFFMpegFileDlg.FileName;
+      ffmpeg.Text = OpenCommandFileDlg.FileName;
       if (!ffmpeg.Items.Contains(ffmpeg.Text))
         ffmpeg.Items.Add(ffmpeg.Text);
+    }
+
+    private void btnYtdlp_Click(object sender, EventArgs e)
+    {
+      OpenCommandFileDlg.Title = "yt-dlp実行ファイルを指定してください。";
+      if (DialogResult.Cancel == OpenCommandFileDlg.ShowDialog())
+        return;
+
+      YtdlpPath.Text = OpenCommandFileDlg.FileName;
+      if (!YtdlpPath.Items.Contains(YtdlpPath.Text))
+        YtdlpPath.Items.Add(YtdlpPath.Text);
     }
 
     private void FindInPath_Click(object sender, EventArgs e)
@@ -878,9 +890,8 @@ namespace ffmpeg_ytdlp_gui
         TooltipShow(DownloadUrl, "フォーマットエラー");
     }
 
-    private void SubmitDownload_Click(object sender, EventArgs e)
+    private void AddDownloadQueue_Click(object sender, EventArgs e)
     {
-      var button = (Button)sender ?? throw new NullReferenceException("button is null");
       var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
       if (ytdlpItem == null)
         return;
@@ -900,12 +911,17 @@ namespace ffmpeg_ytdlp_gui
       if (false == list.Any(item => item == format))
         OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
 
-      if (button.Tag!.GetType().Name != "Boolean")
-        throw new Exception("not boolean type");
+      YtdlpAddDownloadQueue(ytdlpItem!, FmtSeparated.Checked);
+    }
 
-      var isSeparate = (bool)button.Tag;
+    private void BeginDequeue_Click(object sender, EventArgs e)
+    {
+      YtdlpBeginDequeue();
+    }
 
-      YtdlpInvokeDownload(ytdlpItem!, isSeparate);
+    private void StopDownload_Click(object sender, EventArgs e)
+    {
+      YtdlpAbortDownload();
     }
 
     private async void SubmitParseUrl_Click(object sender, EventArgs e)
@@ -935,8 +951,8 @@ namespace ffmpeg_ytdlp_gui
         VideoOnlyFormatSource.Clear();
         AudioOnlyFormatSource.Clear();
         MovieFormatSource.Clear();
-        SubmitDownload.Enabled = false;
-        SubmitSeparatedDownload.Enabled = false;
+        AddDownloadQueue.Enabled = false;
+        SubmitDownloadDequeue.Enabled = false;
         return;
       }
 
@@ -1012,11 +1028,6 @@ namespace ffmpeg_ytdlp_gui
         return;
 
       CookiePath.Text = OpenCookieFileDialog.FileName;
-    }
-
-    private void StopDownload_Click(object sender, EventArgs e)
-    {
-      YtdlpAbortDownload();
     }
 
     private void CommandSaveImage_Click(object sender, EventArgs e)
@@ -1171,8 +1182,8 @@ namespace ffmpeg_ytdlp_gui
       }
       else
       {
-        SubmitDownload.Enabled = false;
-        SubmitSeparatedDownload.Enabled = false;
+        AddDownloadQueue.Enabled = false;
+        SubmitDownloadDequeue.Enabled = false;
       }
     }
 
@@ -1194,7 +1205,7 @@ namespace ffmpeg_ytdlp_gui
           continue;
 
         var item = new YtdlpItem(mediaInfo.webpage_url, mediaInfo, mediaInfo.image, null);
-        YtdlpInvokeDownload(item, false, true);
+        YtdlpAddDownloadQueue(item, false, true);
       }
     }
 
@@ -1260,6 +1271,23 @@ namespace ffmpeg_ytdlp_gui
     private void DirectoryListBindingSource_DataSourceChanged(object sender, EventArgs e)
     {
       cbOutputDir.DropDownWidth = cbOutputDir.Width;
+    }
+
+    private void Format_Click(object sender, EventArgs e)
+    {
+      var cb = sender as ComboBox;
+      if (cb == null)
+        return;
+
+      if (cb == AudioOnlyFormat || cb == VideoOnlyFormat)
+        FmtSeparated.Checked = true;
+      else if (cb == MovieFormat)
+        FmtWhole.Checked = true;
+    }
+
+    private void StatusBarMenuItemClearQueue_Click(object sender, EventArgs e)
+    {
+      YtdlpClearDequeue();
     }
   }
 }

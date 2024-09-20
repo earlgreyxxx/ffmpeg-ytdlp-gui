@@ -27,12 +27,6 @@ namespace ffmpeg_ytdlp_gui
       {
         var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException(nameof(ObservableQueue<ytdlp_process>));
         WriteQueueStatus(q.Count);
-
-        lock (_lock)
-        {
-          if (ytdlp == null)
-            q.Dequeue();
-        }
       };
 
       // キューからytdlpプロセスを取り出す時
@@ -61,6 +55,7 @@ namespace ffmpeg_ytdlp_gui
               if (IsOpenStderr.Checked && ytdlpfm != null)
                 ytdlpfm = null;
 
+              Invoke(OnDownloaded);
               ToastShow("ダウンロードキューが空になりました。", "PageDownloader");
             }
           }
@@ -137,7 +132,7 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private async void YtdlpInvokeDownload(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
+    private async void YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
     {
       var mediaInfo = ytdlpItem?.Item2;
       if (mediaInfo == null)
@@ -184,6 +179,8 @@ namespace ffmpeg_ytdlp_gui
         await downloader.GetDownloadFileNames();
         if (string.IsNullOrEmpty(downloader.DownloadFile))
           throw new Exception("ダウンロード名が決定できませんでした。");
+
+        OutputStderr.Text = string.Empty;
 
         downloader.ProcessExited += (s, e) => Invoke(() =>
         {
@@ -240,9 +237,6 @@ namespace ffmpeg_ytdlp_gui
 
             ytdlp = null;
           };
-
-          if(!ytdlpfm.Visible)
-            ytdlpfm.Show();
         }
 
         /// todo
@@ -262,6 +256,29 @@ namespace ffmpeg_ytdlp_gui
             button.Enabled = true;
         }
       }
+    }
+
+    private void YtdlpBeginDequeue()
+    {
+      lock (_lock)
+      {
+        int len = ytdlps?.Count ?? 0;
+        if (ytdlp == null && len > 0)
+        {
+          if(false == (ytdlpfm?.Visible ?? false))
+            ytdlpfm?.Show();
+
+          OnDownload();
+          ytdlps?.Dequeue();
+          SubmitDownloadDequeue.Enabled = false;
+          StopDownload.Enabled = true;
+        }
+      }
+    }
+  
+    private void YtdlpClearDequeue()
+    {
+      ytdlps?.Clear();
     }
 
     private void YtdlpAbortDownload(bool stopAll = true)
@@ -314,6 +331,18 @@ namespace ffmpeg_ytdlp_gui
         comboBox.DropDownWidth = max;
       else
         comboBox.DropDownWidth = comboBox.Width;
+    }
+
+    private void OnDownloaded()
+    {
+      SubmitDownloadDequeue.Enabled = true;
+      StopDownload.Enabled = false;
+    }
+
+    private void OnDownload()
+    {
+      SubmitDownloadDequeue.Enabled = false;
+      StopDownload.Enabled = true;
     }
   }
 }

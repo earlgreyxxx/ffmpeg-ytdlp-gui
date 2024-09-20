@@ -874,8 +874,8 @@ namespace ffmpeg_ytdlp_gui
         }
       }
 
-      SubmitDownload.Enabled = true;
-      SubmitSeparatedDownload.Enabled = true;
+      AddDownloadQueue.Enabled = true;
+      SubmitDownloadDequeue.Enabled = true;
     }
   }
 }
