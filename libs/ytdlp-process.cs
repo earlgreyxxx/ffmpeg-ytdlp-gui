@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ffmpeg_ytdlp_gui.libs
@@ -37,18 +38,29 @@ namespace ffmpeg_ytdlp_gui.libs
       set => _downloadfiles = value;
     }
 
-    public ytdlp_process() : base(YTDLPNAME)
+    public ytdlp_process(string filename = "")
     {
-      if (CustomProcess.FindInPath(YTDLPNAME).Length <= 0)
-        throw new Exception($"{YTDLPNAME} not found in PATH envrionment.");
+      var command = !string.IsNullOrEmpty(filename) ? filename : YTDLPNAME;
 
+      // ファイルパスではなくコマンド名だけの場合は環境変数PATHから存在チェックを行う
+      if (Regex.IsMatch(command, @"^[\w\-]+$"))
+      {
+        if (CustomProcess.FindInPath(command).Length <= 0)
+          throw new Exception($"{command} not found in PATH envrionment.");
+      }
+      Command = command;
+      InitializeInstance();
+
+#if DEBUG
       ProcessExited += (s, e) => Debug.WriteLine($"Exit code of yt-dlp is {(s as Process)?.ExitCode}");
+#endif
     }
 
     private ytdlp_process Clone()
     {
       return new ytdlp_process()
       {
+        Command = Command,
         Url = Url,
         CookieBrowser = CookieBrowser,
         CookiePath = CookiePath,

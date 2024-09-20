@@ -365,5 +365,16 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["downloadFolders"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection ytdlp {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ytdlp"]));
+            }
+            set {
+                this["ytdlp"] = value;
+            }
+        }
     }
 }

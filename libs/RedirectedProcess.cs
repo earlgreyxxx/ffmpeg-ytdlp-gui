@@ -66,10 +66,16 @@ namespace ffmpeg_ytdlp_gui.libs
       Exited = Current.HasExited;
     }
 
+    public RedirectedProcess() { }
+
     public RedirectedProcess(string filename, string arguments = "")
     {
       Command = filename;
+      InitializeInstance(arguments);
+    }
 
+    protected void InitializeInstance(string arguments = "")
+    {
       if(!string.IsNullOrEmpty(arguments))
         psi.Arguments = arguments;
 

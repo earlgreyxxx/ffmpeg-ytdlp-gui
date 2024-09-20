@@ -209,6 +209,11 @@
       label28 = new System.Windows.Forms.Label();
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       label24 = new System.Windows.Forms.Label();
+      PageSetting = new System.Windows.Forms.TabPage();
+      ytdlpFindInPath = new System.Windows.Forms.Button();
+      btnYtdlp = new System.Windows.Forms.Button();
+      label32 = new System.Windows.Forms.Label();
+      YtdlpPath = new System.Windows.Forms.ComboBox();
       ImageContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
       OutputBox = new System.Windows.Forms.GroupBox();
@@ -269,6 +274,7 @@
       groupBox2.SuspendLayout();
       groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
+      PageSetting.SuspendLayout();
       ImageContextMenu.SuspendLayout();
       OutputBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).BeginInit();
@@ -1078,14 +1084,14 @@
       // 
       InputBox.Controls.Add(label3);
       InputBox.Controls.Add(FileList);
-      InputBox.Location = new System.Drawing.Point(8, 485);
+      InputBox.Location = new System.Drawing.Point(8, 461);
       InputBox.Name = "InputBox";
       InputBox.Size = new System.Drawing.Size(419, 130);
       InputBox.TabIndex = 34;
       // 
       // btnFFmpeg
       // 
-      btnFFmpeg.Location = new System.Drawing.Point(640, 9);
+      btnFFmpeg.Location = new System.Drawing.Point(602, 45);
       btnFFmpeg.Name = "btnFFmpeg";
       btnFFmpeg.Size = new System.Drawing.Size(49, 23);
       btnFFmpeg.TabIndex = 36;
@@ -1097,7 +1103,7 @@
       // label8
       // 
       label8.AutoSize = true;
-      label8.Location = new System.Drawing.Point(11, 15);
+      label8.Location = new System.Drawing.Point(17, 31);
       label8.Name = "label8";
       label8.Size = new System.Drawing.Size(98, 12);
       label8.TabIndex = 37;
@@ -1112,29 +1118,31 @@
       // 
       // btnFindInPath
       // 
-      btnFindInPath.Location = new System.Drawing.Point(695, 9);
+      btnFindInPath.Location = new System.Drawing.Point(657, 45);
       btnFindInPath.Name = "btnFindInPath";
       btnFindInPath.Size = new System.Drawing.Size(144, 23);
       btnFindInPath.TabIndex = 38;
       btnFindInPath.TabStop = false;
+      btnFindInPath.Tag = "ffmpeg";
       btnFindInPath.Text = "環境変数PATHから探す";
       btnFindInPath.UseVisualStyleBackColor = true;
-      btnFindInPath.Click += btnFindInPath_Click;
+      btnFindInPath.Click += FindInPath_Click;
       // 
       // ffmpeg
       // 
       ffmpeg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      ffmpeg.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       ffmpeg.FormattingEnabled = true;
-      ffmpeg.Location = new System.Drawing.Point(112, 11);
+      ffmpeg.Location = new System.Drawing.Point(18, 46);
       ffmpeg.Name = "ffmpeg";
-      ffmpeg.Size = new System.Drawing.Size(522, 20);
+      ffmpeg.Size = new System.Drawing.Size(578, 23);
       ffmpeg.TabIndex = 39;
       ffmpeg.TabStop = false;
       // 
       // StatusBar
       // 
       StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, DummyProgressBar, QueueCount });
-      StatusBar.Location = new System.Drawing.Point(3, 625);
+      StatusBar.Location = new System.Drawing.Point(3, 598);
       StatusBar.Name = "StatusBar";
       StatusBar.Size = new System.Drawing.Size(840, 23);
       StatusBar.SizingGrip = false;
@@ -1286,12 +1294,13 @@
       Tab.Controls.Add(PageConvert);
       Tab.Controls.Add(PageUtility);
       Tab.Controls.Add(PageDownloader);
-      Tab.Location = new System.Drawing.Point(3, 42);
+      Tab.Controls.Add(PageSetting);
+      Tab.Location = new System.Drawing.Point(3, 13);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
       Tab.Padding = new System.Drawing.Point(0, 0);
       Tab.SelectedIndex = 0;
-      Tab.Size = new System.Drawing.Size(840, 444);
+      Tab.Size = new System.Drawing.Size(840, 450);
       Tab.TabIndex = 42;
       Tab.SelectedIndexChanged += Tab_SelectedIndexChanged;
       // 
@@ -1314,7 +1323,7 @@
       PageConvert.Location = new System.Drawing.Point(4, 22);
       PageConvert.Margin = new System.Windows.Forms.Padding(0);
       PageConvert.Name = "PageConvert";
-      PageConvert.Size = new System.Drawing.Size(832, 418);
+      PageConvert.Size = new System.Drawing.Size(832, 424);
       PageConvert.TabIndex = 0;
       PageConvert.Text = "動画変換";
       // 
@@ -1329,7 +1338,7 @@
       SubmitButtonBox.Controls.Add(OpenLogFile);
       SubmitButtonBox.Controls.Add(btnStopAll);
       SubmitButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      SubmitButtonBox.Location = new System.Drawing.Point(0, 372);
+      SubmitButtonBox.Location = new System.Drawing.Point(0, 378);
       SubmitButtonBox.Name = "SubmitButtonBox";
       SubmitButtonBox.Size = new System.Drawing.Size(832, 46);
       SubmitButtonBox.TabIndex = 44;
@@ -1392,10 +1401,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 413);
+      PageUtility.Size = new System.Drawing.Size(832, 424);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1465,7 +1474,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 380);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1877,10 +1886,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Controls.Add(label24);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 418);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2262,6 +2271,67 @@
       label24.TabIndex = 5;
       label24.Text = "ダウンロードURL";
       // 
+      // PageSetting
+      // 
+      PageSetting.BackColor = System.Drawing.SystemColors.ButtonFace;
+      PageSetting.Controls.Add(ytdlpFindInPath);
+      PageSetting.Controls.Add(btnFindInPath);
+      PageSetting.Controls.Add(btnYtdlp);
+      PageSetting.Controls.Add(btnFFmpeg);
+      PageSetting.Controls.Add(label32);
+      PageSetting.Controls.Add(label8);
+      PageSetting.Controls.Add(YtdlpPath);
+      PageSetting.Controls.Add(ffmpeg);
+      PageSetting.Location = new System.Drawing.Point(4, 27);
+      PageSetting.Name = "PageSetting";
+      PageSetting.Padding = new System.Windows.Forms.Padding(3);
+      PageSetting.Size = new System.Drawing.Size(832, 419);
+      PageSetting.TabIndex = 3;
+      PageSetting.Text = "設定";
+      // 
+      // ytdlpFindInPath
+      // 
+      ytdlpFindInPath.Location = new System.Drawing.Point(656, 112);
+      ytdlpFindInPath.Name = "ytdlpFindInPath";
+      ytdlpFindInPath.Size = new System.Drawing.Size(144, 23);
+      ytdlpFindInPath.TabIndex = 38;
+      ytdlpFindInPath.TabStop = false;
+      ytdlpFindInPath.Tag = "yt-dlp";
+      ytdlpFindInPath.Text = "環境変数PATHから探す";
+      ytdlpFindInPath.UseVisualStyleBackColor = true;
+      ytdlpFindInPath.Click += FindInPath_Click;
+      // 
+      // btnYtdlp
+      // 
+      btnYtdlp.Location = new System.Drawing.Point(601, 112);
+      btnYtdlp.Name = "btnYtdlp";
+      btnYtdlp.Size = new System.Drawing.Size(49, 23);
+      btnYtdlp.TabIndex = 36;
+      btnYtdlp.TabStop = false;
+      btnYtdlp.Text = "参照";
+      btnYtdlp.UseVisualStyleBackColor = true;
+      btnYtdlp.Click += btnFFmpeg_Click;
+      // 
+      // label32
+      // 
+      label32.AutoSize = true;
+      label32.Location = new System.Drawing.Point(17, 98);
+      label32.Name = "label32";
+      label32.Size = new System.Drawing.Size(98, 12);
+      label32.TabIndex = 37;
+      label32.Text = "yt-dlp 実行ファイル";
+      // 
+      // YtdlpPath
+      // 
+      YtdlpPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      YtdlpPath.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      YtdlpPath.FormattingEnabled = true;
+      YtdlpPath.Location = new System.Drawing.Point(17, 113);
+      YtdlpPath.Name = "YtdlpPath";
+      YtdlpPath.Size = new System.Drawing.Size(578, 23);
+      YtdlpPath.TabIndex = 39;
+      YtdlpPath.TabStop = false;
+      // 
       // ImageContextMenu
       // 
       ImageContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { CommandSaveImage });
@@ -2292,7 +2362,7 @@
       OutputBox.Controls.Add(FileName);
       OutputBox.Controls.Add(label10);
       OutputBox.Controls.Add(cbOutputDir);
-      OutputBox.Location = new System.Drawing.Point(433, 492);
+      OutputBox.Location = new System.Drawing.Point(433, 468);
       OutputBox.Name = "OutputBox";
       OutputBox.Size = new System.Drawing.Size(407, 125);
       OutputBox.TabIndex = 44;
@@ -2395,14 +2465,10 @@
       AllowDrop = true;
       AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      ClientSize = new System.Drawing.Size(846, 651);
+      ClientSize = new System.Drawing.Size(846, 624);
       Controls.Add(OutputBox);
       Controls.Add(Tab);
       Controls.Add(StatusBar);
-      Controls.Add(ffmpeg);
-      Controls.Add(btnFindInPath);
-      Controls.Add(label8);
-      Controls.Add(btnFFmpeg);
       Controls.Add(InputBox);
       Font = new System.Drawing.Font("MS UI Gothic", 9F);
       FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -2473,6 +2539,8 @@
       groupBox1.ResumeLayout(false);
       groupBox1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).EndInit();
+      PageSetting.ResumeLayout(false);
+      PageSetting.PerformLayout();
       ImageContextMenu.ResumeLayout(false);
       OutputBox.ResumeLayout(false);
       OutputBox.PerformLayout();
@@ -2687,6 +2755,11 @@
     private System.Windows.Forms.GroupBox CookieBox;
     private System.Windows.Forms.RadioButton DownloadBestQuality;
     private System.Windows.Forms.RadioButton DownloadWorstQuality;
+    private System.Windows.Forms.TabPage PageSetting;
+    private System.Windows.Forms.Button ytdlpFindInPath;
+    private System.Windows.Forms.Button btnYtdlp;
+    private System.Windows.Forms.Label label32;
+    private System.Windows.Forms.ComboBox YtdlpPath;
   }
 }
 

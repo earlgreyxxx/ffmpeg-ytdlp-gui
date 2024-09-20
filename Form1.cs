@@ -135,6 +135,14 @@ namespace ffmpeg_ytdlp_gui
         ffmpeg.SelectedIndex = 0;
       }
 
+      if (Settings.Default.ytdlp?.Count > 0)
+      {
+        foreach (string? item in Settings.Default.ytdlp)
+          YtdlpPath.Items.Add(item!);
+
+        YtdlpPath.SelectedIndex = 0;
+      }
+
       if (Settings.Default.downloadFileNames?.Count > 0)
       {
         foreach (string? item in Settings.Default.downloadFileNames)
@@ -189,6 +197,7 @@ namespace ffmpeg_ytdlp_gui
 
       // ffmpegパス
       Settings.Default.ffmpeg = [.. ffmpeg.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
+      Settings.Default.ytdlp = [.. YtdlpPath.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
 
       // ダウンロードURL
       //var urls = UrlBindingSource.DataSource as StringListItems;
@@ -233,7 +242,7 @@ namespace ffmpeg_ytdlp_gui
           command.OutputBaseName(FileName.Text);
 
         OnBeginProcess();
-        var process = CreateFFmpegProcess(command,"PageConvert");
+        var process = CreateFFmpegProcess(command, "PageConvert");
         if (process == null)
           return;
 
@@ -509,28 +518,36 @@ namespace ffmpeg_ytdlp_gui
         ffmpeg.Items.Add(ffmpeg.Text);
     }
 
-    private void btnFindInPath_Click(object sender, EventArgs e)
+    private void FindInPath_Click(object sender, EventArgs e)
     {
-      foreach (var path in ffmpeg.Items.Cast<string>().Where(item => item != "ffmpeg" && !System.IO.File.Exists(item)))
+      var button = sender as Button;
+      if (button == null)
+        return;
+
+      var command = button.Tag as string;
+      if (command == null)
+        return;
+
+      foreach (var path in ffmpeg.Items.Cast<string>().Where(item => item != command && !System.IO.File.Exists(item)))
         ffmpeg.Items.Remove(path);
 
-      string[] ffmpegPathes = CustomProcess.FindInPath("ffmpeg");
-      if (ffmpegPathes.Length == 0)
-      {
-        if (DialogResult.Yes == MessageBox.Show("環境変数PATHからffmpegコマンドが見つかりませんでした。\nWingetコマンドを利用してffmpegをインストールしますか？", "警告", MessageBoxButtons.YesNo))
-          Process.Start("winget", "install -id Gyan.FFmpeg");
+      string[] commandPathes = CustomProcess.FindInPath(command);
+      var cb = command == "ffmpeg" ? ffmpeg : YtdlpPath;
 
-        ffmpeg.Text = string.Empty;
+      if (commandPathes.Length == 0)
+      {
+        MessageBox.Show($"環境変数PATHから{command}コマンドが見つかりませんでした。\nWingetコマンドを利用して{command}をインストールしてください。", "警告");
+        cb.Text = string.Empty;
       }
       else
       {
-        foreach (var ffmpegPath in ffmpegPathes.Reverse())
+        foreach (var path in commandPathes.Reverse())
         {
-          if (!ffmpeg.Items.Contains(ffmpegPath))
-            ffmpeg.Items.Insert(0, ffmpegPath);
+          if (!cb.Items.Contains(path))
+            cb.Items.Insert(0, path);
         }
 
-        ffmpeg.SelectedIndex = 0;
+        cb.SelectedIndex = 0;
       }
     }
 
@@ -648,7 +665,7 @@ namespace ffmpeg_ytdlp_gui
         command.MultiFileProcess = InputFileList!.Count > 1;
 
         OnBeginProcess();
-        CreateFFmpegProcess(command,"PageUtility")?.Begin();
+        CreateFFmpegProcess(command, "PageUtility")?.Begin();
       }
     }
 
@@ -690,7 +707,7 @@ namespace ffmpeg_ytdlp_gui
           .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
         OnBeginProcess();
-        CreateFFmpegProcess(command,"PageUtility")?.One(listfile);
+        CreateFFmpegProcess(command, "PageUtility")?.One(listfile);
       }
       catch (Exception ex)
       {
@@ -753,7 +770,7 @@ namespace ffmpeg_ytdlp_gui
         command.MultiFileProcess = InputFileList.Count > 1;
 
         OnBeginProcess();
-        var process = CreateFFmpegProcess(command,"PageUtility");
+        var process = CreateFFmpegProcess(command, "PageUtility");
         if (process == null)
           return;
 
@@ -942,24 +959,38 @@ namespace ffmpeg_ytdlp_gui
 
     private void Tab_SelectedIndexChanged(object sender, EventArgs e)
     {
-      bool IsNotDownloader = Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader";
-      InputBox.Enabled = IsNotDownloader;
-      FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = IsNotDownloader;
+      string tabname = Tab.TabPages[Tab.SelectedIndex].Name;
+      bool IsDownloader = tabname == "PageDownloader";
+      bool IsConverter = tabname == "PageConvert" && tabname == "PageUtility";
+      bool IsSetting = tabname == "PageSetting";
+
+      InputBox.Enabled = IsConverter;
+      FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = IsConverter;
 
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet ?? throw new Exception("DataSource is not initialize yet");
-      if (IsNotDownloader)
+      if (IsConverter)
       {
         DirectoryListBindingSource.DataMember = "Item1";
         OutputDirectoryList = set?.Item1 ?? throw new Exception("Item not initialize");
-        cbOutputDir.SelectedIndex = set.Item3[0];
+        cbOutputDir.SelectedIndex = set.Item4[0];
+        OutputBox.Enabled = true;
       }
-      else
+      else if (IsDownloader)
       {
         DirectoryListBindingSource.DataMember = "Item2";
         OutputDirectoryList = set?.Item2 ?? throw new Exception("Item not initialize");
-        cbOutputDir.SelectedIndex = set.Item3[1];
+        cbOutputDir.SelectedIndex = set.Item4[1];
+        OutputBox.Enabled = true;
 
         DownloadUrl.Focus();
+      }
+      else if(IsSetting)
+      {
+        DirectoryListBindingSource.DataMember = "Item3";
+        OutputDirectoryList = [];
+        cbOutputDir.SelectedIndex = -1;
+
+        OutputBox.Enabled = false;
       }
     }
 
@@ -1045,7 +1076,7 @@ namespace ffmpeg_ytdlp_gui
     private void EditListItems(object sender, LinkLabelLinkClickedEventArgs e)
     {
       string? target = (sender as LinkLabel)?.Tag?.ToString();
-      if(target == null)
+      if (target == null)
         return;
 
       var controls = Controls.Find(target, true);
@@ -1112,7 +1143,7 @@ namespace ffmpeg_ytdlp_gui
     {
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
 
-      set?.Item3.SetValue(
+      set?.Item4.SetValue(
         cbOutputDir.SelectedIndex,
         Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader" ? 0 : 1
       );

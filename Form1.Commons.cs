@@ -264,7 +264,7 @@ namespace ffmpeg_ytdlp_gui
       FileList.DataSource = FileListBindingSource;
 
       ///
-      var set = new StringListItemsSet([], [], [-1,-1]);
+      var set = new StringListItemsSet([],[],[],[-1,-1,-1]);
       cbOutputDir.DataSource = DirectoryListBindingSource;
       DirectoryListBindingSource.DataSource = set;
 

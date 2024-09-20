@@ -94,7 +94,7 @@ namespace ffmpeg_ytdlp_gui
         if (url.Length == 0)
           throw new Exception("URLが入力されていません。");
 
-        var parser = new ytdlp_process()
+        var parser = new ytdlp_process(YtdlpPath.Text)
         {
           Url = url,
         };
@@ -148,7 +148,7 @@ namespace ffmpeg_ytdlp_gui
         if (!Directory.Exists(outputdir))
           Directory.CreateDirectory(outputdir);
 
-        var downloader = new ytdlp_process()
+        var downloader = new ytdlp_process(YtdlpPath.Text)
         {
           Url = mediaInfo.webpage_url,
           OutputPath = outputdir,
