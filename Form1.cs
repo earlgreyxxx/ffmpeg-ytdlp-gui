@@ -1027,7 +1027,7 @@ namespace ffmpeg_ytdlp_gui
       if (DialogResult.Cancel == OpenCookieFileDialog.ShowDialog())
         return;
 
-      CookiePath.Text = OpenCookieFileDialog.FileName;
+      Settings.Default.cookiePath = OpenCookieFileDialog.FileName;
     }
 
     private void CommandSaveImage_Click(object sender, EventArgs e)

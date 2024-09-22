@@ -376,5 +376,17 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["ytdlp"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool deleteUrlAfterDownload {
+            get {
+                return ((bool)(this["deleteUrlAfterDownload"]));
+            }
+            set {
+                this["deleteUrlAfterDownload"] = value;
+            }
+        }
     }
 }

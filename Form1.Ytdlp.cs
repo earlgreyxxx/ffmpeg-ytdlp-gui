@@ -134,9 +134,11 @@ namespace ffmpeg_ytdlp_gui
 
     private async void YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
     {
+      var url = ytdlpItem?.Item1;
       var mediaInfo = ytdlpItem?.Item2;
-      if (mediaInfo == null)
+      if (url == null || mediaInfo == null)
         return;
+
       try
       {
         var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;
@@ -145,7 +147,7 @@ namespace ffmpeg_ytdlp_gui
 
         var downloader = new ytdlp_process(YtdlpPath.Text)
         {
-          Url = mediaInfo.webpage_url,
+          Url = url,
           OutputPath = outputdir,
           VideoFormat = string.Empty,
           AudioFormat = string.Empty,
@@ -190,6 +192,14 @@ namespace ffmpeg_ytdlp_gui
           {
             FileListBindingSource.Add(new StringListItem(downloader.DownloadFile));
             btnSubmitInvoke.Enabled = true;
+          }
+
+          if(DeleteUrlAfterDownloaded.Checked)
+          {
+            var items = UrlBindingSource.DataSource as YtdlpItems;
+            var item = items?.FirstOrDefault(item => item?.Item1 == downloader.Url);
+            if (item != null)
+              UrlBindingSource.Remove(item);
           }
         });
 

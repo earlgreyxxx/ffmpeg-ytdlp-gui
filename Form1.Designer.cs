@@ -179,12 +179,6 @@
       SubmitThumbnail = new System.Windows.Forms.Button();
       PageDownloader = new System.Windows.Forms.TabPage();
       AddDownloadQueue = new System.Windows.Forms.Button();
-      CookieBox = new System.Windows.Forms.GroupBox();
-      label0 = new System.Windows.Forms.Label();
-      label29 = new System.Windows.Forms.Label();
-      SubmitOpenCookie = new System.Windows.Forms.Button();
-      UseCookie = new System.Windows.Forms.ComboBox();
-      CookiePath = new System.Windows.Forms.TextBox();
       SubmitDownloadDequeue = new System.Windows.Forms.Button();
       PlaylistGroup = new System.Windows.Forms.GroupBox();
       DownloadBestQuality = new System.Windows.Forms.RadioButton();
@@ -212,12 +206,20 @@
       ThumbnailBox = new System.Windows.Forms.PictureBox();
       label28 = new System.Windows.Forms.Label();
       SubmitConfirmFormat = new System.Windows.Forms.Button();
-      label24 = new System.Windows.Forms.Label();
       PageSetting = new System.Windows.Forms.TabPage();
+      groupBox3 = new System.Windows.Forms.GroupBox();
+      label24 = new System.Windows.Forms.Label();
+      label29 = new System.Windows.Forms.Label();
+      SubmitOpenCookie = new System.Windows.Forms.Button();
+      CookiePath = new System.Windows.Forms.TextBox();
+      label0 = new System.Windows.Forms.Label();
+      DeleteUrlAfterDownloaded = new System.Windows.Forms.CheckBox();
+      label32 = new System.Windows.Forms.Label();
+      UseCookie = new System.Windows.Forms.ComboBox();
+      YtdlpPath = new System.Windows.Forms.ComboBox();
       ytdlpFindInPath = new System.Windows.Forms.Button();
       btnYtdlp = new System.Windows.Forms.Button();
-      label32 = new System.Windows.Forms.Label();
-      YtdlpPath = new System.Windows.Forms.ComboBox();
+      groupBox2 = new System.Windows.Forms.GroupBox();
       ImageContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
       OutputBox = new System.Windows.Forms.GroupBox();
@@ -274,11 +276,12 @@
       ((System.ComponentModel.ISupportInitialize)ImageHeight).BeginInit();
       ((System.ComponentModel.ISupportInitialize)FrameRate).BeginInit();
       PageDownloader.SuspendLayout();
-      CookieBox.SuspendLayout();
       PlaylistGroup.SuspendLayout();
       groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
       PageSetting.SuspendLayout();
+      groupBox3.SuspendLayout();
+      groupBox2.SuspendLayout();
       ImageContextMenu.SuspendLayout();
       OutputBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)settingsPropertyValueBindingSource).BeginInit();
@@ -683,7 +686,7 @@
       FileContainer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileContainer.Font = new System.Drawing.Font("Meiryo UI", 9F);
       FileContainer.FormattingEnabled = true;
-      FileContainer.Location = new System.Drawing.Point(328, 67);
+      FileContainer.Location = new System.Drawing.Point(333, 67);
       FileContainer.Name = "FileContainer";
       FileContainer.Size = new System.Drawing.Size(64, 23);
       FileContainer.TabIndex = 31;
@@ -694,7 +697,7 @@
       // 
       label13.AutoSize = true;
       label13.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      label13.Location = new System.Drawing.Point(317, 71);
+      label13.Location = new System.Drawing.Point(319, 73);
       label13.Name = "label13";
       label13.Size = new System.Drawing.Size(11, 15);
       label13.TabIndex = 32;
@@ -1100,7 +1103,7 @@
       // btnFFmpeg
       // 
       btnFFmpeg.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnFFmpeg.Location = new System.Drawing.Point(602, 45);
+      btnFFmpeg.Location = new System.Drawing.Point(605, 35);
       btnFFmpeg.Name = "btnFFmpeg";
       btnFFmpeg.Size = new System.Drawing.Size(49, 28);
       btnFFmpeg.TabIndex = 36;
@@ -1112,9 +1115,9 @@
       // label8
       // 
       label8.AutoSize = true;
-      label8.Location = new System.Drawing.Point(17, 31);
+      label8.Location = new System.Drawing.Point(18, 41);
       label8.Name = "label8";
-      label8.Size = new System.Drawing.Size(98, 12);
+      label8.Size = new System.Drawing.Size(106, 15);
       label8.TabIndex = 37;
       label8.Text = "ffmpeg実行ファイル";
       // 
@@ -1127,7 +1130,7 @@
       // btnFindInPath
       // 
       btnFindInPath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnFindInPath.Location = new System.Drawing.Point(652, 45);
+      btnFindInPath.Location = new System.Drawing.Point(655, 35);
       btnFindInPath.Name = "btnFindInPath";
       btnFindInPath.Size = new System.Drawing.Size(144, 28);
       btnFindInPath.TabIndex = 38;
@@ -1142,9 +1145,9 @@
       ffmpeg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       ffmpeg.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       ffmpeg.FormattingEnabled = true;
-      ffmpeg.Location = new System.Drawing.Point(18, 46);
+      ffmpeg.Location = new System.Drawing.Point(122, 36);
       ffmpeg.Name = "ffmpeg";
-      ffmpeg.Size = new System.Drawing.Size(578, 23);
+      ffmpeg.Size = new System.Drawing.Size(477, 23);
       ffmpeg.TabIndex = 39;
       ffmpeg.TabStop = false;
       // 
@@ -1894,7 +1897,6 @@
       // 
       PageDownloader.BackColor = System.Drawing.SystemColors.ButtonFace;
       PageDownloader.Controls.Add(AddDownloadQueue);
-      PageDownloader.Controls.Add(CookieBox);
       PageDownloader.Controls.Add(SubmitDownloadDequeue);
       PageDownloader.Controls.Add(PlaylistGroup);
       PageDownloader.Controls.Add(linkLabel5);
@@ -1910,7 +1912,7 @@
       PageDownloader.Controls.Add(ThumbnailBox);
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
-      PageDownloader.Controls.Add(label24);
+      PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
@@ -1922,93 +1924,25 @@
       // 
       AddDownloadQueue.Enabled = false;
       AddDownloadQueue.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      AddDownloadQueue.Location = new System.Drawing.Point(754, 327);
+      AddDownloadQueue.Location = new System.Drawing.Point(696, 333);
       AddDownloadQueue.Name = "AddDownloadQueue";
-      AddDownloadQueue.Size = new System.Drawing.Size(72, 26);
+      AddDownloadQueue.Size = new System.Drawing.Size(130, 26);
       AddDownloadQueue.TabIndex = 6;
       AddDownloadQueue.Tag = false;
-      AddDownloadQueue.Text = "キュー追加";
+      AddDownloadQueue.Text = "ダウンロードキューに追加";
       AddDownloadQueue.UseVisualStyleBackColor = true;
       AddDownloadQueue.Click += AddDownloadQueue_Click;
-      // 
-      // CookieBox
-      // 
-      CookieBox.Controls.Add(label0);
-      CookieBox.Controls.Add(label29);
-      CookieBox.Controls.Add(SubmitOpenCookie);
-      CookieBox.Controls.Add(UseCookie);
-      CookieBox.Controls.Add(CookiePath);
-      CookieBox.Location = new System.Drawing.Point(438, 54);
-      CookieBox.Name = "CookieBox";
-      CookieBox.Size = new System.Drawing.Size(382, 83);
-      CookieBox.TabIndex = 49;
-      CookieBox.TabStop = false;
-      CookieBox.Text = "Cookieの使用";
-      // 
-      // label0
-      // 
-      label0.AutoSize = true;
-      label0.Location = new System.Drawing.Point(8, 25);
-      label0.Name = "label0";
-      label0.Size = new System.Drawing.Size(119, 12);
-      label0.TabIndex = 5;
-      label0.Text = "ブラウザのCookieを使用";
-      // 
-      // label29
-      // 
-      label29.AutoSize = true;
-      label29.Location = new System.Drawing.Point(8, 53);
-      label29.Name = "label29";
-      label29.Size = new System.Drawing.Size(93, 12);
-      label29.TabIndex = 5;
-      label29.Text = "Cookieファイルパス";
-      // 
-      // SubmitOpenCookie
-      // 
-      SubmitOpenCookie.Location = new System.Drawing.Point(322, 48);
-      SubmitOpenCookie.Name = "SubmitOpenCookie";
-      SubmitOpenCookie.Size = new System.Drawing.Size(49, 23);
-      SubmitOpenCookie.TabIndex = 36;
-      SubmitOpenCookie.TabStop = false;
-      SubmitOpenCookie.Text = "参照";
-      SubmitOpenCookie.UseVisualStyleBackColor = true;
-      SubmitOpenCookie.Click += SubmitOpenCookie_Click;
-      // 
-      // UseCookie
-      // 
-      UseCookie.DisplayMember = "Label";
-      UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      UseCookie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      UseCookie.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      UseCookie.FormattingEnabled = true;
-      UseCookie.Location = new System.Drawing.Point(131, 21);
-      UseCookie.Name = "UseCookie";
-      UseCookie.Size = new System.Drawing.Size(240, 21);
-      UseCookie.TabIndex = 13;
-      UseCookie.ValueMember = "Value";
-      UseCookie.SelectedIndexChanged += UseCookie_SelectedIndexChanged;
-      // 
-      // CookiePath
-      // 
-      CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-      CookiePath.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      CookiePath.Location = new System.Drawing.Point(105, 49);
-      CookiePath.Name = "CookiePath";
-      CookiePath.PlaceholderText = "Netscape形式のcookieファイル";
-      CookiePath.ReadOnly = true;
-      CookiePath.Size = new System.Drawing.Size(220, 20);
-      CookiePath.TabIndex = 15;
       // 
       // SubmitDownloadDequeue
       // 
       SubmitDownloadDequeue.Enabled = false;
       SubmitDownloadDequeue.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      SubmitDownloadDequeue.Location = new System.Drawing.Point(644, 327);
+      SubmitDownloadDequeue.Location = new System.Drawing.Point(609, 333);
       SubmitDownloadDequeue.Name = "SubmitDownloadDequeue";
-      SubmitDownloadDequeue.Size = new System.Drawing.Size(97, 26);
+      SubmitDownloadDequeue.Size = new System.Drawing.Size(75, 26);
       SubmitDownloadDequeue.TabIndex = 6;
       SubmitDownloadDequeue.Tag = true;
-      SubmitDownloadDequeue.Text = "ダウンロード開始";
+      SubmitDownloadDequeue.Text = "キュー開始";
       SubmitDownloadDequeue.UseVisualStyleBackColor = true;
       SubmitDownloadDequeue.Click += BeginDequeue_Click;
       // 
@@ -2019,9 +1953,10 @@
       PlaylistGroup.Controls.Add(PlayListDownloadAll);
       PlaylistGroup.Controls.Add(Playlist);
       PlaylistGroup.Enabled = false;
-      PlaylistGroup.Location = new System.Drawing.Point(14, 54);
+      PlaylistGroup.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      PlaylistGroup.Location = new System.Drawing.Point(441, 54);
       PlaylistGroup.Name = "PlaylistGroup";
-      PlaylistGroup.Size = new System.Drawing.Size(416, 111);
+      PlaylistGroup.Size = new System.Drawing.Size(388, 157);
       PlaylistGroup.TabIndex = 48;
       PlaylistGroup.TabStop = false;
       PlaylistGroup.Text = "プレイリスト検出";
@@ -2030,9 +1965,9 @@
       // 
       DownloadBestQuality.AutoSize = true;
       DownloadBestQuality.Checked = true;
-      DownloadBestQuality.Location = new System.Drawing.Point(317, 43);
+      DownloadBestQuality.Location = new System.Drawing.Point(14, 123);
       DownloadBestQuality.Name = "DownloadBestQuality";
-      DownloadBestQuality.Size = new System.Drawing.Size(95, 16);
+      DownloadBestQuality.Size = new System.Drawing.Size(99, 19);
       DownloadBestQuality.TabIndex = 50;
       DownloadBestQuality.TabStop = true;
       DownloadBestQuality.Tag = "bv*+ba/b";
@@ -2042,9 +1977,9 @@
       // DownloadWorstQuality
       // 
       DownloadWorstQuality.AutoSize = true;
-      DownloadWorstQuality.Location = new System.Drawing.Point(317, 21);
+      DownloadWorstQuality.Location = new System.Drawing.Point(119, 123);
       DownloadWorstQuality.Name = "DownloadWorstQuality";
-      DownloadWorstQuality.Size = new System.Drawing.Size(95, 16);
+      DownloadWorstQuality.Size = new System.Drawing.Size(99, 19);
       DownloadWorstQuality.TabIndex = 49;
       DownloadWorstQuality.Tag = "wv*+wa/w";
       DownloadWorstQuality.Text = "最低品質でDL";
@@ -2052,58 +1987,58 @@
       // 
       // PlayListDownloadAll
       // 
-      PlayListDownloadAll.Location = new System.Drawing.Point(314, 68);
+      PlayListDownloadAll.Location = new System.Drawing.Point(223, 120);
       PlayListDownloadAll.Name = "PlayListDownloadAll";
-      PlayListDownloadAll.Size = new System.Drawing.Size(96, 26);
+      PlayListDownloadAll.Size = new System.Drawing.Size(154, 26);
       PlayListDownloadAll.TabIndex = 48;
-      PlayListDownloadAll.Text = "全てダウンロード";
+      PlayListDownloadAll.Text = "全てダウンロードキューに追加";
       PlayListDownloadAll.UseVisualStyleBackColor = true;
       PlayListDownloadAll.Click += PlayListDownloadAll_Click;
       // 
       // Playlist
       // 
-      Playlist.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      Playlist.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       Playlist.HorizontalScrollbar = true;
-      Playlist.ItemHeight = 17;
-      Playlist.Location = new System.Drawing.Point(11, 22);
+      Playlist.ItemHeight = 14;
+      Playlist.Location = new System.Drawing.Point(14, 23);
       Playlist.Name = "Playlist";
-      Playlist.Size = new System.Drawing.Size(297, 72);
+      Playlist.Size = new System.Drawing.Size(363, 88);
       Playlist.TabIndex = 47;
       Playlist.SelectedIndexChanged += Playlist_SelectedIndexChanged;
       // 
       // linkLabel5
       // 
       linkLabel5.AutoSize = true;
-      linkLabel5.Location = new System.Drawing.Point(46, 32);
+      linkLabel5.Location = new System.Drawing.Point(12, 22);
       linkLabel5.Name = "linkLabel5";
-      linkLabel5.Size = new System.Drawing.Size(53, 12);
+      linkLabel5.Size = new System.Drawing.Size(79, 15);
       linkLabel5.TabIndex = 45;
       linkLabel5.TabStop = true;
       linkLabel5.Tag = "DownloadUrl";
-      linkLabel5.Text = "リスト編集";
+      linkLabel5.Text = "URLリスト編集";
       linkLabel5.LinkClicked += EditListItems;
       // 
       // MediaTitle
       // 
       MediaTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      MediaTitle.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      MediaTitle.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       MediaTitle.ImeMode = System.Windows.Forms.ImeMode.Disable;
-      MediaTitle.Location = new System.Drawing.Point(438, 143);
+      MediaTitle.Location = new System.Drawing.Point(14, 68);
       MediaTitle.Multiline = true;
       MediaTitle.Name = "MediaTitle";
       MediaTitle.PlaceholderText = "メディアタイトル";
       MediaTitle.ReadOnly = true;
       MediaTitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      MediaTitle.Size = new System.Drawing.Size(380, 68);
+      MediaTitle.Size = new System.Drawing.Size(416, 95);
       MediaTitle.TabIndex = 0;
       MediaTitle.TabStop = false;
       // 
       // linkLabel3
       // 
       linkLabel3.AutoSize = true;
-      linkLabel3.Location = new System.Drawing.Point(576, 361);
+      linkLabel3.Location = new System.Drawing.Point(576, 367);
       linkLabel3.Name = "linkLabel3";
-      linkLabel3.Size = new System.Drawing.Size(53, 12);
+      linkLabel3.Size = new System.Drawing.Size(55, 15);
       linkLabel3.TabIndex = 44;
       linkLabel3.TabStop = true;
       linkLabel3.Tag = "OutputFileFormat";
@@ -2116,7 +2051,7 @@
       OutputFileFormat.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       OutputFileFormat.FormattingEnabled = true;
       OutputFileFormat.Items.AddRange(new object[] { "%(title)s-%(id)s.%(ext)s" });
-      OutputFileFormat.Location = new System.Drawing.Point(438, 377);
+      OutputFileFormat.Location = new System.Drawing.Point(436, 387);
       OutputFileFormat.Name = "OutputFileFormat";
       OutputFileFormat.Size = new System.Drawing.Size(385, 28);
       OutputFileFormat.TabIndex = 43;
@@ -2127,9 +2062,9 @@
       DownloadUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       DownloadUrl.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       DownloadUrl.FormattingEnabled = true;
-      DownloadUrl.Location = new System.Drawing.Point(105, 16);
+      DownloadUrl.Location = new System.Drawing.Point(97, 16);
       DownloadUrl.Name = "DownloadUrl";
-      DownloadUrl.Size = new System.Drawing.Size(611, 28);
+      DownloadUrl.Size = new System.Drawing.Size(619, 28);
       DownloadUrl.TabIndex = 42;
       DownloadUrl.ValueMember = "Item2";
       DownloadUrl.SelectedIndexChanged += DownloadUrl_SelectedIndexChanged;
@@ -2138,7 +2073,7 @@
       // DurationTime
       // 
       DurationTime.BackColor = System.Drawing.Color.White;
-      DurationTime.Location = new System.Drawing.Point(323, 375);
+      DurationTime.Location = new System.Drawing.Point(323, 385);
       DurationTime.Name = "DurationTime";
       DurationTime.Padding = new System.Windows.Forms.Padding(5);
       DurationTime.Size = new System.Drawing.Size(107, 30);
@@ -2152,18 +2087,18 @@
       chkAfterDownload.AutoSize = true;
       chkAfterDownload.Checked = true;
       chkAfterDownload.CheckState = System.Windows.Forms.CheckState.Checked;
-      chkAfterDownload.Location = new System.Drawing.Point(441, 334);
+      chkAfterDownload.Location = new System.Drawing.Point(441, 337);
       chkAfterDownload.Name = "chkAfterDownload";
-      chkAfterDownload.Size = new System.Drawing.Size(151, 16);
+      chkAfterDownload.Size = new System.Drawing.Size(107, 19);
       chkAfterDownload.TabIndex = 40;
-      chkAfterDownload.Text = "完了後に変換リストへ追加";
+      chkAfterDownload.Text = "入力リストに追加";
       chkAfterDownload.UseVisualStyleBackColor = true;
       // 
       // StopDownload
       // 
       StopDownload.Enabled = false;
       StopDownload.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      StopDownload.Location = new System.Drawing.Point(595, 327);
+      StopDownload.Location = new System.Drawing.Point(560, 333);
       StopDownload.Name = "StopDownload";
       StopDownload.Size = new System.Drawing.Size(48, 26);
       StopDownload.TabIndex = 11;
@@ -2181,9 +2116,10 @@
       groupBox1.Controls.Add(label30);
       groupBox1.Controls.Add(VideoOnlyFormat);
       groupBox1.Controls.Add(AudioOnlyFormat);
+      groupBox1.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       groupBox1.Location = new System.Drawing.Point(441, 217);
       groupBox1.Name = "groupBox1";
-      groupBox1.Size = new System.Drawing.Size(385, 104);
+      groupBox1.Size = new System.Drawing.Size(385, 110);
       groupBox1.TabIndex = 37;
       groupBox1.TabStop = false;
       groupBox1.Text = "メディア別";
@@ -2192,7 +2128,7 @@
       // 
       FmtSeparated.AutoSize = true;
       FmtSeparated.Checked = true;
-      FmtSeparated.Location = new System.Drawing.Point(14, 37);
+      FmtSeparated.Location = new System.Drawing.Point(14, 35);
       FmtSeparated.Name = "FmtSeparated";
       FmtSeparated.Size = new System.Drawing.Size(14, 13);
       FmtSeparated.TabIndex = 11;
@@ -2217,7 +2153,7 @@
       MovieFormat.FormattingEnabled = true;
       MovieFormat.Location = new System.Drawing.Point(73, 75);
       MovieFormat.Name = "MovieFormat";
-      MovieFormat.Size = new System.Drawing.Size(304, 20);
+      MovieFormat.Size = new System.Drawing.Size(304, 23);
       MovieFormat.TabIndex = 10;
       MovieFormat.ValueMember = "Value";
       MovieFormat.Click += Format_Click;
@@ -2225,27 +2161,27 @@
       // label23
       // 
       label23.AutoSize = true;
-      label23.Location = new System.Drawing.Point(41, 24);
+      label23.Location = new System.Drawing.Point(40, 23);
       label23.Name = "label23";
-      label23.Size = new System.Drawing.Size(29, 12);
+      label23.Size = new System.Drawing.Size(31, 15);
       label23.TabIndex = 5;
       label23.Text = "動画";
       // 
       // label34
       // 
       label34.AutoSize = true;
-      label34.Location = new System.Drawing.Point(41, 79);
+      label34.Location = new System.Drawing.Point(40, 80);
       label34.Name = "label34";
-      label34.Size = new System.Drawing.Size(29, 12);
+      label34.Size = new System.Drawing.Size(31, 15);
       label34.TabIndex = 5;
       label34.Text = "完全";
       // 
       // label30
       // 
       label30.AutoSize = true;
-      label30.Location = new System.Drawing.Point(41, 48);
+      label30.Location = new System.Drawing.Point(40, 49);
       label30.Name = "label30";
-      label30.Size = new System.Drawing.Size(29, 12);
+      label30.Size = new System.Drawing.Size(31, 15);
       label30.TabIndex = 5;
       label30.Text = "音声";
       // 
@@ -2255,9 +2191,9 @@
       VideoOnlyFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       VideoOnlyFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       VideoOnlyFormat.FormattingEnabled = true;
-      VideoOnlyFormat.Location = new System.Drawing.Point(73, 21);
+      VideoOnlyFormat.Location = new System.Drawing.Point(73, 19);
       VideoOnlyFormat.Name = "VideoOnlyFormat";
-      VideoOnlyFormat.Size = new System.Drawing.Size(304, 20);
+      VideoOnlyFormat.Size = new System.Drawing.Size(304, 23);
       VideoOnlyFormat.TabIndex = 10;
       VideoOnlyFormat.ValueMember = "Value";
       VideoOnlyFormat.Click += Format_Click;
@@ -2270,7 +2206,7 @@
       AudioOnlyFormat.FormattingEnabled = true;
       AudioOnlyFormat.Location = new System.Drawing.Point(73, 45);
       AudioOnlyFormat.Name = "AudioOnlyFormat";
-      AudioOnlyFormat.Size = new System.Drawing.Size(304, 20);
+      AudioOnlyFormat.Size = new System.Drawing.Size(304, 23);
       AudioOnlyFormat.TabIndex = 10;
       AudioOnlyFormat.ValueMember = "Value";
       AudioOnlyFormat.Click += Format_Click;
@@ -2279,9 +2215,9 @@
       // 
       LinkYdlOutputTemplate.AutoSize = true;
       LinkYdlOutputTemplate.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
-      LinkYdlOutputTemplate.Location = new System.Drawing.Point(664, 361);
+      LinkYdlOutputTemplate.Location = new System.Drawing.Point(664, 367);
       LinkYdlOutputTemplate.Name = "LinkYdlOutputTemplate";
-      LinkYdlOutputTemplate.Size = new System.Drawing.Size(124, 12);
+      LinkYdlOutputTemplate.Size = new System.Drawing.Size(134, 15);
       LinkYdlOutputTemplate.TabIndex = 14;
       LinkYdlOutputTemplate.TabStop = true;
       LinkYdlOutputTemplate.Text = "※OUTPUT TEMPLATE";
@@ -2291,7 +2227,7 @@
       // 
       ThumbnailBox.BackColor = System.Drawing.Color.Black;
       ThumbnailBox.InitialImage = null;
-      ThumbnailBox.Location = new System.Drawing.Point(14, 171);
+      ThumbnailBox.Location = new System.Drawing.Point(14, 181);
       ThumbnailBox.Name = "ThumbnailBox";
       ThumbnailBox.Size = new System.Drawing.Size(416, 234);
       ThumbnailBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -2301,9 +2237,9 @@
       // label28
       // 
       label28.AutoSize = true;
-      label28.Location = new System.Drawing.Point(441, 361);
+      label28.Location = new System.Drawing.Point(441, 367);
       label28.Name = "label28";
-      label28.Size = new System.Drawing.Size(129, 12);
+      label28.Size = new System.Drawing.Size(131, 15);
       label28.TabIndex = 5;
       label28.Text = "出力ファイル名テンプレート";
       // 
@@ -2317,26 +2253,11 @@
       SubmitConfirmFormat.UseVisualStyleBackColor = true;
       SubmitConfirmFormat.Click += SubmitParseUrl_Click;
       // 
-      // label24
-      // 
-      label24.AutoSize = true;
-      label24.Location = new System.Drawing.Point(20, 16);
-      label24.Name = "label24";
-      label24.Size = new System.Drawing.Size(82, 12);
-      label24.TabIndex = 5;
-      label24.Text = "ダウンロードURL";
-      // 
       // PageSetting
       // 
       PageSetting.BackColor = System.Drawing.SystemColors.ButtonFace;
-      PageSetting.Controls.Add(ytdlpFindInPath);
-      PageSetting.Controls.Add(btnFindInPath);
-      PageSetting.Controls.Add(btnYtdlp);
-      PageSetting.Controls.Add(btnFFmpeg);
-      PageSetting.Controls.Add(label32);
-      PageSetting.Controls.Add(label8);
-      PageSetting.Controls.Add(YtdlpPath);
-      PageSetting.Controls.Add(ffmpeg);
+      PageSetting.Controls.Add(groupBox3);
+      PageSetting.Controls.Add(groupBox2);
       PageSetting.Location = new System.Drawing.Point(4, 22);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
@@ -2344,10 +2265,127 @@
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
+      // groupBox3
+      // 
+      groupBox3.Controls.Add(label24);
+      groupBox3.Controls.Add(label29);
+      groupBox3.Controls.Add(SubmitOpenCookie);
+      groupBox3.Controls.Add(CookiePath);
+      groupBox3.Controls.Add(label0);
+      groupBox3.Controls.Add(DeleteUrlAfterDownloaded);
+      groupBox3.Controls.Add(label32);
+      groupBox3.Controls.Add(UseCookie);
+      groupBox3.Controls.Add(YtdlpPath);
+      groupBox3.Controls.Add(ytdlpFindInPath);
+      groupBox3.Controls.Add(btnYtdlp);
+      groupBox3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      groupBox3.Location = new System.Drawing.Point(11, 141);
+      groupBox3.Name = "groupBox3";
+      groupBox3.Size = new System.Drawing.Size(812, 173);
+      groupBox3.TabIndex = 40;
+      groupBox3.TabStop = false;
+      groupBox3.Text = "ダウンロード";
+      // 
+      // label24
+      // 
+      label24.AutoSize = true;
+      label24.ForeColor = System.Drawing.Color.Red;
+      label24.Location = new System.Drawing.Point(18, 105);
+      label24.Name = "label24";
+      label24.Size = new System.Drawing.Size(327, 15);
+      label24.TabIndex = 41;
+      label24.Text = "※現在chrome系ブラウザのクッキー利用はエラーになるみたいです。";
+      // 
+      // label29
+      // 
+      label29.AutoSize = true;
+      label29.Font = new System.Drawing.Font("Meiryo UI", 9F);
+      label29.Location = new System.Drawing.Point(338, 83);
+      label29.Name = "label29";
+      label29.Size = new System.Drawing.Size(99, 15);
+      label29.TabIndex = 5;
+      label29.Text = "Cookieファイルパス";
+      // 
+      // SubmitOpenCookie
+      // 
+      SubmitOpenCookie.Font = new System.Drawing.Font("Meiryo UI", 9F);
+      SubmitOpenCookie.Location = new System.Drawing.Point(748, 76);
+      SubmitOpenCookie.Name = "SubmitOpenCookie";
+      SubmitOpenCookie.Size = new System.Drawing.Size(49, 28);
+      SubmitOpenCookie.TabIndex = 36;
+      SubmitOpenCookie.TabStop = false;
+      SubmitOpenCookie.Text = "参照";
+      SubmitOpenCookie.UseVisualStyleBackColor = true;
+      SubmitOpenCookie.Click += SubmitOpenCookie_Click;
+      // 
+      // CookiePath
+      // 
+      CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+      CookiePath.Font = new System.Drawing.Font("Meiryo UI", 9F);
+      CookiePath.Location = new System.Drawing.Point(443, 79);
+      CookiePath.Name = "CookiePath";
+      CookiePath.PlaceholderText = "Netscape形式のcookieファイル";
+      CookiePath.Size = new System.Drawing.Size(299, 23);
+      CookiePath.TabIndex = 15;
+      // 
+      // label0
+      // 
+      label0.AutoSize = true;
+      label0.Font = new System.Drawing.Font("Meiryo UI", 9F);
+      label0.Location = new System.Drawing.Point(18, 83);
+      label0.Name = "label0";
+      label0.Size = new System.Drawing.Size(125, 15);
+      label0.TabIndex = 5;
+      label0.Text = "ブラウザのCookieを使用";
+      // 
+      // DeleteUrlAfterDownloaded
+      // 
+      DeleteUrlAfterDownloaded.AutoSize = true;
+      DeleteUrlAfterDownloaded.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(18, 138);
+      DeleteUrlAfterDownloaded.Name = "DeleteUrlAfterDownloaded";
+      DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(201, 19);
+      DeleteUrlAfterDownloaded.TabIndex = 40;
+      DeleteUrlAfterDownloaded.Text = "ダウンロード完了後リストから削除する";
+      DeleteUrlAfterDownloaded.UseVisualStyleBackColor = true;
+      // 
+      // label32
+      // 
+      label32.AutoSize = true;
+      label32.Location = new System.Drawing.Point(18, 45);
+      label32.Name = "label32";
+      label32.Size = new System.Drawing.Size(103, 15);
+      label32.TabIndex = 37;
+      label32.Text = "yt-dlp 実行ファイル";
+      // 
+      // UseCookie
+      // 
+      UseCookie.DisplayMember = "Label";
+      UseCookie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      UseCookie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      UseCookie.Font = new System.Drawing.Font("Meiryo UI", 9F);
+      UseCookie.FormattingEnabled = true;
+      UseCookie.Location = new System.Drawing.Point(150, 79);
+      UseCookie.Name = "UseCookie";
+      UseCookie.Size = new System.Drawing.Size(167, 23);
+      UseCookie.TabIndex = 13;
+      UseCookie.ValueMember = "Value";
+      // 
+      // YtdlpPath
+      // 
+      YtdlpPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      YtdlpPath.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      YtdlpPath.FormattingEnabled = true;
+      YtdlpPath.Location = new System.Drawing.Point(125, 41);
+      YtdlpPath.Name = "YtdlpPath";
+      YtdlpPath.Size = new System.Drawing.Size(474, 23);
+      YtdlpPath.TabIndex = 39;
+      YtdlpPath.TabStop = false;
+      // 
       // ytdlpFindInPath
       // 
       ytdlpFindInPath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      ytdlpFindInPath.Location = new System.Drawing.Point(651, 112);
+      ytdlpFindInPath.Location = new System.Drawing.Point(655, 38);
       ytdlpFindInPath.Name = "ytdlpFindInPath";
       ytdlpFindInPath.Size = new System.Drawing.Size(144, 28);
       ytdlpFindInPath.TabIndex = 38;
@@ -2360,7 +2398,7 @@
       // btnYtdlp
       // 
       btnYtdlp.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnYtdlp.Location = new System.Drawing.Point(601, 112);
+      btnYtdlp.Location = new System.Drawing.Point(605, 38);
       btnYtdlp.Name = "btnYtdlp";
       btnYtdlp.Size = new System.Drawing.Size(49, 28);
       btnYtdlp.TabIndex = 36;
@@ -2369,25 +2407,19 @@
       btnYtdlp.UseVisualStyleBackColor = true;
       btnYtdlp.Click += btnYtdlp_Click;
       // 
-      // label32
+      // groupBox2
       // 
-      label32.AutoSize = true;
-      label32.Location = new System.Drawing.Point(17, 98);
-      label32.Name = "label32";
-      label32.Size = new System.Drawing.Size(98, 12);
-      label32.TabIndex = 37;
-      label32.Text = "yt-dlp 実行ファイル";
-      // 
-      // YtdlpPath
-      // 
-      YtdlpPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      YtdlpPath.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      YtdlpPath.FormattingEnabled = true;
-      YtdlpPath.Location = new System.Drawing.Point(17, 113);
-      YtdlpPath.Name = "YtdlpPath";
-      YtdlpPath.Size = new System.Drawing.Size(578, 23);
-      YtdlpPath.TabIndex = 39;
-      YtdlpPath.TabStop = false;
+      groupBox2.Controls.Add(label8);
+      groupBox2.Controls.Add(ffmpeg);
+      groupBox2.Controls.Add(btnFFmpeg);
+      groupBox2.Controls.Add(btnFindInPath);
+      groupBox2.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      groupBox2.Location = new System.Drawing.Point(11, 20);
+      groupBox2.Name = "groupBox2";
+      groupBox2.Size = new System.Drawing.Size(812, 100);
+      groupBox2.TabIndex = 40;
+      groupBox2.TabStop = false;
+      groupBox2.Text = "動画変換";
       // 
       // ImageContextMenu
       // 
@@ -2498,6 +2530,7 @@
       // 
       OpenCookieFileDialog.FileName = "cookie.txt";
       OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
+      OpenCookieFileDialog.Title = "既存のCookieファイルを選択してください";
       // 
       // VideoOnlyFormatSource
       // 
@@ -2599,15 +2632,16 @@
       ((System.ComponentModel.ISupportInitialize)FrameRate).EndInit();
       PageDownloader.ResumeLayout(false);
       PageDownloader.PerformLayout();
-      CookieBox.ResumeLayout(false);
-      CookieBox.PerformLayout();
       PlaylistGroup.ResumeLayout(false);
       PlaylistGroup.PerformLayout();
       groupBox1.ResumeLayout(false);
       groupBox1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).EndInit();
       PageSetting.ResumeLayout(false);
-      PageSetting.PerformLayout();
+      groupBox3.ResumeLayout(false);
+      groupBox3.PerformLayout();
+      groupBox2.ResumeLayout(false);
+      groupBox2.PerformLayout();
       ImageContextMenu.ResumeLayout(false);
       OutputBox.ResumeLayout(false);
       OutputBox.PerformLayout();
@@ -2758,7 +2792,6 @@
     private System.Windows.Forms.GroupBox groupBox7;
     private System.Windows.Forms.CheckBox Overwrite;
     private System.Windows.Forms.TabPage PageDownloader;
-    private System.Windows.Forms.Label label24;
     private System.Windows.Forms.Button AddDownloadQueue;
     private System.Windows.Forms.Button SubmitConfirmFormat;
     private System.Windows.Forms.PictureBox ThumbnailBox;
@@ -2766,13 +2799,8 @@
     private System.Windows.Forms.ComboBox AudioOnlyFormat;
     private System.Windows.Forms.Label label23;
     private System.Windows.Forms.ComboBox MovieFormat;
-    private System.Windows.Forms.ComboBox UseCookie;
-    private System.Windows.Forms.Label label0;
     private System.Windows.Forms.Label label28;
     private System.Windows.Forms.LinkLabel LinkYdlOutputTemplate;
-    private System.Windows.Forms.TextBox CookiePath;
-    private System.Windows.Forms.Button SubmitOpenCookie;
-    private System.Windows.Forms.Label label29;
     private System.Windows.Forms.OpenFileDialog OpenCookieFileDialog;
     private System.Windows.Forms.ComboBox VideoFrameRate;
     private System.Windows.Forms.Label label27;
@@ -2817,7 +2845,6 @@
     private System.Windows.Forms.GroupBox PlaylistGroup;
     private System.Windows.Forms.Button PlayListDownloadAll;
     private System.Windows.Forms.ToolStripProgressBar DummyProgressBar;
-    private System.Windows.Forms.GroupBox CookieBox;
     private System.Windows.Forms.RadioButton DownloadBestQuality;
     private System.Windows.Forms.RadioButton DownloadWorstQuality;
     private System.Windows.Forms.TabPage PageSetting;
@@ -2831,6 +2858,15 @@
     private System.Windows.Forms.RadioButton FmtWhole;
     private System.Windows.Forms.ContextMenuStrip StatusBarMenu;
     private System.Windows.Forms.ToolStripMenuItem StatusBarMenuItemClearQueue;
+    private System.Windows.Forms.GroupBox groupBox3;
+    private System.Windows.Forms.GroupBox groupBox2;
+    private System.Windows.Forms.CheckBox DeleteUrlAfterDownloaded;
+    private System.Windows.Forms.Label label29;
+    private System.Windows.Forms.Button SubmitOpenCookie;
+    private System.Windows.Forms.TextBox CookiePath;
+    private System.Windows.Forms.Label label0;
+    private System.Windows.Forms.ComboBox UseCookie;
+    private System.Windows.Forms.Label label24;
   }
 }
 

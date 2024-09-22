@@ -102,6 +102,7 @@ namespace ffmpeg_ytdlp_gui
       chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
       chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
       resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
+      DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
     }
 
     private void InitializeDataSource()
