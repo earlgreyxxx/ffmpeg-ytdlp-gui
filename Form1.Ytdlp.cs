@@ -139,6 +139,13 @@ namespace ffmpeg_ytdlp_gui
       if (url == null || mediaInfo == null)
         return;
 
+      if(true == (ytdlps?.Any(item => item.Url == url) ?? false))
+      {
+        var result = MessageBox.Show("同じURLのダウンロードが既にキューに入っています。\nキューに追加しますか？", "確認", MessageBoxButtons.OKCancel);
+        if (result == DialogResult.Cancel)
+          return;
+      }
+
       try
       {
         var outputdir = string.IsNullOrEmpty(cbOutputDir.Text) ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) : cbOutputDir.Text;

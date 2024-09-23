@@ -1913,10 +1913,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2342,7 +2342,7 @@
       // 
       DeleteUrlAfterDownloaded.AutoSize = true;
       DeleteUrlAfterDownloaded.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(18, 138);
+      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(20, 137);
       DeleteUrlAfterDownloaded.Name = "DeleteUrlAfterDownloaded";
       DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(201, 19);
       DeleteUrlAfterDownloaded.TabIndex = 40;
