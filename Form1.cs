@@ -215,11 +215,18 @@ namespace ffmpeg_ytdlp_gui
       Settings.Default.Save();
     }
 
-    private void btnClearDirs_Click(object sender, EventArgs e)
+    private void ClearListItem_Click(object sender, EventArgs e)
     {
-      ffmpeg.Items.Clear();
-      DirectoryListBindingSource.Clear();
-      Settings.Default.Reset();
+      if (DialogResult.Yes == MessageBox.Show("本当に設定を全てリセットしていいですか？", "クリア確認", MessageBoxButtons.YesNo))
+      {
+        ffmpeg.Items.Clear();
+        DirectoryListBindingSource.Clear();
+        OutputFileFormatBindingSource.Clear();
+        UrlBindingSource.Clear();
+        Settings.Default.Reset();
+
+        ToastShow("設定を全てリセットしました。");
+      }
     }
 
     private void btnSubmitInvoke_Click(object sender, EventArgs e)
@@ -1288,6 +1295,11 @@ namespace ffmpeg_ytdlp_gui
     private void StatusBarMenuItemClearQueue_Click(object sender, EventArgs e)
     {
       YtdlpClearDequeue();
+    }
+
+    private void HideThumbnail_CheckStateChanged(object sender, EventArgs e)
+    {
+      Invoke(DownloadUrl_SelectedIndexChanged, [DownloadUrl, new EventArgs()]);
     }
   }
 }

@@ -388,5 +388,17 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["deleteUrlAfterDownload"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool hideThumbnail {
+            get {
+                return ((bool)(this["hideThumbnail"]));
+            }
+            set {
+                this["hideThumbnail"] = value;
+            }
+        }
     }
 }

@@ -103,6 +103,7 @@ namespace ffmpeg_ytdlp_gui
       chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
       resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
       DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
+      HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
     }
 
     private void InitializeDataSource()
@@ -821,8 +822,16 @@ namespace ffmpeg_ytdlp_gui
 
       string time = mi?.GetDurationTime() ?? "--:--:--";
 
-      ThumbnailBox.ContextMenuStrip = ImageContextMenu;
-      ThumbnailBox.Image = ytdlpItem?.Item3;
+      if (HideThumbnail.Checked == false)
+      {
+        ThumbnailBox.ContextMenuStrip = ImageContextMenu;
+        ThumbnailBox.Image = ytdlpItem?.Item3;
+      }
+      else
+      {
+        ThumbnailBox.ContextMenuStrip = null;
+        ThumbnailBox.Image = null;
+      }
       DurationTime.Text = time;
       DurationTime.Visible = true;
 
