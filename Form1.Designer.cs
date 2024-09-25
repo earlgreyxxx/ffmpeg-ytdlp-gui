@@ -238,6 +238,7 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
+      groupBox4 = new System.Windows.Forms.GroupBox();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -293,6 +294,7 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).BeginInit();
+      groupBox4.SuspendLayout();
       SuspendLayout();
       // 
       // Commandlines
@@ -673,7 +675,7 @@
       // 
       cbOutputDir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       cbOutputDir.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      cbOutputDir.Location = new System.Drawing.Point(11, 21);
+      cbOutputDir.Location = new System.Drawing.Point(11, 30);
       cbOutputDir.Name = "cbOutputDir";
       cbOutputDir.Size = new System.Drawing.Size(284, 25);
       cbOutputDir.TabIndex = 16;
@@ -687,7 +689,7 @@
       FileContainer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileContainer.Font = new System.Drawing.Font("Meiryo UI", 9F);
       FileContainer.FormattingEnabled = true;
-      FileContainer.Location = new System.Drawing.Point(333, 67);
+      FileContainer.Location = new System.Drawing.Point(333, 65);
       FileContainer.Name = "FileContainer";
       FileContainer.Size = new System.Drawing.Size(64, 23);
       FileContainer.TabIndex = 31;
@@ -698,7 +700,7 @@
       // 
       label13.AutoSize = true;
       label13.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      label13.Location = new System.Drawing.Point(319, 73);
+      label13.Location = new System.Drawing.Point(319, 71);
       label13.Name = "label13";
       label13.Size = new System.Drawing.Size(11, 15);
       label13.TabIndex = 32;
@@ -707,10 +709,10 @@
       // label10
       // 
       label10.AutoSize = true;
-      label10.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      label10.Location = new System.Drawing.Point(12, 53);
+      label10.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      label10.Location = new System.Drawing.Point(10, 95);
       label10.Name = "label10";
-      label10.Size = new System.Drawing.Size(372, 11);
+      label10.Size = new System.Drawing.Size(374, 14);
       label10.TabIndex = 30;
       label10.Text = "※複数の入力ファイルがあり、元ファイル名以外を指定すると、連番号が付加されます。";
       // 
@@ -721,7 +723,7 @@
       FileName.FormattingEnabled = true;
       FileName.ItemHeight = 15;
       FileName.Items.AddRange(new object[] { "元ファイル名" });
-      FileName.Location = new System.Drawing.Point(73, 67);
+      FileName.Location = new System.Drawing.Point(73, 65);
       FileName.Name = "FileName";
       FileName.Size = new System.Drawing.Size(182, 23);
       FileName.TabIndex = 29;
@@ -741,7 +743,7 @@
       // OpenFolder
       // 
       OpenFolder.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      OpenFolder.Location = new System.Drawing.Point(350, 19);
+      OpenFolder.Location = new System.Drawing.Point(350, 28);
       OpenFolder.Name = "OpenFolder";
       OpenFolder.Size = new System.Drawing.Size(47, 28);
       OpenFolder.TabIndex = 10;
@@ -753,7 +755,7 @@
       // btnSubmitOpenDlg
       // 
       btnSubmitOpenDlg.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnSubmitOpenDlg.Location = new System.Drawing.Point(301, 19);
+      btnSubmitOpenDlg.Location = new System.Drawing.Point(301, 28);
       btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
       btnSubmitOpenDlg.Size = new System.Drawing.Size(48, 28);
       btnSubmitOpenDlg.TabIndex = 9;
@@ -1093,7 +1095,7 @@
       // btnFFmpeg
       // 
       btnFFmpeg.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnFFmpeg.Location = new System.Drawing.Point(605, 35);
+      btnFFmpeg.Location = new System.Drawing.Point(605, 22);
       btnFFmpeg.Name = "btnFFmpeg";
       btnFFmpeg.Size = new System.Drawing.Size(49, 28);
       btnFFmpeg.TabIndex = 36;
@@ -1105,7 +1107,7 @@
       // label8
       // 
       label8.AutoSize = true;
-      label8.Location = new System.Drawing.Point(18, 41);
+      label8.Location = new System.Drawing.Point(18, 28);
       label8.Name = "label8";
       label8.Size = new System.Drawing.Size(106, 15);
       label8.TabIndex = 37;
@@ -1120,7 +1122,7 @@
       // btnFindInPath
       // 
       btnFindInPath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnFindInPath.Location = new System.Drawing.Point(655, 35);
+      btnFindInPath.Location = new System.Drawing.Point(655, 22);
       btnFindInPath.Name = "btnFindInPath";
       btnFindInPath.Size = new System.Drawing.Size(144, 28);
       btnFindInPath.TabIndex = 38;
@@ -1135,7 +1137,7 @@
       ffmpeg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       ffmpeg.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       ffmpeg.FormattingEnabled = true;
-      ffmpeg.Location = new System.Drawing.Point(122, 36);
+      ffmpeg.Location = new System.Drawing.Point(122, 23);
       ffmpeg.Name = "ffmpeg";
       ffmpeg.Size = new System.Drawing.Size(477, 23);
       ffmpeg.TabIndex = 39;
@@ -1417,10 +1419,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 419);
+      PageUtility.Size = new System.Drawing.Size(832, 424);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1489,7 +1491,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -2232,8 +2234,7 @@
       // PageSetting
       // 
       PageSetting.BackColor = System.Drawing.SystemColors.ButtonFace;
-      PageSetting.Controls.Add(CommandInvoker);
-      PageSetting.Controls.Add(ClearLists);
+      PageSetting.Controls.Add(groupBox4);
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
@@ -2247,7 +2248,7 @@
       // CommandInvoker
       // 
       CommandInvoker.Enabled = false;
-      CommandInvoker.Location = new System.Drawing.Point(11, 392);
+      CommandInvoker.Location = new System.Drawing.Point(689, 93);
       CommandInvoker.Name = "CommandInvoker";
       CommandInvoker.Size = new System.Drawing.Size(110, 26);
       CommandInvoker.TabIndex = 42;
@@ -2258,7 +2259,7 @@
       // 
       // ClearLists
       // 
-      ClearLists.Location = new System.Drawing.Point(582, 391);
+      ClearLists.Location = new System.Drawing.Point(18, 92);
       ClearLists.Name = "ClearLists";
       ClearLists.Size = new System.Drawing.Size(244, 27);
       ClearLists.TabIndex = 41;
@@ -2282,9 +2283,9 @@
       groupBox3.Controls.Add(ytdlpFindInPath);
       groupBox3.Controls.Add(btnYtdlp);
       groupBox3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      groupBox3.Location = new System.Drawing.Point(11, 141);
+      groupBox3.Location = new System.Drawing.Point(11, 94);
       groupBox3.Name = "groupBox3";
-      groupBox3.Size = new System.Drawing.Size(812, 203);
+      groupBox3.Size = new System.Drawing.Size(812, 182);
       groupBox3.TabIndex = 40;
       groupBox3.TabStop = false;
       groupBox3.Text = "ダウンロード";
@@ -2292,7 +2293,7 @@
       // HideThumbnail
       // 
       HideThumbnail.AutoSize = true;
-      HideThumbnail.Location = new System.Drawing.Point(20, 162);
+      HideThumbnail.Location = new System.Drawing.Point(20, 151);
       HideThumbnail.Name = "HideThumbnail";
       HideThumbnail.Size = new System.Drawing.Size(145, 19);
       HideThumbnail.TabIndex = 42;
@@ -2304,17 +2305,17 @@
       // 
       label24.AutoSize = true;
       label24.ForeColor = System.Drawing.Color.Red;
-      label24.Location = new System.Drawing.Point(18, 105);
+      label24.Location = new System.Drawing.Point(18, 98);
       label24.Name = "label24";
-      label24.Size = new System.Drawing.Size(327, 15);
+      label24.Size = new System.Drawing.Size(309, 15);
       label24.TabIndex = 41;
-      label24.Text = "※現在chrome系ブラウザのクッキー利用はエラーになるみたいです。";
+      label24.Text = "※現在chrome系ブラウザのクッキー利用はエラーで使えません。";
       // 
       // label29
       // 
       label29.AutoSize = true;
       label29.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      label29.Location = new System.Drawing.Point(338, 83);
+      label29.Location = new System.Drawing.Point(338, 72);
       label29.Name = "label29";
       label29.Size = new System.Drawing.Size(99, 15);
       label29.TabIndex = 5;
@@ -2323,9 +2324,9 @@
       // SubmitOpenCookie
       // 
       SubmitOpenCookie.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      SubmitOpenCookie.Location = new System.Drawing.Point(748, 76);
+      SubmitOpenCookie.Location = new System.Drawing.Point(748, 65);
       SubmitOpenCookie.Name = "SubmitOpenCookie";
-      SubmitOpenCookie.Size = new System.Drawing.Size(49, 28);
+      SubmitOpenCookie.Size = new System.Drawing.Size(51, 28);
       SubmitOpenCookie.TabIndex = 36;
       SubmitOpenCookie.TabStop = false;
       SubmitOpenCookie.Text = "参照";
@@ -2336,17 +2337,17 @@
       // 
       CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
       CookiePath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      CookiePath.Location = new System.Drawing.Point(443, 79);
+      CookiePath.Location = new System.Drawing.Point(443, 68);
       CookiePath.Name = "CookiePath";
       CookiePath.PlaceholderText = "Netscape形式のcookieファイル";
-      CookiePath.Size = new System.Drawing.Size(299, 23);
+      CookiePath.Size = new System.Drawing.Size(302, 23);
       CookiePath.TabIndex = 15;
       // 
       // label0
       // 
       label0.AutoSize = true;
       label0.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      label0.Location = new System.Drawing.Point(18, 83);
+      label0.Location = new System.Drawing.Point(18, 72);
       label0.Name = "label0";
       label0.Size = new System.Drawing.Size(125, 15);
       label0.TabIndex = 5;
@@ -2356,7 +2357,7 @@
       // 
       DeleteUrlAfterDownloaded.AutoSize = true;
       DeleteUrlAfterDownloaded.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(20, 137);
+      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(20, 126);
       DeleteUrlAfterDownloaded.Name = "DeleteUrlAfterDownloaded";
       DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(201, 19);
       DeleteUrlAfterDownloaded.TabIndex = 40;
@@ -2366,7 +2367,7 @@
       // label32
       // 
       label32.AutoSize = true;
-      label32.Location = new System.Drawing.Point(18, 45);
+      label32.Location = new System.Drawing.Point(18, 34);
       label32.Name = "label32";
       label32.Size = new System.Drawing.Size(103, 15);
       label32.TabIndex = 37;
@@ -2379,7 +2380,7 @@
       UseCookie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       UseCookie.Font = new System.Drawing.Font("Meiryo UI", 9F);
       UseCookie.FormattingEnabled = true;
-      UseCookie.Location = new System.Drawing.Point(150, 79);
+      UseCookie.Location = new System.Drawing.Point(150, 68);
       UseCookie.Name = "UseCookie";
       UseCookie.Size = new System.Drawing.Size(167, 23);
       UseCookie.TabIndex = 13;
@@ -2390,7 +2391,7 @@
       YtdlpPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       YtdlpPath.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       YtdlpPath.FormattingEnabled = true;
-      YtdlpPath.Location = new System.Drawing.Point(125, 41);
+      YtdlpPath.Location = new System.Drawing.Point(125, 30);
       YtdlpPath.Name = "YtdlpPath";
       YtdlpPath.Size = new System.Drawing.Size(474, 23);
       YtdlpPath.TabIndex = 39;
@@ -2399,7 +2400,7 @@
       // ytdlpFindInPath
       // 
       ytdlpFindInPath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      ytdlpFindInPath.Location = new System.Drawing.Point(655, 38);
+      ytdlpFindInPath.Location = new System.Drawing.Point(655, 27);
       ytdlpFindInPath.Name = "ytdlpFindInPath";
       ytdlpFindInPath.Size = new System.Drawing.Size(144, 28);
       ytdlpFindInPath.TabIndex = 38;
@@ -2412,7 +2413,7 @@
       // btnYtdlp
       // 
       btnYtdlp.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnYtdlp.Location = new System.Drawing.Point(605, 38);
+      btnYtdlp.Location = new System.Drawing.Point(605, 27);
       btnYtdlp.Name = "btnYtdlp";
       btnYtdlp.Size = new System.Drawing.Size(49, 28);
       btnYtdlp.TabIndex = 36;
@@ -2428,9 +2429,9 @@
       groupBox2.Controls.Add(btnFFmpeg);
       groupBox2.Controls.Add(btnFindInPath);
       groupBox2.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      groupBox2.Location = new System.Drawing.Point(11, 20);
+      groupBox2.Location = new System.Drawing.Point(11, 18);
       groupBox2.Name = "groupBox2";
-      groupBox2.Size = new System.Drawing.Size(812, 100);
+      groupBox2.Size = new System.Drawing.Size(812, 70);
       groupBox2.TabIndex = 40;
       groupBox2.TabStop = false;
       groupBox2.Text = "動画変換";
@@ -2454,8 +2455,6 @@
       // OutputBox
       // 
       OutputBox.Controls.Add(linkLabel4);
-      OutputBox.Controls.Add(Overwrite);
-      OutputBox.Controls.Add(IsOpenStderr);
       OutputBox.Controls.Add(FilePrefix);
       OutputBox.Controls.Add(FileSuffix);
       OutputBox.Controls.Add(btnSubmitOpenDlg);
@@ -2465,6 +2464,7 @@
       OutputBox.Controls.Add(FileName);
       OutputBox.Controls.Add(label10);
       OutputBox.Controls.Add(cbOutputDir);
+      OutputBox.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       OutputBox.Location = new System.Drawing.Point(433, 468);
       OutputBox.Name = "OutputBox";
       OutputBox.Size = new System.Drawing.Size(407, 125);
@@ -2477,7 +2477,7 @@
       linkLabel4.AutoSize = true;
       linkLabel4.Location = new System.Drawing.Point(117, 1);
       linkLabel4.Name = "linkLabel4";
-      linkLabel4.Size = new System.Drawing.Size(53, 12);
+      linkLabel4.Size = new System.Drawing.Size(55, 15);
       linkLabel4.TabIndex = 44;
       linkLabel4.TabStop = true;
       linkLabel4.Tag = "cbOutputDir";
@@ -2487,9 +2487,9 @@
       // Overwrite
       // 
       Overwrite.AutoSize = true;
-      Overwrite.Location = new System.Drawing.Point(216, 99);
+      Overwrite.Location = new System.Drawing.Point(20, 47);
       Overwrite.Name = "Overwrite";
-      Overwrite.Size = new System.Drawing.Size(177, 16);
+      Overwrite.Size = new System.Drawing.Size(179, 19);
       Overwrite.TabIndex = 36;
       Overwrite.Text = "既存ファイルの上書きを許可する";
       Overwrite.UseVisualStyleBackColor = true;
@@ -2499,9 +2499,9 @@
       IsOpenStderr.AutoSize = true;
       IsOpenStderr.Checked = true;
       IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
-      IsOpenStderr.Location = new System.Drawing.Point(12, 99);
+      IsOpenStderr.Location = new System.Drawing.Point(20, 22);
       IsOpenStderr.Name = "IsOpenStderr";
-      IsOpenStderr.Size = new System.Drawing.Size(164, 16);
+      IsOpenStderr.Size = new System.Drawing.Size(165, 19);
       IsOpenStderr.TabIndex = 35;
       IsOpenStderr.TabStop = false;
       IsOpenStderr.Text = "実行中の出力ウィンドウを開く";
@@ -2512,7 +2512,7 @@
       FilePrefix.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FilePrefix.Font = new System.Drawing.Font("Meiryo UI", 9F);
       FilePrefix.FormattingEnabled = true;
-      FilePrefix.Location = new System.Drawing.Point(11, 67);
+      FilePrefix.Location = new System.Drawing.Point(11, 65);
       FilePrefix.Name = "FilePrefix";
       FilePrefix.Size = new System.Drawing.Size(61, 23);
       FilePrefix.TabIndex = 34;
@@ -2523,7 +2523,7 @@
       FileSuffix.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileSuffix.Font = new System.Drawing.Font("Meiryo UI", 9F);
       FileSuffix.FormattingEnabled = true;
-      FileSuffix.Location = new System.Drawing.Point(256, 67);
+      FileSuffix.Location = new System.Drawing.Point(256, 65);
       FileSuffix.Name = "FileSuffix";
       FileSuffix.Size = new System.Drawing.Size(59, 23);
       FileSuffix.TabIndex = 33;
@@ -2573,6 +2573,19 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
+      // 
+      // groupBox4
+      // 
+      groupBox4.Controls.Add(CommandInvoker);
+      groupBox4.Controls.Add(Overwrite);
+      groupBox4.Controls.Add(ClearLists);
+      groupBox4.Controls.Add(IsOpenStderr);
+      groupBox4.Location = new System.Drawing.Point(11, 282);
+      groupBox4.Name = "groupBox4";
+      groupBox4.Size = new System.Drawing.Size(812, 136);
+      groupBox4.TabIndex = 43;
+      groupBox4.TabStop = false;
+      groupBox4.Text = "共通・全般";
       // 
       // Form1
       // 
@@ -2667,6 +2680,8 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).EndInit();
+      groupBox4.ResumeLayout(false);
+      groupBox4.PerformLayout();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -2882,6 +2897,7 @@
     private System.Windows.Forms.CheckBox HideThumbnail;
     private System.Windows.Forms.Button CommandInvoker;
     private System.Windows.Forms.Button ClearLists;
+    private System.Windows.Forms.GroupBox groupBox4;
   }
 }
 
