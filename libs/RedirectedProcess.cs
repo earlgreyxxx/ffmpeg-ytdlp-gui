@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ffmpeg_ytdlp_gui.libs
@@ -49,6 +50,10 @@ namespace ffmpeg_ytdlp_gui.libs
       get => Current.ExitCode;
       private set => throw new Exception("exit code can not set");
     }
+
+    public Encoding? StdOutEncoding { get; set; }
+    public Encoding? StdErrEncoding { get; set; }
+    public Encoding? StdInEncoding { get; set; }
 
     protected ProcessStartInfo psi { get; set; } = new ProcessStartInfo()
     {
@@ -101,6 +106,12 @@ namespace ffmpeg_ytdlp_gui.libs
     public virtual bool Start(string arguments = "")
     {
       Current.StartInfo.FileName = Command;
+      if(StdOutEncoding != null)
+        psi.StandardOutputEncoding = StdOutEncoding;
+      if(StdErrEncoding != null)
+        psi.StandardErrorEncoding = StdErrEncoding;
+      if(StdInEncoding != null)
+        psi.StandardInputEncoding = StdInEncoding;
 
       if(!string.IsNullOrEmpty(arguments))
         Current.StartInfo.Arguments = arguments;

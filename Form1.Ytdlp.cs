@@ -56,7 +56,7 @@ namespace ffmpeg_ytdlp_gui
                 ytdlpfm = null;
 
               Invoke(OnDownloaded);
-              ToastShow("ダウンロードキューが空になりました。", "PageDownloader");
+              ToastPush("ダウンロードキューが空になりました。", "PageDownloader");
             }
           }
         };

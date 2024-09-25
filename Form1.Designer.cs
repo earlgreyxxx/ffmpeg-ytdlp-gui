@@ -127,6 +127,7 @@
       Tab = new System.Windows.Forms.TabControl();
       PageConvert = new System.Windows.Forms.TabPage();
       SubmitButtonBox = new System.Windows.Forms.Panel();
+      btnSubmitBatExecute = new System.Windows.Forms.Button();
       btnSubmitBatchClear = new System.Windows.Forms.Button();
       btnSubmitSaveToFile = new System.Windows.Forms.Button();
       groupBox6 = new System.Windows.Forms.GroupBox();
@@ -205,8 +206,11 @@
       label28 = new System.Windows.Forms.Label();
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       PageSetting = new System.Windows.Forms.TabPage();
+      groupBox4 = new System.Windows.Forms.GroupBox();
       CommandInvoker = new System.Windows.Forms.Button();
+      Overwrite = new System.Windows.Forms.CheckBox();
       ClearLists = new System.Windows.Forms.Button();
+      IsOpenStderr = new System.Windows.Forms.CheckBox();
       groupBox3 = new System.Windows.Forms.GroupBox();
       HideThumbnail = new System.Windows.Forms.CheckBox();
       label24 = new System.Windows.Forms.Label();
@@ -225,8 +229,6 @@
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
       OutputBox = new System.Windows.Forms.GroupBox();
       linkLabel4 = new System.Windows.Forms.LinkLabel();
-      Overwrite = new System.Windows.Forms.CheckBox();
-      IsOpenStderr = new System.Windows.Forms.CheckBox();
       FilePrefix = new System.Windows.Forms.ComboBox();
       FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
@@ -238,7 +240,6 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
-      groupBox4 = new System.Windows.Forms.GroupBox();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -282,6 +283,7 @@
       groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
       PageSetting.SuspendLayout();
+      groupBox4.SuspendLayout();
       groupBox3.SuspendLayout();
       groupBox2.SuspendLayout();
       ImageContextMenu.SuspendLayout();
@@ -294,7 +296,6 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).BeginInit();
-      groupBox4.SuspendLayout();
       SuspendLayout();
       // 
       // Commandlines
@@ -766,7 +767,7 @@
       // 
       // btnSubmitAddToBatch
       // 
-      btnSubmitAddToBatch.Location = new System.Drawing.Point(122, 12);
+      btnSubmitAddToBatch.Location = new System.Drawing.Point(202, 12);
       btnSubmitAddToBatch.Name = "btnSubmitAddToBatch";
       btnSubmitAddToBatch.Size = new System.Drawing.Size(93, 24);
       btnSubmitAddToBatch.TabIndex = 23;
@@ -1348,6 +1349,7 @@
       // 
       // SubmitButtonBox
       // 
+      SubmitButtonBox.Controls.Add(btnSubmitBatExecute);
       SubmitButtonBox.Controls.Add(btnSubmitBatchClear);
       SubmitButtonBox.Controls.Add(btnSubmitSaveToFile);
       SubmitButtonBox.Controls.Add(btnSubmitAddToBatch);
@@ -1361,10 +1363,21 @@
       SubmitButtonBox.Size = new System.Drawing.Size(832, 46);
       SubmitButtonBox.TabIndex = 44;
       // 
+      // btnSubmitBatExecute
+      // 
+      btnSubmitBatExecute.Enabled = false;
+      btnSubmitBatExecute.Location = new System.Drawing.Point(11, 12);
+      btnSubmitBatExecute.Name = "btnSubmitBatExecute";
+      btnSubmitBatExecute.Size = new System.Drawing.Size(75, 24);
+      btnSubmitBatExecute.TabIndex = 35;
+      btnSubmitBatExecute.Text = "バッチ実行";
+      btnSubmitBatExecute.UseVisualStyleBackColor = true;
+      btnSubmitBatExecute.Click += btnSubmitBatExecute_Click;
+      // 
       // btnSubmitBatchClear
       // 
       btnSubmitBatchClear.Enabled = false;
-      btnSubmitBatchClear.Location = new System.Drawing.Point(227, 12);
+      btnSubmitBatchClear.Location = new System.Drawing.Point(307, 12);
       btnSubmitBatchClear.Name = "btnSubmitBatchClear";
       btnSubmitBatchClear.Size = new System.Drawing.Size(84, 24);
       btnSubmitBatchClear.TabIndex = 34;
@@ -1375,7 +1388,7 @@
       // btnSubmitSaveToFile
       // 
       btnSubmitSaveToFile.Enabled = false;
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(10, 12);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(90, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
       btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 24);
       btnSubmitSaveToFile.TabIndex = 33;
@@ -1419,10 +1432,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 22);
+      PageUtility.Location = new System.Drawing.Point(4, 27);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 424);
+      PageUtility.Size = new System.Drawing.Size(832, 419);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1491,7 +1504,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1891,10 +1904,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2238,12 +2251,25 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 22);
+      PageSetting.Location = new System.Drawing.Point(4, 27);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 424);
+      PageSetting.Size = new System.Drawing.Size(832, 419);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
+      // 
+      // groupBox4
+      // 
+      groupBox4.Controls.Add(CommandInvoker);
+      groupBox4.Controls.Add(Overwrite);
+      groupBox4.Controls.Add(ClearLists);
+      groupBox4.Controls.Add(IsOpenStderr);
+      groupBox4.Location = new System.Drawing.Point(11, 282);
+      groupBox4.Name = "groupBox4";
+      groupBox4.Size = new System.Drawing.Size(812, 136);
+      groupBox4.TabIndex = 43;
+      groupBox4.TabStop = false;
+      groupBox4.Text = "共通・全般";
       // 
       // CommandInvoker
       // 
@@ -2257,6 +2283,16 @@
       CommandInvoker.Visible = false;
       CommandInvoker.Click += CommandInvoker_Click;
       // 
+      // Overwrite
+      // 
+      Overwrite.AutoSize = true;
+      Overwrite.Location = new System.Drawing.Point(20, 47);
+      Overwrite.Name = "Overwrite";
+      Overwrite.Size = new System.Drawing.Size(179, 19);
+      Overwrite.TabIndex = 36;
+      Overwrite.Text = "既存ファイルの上書きを許可する";
+      Overwrite.UseVisualStyleBackColor = true;
+      // 
       // ClearLists
       // 
       ClearLists.Location = new System.Drawing.Point(18, 92);
@@ -2267,6 +2303,19 @@
       ClearLists.Text = "保存されているリストのクリア及び設定のリセット";
       ClearLists.UseVisualStyleBackColor = true;
       ClearLists.Click += ClearListItem_Click;
+      // 
+      // IsOpenStderr
+      // 
+      IsOpenStderr.AutoSize = true;
+      IsOpenStderr.Checked = true;
+      IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
+      IsOpenStderr.Location = new System.Drawing.Point(20, 22);
+      IsOpenStderr.Name = "IsOpenStderr";
+      IsOpenStderr.Size = new System.Drawing.Size(165, 19);
+      IsOpenStderr.TabIndex = 35;
+      IsOpenStderr.TabStop = false;
+      IsOpenStderr.Text = "実行中の出力ウィンドウを開く";
+      IsOpenStderr.UseVisualStyleBackColor = true;
       // 
       // groupBox3
       // 
@@ -2484,29 +2533,6 @@
       linkLabel4.Text = "リスト編集";
       linkLabel4.LinkClicked += EditListItems;
       // 
-      // Overwrite
-      // 
-      Overwrite.AutoSize = true;
-      Overwrite.Location = new System.Drawing.Point(20, 47);
-      Overwrite.Name = "Overwrite";
-      Overwrite.Size = new System.Drawing.Size(179, 19);
-      Overwrite.TabIndex = 36;
-      Overwrite.Text = "既存ファイルの上書きを許可する";
-      Overwrite.UseVisualStyleBackColor = true;
-      // 
-      // IsOpenStderr
-      // 
-      IsOpenStderr.AutoSize = true;
-      IsOpenStderr.Checked = true;
-      IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
-      IsOpenStderr.Location = new System.Drawing.Point(20, 22);
-      IsOpenStderr.Name = "IsOpenStderr";
-      IsOpenStderr.Size = new System.Drawing.Size(165, 19);
-      IsOpenStderr.TabIndex = 35;
-      IsOpenStderr.TabStop = false;
-      IsOpenStderr.Text = "実行中の出力ウィンドウを開く";
-      IsOpenStderr.UseVisualStyleBackColor = true;
-      // 
       // FilePrefix
       // 
       FilePrefix.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -2573,19 +2599,6 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
-      // 
-      // groupBox4
-      // 
-      groupBox4.Controls.Add(CommandInvoker);
-      groupBox4.Controls.Add(Overwrite);
-      groupBox4.Controls.Add(ClearLists);
-      groupBox4.Controls.Add(IsOpenStderr);
-      groupBox4.Location = new System.Drawing.Point(11, 282);
-      groupBox4.Name = "groupBox4";
-      groupBox4.Size = new System.Drawing.Size(812, 136);
-      groupBox4.TabIndex = 43;
-      groupBox4.TabStop = false;
-      groupBox4.Text = "共通・全般";
       // 
       // Form1
       // 
@@ -2665,6 +2678,8 @@
       groupBox1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).EndInit();
       PageSetting.ResumeLayout(false);
+      groupBox4.ResumeLayout(false);
+      groupBox4.PerformLayout();
       groupBox3.ResumeLayout(false);
       groupBox3.PerformLayout();
       groupBox2.ResumeLayout(false);
@@ -2680,8 +2695,6 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).EndInit();
-      groupBox4.ResumeLayout(false);
-      groupBox4.PerformLayout();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -2898,6 +2911,7 @@
     private System.Windows.Forms.Button CommandInvoker;
     private System.Windows.Forms.Button ClearLists;
     private System.Windows.Forms.GroupBox groupBox4;
+    private System.Windows.Forms.Button btnSubmitBatExecute;
   }
 }
 

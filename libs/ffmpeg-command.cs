@@ -10,7 +10,7 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   public partial class ffmpeg_command : IEnumerable<string>
   {
-    public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string>? callback = null)
+    public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string>? callback = null,bool hasPause = true)
     {
       var sb = new StringBuilder();
       var commandlines = list.SelectMany(
@@ -27,7 +27,9 @@ namespace ffmpeg_ytdlp_gui.libs
       sb.AppendLine("@ECHO OFF");
       foreach (var commandline in commandlines)
         sb.AppendLine(commandline);
-      sb.AppendLine("PAUSE");
+
+      if(hasPause)
+        sb.AppendLine("PAUSE");
 
       return sb.ToString();
     }

@@ -139,7 +139,7 @@ namespace ffmpeg_ytdlp_gui
       dlg.FileName = string.Empty;
     }
 
-    public virtual void OnDataReceived(string data)
+    protected virtual void OnDataReceived(string data)
     {
       DataReceived?.Invoke(data);
     }
@@ -153,6 +153,11 @@ namespace ffmpeg_ytdlp_gui
     public virtual void OnCustomButtonClick(object sender, EventArgs e)
     {
       CustomButtonClick?.Invoke(sender, (MouseEventArgs)e);
+    }
+
+    public void HidePause()
+    {
+      BtnToggleReader.Visible = false;
     }
   }
 }

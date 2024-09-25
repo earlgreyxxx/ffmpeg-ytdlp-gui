@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -369,13 +370,13 @@ namespace ffmpeg_ytdlp_gui
       };
     }
 
-    private void ToastShow(string message,string pageName = "PageConvert")
+    private void ToastPush(string message,string pageName = "PageConvert")
     {
       var lines = message.Split(['\n', '\r']);
       if (lines.Length > 1)
       {
         var title = lines.First();
-        ToastShow(title, lines.Skip(1), pageName);
+        ToastPush(title, lines.Skip(1), pageName);
         return;
       }
 
@@ -386,12 +387,12 @@ namespace ffmpeg_ytdlp_gui
         .Show();
     }
 
-    private void ToastShow(string title,string message,string pageName = "PageConvert")
+    private void ToastPush(string title,string message,string pageName = "PageConvert")
     {
       var lines = message.Split(['\n', '\r']);
       if (lines.Length > 1)
       {
-        ToastShow(title, lines, pageName);
+        ToastPush(title, lines, pageName);
         return;
       }
 
@@ -403,7 +404,7 @@ namespace ffmpeg_ytdlp_gui
         .Show();
     }
 
-    private void ToastShow(string title,IEnumerable<string> messages,string pageName = "pageConvert")
+    private void ToastPush(string title,IEnumerable<string> messages,string pageName = "pageConvert")
     {
       var toast = new ToastContentBuilder()
                     .AddArgument("page", pageName)
@@ -492,7 +493,7 @@ namespace ffmpeg_ytdlp_gui
 
         Proceeding = null;
         if (!abnormal)
-          ToastShow("変換処理が終了しました。",tabpageName);
+          ToastPush("変換処理が終了しました。",tabpageName);
       });
 
       if (IsOpenStderr.Checked)
@@ -739,21 +740,39 @@ namespace ffmpeg_ytdlp_gui
       Proceeding?.Kill(stopAll);
     }
 
-    private void OpenOutputView(string executable, string arg, string formTitle = "ffmpeg outputs")
+
+    private StdoutForm? OpenOutputView(string executable, string arg, string formTitle = "Output viewer")
+    {
+      return OpenOutputView(executable, arg, null, formTitle);
+    }
+
+    private StdoutForm? OpenOutputView(string executable, string arg, Encoding? outputEncoding, string formTitle = "Output viewer")
     {
       if (!File.Exists(executable))
       {
         var exepathes = CustomProcess.FindInPath(executable);
         if (exepathes.Length <= 0)
-          return;
+          return null;
       }
 
       var form = new StdoutForm(executable, arg, formTitle);
       form.Load += StdoutFormLoadAction;
+      form.Load += (s, e) => form.HidePause();
       form.FormClosing += StdoutFormClosingAction;
-      form.Shown += (s, e) => form?.Redirected?.Start();
+      form.Shown += (s, e) =>
+      {
+        form.Lock();
+        form.Pause = false;
+        form.Redirected?.Start();
+      };
 
-      form.Show();
+      if (form.Redirected != null && outputEncoding != null)
+      {
+        form.Redirected.StdOutEncoding = outputEncoding;
+        form.Redirected.StdErrEncoding = outputEncoding;
+      }
+
+      return form;
     }
 
     private void InitPresetAndDevice(Codec codec)

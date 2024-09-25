@@ -225,7 +225,7 @@ namespace ffmpeg_ytdlp_gui
         UrlBindingSource.Clear();
         Settings.Default.Reset();
 
-        ToastShow("設定を全てリセットしました。");
+        ToastPush("設定を全てリセットしました。");
       }
     }
 
@@ -426,14 +426,42 @@ namespace ffmpeg_ytdlp_gui
       if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？", "警告", MessageBoxButtons.YesNo))
         return;
 
+      if (BatchList == null || BatchList.Count <= 0)
+        return;
+
       using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
       {
-        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList ?? throw new NullReferenceException("BatchList is null"), RuntimeSetting));
+        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting));
       }
 
       BatchList.Clear();
       BatchList = null;
-      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = false;
+      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+    }
+
+    private void btnSubmitBatExecute_Click(object sender, EventArgs e)
+    {
+      string filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-process-bat", ".bat");
+
+      if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？", "警告", MessageBoxButtons.YesNo))
+        return;
+
+      if (BatchList == null || BatchList.Count <= 0)
+        return;
+
+      using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
+      {
+        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting, false));
+      }
+
+      var form = OpenOutputView(filename, string.Empty,new UTF8Encoding(false),"BAT execution log");
+      var redirected = form?.Redirected;
+      if (form == null || redirected == null)
+        return;
+
+      redirected.ProcessExited += (s, e) => File.Delete(filename);
+
+      form?.Show();
     }
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
@@ -441,7 +469,7 @@ namespace ffmpeg_ytdlp_gui
       if (BatchList == null)
       {
         BatchList = new FFmpegBatchList();
-        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = true;
+        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = true;
       }
 
       try
@@ -477,7 +505,7 @@ namespace ffmpeg_ytdlp_gui
     {
       BatchList!.Clear();
       BatchList = null;
-      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = false;
+      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
     }
 
     private void btnStop_Click(object sender, EventArgs e)
@@ -645,13 +673,15 @@ namespace ffmpeg_ytdlp_gui
       if (encoder == "copy")
         return;
 
-      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg.exe" : ffmpeg.Text, $"-hide_banner -h encoder={encoder}");
+      var form = OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg.exe" : ffmpeg.Text, $"-hide_banner -h encoder={encoder}");
+      form?.Show();
     }
 
     private void OpenDecoderHelp_Click(object sender, EventArgs e)
     {
       var decoder = DecoderHelpList.SelectedValue?.ToString();
-      OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h decoder={decoder}");
+      var form = OpenOutputView(string.IsNullOrEmpty(ffmpeg.Text) ? "ffmpeg" : ffmpeg.Text, $"-hide_banner -h decoder={decoder}");
+      form?.Show();
     }
 
     private void SubmitCopy_Click(object sender, EventArgs e)
@@ -887,8 +917,9 @@ namespace ffmpeg_ytdlp_gui
 
     private void CommandInvoker_Click(object sender, EventArgs e)
     {
-      //OpenOutputView("git.exe", "help -a", "git help");
-      ToastShow("これはテストです。");
+      //var form = OpenOutputView("git.exe", "help -a", "git help");
+      //form?.Show();
+      ToastPush("これはテストです。");
     }
 
     private void DownloadUrl_Leave(object sender, EventArgs e)
