@@ -920,7 +920,7 @@ namespace ffmpeg_ytdlp_gui
         TooltipShow(DownloadUrl, "フォーマットエラー");
     }
 
-    private void AddDownloadQueue_Click(object sender, EventArgs e)
+    private async void AddDownloadQueue_Click(object sender, EventArgs e)
     {
       var ytdlpItem = DownloadUrl.SelectedItem as YtdlpItem;
       if (ytdlpItem == null)
@@ -941,7 +941,9 @@ namespace ffmpeg_ytdlp_gui
       if (false == list.Any(item => item == format))
         OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
 
-      YtdlpAddDownloadQueue(ytdlpItem!, FmtSeparated.Checked);
+      SubmitDownloadDequeue.Enabled = false;
+        await YtdlpAddDownloadQueue(ytdlpItem!, FmtSeparated.Checked);
+      SubmitDownloadDequeue.Enabled = true;
     }
 
     private void BeginDequeue_Click(object sender, EventArgs e)

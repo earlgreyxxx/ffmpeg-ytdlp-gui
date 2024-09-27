@@ -23,23 +23,28 @@ namespace ffmpeg_ytdlp_gui
       Action<int> WriteQueueStatus = count => QueueCount.Text = $"Download Queue: {count}";
 
       // キューにytdlpプロセスを入れた時
-      ytdlps!.Enqueued += (sender, e) =>
+      ytdlps!.Enqueued += (s, e) =>
       {
-        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException(nameof(ObservableQueue<ytdlp_process>));
-        WriteQueueStatus(q.Count);
+        var q = s as ObservableQueue<ytdlp_process>;
+        WriteQueueStatus(q?.Count ?? 0);
       };
 
       // キューからytdlpプロセスを取り出す時
       Action formAction = () =>
       {
-        var button = ytdlpfm!.Controls["BtnClose"] as Button ?? throw new NullReferenceException(nameof(Button));
-        button.Enabled = false;
-        ytdlpfm.Pause = false;
+        if (ytdlpfm != null)
+        {
+          ytdlpfm.Lock();
+          ytdlpfm.Pause = false;
+        }
       };
 
-      ytdlps.Dequeued += (sender, e) =>
+      ytdlps.Dequeued += (s, e) =>
       {
-        var q = sender as ObservableQueue<ytdlp_process> ?? throw new NullReferenceException(nameof(ObservableQueue<ytdlp_process>));
+        var q = s as ObservableQueue<ytdlp_process>;
+        if (q == null)
+          return;
+
         ytdlp = e.data;
         ytdlp.ProcessExited += (sender, e) =>
         {
@@ -132,7 +137,7 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private async void YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
+    private async Task YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
     {
       var url = ytdlpItem?.Item1;
       var mediaInfo = ytdlpItem?.Item2;
@@ -247,8 +252,7 @@ namespace ffmpeg_ytdlp_gui
             if(ytdlps!.Count <= 0)
               ytdlpfm.Invoke(() =>
               {
-                var button = ytdlpfm.Controls["BtnClose"] as Button ?? throw new NullReferenceException("button is null");
-                button.Enabled = true;
+                ytdlpfm.Release();
                 ytdlpfm.Pause = true;
               });
 
@@ -260,7 +264,7 @@ namespace ffmpeg_ytdlp_gui
         /// キューに追加
         lock (_lock)
         {
-          ytdlps!.Enqueue(downloader);
+          ytdlps?.Enqueue(downloader);
         }
       }
       catch (Exception exception)
@@ -268,9 +272,8 @@ namespace ffmpeg_ytdlp_gui
         MessageBox.Show(exception.Message,"エラー");
         if (ytdlpfm != null)
         {
-          var button = ytdlpfm.Controls["BtnClose"] as Button;
-          if(button != null)
-            button.Enabled = true;
+          ytdlpfm.Release();
+          ytdlpfm.Pause = true;
         }
       }
     }

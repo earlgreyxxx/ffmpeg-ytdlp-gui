@@ -81,6 +81,7 @@ namespace ffmpeg_ytdlp_gui
       BtnClose.Enabled = BtnSubmitSaveFile.Enabled = true;
       BtnToggleReader.Enabled = false;
     }
+
     public void Lock()
     {
       BtnClose.Enabled = BtnSubmitSaveFile.Enabled = false;
