@@ -240,6 +240,8 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
+      MaxListItems = new System.Windows.Forms.NumericUpDown();
+      label35 = new System.Windows.Forms.Label();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -296,6 +298,7 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)MaxListItems).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -678,7 +681,7 @@
       cbOutputDir.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       cbOutputDir.Location = new System.Drawing.Point(11, 30);
       cbOutputDir.Name = "cbOutputDir";
-      cbOutputDir.Size = new System.Drawing.Size(284, 25);
+      cbOutputDir.Size = new System.Drawing.Size(285, 25);
       cbOutputDir.TabIndex = 16;
       cbOutputDir.TabStop = false;
       cbOutputDir.SelectedIndexChanged += cbOutputDir_SelectedIndexChanged;
@@ -690,7 +693,7 @@
       FileContainer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       FileContainer.Font = new System.Drawing.Font("Meiryo UI", 9F);
       FileContainer.FormattingEnabled = true;
-      FileContainer.Location = new System.Drawing.Point(333, 65);
+      FileContainer.Location = new System.Drawing.Point(334, 65);
       FileContainer.Name = "FileContainer";
       FileContainer.Size = new System.Drawing.Size(64, 23);
       FileContainer.TabIndex = 31;
@@ -701,7 +704,7 @@
       // 
       label13.AutoSize = true;
       label13.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      label13.Location = new System.Drawing.Point(319, 71);
+      label13.Location = new System.Drawing.Point(320, 74);
       label13.Name = "label13";
       label13.Size = new System.Drawing.Size(11, 15);
       label13.TabIndex = 32;
@@ -744,7 +747,7 @@
       // OpenFolder
       // 
       OpenFolder.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      OpenFolder.Location = new System.Drawing.Point(350, 28);
+      OpenFolder.Location = new System.Drawing.Point(351, 28);
       OpenFolder.Name = "OpenFolder";
       OpenFolder.Size = new System.Drawing.Size(47, 28);
       OpenFolder.TabIndex = 10;
@@ -756,7 +759,7 @@
       // btnSubmitOpenDlg
       // 
       btnSubmitOpenDlg.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnSubmitOpenDlg.Location = new System.Drawing.Point(301, 28);
+      btnSubmitOpenDlg.Location = new System.Drawing.Point(302, 28);
       btnSubmitOpenDlg.Name = "btnSubmitOpenDlg";
       btnSubmitOpenDlg.Size = new System.Drawing.Size(48, 28);
       btnSubmitOpenDlg.TabIndex = 9;
@@ -804,7 +807,7 @@
       label3.AutoSize = true;
       label3.Location = new System.Drawing.Point(0, 13);
       label3.Name = "label3";
-      label3.Size = new System.Drawing.Size(344, 12);
+      label3.Size = new System.Drawing.Size(344, 15);
       label3.TabIndex = 0;
       label3.Text = "動画ファイルをドラッグ＆ドロップもしくはダブルクリックして選択してください。";
       label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1002,11 +1005,11 @@
       FileList.Dock = System.Windows.Forms.DockStyle.Bottom;
       FileList.FormattingEnabled = true;
       FileList.HorizontalScrollbar = true;
-      FileList.ItemHeight = 12;
-      FileList.Location = new System.Drawing.Point(0, 42);
+      FileList.ItemHeight = 15;
+      FileList.Location = new System.Drawing.Point(0, 36);
       FileList.Name = "FileList";
       FileList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-      FileList.Size = new System.Drawing.Size(419, 88);
+      FileList.Size = new System.Drawing.Size(419, 94);
       FileList.TabIndex = 29;
       FileList.TabStop = false;
       FileList.ValueMember = "Value";
@@ -1088,6 +1091,7 @@
       // 
       InputBox.Controls.Add(label3);
       InputBox.Controls.Add(FileList);
+      InputBox.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       InputBox.Location = new System.Drawing.Point(8, 461);
       InputBox.Name = "InputBox";
       InputBox.Size = new System.Drawing.Size(419, 130);
@@ -1904,10 +1908,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 419);
+      PageDownloader.Size = new System.Drawing.Size(832, 424);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2251,15 +2255,17 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 27);
+      PageSetting.Location = new System.Drawing.Point(4, 22);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 419);
+      PageSetting.Size = new System.Drawing.Size(832, 424);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
       // groupBox4
       // 
+      groupBox4.Controls.Add(label35);
+      groupBox4.Controls.Add(MaxListItems);
       groupBox4.Controls.Add(CommandInvoker);
       groupBox4.Controls.Add(Overwrite);
       groupBox4.Controls.Add(ClearLists);
@@ -2274,7 +2280,7 @@
       // CommandInvoker
       // 
       CommandInvoker.Enabled = false;
-      CommandInvoker.Location = new System.Drawing.Point(689, 93);
+      CommandInvoker.Location = new System.Drawing.Point(696, 17);
       CommandInvoker.Name = "CommandInvoker";
       CommandInvoker.Size = new System.Drawing.Size(110, 26);
       CommandInvoker.TabIndex = 42;
@@ -2286,7 +2292,8 @@
       // Overwrite
       // 
       Overwrite.AutoSize = true;
-      Overwrite.Location = new System.Drawing.Point(20, 47);
+      Overwrite.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      Overwrite.Location = new System.Drawing.Point(18, 55);
       Overwrite.Name = "Overwrite";
       Overwrite.Size = new System.Drawing.Size(179, 19);
       Overwrite.TabIndex = 36;
@@ -2295,7 +2302,7 @@
       // 
       // ClearLists
       // 
-      ClearLists.Location = new System.Drawing.Point(18, 92);
+      ClearLists.Location = new System.Drawing.Point(562, 103);
       ClearLists.Name = "ClearLists";
       ClearLists.Size = new System.Drawing.Size(244, 27);
       ClearLists.TabIndex = 41;
@@ -2307,9 +2314,10 @@
       // IsOpenStderr
       // 
       IsOpenStderr.AutoSize = true;
+      IsOpenStderr.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
       IsOpenStderr.Checked = true;
       IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
-      IsOpenStderr.Location = new System.Drawing.Point(20, 22);
+      IsOpenStderr.Location = new System.Drawing.Point(18, 27);
       IsOpenStderr.Name = "IsOpenStderr";
       IsOpenStderr.Size = new System.Drawing.Size(165, 19);
       IsOpenStderr.TabIndex = 35;
@@ -2342,6 +2350,7 @@
       // HideThumbnail
       // 
       HideThumbnail.AutoSize = true;
+      HideThumbnail.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
       HideThumbnail.Location = new System.Drawing.Point(20, 151);
       HideThumbnail.Name = "HideThumbnail";
       HideThumbnail.Size = new System.Drawing.Size(145, 19);
@@ -2405,6 +2414,7 @@
       // DeleteUrlAfterDownloaded
       // 
       DeleteUrlAfterDownloaded.AutoSize = true;
+      DeleteUrlAfterDownloaded.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
       DeleteUrlAfterDownloaded.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(20, 126);
       DeleteUrlAfterDownloaded.Name = "DeleteUrlAfterDownloaded";
@@ -2600,6 +2610,25 @@
       // 
       PlaylistBindingSource.DataMember = "Item4";
       // 
+      // MaxListItems
+      // 
+      MaxListItems.Location = new System.Drawing.Point(148, 81);
+      MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
+      MaxListItems.Name = "MaxListItems";
+      MaxListItems.Size = new System.Drawing.Size(48, 23);
+      MaxListItems.TabIndex = 43;
+      MaxListItems.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      MaxListItems.Value = new decimal(new int[] { 20, 0, 0, 0 });
+      // 
+      // label35
+      // 
+      label35.AutoSize = true;
+      label35.Location = new System.Drawing.Point(18, 85);
+      label35.Name = "label35";
+      label35.Size = new System.Drawing.Size(125, 15);
+      label35.TabIndex = 44;
+      label35.Text = "リストの最大保存項目数";
+      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2695,6 +2724,7 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).EndInit();
+      ((System.ComponentModel.ISupportInitialize)MaxListItems).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }
@@ -2912,6 +2942,8 @@
     private System.Windows.Forms.Button ClearLists;
     private System.Windows.Forms.GroupBox groupBox4;
     private System.Windows.Forms.Button btnSubmitBatExecute;
+    private System.Windows.Forms.NumericUpDown MaxListItems;
+    private System.Windows.Forms.Label label35;
   }
 }
 

@@ -400,5 +400,17 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["hideThumbnail"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public decimal maxListItems {
+            get {
+                return ((decimal)(this["maxListItems"]));
+            }
+            set {
+                this["maxListItems"] = value;
+            }
+        }
     }
 }

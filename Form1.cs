@@ -79,11 +79,6 @@ namespace ffmpeg_ytdlp_gui
       }
     }
 
-    private void ThumbnailBox_ChangeUICues(object sender, UICuesEventArgs e)
-    {
-      throw new NotImplementedException();
-    }
-
     private void InitOutputFolder(StringCollection? folders)
     {
       if (folders != null && folders.Count > 0)
@@ -104,7 +99,7 @@ namespace ffmpeg_ytdlp_gui
     {
       return items.Where(item => Directory.Exists(item.Value))
                   .OrderByDescending(item => (DateTime?)item.Data)
-                  .Take(MemoryLength)
+                  .Take(Convert.ToInt32(MaxListItems.Value))
                   .OrderBy(item => item.Value)
                   .Select(item => $"{item.Value}|{((DateTime?)item.Data).ToString()}");
     }
@@ -184,33 +179,30 @@ namespace ffmpeg_ytdlp_gui
         e.Cancel = true;
         return;
       }
+
       Settings.Default.outputFolders = null;
       Settings.Default.ffmpeg = null;
       Settings.Default.OutputWindowHeight = StdoutFormSize.Height;
       Settings.Default.OutputWindowWidth = StdoutFormSize.Width;
       Settings.Default.bitrate = vBitrate.Value;
 
-      var set = DirectoryListBindingSource.DataSource as StringListItemsSet ?? throw new Exception("DataSource not initialized yet");
-
-      Settings.Default.outputFolders = [.. GetOutputFolders(set.Item1)];
-      Settings.Default.downloadFolders = [.. GetOutputFolders(set.Item2)];
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+      if (set != null)
+      {
+        Settings.Default.outputFolders = [.. GetOutputFolders(set.Item1)];
+        Settings.Default.downloadFolders = [.. GetOutputFolders(set.Item2)];
+      }
 
       // ffmpegパス
       Settings.Default.ffmpeg = [.. ffmpeg.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
       Settings.Default.ytdlp = [.. YtdlpPath.Items.Cast<string>().Where(item => !string.IsNullOrEmpty(item))];
-
-      // ダウンロードURL
-      //var urls = UrlBindingSource.DataSource as StringListItems;
-      //var urllist = new StringCollection();
-      //urllist.AddRange(urls.TakeLast(MemoryLength).Reverse().Select(item => $"{item.Value}｜{item.Label}").ToArray());
-      //Settings.Default.downloadUrls = urllist;
 
       var radio = GetCheckedRadioButton(ResizeBox);
       Settings.Default.resize = radio!.Name.Substring(8);
 
       // 出力ファイル名形式
       var formats = OutputFileFormatBindingSource.DataSource as List<string>;
-      Settings.Default.downloadFileNames = [.. formats?.TakeLast(MemoryLength).Reverse()];
+      Settings.Default.downloadFileNames = [.. formats?.TakeLast(Convert.ToInt32(MaxListItems.Value)).Reverse()];
 
       Settings.Default.Save();
     }

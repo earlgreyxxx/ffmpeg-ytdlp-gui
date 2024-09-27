@@ -105,6 +105,7 @@ namespace ffmpeg_ytdlp_gui
       resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
       DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
       HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
+      MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
     }
 
     private void InitializeDataSource()
