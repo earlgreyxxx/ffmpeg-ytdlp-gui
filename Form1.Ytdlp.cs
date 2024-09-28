@@ -18,10 +18,13 @@ namespace ffmpeg_ytdlp_gui
     private StdoutForm? ytdlpfm = null;
     private ObservableQueue<ytdlp_process>? ytdlps = new ObservableQueue<ytdlp_process>();
 
+    private void WriteQueueStatus(int count)
+    {
+      QueueCount.Text = $"Download Queue: {count}";
+    }
+
     private void InitializeYtdlpQueue()
     {
-      Action<int> WriteQueueStatus = count => QueueCount.Text = $"Download Queue: {count}";
-
       // キューにytdlpプロセスを入れた時
       ytdlps!.Enqueued += (s, e) =>
       {
@@ -304,12 +307,14 @@ namespace ffmpeg_ytdlp_gui
     private void YtdlpClearDequeue()
     {
       ytdlps?.Clear();
+      WriteQueueStatus(0);
     }
 
     private void YtdlpAbortDownload(bool stopAll = true)
     {
       ytdlps?.Clear();
       ytdlp?.Interrupt();
+      WriteQueueStatus(0);
     }
 
     private void EnablePlaylist(YtdlpItem item)
