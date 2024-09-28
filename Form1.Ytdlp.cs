@@ -137,7 +137,7 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private async Task YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
+    private async void YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
     {
       var url = ytdlpItem?.Item1;
       var mediaInfo = ytdlpItem?.Item2;
@@ -188,6 +188,7 @@ namespace ffmpeg_ytdlp_gui
 
         downloader.StdOutReceived += data => Invoke(() => OutputStderr.Text = data);
 
+        SubmitDownloadDequeue.Enabled = false;
         OutputStderr.Text = "ダウンロードファイル名を取得しています。";
 
         await downloader.GetDownloadFileNames();
@@ -275,6 +276,10 @@ namespace ffmpeg_ytdlp_gui
           ytdlpfm.Release();
           ytdlpfm.Pause = true;
         }
+      }
+      finally
+      {
+        SubmitDownloadDequeue.Enabled = true;
       }
     }
 
