@@ -20,7 +20,8 @@ winget install yt-dlp.yt-dlp
 
 ## スクリーンショット
 
-[<img width="32%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-convert.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-convert.png)
-[<img width="32%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-utils.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-utils.png)
-[<img width="32%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-download.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-download.png)
+[<img width="47%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-convert.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-convert.png)
+[<img width="47%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-utils.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-utils.png)
+[<img width="47%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-download.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-download.png)
+[<img width="47%" src="https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-setting.png">](https://ptsv.jp/code/ffmpeg-ytdlp-gui/movie-setting.png)
 
