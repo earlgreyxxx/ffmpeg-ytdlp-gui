@@ -421,16 +421,17 @@ namespace ffmpeg_ytdlp_gui
       if (BatchList == null || BatchList.Count <= 0)
         return;
 
-      using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
-      {
-        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting));
-      }
+      using var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932));
+      sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting));
 
       BatchList.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
     }
 
+    /*
+     削除予定
+    ---------------------
     private void btnSubmitBatExecute_Click(object sender, EventArgs e)
     {
       string filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-process-bat", ".bat");
@@ -454,6 +455,67 @@ namespace ffmpeg_ytdlp_gui
       redirected.ProcessExited += (s, e) => File.Delete(filename);
 
       form?.Show();
+    }
+    */
+
+    private void SubmitBeginConvert(object sender, EventArgs e)
+    {
+      try
+      {
+        CheckDirectory(cbOutputDir.Text);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "エラー");
+        return;
+      }
+
+      if (BatchList == null || BatchList.Count == 0)
+        return;
+
+      btnSubmitInvoke.Enabled = btnSubmitBatExecute.Enabled = false;
+
+      var queue = new ObservableQueue<ffmpeg_process?>();
+      queue.Dequeued += (s, e) =>
+      {
+        var process = e.data;
+        process?.Begin();
+      };
+
+      Action<bool> ffmpegProcessesDone = abnormal =>
+      {
+        if (abnormal)
+          ToastPush("正常に終了しませんでした。");
+
+        Proceeding = null;
+        try
+        {
+          queue.Dequeue();
+        }
+        catch(InvalidOperationException)
+        {
+          // すべてのキューが終了
+          btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
+          OpenLogFile.Enabled = true;
+          if (FileListBindingSource.Count > 0)
+            btnSubmitInvoke.Enabled = true;
+
+          ToastPush("全ての変換が終了しました。");
+        }
+      };
+
+      foreach (var pair in BatchList)
+      {
+        var command = pair.Key;
+        var process = CreateFFmpegProcess(command, ffmpegProcessesDone);
+        if (process == null)
+          continue;
+
+        process.PreProcess += RuntimeSetting;
+        queue.Enqueue(process);
+      }
+
+      queue.Dequeue();
     }
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)

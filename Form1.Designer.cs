@@ -207,6 +207,8 @@
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       PageSetting = new System.Windows.Forms.TabPage();
       groupBox4 = new System.Windows.Forms.GroupBox();
+      label35 = new System.Windows.Forms.Label();
+      MaxListItems = new System.Windows.Forms.NumericUpDown();
       CommandInvoker = new System.Windows.Forms.Button();
       Overwrite = new System.Windows.Forms.CheckBox();
       ClearLists = new System.Windows.Forms.Button();
@@ -240,8 +242,6 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
-      MaxListItems = new System.Windows.Forms.NumericUpDown();
-      label35 = new System.Windows.Forms.Label();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -286,6 +286,7 @@
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
       PageSetting.SuspendLayout();
       groupBox4.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)MaxListItems).BeginInit();
       groupBox3.SuspendLayout();
       groupBox2.SuspendLayout();
       ImageContextMenu.SuspendLayout();
@@ -298,7 +299,6 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)MaxListItems).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -316,7 +316,7 @@
       // 
       txtSS.Location = new System.Drawing.Point(13, 42);
       txtSS.Name = "txtSS";
-      txtSS.Size = new System.Drawing.Size(62, 19);
+      txtSS.Size = new System.Drawing.Size(62, 23);
       txtSS.TabIndex = 4;
       txtSS.TabStop = false;
       txtSS.Validating += TimeFormatValidating;
@@ -330,7 +330,7 @@
       label1.AutoSize = true;
       label1.Location = new System.Drawing.Point(10, 27);
       label1.Name = "label1";
-      label1.Size = new System.Drawing.Size(55, 12);
+      label1.Size = new System.Drawing.Size(58, 15);
       label1.TabIndex = 2;
       label1.Text = "開始(-ss)";
       // 
@@ -339,7 +339,7 @@
       label2.AutoSize = true;
       label2.Location = new System.Drawing.Point(140, 27);
       label2.Name = "label2";
-      label2.Size = new System.Drawing.Size(53, 12);
+      label2.Size = new System.Drawing.Size(58, 15);
       label2.TabIndex = 3;
       label2.Text = "終了(-to)";
       // 
@@ -347,7 +347,7 @@
       // 
       txtTo.Location = new System.Drawing.Point(142, 42);
       txtTo.Name = "txtTo";
-      txtTo.Size = new System.Drawing.Size(63, 19);
+      txtTo.Size = new System.Drawing.Size(63, 23);
       txtTo.TabIndex = 6;
       txtTo.TabStop = false;
       txtTo.Validating += TimeFormatValidating;
@@ -374,7 +374,7 @@
       linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
       linkLabel1.Location = new System.Drawing.Point(64, 0);
       linkLabel1.Name = "linkLabel1";
-      linkLabel1.Size = new System.Drawing.Size(111, 12);
+      linkLabel1.Size = new System.Drawing.Size(113, 15);
       linkLabel1.TabIndex = 3;
       linkLabel1.TabStop = true;
       linkLabel1.Text = "時間指定構文の説明";
@@ -438,7 +438,7 @@
       chkUseHWDecoder.AutoSize = true;
       chkUseHWDecoder.Location = new System.Drawing.Point(12, 131);
       chkUseHWDecoder.Name = "chkUseHWDecoder";
-      chkUseHWDecoder.Size = new System.Drawing.Size(112, 16);
+      chkUseHWDecoder.Size = new System.Drawing.Size(118, 19);
       chkUseHWDecoder.TabIndex = 28;
       chkUseHWDecoder.Text = "HWデコーダー指定";
       chkUseHWDecoder.UseVisualStyleBackColor = true;
@@ -453,25 +453,25 @@
       HWDecoder.FormattingEnabled = true;
       HWDecoder.Location = new System.Drawing.Point(11, 150);
       HWDecoder.Name = "HWDecoder";
-      HWDecoder.Size = new System.Drawing.Size(148, 20);
+      HWDecoder.Size = new System.Drawing.Size(148, 23);
       HWDecoder.TabIndex = 29;
       HWDecoder.ValueMember = "Value";
       // 
       // label5
       // 
       label5.AutoSize = true;
-      label5.Location = new System.Drawing.Point(12, 48);
+      label5.Location = new System.Drawing.Point(9, 48);
       label5.Name = "label5";
-      label5.Size = new System.Drawing.Size(25, 12);
+      label5.Size = new System.Drawing.Size(30, 15);
       label5.TabIndex = 26;
       label5.Text = "-c:a";
       // 
       // label4
       // 
       label4.AutoSize = true;
-      label4.Location = new System.Drawing.Point(12, 23);
+      label4.Location = new System.Drawing.Point(9, 23);
       label4.Name = "label4";
-      label4.Size = new System.Drawing.Size(25, 12);
+      label4.Size = new System.Drawing.Size(30, 15);
       label4.TabIndex = 26;
       label4.Text = "-c:v";
       // 
@@ -483,7 +483,7 @@
       UseAudioEncoder.FormattingEnabled = true;
       UseAudioEncoder.Location = new System.Drawing.Point(43, 44);
       UseAudioEncoder.Name = "UseAudioEncoder";
-      UseAudioEncoder.Size = new System.Drawing.Size(116, 20);
+      UseAudioEncoder.Size = new System.Drawing.Size(116, 23);
       UseAudioEncoder.TabIndex = 25;
       UseAudioEncoder.TabStop = false;
       UseAudioEncoder.ValueMember = "Value";
@@ -496,7 +496,7 @@
       UseVideoEncoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       UseVideoEncoder.Location = new System.Drawing.Point(43, 18);
       UseVideoEncoder.Name = "UseVideoEncoder";
-      UseVideoEncoder.Size = new System.Drawing.Size(116, 20);
+      UseVideoEncoder.Size = new System.Drawing.Size(116, 23);
       UseVideoEncoder.TabIndex = 24;
       UseVideoEncoder.TabStop = false;
       UseVideoEncoder.ValueMember = "Value";
@@ -511,7 +511,7 @@
       cbDeinterlaceAlg.FormattingEnabled = true;
       cbDeinterlaceAlg.Location = new System.Drawing.Point(89, 19);
       cbDeinterlaceAlg.Name = "cbDeinterlaceAlg";
-      cbDeinterlaceAlg.Size = new System.Drawing.Size(131, 20);
+      cbDeinterlaceAlg.Size = new System.Drawing.Size(131, 23);
       cbDeinterlaceAlg.TabIndex = 27;
       cbDeinterlaceAlg.ValueMember = "Value";
       // 
@@ -520,7 +520,7 @@
       chkFilterDeInterlace.AutoSize = true;
       chkFilterDeInterlace.Location = new System.Drawing.Point(16, 21);
       chkFilterDeInterlace.Name = "chkFilterDeInterlace";
-      chkFilterDeInterlace.Size = new System.Drawing.Size(67, 16);
+      chkFilterDeInterlace.Size = new System.Drawing.Size(69, 19);
       chkFilterDeInterlace.TabIndex = 26;
       chkFilterDeInterlace.Text = "処理する";
       chkFilterDeInterlace.CheckedChanged += chkFilterDeInterlace_CheckedChanged;
@@ -530,7 +530,7 @@
       chkAudioOnly.AutoSize = true;
       chkAudioOnly.Location = new System.Drawing.Point(264, 52);
       chkAudioOnly.Name = "chkAudioOnly";
-      chkAudioOnly.Size = new System.Drawing.Size(93, 16);
+      chkAudioOnly.Size = new System.Drawing.Size(95, 19);
       chkAudioOnly.TabIndex = 23;
       chkAudioOnly.TabStop = false;
       chkAudioOnly.Text = "音声のみ出力";
@@ -556,9 +556,9 @@
       // rbResizeNum
       // 
       rbResizeNum.AutoSize = true;
-      rbResizeNum.Location = new System.Drawing.Point(15, 53);
+      rbResizeNum.Location = new System.Drawing.Point(63, 22);
       rbResizeNum.Name = "rbResizeNum";
-      rbResizeNum.Size = new System.Drawing.Size(59, 16);
+      rbResizeNum.Size = new System.Drawing.Size(61, 19);
       rbResizeNum.TabIndex = 15;
       rbResizeNum.Tag = "-1";
       rbResizeNum.Text = "指定値";
@@ -569,11 +569,11 @@
       // 
       resizeTo.Enabled = false;
       resizeTo.Increment = new decimal(new int[] { 8, 0, 0, 0 });
-      resizeTo.Location = new System.Drawing.Point(80, 51);
+      resizeTo.Location = new System.Drawing.Point(128, 20);
       resizeTo.Maximum = new decimal(new int[] { 4320, 0, 0, 0 });
       resizeTo.Minimum = new decimal(new int[] { 32, 0, 0, 0 });
       resizeTo.Name = "resizeTo";
-      resizeTo.Size = new System.Drawing.Size(54, 19);
+      resizeTo.Size = new System.Drawing.Size(54, 23);
       resizeTo.TabIndex = 14;
       resizeTo.TabStop = false;
       resizeTo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -582,9 +582,9 @@
       // rbResize900
       // 
       rbResize900.AutoSize = true;
-      rbResize900.Location = new System.Drawing.Point(129, 24);
+      rbResize900.Location = new System.Drawing.Point(89, 49);
       rbResize900.Name = "rbResize900";
-      rbResize900.Size = new System.Drawing.Size(53, 16);
+      rbResize900.Size = new System.Drawing.Size(60, 19);
       rbResize900.TabIndex = 13;
       rbResize900.Tag = "900";
       rbResize900.Text = "900px";
@@ -592,9 +592,9 @@
       // rbResizeSD
       // 
       rbResizeSD.AutoSize = true;
-      rbResizeSD.Location = new System.Drawing.Point(244, 24);
+      rbResizeSD.Location = new System.Drawing.Point(227, 49);
       rbResizeSD.Name = "rbResizeSD";
-      rbResizeSD.Size = new System.Drawing.Size(53, 16);
+      rbResizeSD.Size = new System.Drawing.Size(60, 19);
       rbResizeSD.TabIndex = 13;
       rbResizeSD.Tag = "480";
       rbResizeSD.Text = "480px";
@@ -602,9 +602,9 @@
       // rbResizeHD
       // 
       rbResizeHD.AutoSize = true;
-      rbResizeHD.Location = new System.Drawing.Point(185, 24);
+      rbResizeHD.Location = new System.Drawing.Point(158, 49);
       rbResizeHD.Name = "rbResizeHD";
-      rbResizeHD.Size = new System.Drawing.Size(53, 16);
+      rbResizeHD.Size = new System.Drawing.Size(60, 19);
       rbResizeHD.TabIndex = 13;
       rbResizeHD.Tag = "720";
       rbResizeHD.Text = "720px";
@@ -612,9 +612,9 @@
       // rbResizeFullHD
       // 
       rbResizeFullHD.AutoSize = true;
-      rbResizeFullHD.Location = new System.Drawing.Point(64, 24);
+      rbResizeFullHD.Location = new System.Drawing.Point(13, 49);
       rbResizeFullHD.Name = "rbResizeFullHD";
-      rbResizeFullHD.Size = new System.Drawing.Size(59, 16);
+      rbResizeFullHD.Size = new System.Drawing.Size(67, 19);
       rbResizeFullHD.TabIndex = 12;
       rbResizeFullHD.Tag = "1080";
       rbResizeFullHD.Text = "1080px";
@@ -623,9 +623,9 @@
       // 
       rbResizeNone.AutoSize = true;
       rbResizeNone.Checked = true;
-      rbResizeNone.Location = new System.Drawing.Point(15, 24);
+      rbResizeNone.Location = new System.Drawing.Point(13, 22);
       rbResizeNone.Name = "rbResizeNone";
-      rbResizeNone.Size = new System.Drawing.Size(42, 16);
+      rbResizeNone.Size = new System.Drawing.Size(44, 19);
       rbResizeNone.TabIndex = 11;
       rbResizeNone.TabStop = true;
       rbResizeNone.Tag = "0";
@@ -649,7 +649,7 @@
       rbRotateNone.Checked = true;
       rbRotateNone.Location = new System.Drawing.Point(54, 22);
       rbRotateNone.Name = "rbRotateNone";
-      rbRotateNone.Size = new System.Drawing.Size(42, 16);
+      rbRotateNone.Size = new System.Drawing.Size(44, 19);
       rbRotateNone.TabIndex = 16;
       rbRotateNone.TabStop = true;
       rbRotateNone.Tag = "0";
@@ -660,7 +660,7 @@
       rbRotateLeft.AutoSize = true;
       rbRotateLeft.Location = new System.Drawing.Point(190, 22);
       rbRotateLeft.Name = "rbRotateLeft";
-      rbRotateLeft.Size = new System.Drawing.Size(79, 16);
+      rbRotateLeft.Size = new System.Drawing.Size(81, 19);
       rbRotateLeft.TabIndex = 18;
       rbRotateLeft.Tag = "2";
       rbRotateLeft.Text = "半時計周り";
@@ -670,7 +670,7 @@
       rbRotateRight.AutoSize = true;
       rbRotateRight.Location = new System.Drawing.Point(112, 22);
       rbRotateRight.Name = "rbRotateRight";
-      rbRotateRight.Size = new System.Drawing.Size(67, 16);
+      rbRotateRight.Size = new System.Drawing.Size(69, 19);
       rbRotateRight.TabIndex = 17;
       rbRotateRight.Tag = "1";
       rbRotateRight.Text = "時計周り";
@@ -735,7 +735,7 @@
       // 
       // OpenLogFile
       // 
-      OpenLogFile.Location = new System.Drawing.Point(528, 12);
+      OpenLogFile.Location = new System.Drawing.Point(561, 12);
       OpenLogFile.Name = "OpenLogFile";
       OpenLogFile.Size = new System.Drawing.Size(67, 24);
       OpenLogFile.TabIndex = 24;
@@ -770,21 +770,21 @@
       // 
       // btnSubmitAddToBatch
       // 
-      btnSubmitAddToBatch.Location = new System.Drawing.Point(202, 12);
+      btnSubmitAddToBatch.Location = new System.Drawing.Point(309, 12);
       btnSubmitAddToBatch.Name = "btnSubmitAddToBatch";
-      btnSubmitAddToBatch.Size = new System.Drawing.Size(93, 24);
+      btnSubmitAddToBatch.Size = new System.Drawing.Size(108, 24);
       btnSubmitAddToBatch.TabIndex = 23;
       btnSubmitAddToBatch.TabStop = false;
-      btnSubmitAddToBatch.Text = "バッチに追加";
+      btnSubmitAddToBatch.Text = "変換リストに追加";
       btnSubmitAddToBatch.UseVisualStyleBackColor = true;
       btnSubmitAddToBatch.Click += btnSubmitAddToFile_Click;
       // 
       // btnSubmitInvoke
       // 
       btnSubmitInvoke.Enabled = false;
-      btnSubmitInvoke.Location = new System.Drawing.Point(733, 12);
+      btnSubmitInvoke.Location = new System.Drawing.Point(760, 12);
       btnSubmitInvoke.Name = "btnSubmitInvoke";
-      btnSubmitInvoke.Size = new System.Drawing.Size(90, 24);
+      btnSubmitInvoke.Size = new System.Drawing.Size(63, 24);
       btnSubmitInvoke.TabIndex = 1;
       btnSubmitInvoke.TabStop = false;
       btnSubmitInvoke.Text = "実行";
@@ -842,35 +842,35 @@
       VideoFrameRate.DisplayMember = "Label";
       VideoFrameRate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       VideoFrameRate.FormattingEnabled = true;
-      VideoFrameRate.Location = new System.Drawing.Point(295, 21);
+      VideoFrameRate.Location = new System.Drawing.Point(294, 21);
       VideoFrameRate.Name = "VideoFrameRate";
-      VideoFrameRate.Size = new System.Drawing.Size(96, 20);
+      VideoFrameRate.Size = new System.Drawing.Size(96, 23);
       VideoFrameRate.TabIndex = 30;
       VideoFrameRate.ValueMember = "Value";
       // 
       // label27
       // 
       label27.AutoSize = true;
-      label27.Location = new System.Drawing.Point(268, 25);
+      label27.Location = new System.Drawing.Point(258, 25);
       label27.Name = "label27";
-      label27.Size = new System.Drawing.Size(23, 12);
+      label27.Size = new System.Drawing.Size(29, 15);
       label27.TabIndex = 29;
       label27.Text = "-r:v";
       // 
       // label12
       // 
       label12.AutoSize = true;
-      label12.Location = new System.Drawing.Point(406, 26);
+      label12.Location = new System.Drawing.Point(396, 25);
       label12.Name = "label12";
-      label12.Size = new System.Drawing.Size(61, 12);
+      label12.Size = new System.Drawing.Size(71, 15);
       label12.TabIndex = 28;
       label12.Text = "LookAhead";
       // 
       // LookAhead
       // 
-      LookAhead.Location = new System.Drawing.Point(469, 22);
+      LookAhead.Location = new System.Drawing.Point(469, 21);
       LookAhead.Name = "LookAhead";
-      LookAhead.Size = new System.Drawing.Size(46, 19);
+      LookAhead.Size = new System.Drawing.Size(46, 23);
       LookAhead.TabIndex = 22;
       LookAhead.TabStop = false;
       LookAhead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -881,7 +881,7 @@
       aUnit.AutoSize = true;
       aUnit.Location = new System.Drawing.Point(219, 52);
       aUnit.Name = "aUnit";
-      aUnit.Size = new System.Drawing.Size(30, 12);
+      aUnit.Size = new System.Drawing.Size(35, 15);
       aUnit.TabIndex = 26;
       aUnit.Text = "Kbps";
       // 
@@ -891,7 +891,7 @@
       aBitrate.Location = new System.Drawing.Point(148, 49);
       aBitrate.Maximum = new decimal(new int[] { 320, 0, 0, 0 });
       aBitrate.Name = "aBitrate";
-      aBitrate.Size = new System.Drawing.Size(70, 19);
+      aBitrate.Size = new System.Drawing.Size(70, 23);
       aBitrate.TabIndex = 20;
       aBitrate.TabStop = false;
       aBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -900,15 +900,15 @@
       // aQualityLabel
       // 
       aQualityLabel.AutoSize = true;
-      aQualityLabel.Location = new System.Drawing.Point(119, 52);
+      aQualityLabel.Location = new System.Drawing.Point(114, 52);
       aQualityLabel.Name = "aQualityLabel";
-      aQualityLabel.Size = new System.Drawing.Size(25, 12);
+      aQualityLabel.Size = new System.Drawing.Size(31, 15);
       aQualityLabel.TabIndex = 24;
       aQualityLabel.Text = "-b:a";
       // 
       // vQualityLabel
       // 
-      vQualityLabel.Location = new System.Drawing.Point(94, 25);
+      vQualityLabel.Location = new System.Drawing.Point(94, 26);
       vQualityLabel.Name = "vQualityLabel";
       vQualityLabel.Size = new System.Drawing.Size(50, 12);
       vQualityLabel.TabIndex = 23;
@@ -920,7 +920,7 @@
       label6.AutoSize = true;
       label6.Location = new System.Drawing.Point(364, 52);
       label6.Name = "label6";
-      label6.Size = new System.Drawing.Size(38, 12);
+      label6.Size = new System.Drawing.Size(44, 15);
       label6.TabIndex = 22;
       label6.Text = "Preset";
       // 
@@ -932,17 +932,17 @@
       cbPreset.FormattingEnabled = true;
       cbPreset.Location = new System.Drawing.Point(411, 48);
       cbPreset.Name = "cbPreset";
-      cbPreset.Size = new System.Drawing.Size(104, 20);
+      cbPreset.Size = new System.Drawing.Size(104, 23);
       cbPreset.TabIndex = 21;
       cbPreset.TabStop = false;
       cbPreset.ValueMember = "Value";
       // 
       // vBitrate
       // 
-      vBitrate.Location = new System.Drawing.Point(148, 22);
+      vBitrate.Location = new System.Drawing.Point(148, 20);
       vBitrate.Maximum = new decimal(new int[] { 1215752191, 23, 0, 0 });
       vBitrate.Name = "vBitrate";
-      vBitrate.Size = new System.Drawing.Size(70, 19);
+      vBitrate.Size = new System.Drawing.Size(70, 23);
       vBitrate.TabIndex = 18;
       vBitrate.TabStop = false;
       vBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -951,9 +951,9 @@
       // chkEncodeAudio
       // 
       chkEncodeAudio.AutoSize = true;
-      chkEncodeAudio.Location = new System.Drawing.Point(14, 50);
+      chkEncodeAudio.Location = new System.Drawing.Point(14, 52);
       chkEncodeAudio.Name = "chkEncodeAudio";
-      chkEncodeAudio.Size = new System.Drawing.Size(93, 16);
+      chkEncodeAudio.Size = new System.Drawing.Size(94, 19);
       chkEncodeAudio.TabIndex = 19;
       chkEncodeAudio.TabStop = false;
       chkEncodeAudio.Text = "音声エンコード";
@@ -963,9 +963,9 @@
       // chkConstantQuality
       // 
       chkConstantQuality.AutoSize = true;
-      chkConstantQuality.Location = new System.Drawing.Point(14, 23);
+      chkConstantQuality.Location = new System.Drawing.Point(14, 25);
       chkConstantQuality.Name = "chkConstantQuality";
-      chkConstantQuality.Size = new System.Drawing.Size(72, 16);
+      chkConstantQuality.Size = new System.Drawing.Size(74, 19);
       chkConstantQuality.TabIndex = 17;
       chkConstantQuality.TabStop = false;
       chkConstantQuality.Text = "固定品質";
@@ -976,7 +976,7 @@
       vUnit.AutoSize = true;
       vUnit.Location = new System.Drawing.Point(219, 25);
       vUnit.Name = "vUnit";
-      vUnit.Size = new System.Drawing.Size(30, 12);
+      vUnit.Size = new System.Drawing.Size(35, 15);
       vUnit.TabIndex = 1;
       vUnit.Text = "Kbps";
       // 
@@ -1041,7 +1041,7 @@
       // btnStop
       // 
       btnStop.Enabled = false;
-      btnStop.Location = new System.Drawing.Point(601, 12);
+      btnStop.Location = new System.Drawing.Point(634, 12);
       btnStop.Name = "btnStop";
       btnStop.Size = new System.Drawing.Size(56, 24);
       btnStop.TabIndex = 31;
@@ -1053,7 +1053,7 @@
       // btnStopAll
       // 
       btnStopAll.Enabled = false;
-      btnStopAll.Location = new System.Drawing.Point(663, 12);
+      btnStopAll.Location = new System.Drawing.Point(690, 12);
       btnStopAll.Name = "btnStopAll";
       btnStopAll.Size = new System.Drawing.Size(64, 24);
       btnStopAll.TabIndex = 32;
@@ -1081,7 +1081,7 @@
       cbDevices.FormattingEnabled = true;
       cbDevices.Location = new System.Drawing.Point(17, 21);
       cbDevices.Name = "cbDevices";
-      cbDevices.Size = new System.Drawing.Size(284, 20);
+      cbDevices.Size = new System.Drawing.Size(284, 23);
       cbDevices.TabIndex = 0;
       cbDevices.TabStop = false;
       cbDevices.ValueMember = "Value";
@@ -1221,44 +1221,44 @@
       CropLabel4.AutoSize = true;
       CropLabel4.Location = new System.Drawing.Point(243, 48);
       CropLabel4.Name = "CropLabel4";
-      CropLabel4.Size = new System.Drawing.Size(12, 12);
+      CropLabel4.Size = new System.Drawing.Size(15, 15);
       CropLabel4.TabIndex = 2;
       CropLabel4.Text = "Y";
       // 
       // CropLabel3
       // 
       CropLabel3.AutoSize = true;
-      CropLabel3.Location = new System.Drawing.Point(165, 48);
+      CropLabel3.Location = new System.Drawing.Point(167, 48);
       CropLabel3.Name = "CropLabel3";
-      CropLabel3.Size = new System.Drawing.Size(12, 12);
+      CropLabel3.Size = new System.Drawing.Size(15, 15);
       CropLabel3.TabIndex = 2;
       CropLabel3.Text = "X";
       // 
       // CropLabel2
       // 
       CropLabel2.AutoSize = true;
-      CropLabel2.Location = new System.Drawing.Point(89, 48);
+      CropLabel2.Location = new System.Drawing.Point(93, 48);
       CropLabel2.Name = "CropLabel2";
-      CropLabel2.Size = new System.Drawing.Size(13, 12);
+      CropLabel2.Size = new System.Drawing.Size(16, 15);
       CropLabel2.TabIndex = 2;
       CropLabel2.Text = "H";
       // 
       // CropLabel1
       // 
       CropLabel1.AutoSize = true;
-      CropLabel1.Location = new System.Drawing.Point(13, 48);
+      CropLabel1.Location = new System.Drawing.Point(11, 48);
       CropLabel1.Name = "CropLabel1";
-      CropLabel1.Size = new System.Drawing.Size(14, 12);
+      CropLabel1.Size = new System.Drawing.Size(19, 15);
       CropLabel1.TabIndex = 2;
       CropLabel1.Text = "W";
       // 
       // CropY
       // 
-      CropY.Location = new System.Drawing.Point(257, 45);
+      CropY.Location = new System.Drawing.Point(258, 45);
       CropY.Maximum = new decimal(new int[] { 4000, 0, 0, 0 });
       CropY.Minimum = new decimal(new int[] { 1, 0, 0, int.MinValue });
       CropY.Name = "CropY";
-      CropY.Size = new System.Drawing.Size(54, 19);
+      CropY.Size = new System.Drawing.Size(50, 23);
       CropY.TabIndex = 12;
       CropY.TabStop = false;
       CropY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1266,11 +1266,11 @@
       // 
       // CropX
       // 
-      CropX.Location = new System.Drawing.Point(179, 45);
+      CropX.Location = new System.Drawing.Point(184, 45);
       CropX.Maximum = new decimal(new int[] { 4000, 0, 0, 0 });
       CropX.Minimum = new decimal(new int[] { 1, 0, 0, int.MinValue });
       CropX.Name = "CropX";
-      CropX.Size = new System.Drawing.Size(54, 19);
+      CropX.Size = new System.Drawing.Size(50, 23);
       CropX.TabIndex = 11;
       CropX.TabStop = false;
       CropX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1278,20 +1278,20 @@
       // 
       // CropHeight
       // 
-      CropHeight.Location = new System.Drawing.Point(104, 45);
+      CropHeight.Location = new System.Drawing.Point(109, 45);
       CropHeight.Maximum = new decimal(new int[] { 4000, 0, 0, 0 });
       CropHeight.Name = "CropHeight";
-      CropHeight.Size = new System.Drawing.Size(54, 19);
+      CropHeight.Size = new System.Drawing.Size(50, 23);
       CropHeight.TabIndex = 10;
       CropHeight.TabStop = false;
       CropHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // CropWidth
       // 
-      CropWidth.Location = new System.Drawing.Point(28, 45);
+      CropWidth.Location = new System.Drawing.Point(32, 45);
       CropWidth.Maximum = new decimal(new int[] { 4000, 0, 0, 0 });
       CropWidth.Name = "CropWidth";
-      CropWidth.Size = new System.Drawing.Size(54, 19);
+      CropWidth.Size = new System.Drawing.Size(50, 23);
       CropWidth.TabIndex = 9;
       CropWidth.TabStop = false;
       CropWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1301,7 +1301,7 @@
       chkCrop.AutoSize = true;
       chkCrop.Location = new System.Drawing.Point(14, 22);
       chkCrop.Name = "chkCrop";
-      chkCrop.Size = new System.Drawing.Size(67, 16);
+      chkCrop.Size = new System.Drawing.Size(69, 19);
       chkCrop.TabIndex = 8;
       chkCrop.TabStop = false;
       chkCrop.Text = "処理する";
@@ -1319,6 +1319,7 @@
       Tab.Controls.Add(PageUtility);
       Tab.Controls.Add(PageDownloader);
       Tab.Controls.Add(PageSetting);
+      Tab.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       Tab.Location = new System.Drawing.Point(3, 13);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
@@ -1344,10 +1345,10 @@
       PageConvert.Controls.Add(DeInterlaceBox);
       PageConvert.Controls.Add(btnApply);
       PageConvert.Controls.Add(Commandlines);
-      PageConvert.Location = new System.Drawing.Point(4, 22);
+      PageConvert.Location = new System.Drawing.Point(4, 24);
       PageConvert.Margin = new System.Windows.Forms.Padding(0);
       PageConvert.Name = "PageConvert";
-      PageConvert.Size = new System.Drawing.Size(832, 424);
+      PageConvert.Size = new System.Drawing.Size(832, 422);
       PageConvert.TabIndex = 0;
       PageConvert.Text = "動画変換";
       // 
@@ -1362,7 +1363,8 @@
       SubmitButtonBox.Controls.Add(OpenLogFile);
       SubmitButtonBox.Controls.Add(btnStopAll);
       SubmitButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      SubmitButtonBox.Location = new System.Drawing.Point(0, 378);
+      SubmitButtonBox.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      SubmitButtonBox.Location = new System.Drawing.Point(0, 376);
       SubmitButtonBox.Name = "SubmitButtonBox";
       SubmitButtonBox.Size = new System.Drawing.Size(832, 46);
       SubmitButtonBox.TabIndex = 44;
@@ -1370,33 +1372,33 @@
       // btnSubmitBatExecute
       // 
       btnSubmitBatExecute.Enabled = false;
-      btnSubmitBatExecute.Location = new System.Drawing.Point(11, 12);
+      btnSubmitBatExecute.Location = new System.Drawing.Point(204, 12);
       btnSubmitBatExecute.Name = "btnSubmitBatExecute";
-      btnSubmitBatExecute.Size = new System.Drawing.Size(75, 24);
+      btnSubmitBatExecute.Size = new System.Drawing.Size(105, 24);
       btnSubmitBatExecute.TabIndex = 35;
-      btnSubmitBatExecute.Text = "バッチ実行";
+      btnSubmitBatExecute.Text = "変換リスト実行";
       btnSubmitBatExecute.UseVisualStyleBackColor = true;
-      btnSubmitBatExecute.Click += btnSubmitBatExecute_Click;
+      btnSubmitBatExecute.Click += SubmitBeginConvert;
       // 
       // btnSubmitBatchClear
       // 
       btnSubmitBatchClear.Enabled = false;
-      btnSubmitBatchClear.Location = new System.Drawing.Point(307, 12);
+      btnSubmitBatchClear.Location = new System.Drawing.Point(417, 12);
       btnSubmitBatchClear.Name = "btnSubmitBatchClear";
-      btnSubmitBatchClear.Size = new System.Drawing.Size(84, 24);
+      btnSubmitBatchClear.Size = new System.Drawing.Size(101, 24);
       btnSubmitBatchClear.TabIndex = 34;
-      btnSubmitBatchClear.Text = "バッチクリア";
+      btnSubmitBatchClear.Text = "変換リストクリア";
       btnSubmitBatchClear.UseVisualStyleBackColor = true;
       btnSubmitBatchClear.Click += btnSubmitBatchClear_Click;
       // 
       // btnSubmitSaveToFile
       // 
       btnSubmitSaveToFile.Enabled = false;
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(90, 12);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(11, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
-      btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 24);
+      btnSubmitSaveToFile.Size = new System.Drawing.Size(174, 24);
       btnSubmitSaveToFile.TabIndex = 33;
-      btnSubmitSaveToFile.Text = "バッチファイル保存";
+      btnSubmitSaveToFile.Text = "変換リストをバッチファイルで保存";
       btnSubmitSaveToFile.UseVisualStyleBackColor = true;
       btnSubmitSaveToFile.Click += btnSubmitSaveToFile_Click;
       // 
@@ -1416,7 +1418,7 @@
       FreeOptions.Location = new System.Drawing.Point(16, 22);
       FreeOptions.Name = "FreeOptions";
       FreeOptions.PlaceholderText = "カンマ、セミコロン、コロンで区切ってください";
-      FreeOptions.Size = new System.Drawing.Size(281, 19);
+      FreeOptions.Size = new System.Drawing.Size(281, 23);
       FreeOptions.TabIndex = 0;
       // 
       // OthersBox
@@ -1436,10 +1438,11 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
+      PageUtility.Location = new System.Drawing.Point(4, 24);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 419);
+      PageUtility.Size = new System.Drawing.Size(832, 422);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1464,7 +1467,7 @@
       DecoderHelpList.FormattingEnabled = true;
       DecoderHelpList.Location = new System.Drawing.Point(533, 34);
       DecoderHelpList.Name = "DecoderHelpList";
-      DecoderHelpList.Size = new System.Drawing.Size(145, 20);
+      DecoderHelpList.Size = new System.Drawing.Size(145, 23);
       DecoderHelpList.TabIndex = 39;
       DecoderHelpList.ValueMember = "Value";
       // 
@@ -1476,7 +1479,7 @@
       EncoderHelpList.FormattingEnabled = true;
       EncoderHelpList.Location = new System.Drawing.Point(178, 34);
       EncoderHelpList.Name = "EncoderHelpList";
-      EncoderHelpList.Size = new System.Drawing.Size(145, 20);
+      EncoderHelpList.Size = new System.Drawing.Size(145, 23);
       EncoderHelpList.TabIndex = 39;
       EncoderHelpList.ValueMember = "Value";
       // 
@@ -1508,7 +1511,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 389);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1566,7 +1569,7 @@
       label22.AutoSize = true;
       label22.Location = new System.Drawing.Point(188, 77);
       label22.Name = "label22";
-      label22.Size = new System.Drawing.Size(243, 12);
+      label22.Size = new System.Drawing.Size(247, 15);
       label22.TabIndex = 1;
       label22.Text = "エンコーダーをCOPYにしてコンテナを再生成します。";
       // 
@@ -1575,7 +1578,7 @@
       label21.AutoSize = true;
       label21.Location = new System.Drawing.Point(188, 37);
       label21.Name = "label21";
-      label21.Size = new System.Drawing.Size(349, 12);
+      label21.Size = new System.Drawing.Size(351, 15);
       label21.TabIndex = 1;
       label21.Text = "入力ファイルを順番に連結します。異なるサイズの動画は結合できません。";
       // 
@@ -1640,7 +1643,7 @@
       ImageFreeOptions.Location = new System.Drawing.Point(90, 91);
       ImageFreeOptions.Name = "ImageFreeOptions";
       ImageFreeOptions.PlaceholderText = "カンマ、セミコロン、コロンで区切ってください";
-      ImageFreeOptions.Size = new System.Drawing.Size(268, 19);
+      ImageFreeOptions.Size = new System.Drawing.Size(268, 23);
       ImageFreeOptions.TabIndex = 11;
       // 
       // label11
@@ -1648,7 +1651,7 @@
       label11.AutoSize = true;
       label11.Location = new System.Drawing.Point(13, 94);
       label11.Name = "label11";
-      label11.Size = new System.Drawing.Size(72, 12);
+      label11.Size = new System.Drawing.Size(74, 15);
       label11.TabIndex = 10;
       label11.Text = "追加オプション";
       // 
@@ -1657,7 +1660,7 @@
       useTiledImage.AutoSize = true;
       useTiledImage.Location = new System.Drawing.Point(382, 92);
       useTiledImage.Name = "useTiledImage";
-      useTiledImage.Size = new System.Drawing.Size(97, 16);
+      useTiledImage.Size = new System.Drawing.Size(102, 19);
       useTiledImage.TabIndex = 9;
       useTiledImage.Text = "タイル(列 x 行)";
       useTiledImage.UseVisualStyleBackColor = true;
@@ -1668,7 +1671,7 @@
       TileRows.Enabled = false;
       TileRows.Location = new System.Drawing.Point(567, 91);
       TileRows.Name = "TileRows";
-      TileRows.Size = new System.Drawing.Size(64, 19);
+      TileRows.Size = new System.Drawing.Size(64, 23);
       TileRows.TabIndex = 8;
       TileRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
@@ -1677,7 +1680,7 @@
       CropTB.Location = new System.Drawing.Point(357, 52);
       CropTB.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
       CropTB.Name = "CropTB";
-      CropTB.Size = new System.Drawing.Size(64, 19);
+      CropTB.Size = new System.Drawing.Size(64, 23);
       CropTB.TabIndex = 8;
       CropTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
@@ -1686,7 +1689,7 @@
       ImageWidth.Location = new System.Drawing.Point(486, 53);
       ImageWidth.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
       ImageWidth.Name = "ImageWidth";
-      ImageWidth.Size = new System.Drawing.Size(64, 19);
+      ImageWidth.Size = new System.Drawing.Size(64, 23);
       ImageWidth.TabIndex = 8;
       ImageWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
@@ -1695,7 +1698,7 @@
       TileColumns.Enabled = false;
       TileColumns.Location = new System.Drawing.Point(481, 91);
       TileColumns.Name = "TileColumns";
-      TileColumns.Size = new System.Drawing.Size(64, 19);
+      TileColumns.Size = new System.Drawing.Size(64, 23);
       TileColumns.TabIndex = 8;
       TileColumns.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       TileColumns.Value = new decimal(new int[] { 6, 0, 0, 0 });
@@ -1705,7 +1708,7 @@
       CropLR.Location = new System.Drawing.Point(271, 52);
       CropLR.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
       CropLR.Name = "CropLR";
-      CropLR.Size = new System.Drawing.Size(64, 19);
+      CropLR.Size = new System.Drawing.Size(64, 23);
       CropLR.TabIndex = 8;
       CropLR.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
@@ -1714,7 +1717,7 @@
       ImageHeight.Location = new System.Drawing.Point(567, 53);
       ImageHeight.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
       ImageHeight.Name = "ImageHeight";
-      ImageHeight.Size = new System.Drawing.Size(64, 19);
+      ImageHeight.Size = new System.Drawing.Size(64, 23);
       ImageHeight.TabIndex = 8;
       ImageHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
@@ -1723,7 +1726,7 @@
       label18.AutoSize = true;
       label18.Location = new System.Drawing.Point(695, 34);
       label18.Name = "label18";
-      label18.Size = new System.Drawing.Size(77, 12);
+      label18.Size = new System.Drawing.Size(79, 15);
       label18.TabIndex = 7;
       label18.Text = "出力画像形式";
       // 
@@ -1732,7 +1735,7 @@
       label31.AutoSize = true;
       label31.Location = new System.Drawing.Point(427, 56);
       label31.Name = "label31";
-      label31.Size = new System.Drawing.Size(42, 12);
+      label31.Size = new System.Drawing.Size(44, 15);
       label31.TabIndex = 7;
       label31.Text = "ピクセル";
       // 
@@ -1741,7 +1744,7 @@
       label20.AutoSize = true;
       label20.Location = new System.Drawing.Point(637, 56);
       label20.Name = "label20";
-      label20.Size = new System.Drawing.Size(42, 12);
+      label20.Size = new System.Drawing.Size(44, 15);
       label20.TabIndex = 7;
       label20.Text = "ピクセル";
       // 
@@ -1750,7 +1753,7 @@
       label17.AutoSize = true;
       label17.Location = new System.Drawing.Point(228, 56);
       label17.Name = "label17";
-      label17.Size = new System.Drawing.Size(29, 12);
+      label17.Size = new System.Drawing.Size(31, 15);
       label17.TabIndex = 7;
       label17.Text = "秒毎";
       // 
@@ -1759,7 +1762,7 @@
       FrameRate.Location = new System.Drawing.Point(157, 53);
       FrameRate.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
       FrameRate.Name = "FrameRate";
-      FrameRate.Size = new System.Drawing.Size(64, 19);
+      FrameRate.Size = new System.Drawing.Size(64, 23);
       FrameRate.TabIndex = 6;
       FrameRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       FrameRate.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -1772,7 +1775,7 @@
       ImageType.FormattingEnabled = true;
       ImageType.Location = new System.Drawing.Point(695, 52);
       ImageType.Name = "ImageType";
-      ImageType.Size = new System.Drawing.Size(96, 20);
+      ImageType.Size = new System.Drawing.Size(96, 23);
       ImageType.TabIndex = 5;
       ImageType.ValueMember = "Value";
       // 
@@ -1781,7 +1784,7 @@
       linkLabel2.AutoSize = true;
       linkLabel2.Location = new System.Drawing.Point(67, 0);
       linkLabel2.Name = "linkLabel2";
-      linkLabel2.Size = new System.Drawing.Size(111, 12);
+      linkLabel2.Size = new System.Drawing.Size(113, 15);
       linkLabel2.TabIndex = 4;
       linkLabel2.TabStop = true;
       linkLabel2.Text = "時間指定構文の説明";
@@ -1791,7 +1794,7 @@
       // 
       ImageTo.Location = new System.Drawing.Point(90, 53);
       ImageTo.Name = "ImageTo";
-      ImageTo.Size = new System.Drawing.Size(53, 19);
+      ImageTo.Size = new System.Drawing.Size(53, 23);
       ImageTo.TabIndex = 2;
       ImageTo.Validating += TimeFormatValidating;
       // 
@@ -1799,7 +1802,7 @@
       // 
       ImageSS.Location = new System.Drawing.Point(11, 53);
       ImageSS.Name = "ImageSS";
-      ImageSS.Size = new System.Drawing.Size(55, 19);
+      ImageSS.Size = new System.Drawing.Size(55, 23);
       ImageSS.TabIndex = 2;
       ImageSS.Validating += TimeFormatValidating;
       // 
@@ -1808,7 +1811,7 @@
       label33.AutoSize = true;
       label33.Location = new System.Drawing.Point(551, 94);
       label33.Name = "label33";
-      label33.Size = new System.Drawing.Size(17, 12);
+      label33.Size = new System.Drawing.Size(17, 15);
       label33.TabIndex = 1;
       label33.Text = "×";
       label33.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1818,7 +1821,7 @@
       label26.AutoSize = true;
       label26.Location = new System.Drawing.Point(341, 56);
       label26.Name = "label26";
-      label26.Size = new System.Drawing.Size(17, 12);
+      label26.Size = new System.Drawing.Size(17, 15);
       label26.TabIndex = 1;
       label26.Text = "×";
       label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1828,7 +1831,7 @@
       label16.AutoSize = true;
       label16.Location = new System.Drawing.Point(68, 56);
       label16.Name = "label16";
-      label16.Size = new System.Drawing.Size(17, 12);
+      label16.Size = new System.Drawing.Size(19, 15);
       label16.TabIndex = 1;
       label16.Text = "〜";
       // 
@@ -1837,7 +1840,7 @@
       label25.AutoSize = true;
       label25.Location = new System.Drawing.Point(271, 34);
       label25.Name = "label25";
-      label25.Size = new System.Drawing.Size(89, 12);
+      label25.Size = new System.Drawing.Size(96, 15);
       label25.TabIndex = 1;
       label25.Text = "クロップ(L&R x T&B)";
       // 
@@ -1846,7 +1849,7 @@
       label9.AutoSize = true;
       label9.Location = new System.Drawing.Point(551, 56);
       label9.Name = "label9";
-      label9.Size = new System.Drawing.Size(17, 12);
+      label9.Size = new System.Drawing.Size(17, 15);
       label9.TabIndex = 1;
       label9.Text = "×";
       label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1856,7 +1859,7 @@
       label19.AutoSize = true;
       label19.Location = new System.Drawing.Point(483, 34);
       label19.Name = "label19";
-      label19.Size = new System.Drawing.Size(96, 12);
+      label19.Size = new System.Drawing.Size(105, 15);
       label19.TabIndex = 1;
       label19.Text = "画像リサイズ(WxH)";
       // 
@@ -1865,7 +1868,7 @@
       label15.AutoSize = true;
       label15.Location = new System.Drawing.Point(90, 34);
       label15.Name = "label15";
-      label15.Size = new System.Drawing.Size(53, 12);
+      label15.Size = new System.Drawing.Size(55, 15);
       label15.TabIndex = 1;
       label15.Text = "開始位置";
       // 
@@ -1874,7 +1877,7 @@
       label14.AutoSize = true;
       label14.Location = new System.Drawing.Point(13, 34);
       label14.Name = "label14";
-      label14.Size = new System.Drawing.Size(53, 12);
+      label14.Size = new System.Drawing.Size(55, 15);
       label14.TabIndex = 1;
       label14.Text = "開始位置";
       // 
@@ -1908,10 +1911,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 24);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 422);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2255,10 +2258,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 22);
+      PageSetting.Location = new System.Drawing.Point(4, 24);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 424);
+      PageSetting.Size = new System.Drawing.Size(832, 422);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
@@ -2276,6 +2279,25 @@
       groupBox4.TabIndex = 43;
       groupBox4.TabStop = false;
       groupBox4.Text = "共通・全般";
+      // 
+      // label35
+      // 
+      label35.AutoSize = true;
+      label35.Location = new System.Drawing.Point(18, 85);
+      label35.Name = "label35";
+      label35.Size = new System.Drawing.Size(125, 15);
+      label35.TabIndex = 44;
+      label35.Text = "リストの最大保存項目数";
+      // 
+      // MaxListItems
+      // 
+      MaxListItems.Location = new System.Drawing.Point(148, 81);
+      MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
+      MaxListItems.Name = "MaxListItems";
+      MaxListItems.Size = new System.Drawing.Size(48, 23);
+      MaxListItems.TabIndex = 43;
+      MaxListItems.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      MaxListItems.Value = new decimal(new int[] { 20, 0, 0, 0 });
       // 
       // CommandInvoker
       // 
@@ -2610,25 +2632,6 @@
       // 
       PlaylistBindingSource.DataMember = "Item4";
       // 
-      // MaxListItems
-      // 
-      MaxListItems.Location = new System.Drawing.Point(148, 81);
-      MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
-      MaxListItems.Name = "MaxListItems";
-      MaxListItems.Size = new System.Drawing.Size(48, 23);
-      MaxListItems.TabIndex = 43;
-      MaxListItems.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      MaxListItems.Value = new decimal(new int[] { 20, 0, 0, 0 });
-      // 
-      // label35
-      // 
-      label35.AutoSize = true;
-      label35.Location = new System.Drawing.Point(18, 85);
-      label35.Name = "label35";
-      label35.Size = new System.Drawing.Size(125, 15);
-      label35.TabIndex = 44;
-      label35.Text = "リストの最大保存項目数";
-      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2709,6 +2712,7 @@
       PageSetting.ResumeLayout(false);
       groupBox4.ResumeLayout(false);
       groupBox4.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)MaxListItems).EndInit();
       groupBox3.ResumeLayout(false);
       groupBox3.PerformLayout();
       groupBox2.ResumeLayout(false);
@@ -2724,7 +2728,6 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).EndInit();
-      ((System.ComponentModel.ISupportInitialize)MaxListItems).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }

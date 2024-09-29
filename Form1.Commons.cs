@@ -473,6 +473,24 @@ namespace ffmpeg_ytdlp_gui
 
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,string tabpageName)
     {
+      return CreateFFmpegProcess(
+        command,
+        abnormal => Invoke(() =>
+        {
+          btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
+          OpenLogFile.Enabled = true;
+          if (FileListBindingSource.Count > 0)
+            btnSubmitInvoke.Enabled = true;
+
+          Proceeding = null;
+          if (!abnormal)
+            ToastPush("変換処理が終了しました。", tabpageName);
+        })
+      );
+    }
+
+    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,Action<bool> ProcessCommandDone)
+    {
       command.Overwrite = Overwrite.Checked;
 
       var process = new ffmpeg_process(command, FileListBindingSource);
@@ -485,17 +503,8 @@ namespace ffmpeg_ytdlp_gui
 
         FileListBindingSource.Remove(item);
       });
-      process.ProcessesDone += abnormal => Invoke(() =>
-      {
-        btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
-        OpenLogFile.Enabled = true;
-        if (FileListBindingSource.Count > 0)
-          btnSubmitInvoke.Enabled = true;
 
-        Proceeding = null;
-        if (!abnormal)
-          ToastPush("変換処理が終了しました。",tabpageName);
-      });
+      process.ProcessesDone += ProcessCommandDone;
 
       if (IsOpenStderr.Checked)
       {

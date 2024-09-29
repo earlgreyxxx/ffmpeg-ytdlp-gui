@@ -10,6 +10,7 @@ namespace ffmpeg_ytdlp_gui.libs
 {
   public partial class ffmpeg_command : IEnumerable<string>
   {
+    //private static void 
     public static string CreateBatch(FFmpegBatchList list,Action<ffmpeg_command,string>? callback = null,bool hasPause = true)
     {
       var sb = new StringBuilder();
