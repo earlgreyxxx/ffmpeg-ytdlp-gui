@@ -839,7 +839,7 @@ namespace ffmpeg_ytdlp_gui
     private void OnEndProcess()
     {
       btnSubmitInvoke.Enabled = btnSubmitBatExecute.Enabled = true;
-      btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false
+      btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
       OpenLogFile.Enabled = true;
     }
 

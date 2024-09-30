@@ -110,8 +110,9 @@
       StatusBarMenu = new System.Windows.Forms.ContextMenuStrip(components);
       StatusBarMenuItemClearQueue = new System.Windows.Forms.ToolStripMenuItem();
       OutputStderr = new System.Windows.Forms.ToolStripStatusLabel();
+      ConvertListCount = new System.Windows.Forms.ToolStripStatusLabel();
       DummyProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-      QueueCount = new System.Windows.Forms.ToolStripStatusLabel();
+      DownloadQueueCount = new System.Windows.Forms.ToolStripStatusLabel();
       CropBox = new System.Windows.Forms.GroupBox();
       CropLabel4 = new System.Windows.Forms.Label();
       CropLabel3 = new System.Windows.Forms.Label();
@@ -1151,7 +1152,7 @@
       // StatusBar
       // 
       StatusBar.ContextMenuStrip = StatusBarMenu;
-      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, DummyProgressBar, QueueCount });
+      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, ConvertListCount, DummyProgressBar, DownloadQueueCount });
       StatusBar.Location = new System.Drawing.Point(3, 598);
       StatusBar.Name = "StatusBar";
       StatusBar.Size = new System.Drawing.Size(840, 23);
@@ -1178,10 +1179,16 @@
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(703, 18);
+      OutputStderr.Size = new System.Drawing.Size(561, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // ConvertListCount
+      // 
+      ConvertListCount.Name = "ConvertListCount";
+      ConvertListCount.Size = new System.Drawing.Size(99, 18);
+      ConvertListCount.Text = "変換リスト数：0";
       // 
       // DummyProgressBar
       // 
@@ -1192,11 +1199,11 @@
       DummyProgressBar.Visible = false;
       DummyProgressBar.VisibleChanged += DummyProgressBar_VisibleChanged;
       // 
-      // QueueCount
+      // DownloadQueueCount
       // 
-      QueueCount.Name = "QueueCount";
-      QueueCount.Size = new System.Drawing.Size(122, 18);
-      QueueCount.Text = "Download Queue: 0";
+      DownloadQueueCount.Name = "DownloadQueueCount";
+      DownloadQueueCount.Size = new System.Drawing.Size(132, 18);
+      DownloadQueueCount.Text = "ダウンロードキュー: 0";
       // 
       // CropBox
       // 
@@ -2905,7 +2912,7 @@
     private System.Windows.Forms.BindingSource UrlBindingSource;
     private System.Windows.Forms.ComboBox OutputFileFormat;
     private System.Windows.Forms.BindingSource OutputFileFormatBindingSource;
-    private System.Windows.Forms.ToolStripStatusLabel QueueCount;
+    private System.Windows.Forms.ToolStripStatusLabel DownloadQueueCount;
     private System.Windows.Forms.ContextMenuStrip FileListMenu;
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemDelete;
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemClear;
@@ -2947,6 +2954,7 @@
     private System.Windows.Forms.Button btnSubmitBatExecute;
     private System.Windows.Forms.NumericUpDown MaxListItems;
     private System.Windows.Forms.Label label35;
+    private System.Windows.Forms.ToolStripStatusLabel ConvertListCount;
   }
 }
 

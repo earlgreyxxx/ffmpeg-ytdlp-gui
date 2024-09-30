@@ -20,7 +20,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void WriteQueueStatus(int count)
     {
-      QueueCount.Text = $"Download Queue: {count}";
+      DownloadQueueCount.Text = $"Download Queue: {count}";
     }
 
     private void InitializeYtdlpQueue()
