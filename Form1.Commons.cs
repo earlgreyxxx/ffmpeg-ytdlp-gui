@@ -477,8 +477,7 @@ namespace ffmpeg_ytdlp_gui
         command,
         abnormal => Invoke(() =>
         {
-          btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
-          OpenLogFile.Enabled = true;
+          OnEndProcess();
           if (FileListBindingSource.Count > 0)
             btnSubmitInvoke.Enabled = true;
 
@@ -827,12 +826,21 @@ namespace ffmpeg_ytdlp_gui
       }
     }
 
-    private void OnBeginProcess()
+    private void OnBeginProcess(bool updateListItem = true)
     {
+      btnSubmitInvoke.Enabled = btnSubmitBatExecute.Enabled = false;
       btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = true;
       OpenLogFile.Enabled = false;
 
-      AddDirectoryListItem();
+      if(updateListItem)
+        AddDirectoryListItem();
+    }
+
+    private void OnEndProcess()
+    {
+      btnSubmitInvoke.Enabled = btnSubmitBatExecute.Enabled = true;
+      btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false
+      OpenLogFile.Enabled = true;
     }
 
     private void AddDirectoryListItem()

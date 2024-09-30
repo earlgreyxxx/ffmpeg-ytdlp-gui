@@ -473,14 +473,7 @@ namespace ffmpeg_ytdlp_gui
       if (BatchList == null || BatchList.Count == 0)
         return;
 
-      btnSubmitInvoke.Enabled = btnSubmitBatExecute.Enabled = false;
-
-      var queue = new ObservableQueue<ffmpeg_process?>();
-      queue.Dequeued += (s, e) =>
-      {
-        var process = e.data;
-        process?.Begin();
-      };
+      var queue = new Queue<ffmpeg_process?>();
 
       Action<bool> ffmpegProcessesDone = abnormal =>
       {
@@ -490,17 +483,16 @@ namespace ffmpeg_ytdlp_gui
         Proceeding = null;
         try
         {
-          queue.Dequeue();
+          queue.Dequeue()?.Begin();
         }
         catch(InvalidOperationException)
         {
           // すべてのキューが終了
-          btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
-          OpenLogFile.Enabled = true;
-          if (FileListBindingSource.Count > 0)
-            btnSubmitInvoke.Enabled = true;
-
-          ToastPush("全ての変換が終了しました。");
+          Invoke(() =>
+          {
+            OnEndProcess();
+            ToastPush("全ての変換が終了しました。");
+          });
         }
       };
 
@@ -515,7 +507,8 @@ namespace ffmpeg_ytdlp_gui
         queue.Enqueue(process);
       }
 
-      queue.Dequeue();
+      OnBeginProcess();
+      queue.Dequeue()?.Begin();
     }
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
