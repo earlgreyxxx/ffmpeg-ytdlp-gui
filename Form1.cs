@@ -485,7 +485,7 @@ namespace ffmpeg_ytdlp_gui
         {
           queue.Dequeue()?.Begin();
         }
-        catch(InvalidOperationException)
+        catch (InvalidOperationException)
         {
           // すべてのキューが終了
           Invoke(() =>
@@ -494,12 +494,22 @@ namespace ffmpeg_ytdlp_gui
             ToastPush("全ての変換が終了しました。");
           });
         }
+        finally
+        {
+          //Invoke(() =>
+          //{
+
+          //});
+        }
       };
 
       foreach (var pair in BatchList)
       {
-        var command = pair.Key;
-        var process = CreateFFmpegProcess(command, ffmpegProcessesDone);
+        var process = CreateFFmpegProcess(
+          pair.Key,
+          new BindingSource(new StringListItems(pair.Value.Select(item => new StringListItem(item))), string.Empty),
+          ffmpegProcessesDone
+        );
         if (process == null)
           continue;
 

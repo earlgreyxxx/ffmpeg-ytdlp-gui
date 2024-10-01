@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -470,6 +471,7 @@ namespace ffmpeg_ytdlp_gui
     /// ffmpegプロセス
     /// </summary>
     private ffmpeg_process? Proceeding;
+    private StdoutForm? ffmpegfm;
 
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,string tabpageName)
     {
@@ -488,65 +490,76 @@ namespace ffmpeg_ytdlp_gui
       );
     }
 
-    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,Action<bool> ProcessCommandDone)
+    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command, Action<bool> ProcessCommandDone)
+    {
+      return CreateFFmpegProcess(command, FileListBindingSource, ProcessCommandDone);
+    }
+
+    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,BindingSource fileListBindingSource,Action<bool> ProcessCommandDone)
     {
       command.Overwrite = Overwrite.Checked;
 
-      var process = new ffmpeg_process(command, FileListBindingSource);
+      var process = new ffmpeg_process(command, fileListBindingSource);
       process.ReceiveData += data => Invoke(() => OutputStderr.Text = data);
       process.ProcessExit += filename => Invoke(() =>
       {
-        var item = FileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == filename);
+        var item = fileListBindingSource.OfType<StringListItem>().FirstOrDefault(item => item.Value == filename);
         if (item == null)
           return;
 
-        FileListBindingSource.Remove(item);
+        fileListBindingSource.Remove(item);
       });
 
       process.ProcessesDone += ProcessCommandDone;
 
       if (IsOpenStderr.Checked)
       {
-        var form = new StdoutForm();
-        form.FormClosing += StdoutFormClosingAction;
-        form.Load += StdoutFormLoadAction;
+        if (ffmpegfm == null)
+        {
+          var form = ffmpegfm = new StdoutForm();
+          ffmpegfm.FormClosing += StdoutFormClosingAction;
+          ffmpegfm.FormClosing += (s, e) =>
+          {
+            bool nextBegan = form != ffmpegfm;
+            Debug.WriteLine($"Next ffmpeg convert process was began: {nextBegan}");
+
+            if (!nextBegan)
+              ffmpegfm = null;
+          };
+          ffmpegfm.Load += StdoutFormLoadAction;
+        }
 
         Action<string> dataReceiver = data =>
         {
           if (string.IsNullOrEmpty(data))
             return;
 
-          if (form.Pause)
-            form.LogData.Add(data);
+          if (ffmpegfm.Pause)
+            ffmpegfm.LogData.Add(data);
           else
-            form.Invoke(() => form.WriteLine(data));
+            ffmpegfm.Invoke(() => ffmpegfm.WriteLine(data));
         };
-        Action<bool> processDone = b => form.Invoke(form.OnProcessExit);
+        Action<bool> processDone = b => ffmpegfm.Invoke(ffmpegfm.OnProcessExit);
 
         process.ReceiveData += dataReceiver;
         process.ProcessesDone += processDone;
 
-        form.CustomButton.Visible = true;
-        form.CustomButton.Text = "出力を中断して閉じる";
-        form.CustomButtonClick += (sender, e) =>
+        ffmpegfm.CustomButton.Visible = true;
+        ffmpegfm.CustomButton.Text = "出力を中断して閉じる";
+        ffmpegfm.CustomButtonClick += (sender, e) =>
         {
           process.ReceiveData -= dataReceiver;
           process.ProcessesDone -= processDone;
-          form.Release();
-          form.Close();
-          form = null;
+          ffmpegfm.Release();
+          ffmpegfm.Close();
+          ffmpegfm = null;
         };
 
-        form.Show();
+        ffmpegfm.Show();
       }
 
       Proceeding = process;
       return process;
-    }
-
-    private void Form_CloseWindow()
-    {
-      throw new NotImplementedException();
     }
 
     private ffmpeg_command CreateFFMpegCommandInstance()
@@ -739,6 +752,7 @@ namespace ffmpeg_ytdlp_gui
     }
 
     private void StopCurrentProcess() => StopProcess(false);
+
     private void StopAllProcess() => StopProcess(true);
 
     private void StopProcess(bool stopAll = false)
@@ -748,7 +762,6 @@ namespace ffmpeg_ytdlp_gui
 
       Proceeding?.Kill(stopAll);
     }
-
 
     private StdoutForm? OpenOutputView(string executable, string arg, string formTitle = "Output viewer")
     {
