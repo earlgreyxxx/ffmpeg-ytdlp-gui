@@ -200,24 +200,26 @@ namespace ffmpeg_ytdlp_gui
 
         OutputStderr.Text = string.Empty;
 
-        downloader.ProcessExited += (s, e) => Invoke(() =>
+        downloader.ProcessExited += (s, e) =>
         {
           Debug.WriteLine($"exitcode = {downloader.ExitCode},DownloadName = {downloader.DownloadFile}");
-
-          if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
+          Invoke(() =>
           {
-            FileListBindingSource.Add(new StringListItem(downloader.DownloadFile));
-            btnSubmitInvoke.Enabled = true;
-          }
+            if (downloader.ExitCode == 0 && chkAfterDownload.Checked && !string.IsNullOrEmpty(downloader.DownloadFile))
+            {
+              FileListBindingSource.Add(new StringListItem(downloader.DownloadFile));
+              btnSubmitInvoke.Enabled = true;
+            }
 
-          if(DeleteUrlAfterDownloaded.Checked)
-          {
-            var items = UrlBindingSource.DataSource as YtdlpItems;
-            var item = items?.FirstOrDefault(item => item?.Item1 == downloader.Url);
-            if (item != null)
-              UrlBindingSource.Remove(item);
-          }
-        });
+            if (DeleteUrlAfterDownloaded.Checked)
+            {
+              var items = UrlBindingSource.DataSource as YtdlpItems;
+              var item = items?.FirstOrDefault(item => item?.Item1 == downloader.Url);
+              if (item != null)
+                UrlBindingSource.Remove(item);
+            }
+          });
+        };
 
         if (IsOpenStderr.Checked)
         {
