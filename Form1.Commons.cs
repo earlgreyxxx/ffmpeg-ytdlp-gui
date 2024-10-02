@@ -419,6 +419,11 @@ namespace ffmpeg_ytdlp_gui
       toast.Show();
     }
 
+    private void WriteConvertListStatus(int count)
+    {
+      ConvertListCount.Text = $"変換リスト数： {count}";
+    }
+
     /// <summary>
     /// ffmpegpプロセス起動前に実行
     /// </summary>
@@ -512,6 +517,18 @@ namespace ffmpeg_ytdlp_gui
 
       process.ProcessesDone += ProcessCommandDone;
 
+      Action<string> dataReceiver = data =>
+      {
+        if (string.IsNullOrEmpty(data))
+          return;
+
+        if (ffmpegfm?.Pause ?? false)
+          ffmpegfm.LogData.Add(data);
+        else
+          ffmpegfm?.Invoke(() => ffmpegfm.WriteLine(data));
+      };
+      Action<bool> processDone = b => ffmpegfm?.Invoke(ffmpegfm.OnProcessExit);
+
       if (IsOpenStderr.Checked)
       {
         if (ffmpegfm == null)
@@ -527,35 +544,23 @@ namespace ffmpeg_ytdlp_gui
               ffmpegfm = null;
           };
           ffmpegfm.Load += StdoutFormLoadAction;
+
+          ffmpegfm.CustomButton.Visible = true;
+          ffmpegfm.CustomButton.Text = "出力を中断して閉じる";
+          ffmpegfm.CustomButtonClick += (sender, e) =>
+          {
+            process.ReceiveData -= dataReceiver;
+            process.ProcessesDone -= processDone;
+            ffmpegfm.Release();
+            ffmpegfm.Close();
+            ffmpegfm = null;
+          };
+
+          ffmpegfm.Show();
         }
-
-        Action<string> dataReceiver = data =>
-        {
-          if (string.IsNullOrEmpty(data))
-            return;
-
-          if (ffmpegfm.Pause)
-            ffmpegfm.LogData.Add(data);
-          else
-            ffmpegfm.Invoke(() => ffmpegfm.WriteLine(data));
-        };
-        Action<bool> processDone = b => ffmpegfm.Invoke(ffmpegfm.OnProcessExit);
 
         process.ReceiveData += dataReceiver;
         process.ProcessesDone += processDone;
-
-        ffmpegfm.CustomButton.Visible = true;
-        ffmpegfm.CustomButton.Text = "出力を中断して閉じる";
-        ffmpegfm.CustomButtonClick += (sender, e) =>
-        {
-          process.ReceiveData -= dataReceiver;
-          process.ProcessesDone -= processDone;
-          ffmpegfm.Release();
-          ffmpegfm.Close();
-          ffmpegfm = null;
-        };
-
-        ffmpegfm.Show();
       }
 
       Proceeding = process;

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  public class ffmpeg_process
+  public class ffmpeg_process : IDisposable
   {
     // statics
     // ---------------------------------------------------------------------------------------
@@ -31,13 +31,17 @@ namespace ffmpeg_ytdlp_gui.libs
       return redirected;
     }
 
+    private static StreamWriter? LogWriter;
+    private static int RefCounter = 0;
+    private static object _lock = new object();
+
     // instances
     // ---------------------------------------------------------------------------------------
     protected BindingSource? FileListBindingSource;
 
     public RedirectedProcess? Redirected { get; protected set; }
 
-    private StreamWriter? LogWriter;
+    //private StreamWriter? LogWriter;
 
     public event Action<string>? ProcessExit;
     public event Action<string>? ReceiveData;
@@ -45,7 +49,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public event Action<ffmpeg_command?,string>? PreProcess;
 
     public ffmpeg_command? Command { get; protected set; }
-    public string? LogFileName { get; set; } = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
+    public string? LogFileName { get; private set; } = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
 
     public ffmpeg_process(ffmpeg_command command,IEnumerable<string> list)
       : this(command,new BindingSource() { DataSource = list.ToList(), }) { }
@@ -54,6 +58,22 @@ namespace ffmpeg_ytdlp_gui.libs
     {
       Command = command;
       FileListBindingSource = bs;
+      lock (_lock)
+      {
+        RefCounter++;
+      }
+    }
+
+    ~ffmpeg_process()
+    {
+      lock (_lock)
+      {
+        if (--RefCounter <= 0)
+        {
+          RefCounter = 0;
+          Dispose();
+        }
+      }
     }
 
     public ffmpeg_process()
@@ -66,8 +86,8 @@ namespace ffmpeg_ytdlp_gui.libs
       if (Redirected != null && !Redirected.Current.HasExited)
         throw new Exception("現在実行中のプロセスが終了するまで新しいプロセスを開始できません。");
 
-      if (!string.IsNullOrEmpty(LogFileName))
-        LogWriter = new StreamWriter(LogFileName, true);
+      if (LogWriter == null)
+        LogWriter = new StreamWriter(LogFileName!, true);
 
       if (false == CreateProcess() && FileListBindingSource?.Count > 0)
         CreateProcess();
@@ -92,8 +112,6 @@ namespace ffmpeg_ytdlp_gui.libs
       if (null == (Redirected = CreateRedirectedProcess(filename, Command)))
       {
         OnProcessesDone(true);
-        LogWriter?.Dispose();
-        LogWriter = null;
         var item = FileListBindingSource?.OfType<StringListItem>().FirstOrDefault(item => filename == item.Value);
         if (item != null)
           FileListBindingSource?.Remove(item);
@@ -115,8 +133,8 @@ namespace ffmpeg_ytdlp_gui.libs
 
     public virtual void One(string filename)
     {
-      if (!string.IsNullOrEmpty(LogFileName))
-        LogWriter = new StreamWriter(LogFileName, false);
+      if (LogWriter == null)
+        LogWriter = new StreamWriter(LogFileName!, false);
 
       OnPreProcess(Command, filename);
 
@@ -170,8 +188,6 @@ namespace ffmpeg_ytdlp_gui.libs
       FileListBindingSource?.Clear();
       FileListBindingSource?.ResetBindings(false);
       LogWriter?.Flush();
-      LogWriter?.Dispose();
-      LogWriter = null;
     }
 
     public void Kill(bool stopAll = false)
@@ -201,6 +217,12 @@ namespace ffmpeg_ytdlp_gui.libs
     protected void OnPreProcess(ffmpeg_command? command,string filename)
     {
       PreProcess?.Invoke(command,filename);
+    }
+
+    public void Dispose()
+    {
+      if(LogWriter  != null)
+        LogWriter.Dispose();
     }
   }
 }

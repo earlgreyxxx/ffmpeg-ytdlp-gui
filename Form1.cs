@@ -473,7 +473,17 @@ namespace ffmpeg_ytdlp_gui
       if (BatchList == null || BatchList.Count == 0)
         return;
 
-      var queue = new Queue<ffmpeg_process?>();
+      var queue = new ObservableQueue<ffmpeg_process?>();
+      queue.Dequeued += (s, e) =>
+      {
+        var q = s as ObservableQueue<ffmpeg_process?>;
+        WriteConvertListStatus(q?.Count ?? 0);
+      };
+      queue.Enqueued += (s, e) =>
+      {
+        var q = s as ObservableQueue<ffmpeg_process?>;
+        WriteConvertListStatus(q?.Count ?? 0);
+      };
 
       Action<bool> ffmpegProcessesDone = abnormal =>
       {
@@ -496,10 +506,7 @@ namespace ffmpeg_ytdlp_gui
         }
         finally
         {
-          //Invoke(() =>
-          //{
-
-          //});
+          Debug.WriteLine("Done convert list ...");
         }
       };
 
@@ -553,7 +560,6 @@ namespace ffmpeg_ytdlp_gui
           command,
           FileListBindingSource.OfType<StringListItem>().Select(item => item.Value).ToList()
         );
-
         FileListBindingSource.Clear();
       }
     }
