@@ -474,16 +474,8 @@ namespace ffmpeg_ytdlp_gui
         return;
 
       var queue = new ObservableQueue<ffmpeg_process?>();
-      queue.Dequeued += (s, e) =>
-      {
-        var q = s as ObservableQueue<ffmpeg_process?>;
-        WriteConvertListStatus(q?.Count ?? 0);
-      };
-      queue.Enqueued += (s, e) =>
-      {
-        var q = s as ObservableQueue<ffmpeg_process?>;
-        WriteConvertListStatus(q?.Count ?? 0);
-      };
+      queue.Dequeued += (s, e) => WriteConvertListStatus((s as ObservableQueue<ffmpeg_process?>)?.Count ?? 0);
+      queue.Enqueued += (s, e) => WriteConvertListStatus((s as ObservableQueue<ffmpeg_process?>)?.Count ?? 0);
 
       Action<bool> ffmpegProcessesDone = abnormal =>
       {
