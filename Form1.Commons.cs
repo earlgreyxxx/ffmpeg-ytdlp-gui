@@ -563,7 +563,9 @@ namespace ffmpeg_ytdlp_gui
         process.ProcessesDone += processDone;
       }
 
+      // todo: Proceeding is used by single convert only.
       Proceeding = process;
+
       return process;
     }
 

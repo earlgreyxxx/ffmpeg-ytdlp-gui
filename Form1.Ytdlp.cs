@@ -26,11 +26,7 @@ namespace ffmpeg_ytdlp_gui
     private void InitializeYtdlpQueue()
     {
       // キューにytdlpプロセスを入れた時
-      ytdlps!.Enqueued += (s, e) =>
-      {
-        var q = s as ObservableQueue<ytdlp_process>;
-        WriteQueueStatus(q?.Count ?? 0);
-      };
+      ytdlps!.Enqueued += (s, e) => WriteQueueStatus((s as ObservableQueue<ytdlp_process>)?.Count ?? 0);
 
       // キューからytdlpプロセスを取り出す時
       Action formAction = () =>

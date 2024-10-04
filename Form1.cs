@@ -429,35 +429,6 @@ namespace ffmpeg_ytdlp_gui
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
     }
 
-    /*
-     削除予定
-    ---------------------
-    private void btnSubmitBatExecute_Click(object sender, EventArgs e)
-    {
-      string filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-process-bat", ".bat");
-
-      if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？", "警告", MessageBoxButtons.YesNo))
-        return;
-
-      if (BatchList == null || BatchList.Count <= 0)
-        return;
-
-      using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
-      {
-        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting, false));
-      }
-
-      var form = OpenOutputView(filename, string.Empty,new UTF8Encoding(false),"BAT execution log");
-      var redirected = form?.Redirected;
-      if (form == null || redirected == null)
-        return;
-
-      redirected.ProcessExited += (s, e) => File.Delete(filename);
-
-      form?.Show();
-    }
-    */
-
     private void SubmitBeginConvert(object sender, EventArgs e)
     {
       try
@@ -482,6 +453,7 @@ namespace ffmpeg_ytdlp_gui
         if (abnormal)
           ToastPush("正常に終了しませんでした。");
 
+        // todo: Proceeding is used by single convert only.
         Proceeding = null;
         try
         {
@@ -518,6 +490,11 @@ namespace ffmpeg_ytdlp_gui
 
       OnBeginProcess();
       queue.Dequeue()?.Begin();
+    }
+    
+    private void btnCancelConvertList_Click(object sender, EventArgs e)
+    {
+
     }
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
