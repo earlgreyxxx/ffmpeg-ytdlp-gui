@@ -497,10 +497,10 @@ namespace ffmpeg_ytdlp_gui
 
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command, Action<bool> ProcessCommandDone)
     {
-      return CreateFFmpegProcess(command, FileListBindingSource, ProcessCommandDone);
+      return CreateFFmpegProcess(command, FileListBindingSource, ProcessCommandDone,false);
     }
 
-    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,BindingSource fileListBindingSource,Action<bool> ProcessCommandDone)
+    private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,BindingSource fileListBindingSource,Action<bool> ProcessCommandDone,bool IsMulti)
     {
       command.Overwrite = Overwrite.Checked;
 
@@ -527,6 +527,7 @@ namespace ffmpeg_ytdlp_gui
         else
           ffmpegfm?.Invoke(() => ffmpegfm.WriteLine(data));
       };
+      
       Action<bool> processDone = b => ffmpegfm?.Invoke(ffmpegfm.OnProcessExit);
 
       if (IsOpenStderr.Checked)
@@ -550,7 +551,10 @@ namespace ffmpeg_ytdlp_gui
           ffmpegfm.CustomButtonClick += (sender, e) =>
           {
             process.ReceiveData -= dataReceiver;
-            process.ProcessesDone -= processDone;
+
+            if(IsMulti == false)
+              process.ProcessesDone -= processDone;
+
             ffmpegfm.Release();
             ffmpegfm.Close();
             ffmpegfm = null;
@@ -560,7 +564,9 @@ namespace ffmpeg_ytdlp_gui
         }
 
         process.ReceiveData += dataReceiver;
-        process.ProcessesDone += processDone;
+
+        if (IsMulti == false)
+          process.ProcessesDone += processDone;
       }
 
       // todo: Proceeding is used by single convert only.
@@ -757,10 +763,6 @@ namespace ffmpeg_ytdlp_gui
     {
       return groupBox.Controls.OfType<RadioButton>().FirstOrDefault(radio => radio.Checked);
     }
-
-    private void StopCurrentProcess() => StopProcess(false);
-
-    private void StopAllProcess() => StopProcess(true);
 
     private void StopProcess(bool stopAll = false)
     {

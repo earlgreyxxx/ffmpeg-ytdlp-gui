@@ -128,6 +128,7 @@
       Tab = new System.Windows.Forms.TabControl();
       PageConvert = new System.Windows.Forms.TabPage();
       SubmitButtonBox = new System.Windows.Forms.Panel();
+      btnCancelConvertList = new System.Windows.Forms.Button();
       btnSubmitBatExecute = new System.Windows.Forms.Button();
       btnSubmitBatchClear = new System.Windows.Forms.Button();
       btnSubmitSaveToFile = new System.Windows.Forms.Button();
@@ -243,7 +244,6 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
-      btnCancelConvertList = new System.Windows.Forms.Button();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -1024,19 +1024,19 @@
       FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemDelete, FileListMenuItemClear });
       FileListMenu.Name = "FileListMenu";
       FileListMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      FileListMenu.Size = new System.Drawing.Size(199, 48);
+      FileListMenu.Size = new System.Drawing.Size(233, 48);
       // 
       // FileListMenuItemDelete
       // 
       FileListMenuItemDelete.Name = "FileListMenuItemDelete";
-      FileListMenuItemDelete.Size = new System.Drawing.Size(198, 22);
+      FileListMenuItemDelete.Size = new System.Drawing.Size(232, 22);
       FileListMenuItemDelete.Text = "選択済みのファイルをクリア";
       FileListMenuItemDelete.Click += FileListMenuItemDelete_Click;
       // 
       // FileListMenuItemClear
       // 
       FileListMenuItemClear.Name = "FileListMenuItemClear";
-      FileListMenuItemClear.Size = new System.Drawing.Size(198, 22);
+      FileListMenuItemClear.Size = new System.Drawing.Size(232, 22);
       FileListMenuItemClear.Text = "全てのファイルをクリア";
       FileListMenuItemClear.Click += FileListMenuItemClear_Click;
       // 
@@ -1154,9 +1154,9 @@
       // 
       StatusBar.ContextMenuStrip = StatusBarMenu;
       StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, ConvertListCount, DummyProgressBar, DownloadQueueCount });
-      StatusBar.Location = new System.Drawing.Point(3, 599);
+      StatusBar.Location = new System.Drawing.Point(3, 598);
       StatusBar.Name = "StatusBar";
-      StatusBar.Size = new System.Drawing.Size(840, 22);
+      StatusBar.Size = new System.Drawing.Size(840, 23);
       StatusBar.SizingGrip = false;
       StatusBar.TabIndex = 40;
       StatusBar.Text = "statusStrip1";
@@ -1166,12 +1166,12 @@
       StatusBarMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { StatusBarMenuItemClearQueue });
       StatusBarMenu.Name = "StatusBarMenu";
       StatusBarMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      StatusBarMenu.Size = new System.Drawing.Size(137, 26);
+      StatusBarMenu.Size = new System.Drawing.Size(161, 26);
       // 
       // StatusBarMenuItemClearQueue
       // 
       StatusBarMenuItemClearQueue.Name = "StatusBarMenuItemClearQueue";
-      StatusBarMenuItemClearQueue.Size = new System.Drawing.Size(136, 22);
+      StatusBarMenuItemClearQueue.Size = new System.Drawing.Size(160, 22);
       StatusBarMenuItemClearQueue.Text = "キューのクリア";
       StatusBarMenuItemClearQueue.Click += StatusBarMenuItemClearQueue_Click;
       // 
@@ -1180,7 +1180,7 @@
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(634, 17);
+      OutputStderr.Size = new System.Drawing.Size(594, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1188,7 +1188,7 @@
       // ConvertListCount
       // 
       ConvertListCount.Name = "ConvertListCount";
-      ConvertListCount.Size = new System.Drawing.Size(86, 17);
+      ConvertListCount.Size = new System.Drawing.Size(99, 18);
       ConvertListCount.Text = "変換リスト数：0";
       // 
       // DummyProgressBar
@@ -1203,7 +1203,7 @@
       // DownloadQueueCount
       // 
       DownloadQueueCount.Name = "DownloadQueueCount";
-      DownloadQueueCount.Size = new System.Drawing.Size(105, 17);
+      DownloadQueueCount.Size = new System.Drawing.Size(132, 18);
       DownloadQueueCount.Text = "ダウンロードキュー: 0";
       // 
       // CropBox
@@ -1377,6 +1377,16 @@
       SubmitButtonBox.Name = "SubmitButtonBox";
       SubmitButtonBox.Size = new System.Drawing.Size(832, 46);
       SubmitButtonBox.TabIndex = 44;
+      // 
+      // btnCancelConvertList
+      // 
+      btnCancelConvertList.Location = new System.Drawing.Point(150, 12);
+      btnCancelConvertList.Name = "btnCancelConvertList";
+      btnCancelConvertList.Size = new System.Drawing.Size(87, 24);
+      btnCancelConvertList.TabIndex = 36;
+      btnCancelConvertList.Text = "変換リスト中止";
+      btnCancelConvertList.UseVisualStyleBackColor = true;
+      btnCancelConvertList.Click += btnCancelConvertList_Click;
       // 
       // btnSubmitBatExecute
       // 
@@ -1894,7 +1904,7 @@
       // 
       SubmitThumbnail.Location = new System.Drawing.Point(644, 89);
       SubmitThumbnail.Name = "SubmitThumbnail";
-      SubmitThumbnail.Size = new System.Drawing.Size(149, 23);
+      SubmitThumbnail.Size = new System.Drawing.Size(149, 25);
       SubmitThumbnail.TabIndex = 0;
       SubmitThumbnail.Text = "画像生成";
       SubmitThumbnail.UseVisualStyleBackColor = true;
@@ -2531,14 +2541,14 @@
       ImageContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { CommandSaveImage });
       ImageContextMenu.Name = "ImageContextMenu";
       ImageContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      ImageContextMenu.Size = new System.Drawing.Size(123, 26);
+      ImageContextMenu.Size = new System.Drawing.Size(125, 26);
       // 
       // CommandSaveImage
       // 
       CommandSaveImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       CommandSaveImage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       CommandSaveImage.Name = "CommandSaveImage";
-      CommandSaveImage.Size = new System.Drawing.Size(122, 22);
+      CommandSaveImage.Size = new System.Drawing.Size(124, 22);
       CommandSaveImage.Text = "画像保存";
       CommandSaveImage.Click += CommandSaveImage_Click;
       // 
@@ -2640,16 +2650,6 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
-      // 
-      // btnCancelConvertList
-      // 
-      btnCancelConvertList.Location = new System.Drawing.Point(150, 12);
-      btnCancelConvertList.Name = "btnCancelConvertList";
-      btnCancelConvertList.Size = new System.Drawing.Size(87, 24);
-      btnCancelConvertList.TabIndex = 36;
-      btnCancelConvertList.Text = "変換リスト中止";
-      btnCancelConvertList.UseVisualStyleBackColor = true;
-      btnCancelConvertList.Click += btnCancelConvertList_Click;
       // 
       // Form1
       // 

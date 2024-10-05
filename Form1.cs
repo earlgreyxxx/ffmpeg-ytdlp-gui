@@ -246,6 +246,7 @@ namespace ffmpeg_ytdlp_gui
           return;
 
         process.PreProcess += RuntimeSetting;
+        process.ProcessesDone += abnormal => ffmpeg_process.Dispose();
         process.Begin();
       }
     }
@@ -409,6 +410,11 @@ namespace ffmpeg_ytdlp_gui
       btnSubmitInvoke.Enabled = true;
     }
 
+    private void BatButtonCtrl(bool enabled)
+    {
+      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = enabled;
+    }
+
     private void btnSubmitSaveToFile_Click(object sender, EventArgs e)
     {
       if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
@@ -426,7 +432,7 @@ namespace ffmpeg_ytdlp_gui
 
       BatchList.Clear();
       BatchList = null;
-      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+      BatButtonCtrl(false);
     }
 
     private void SubmitBeginConvert(object sender, EventArgs e)
@@ -458,6 +464,7 @@ namespace ffmpeg_ytdlp_gui
         try
         {
           queue.Dequeue()?.Begin();
+          BatButtonCtrl(false);
         }
         catch (InvalidOperationException)
         {
@@ -466,7 +473,11 @@ namespace ffmpeg_ytdlp_gui
           {
             OnEndProcess();
             ToastPush("全ての変換が終了しました。");
+            BatButtonCtrl(false);
           });
+          ffmpeg_process.Dispose();
+          if(ffmpegfm != null)
+            ffmpegfm?.Invoke(ffmpegfm.OnProcessExit);
         }
         finally
         {
@@ -479,7 +490,8 @@ namespace ffmpeg_ytdlp_gui
         var process = CreateFFmpegProcess(
           pair.Key,
           new BindingSource(new StringListItems(pair.Value.Select(item => new StringListItem(item))), string.Empty),
-          ffmpegProcessesDone
+          ffmpegProcessesDone,
+          true
         );
         if (process == null)
           continue;
@@ -494,7 +506,9 @@ namespace ffmpeg_ytdlp_gui
     
     private void btnCancelConvertList_Click(object sender, EventArgs e)
     {
-
+      BatButtonCtrl(false);
+      // todo: cancel multi convert
+      //StopProcess(true);
     }
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
@@ -502,7 +516,7 @@ namespace ffmpeg_ytdlp_gui
       if (BatchList == null)
       {
         BatchList = new FFmpegBatchList();
-        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = true;
+        BatButtonCtrl(true);
       }
 
       try
@@ -531,6 +545,8 @@ namespace ffmpeg_ytdlp_gui
         );
         FileListBindingSource.Clear();
       }
+
+      WriteConvertListStatus(BatchList.Count);
     }
 
     private void btnSubmitBatchClear_Click(object sender, EventArgs e)
@@ -542,12 +558,12 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnStop_Click(object sender, EventArgs e)
     {
-      StopCurrentProcess();
+      StopProcess(false);
     }
 
     private void btnStopAll_Click(object sender, EventArgs e)
     {
-      StopAllProcess();
+      StopProcess(true);
     }
 
     private void UseVideoEncoder_SelectedIndexChanged(object sender, EventArgs e)
@@ -788,7 +804,9 @@ namespace ffmpeg_ytdlp_gui
           .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
         OnBeginProcess();
-        CreateFFmpegProcess(command, "PageUtility")?.One(listfile);
+        var process = CreateFFmpegProcess(command, "PageUtility");
+        process.ProcessesDone += abnormal => ffmpeg_process.Dispose();
+        process.One(listfile);
       }
       catch (Exception ex)
       {
@@ -939,6 +957,7 @@ namespace ffmpeg_ytdlp_gui
 
           command.setOptions(list);
         };
+        process.ProcessesDone += b => ffmpeg_process.Dispose();
         process.Begin();
       }
       catch (Exception exception)

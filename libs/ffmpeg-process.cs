@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ffmpeg_ytdlp_gui.libs
 {
-  public class ffmpeg_process : IDisposable
+  public class ffmpeg_process
   {
     // statics
     // ---------------------------------------------------------------------------------------
@@ -35,6 +35,12 @@ namespace ffmpeg_ytdlp_gui.libs
     private static int RefCounter = 0;
     private static object _lock = new object();
 
+    public static void Dispose()
+    {
+      if(LogWriter  != null)
+        LogWriter.Dispose();
+    }
+
     // instances
     // ---------------------------------------------------------------------------------------
     protected BindingSource? FileListBindingSource;
@@ -49,7 +55,7 @@ namespace ffmpeg_ytdlp_gui.libs
     public event Action<ffmpeg_command?,string>? PreProcess;
 
     public ffmpeg_command? Command { get; protected set; }
-    public string? LogFileName { get; private set; } = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
+    public string? LogFileName { get; protected set; } = RedirectedProcess.GetTemporaryFileName("ffmpeg-stderr-",".log");
 
     public ffmpeg_process(ffmpeg_command command,IEnumerable<string> list)
       : this(command,new BindingSource() { DataSource = list.ToList(), }) { }
@@ -160,7 +166,14 @@ namespace ffmpeg_ytdlp_gui.libs
       if (string.IsNullOrEmpty(data))
         return;
 
-      LogWriter?.WriteLine(data);
+      try
+      {
+        LogWriter?.WriteLine(data);
+      }
+      catch(Exception exception)
+      {
+        Debug.WriteLine(exception.Message);
+      }
     }
 
     private void OnProcessExited(object? sender, EventArgs? e)
@@ -187,7 +200,6 @@ namespace ffmpeg_ytdlp_gui.libs
       OnProcessesDone();
       FileListBindingSource?.Clear();
       FileListBindingSource?.ResetBindings(false);
-      LogWriter?.Flush();
     }
 
     public void Kill(bool stopAll = false)
@@ -217,12 +229,6 @@ namespace ffmpeg_ytdlp_gui.libs
     protected void OnPreProcess(ffmpeg_command? command,string filename)
     {
       PreProcess?.Invoke(command,filename);
-    }
-
-    public void Dispose()
-    {
-      if(LogWriter  != null)
-        LogWriter.Dispose();
     }
   }
 }
