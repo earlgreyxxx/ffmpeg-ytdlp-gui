@@ -195,7 +195,7 @@ namespace ffmpeg_ytdlp_gui.libs
       return infoes.FirstOrDefault();
     }
 
-    public async Task GetDownloadFileNames()
+    public Task GetDownloadFileNames()
     {
       var parser = Clone();
 
@@ -245,7 +245,7 @@ namespace ffmpeg_ytdlp_gui.libs
       parser.StdInWriter?.WriteLine(JsonText);
       parser.StdInWriter?.Dispose();
 
-      await parser.WaitForExitAsync();
+      return parser.WaitForExitAsync();
     }
   }
 }
