@@ -941,7 +941,7 @@ namespace ffmpeg_ytdlp_gui
       if (false == list.Any(item => item == format))
         OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
 
-      YtdlpAddDownloadQueue(ytdlpItem!, FmtSeparated.Checked);
+      YtdlpAddDownloadQueue(ytdlpItem, FmtSeparated.Checked);
     }
 
     private void BeginDequeue_Click(object sender, EventArgs e)
