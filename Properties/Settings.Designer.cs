@@ -412,5 +412,17 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["maxListItems"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        public string useCookie {
+            get {
+                return ((string)(this["useCookie"]));
+            }
+            set {
+                this["useCookie"] = value;
+            }
+        }
     }
 }

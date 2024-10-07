@@ -168,7 +168,11 @@ namespace ffmpeg_ytdlp_gui
 
       FilePrefix.Text = FileSuffix.Text = string.Empty;
 
-      UseCookie.SelectedIndex = 0;
+      if (!string.IsNullOrEmpty(Settings.Default.useCookie))
+        UseCookie.SelectedValue = Settings.Default.useCookie;
+      else
+        UseCookie.SelectedIndex = 0;
+
       VideoFrameRate.SelectedIndex = 0;
     }
 
@@ -203,6 +207,8 @@ namespace ffmpeg_ytdlp_gui
       // 出力ファイル名形式
       var formats = OutputFileFormatBindingSource.DataSource as List<string>;
       Settings.Default.downloadFileNames = [.. formats?.TakeLast(Convert.ToInt32(MaxListItems.Value)).Reverse()];
+
+      Settings.Default.useCookie = UseCookie.SelectedValue as string ?? "none";
 
       Settings.Default.Save();
     }
@@ -1111,7 +1117,10 @@ namespace ffmpeg_ytdlp_gui
     private void FileListMenuItemDelete_Click(object sender, EventArgs e)
     {
       foreach (var item in FileList.SelectedItems.Cast<object>().Select(item => item).ToArray())
+      {
         FileListBindingSource.Remove(item);
+        FileListBindingSource.ResetBindings(false);
+      }
     }
 
     private void EditListItems(object sender, LinkLabelLinkClickedEventArgs e)

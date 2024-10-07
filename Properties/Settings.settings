@@ -101,5 +101,8 @@
     <Setting Name="maxListItems" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
+    <Setting Name="useCookie" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

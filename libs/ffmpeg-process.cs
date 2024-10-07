@@ -96,7 +96,10 @@ namespace ffmpeg_ytdlp_gui.libs
         LogWriter = null;
         var item = FileListBindingSource?.OfType<StringListItem>().FirstOrDefault(item => filename == item.Value);
         if (item != null)
+        {
           FileListBindingSource?.Remove(item);
+          FileListBindingSource?.ResetBindings(false);
+        }
 
         return false;
       }

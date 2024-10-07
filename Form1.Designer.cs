@@ -207,6 +207,8 @@
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       PageSetting = new System.Windows.Forms.TabPage();
       groupBox4 = new System.Windows.Forms.GroupBox();
+      label35 = new System.Windows.Forms.Label();
+      MaxListItems = new System.Windows.Forms.NumericUpDown();
       CommandInvoker = new System.Windows.Forms.Button();
       Overwrite = new System.Windows.Forms.CheckBox();
       ClearLists = new System.Windows.Forms.Button();
@@ -240,8 +242,6 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
-      MaxListItems = new System.Windows.Forms.NumericUpDown();
-      label35 = new System.Windows.Forms.Label();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -286,6 +286,7 @@
       ((System.ComponentModel.ISupportInitialize)ThumbnailBox).BeginInit();
       PageSetting.SuspendLayout();
       groupBox4.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)MaxListItems).BeginInit();
       groupBox3.SuspendLayout();
       groupBox2.SuspendLayout();
       ImageContextMenu.SuspendLayout();
@@ -298,7 +299,6 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).BeginInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)MaxListItems).BeginInit();
       SuspendLayout();
       // 
       // Commandlines
@@ -1436,10 +1436,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 419);
+      PageUtility.Size = new System.Drawing.Size(832, 424);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1508,7 +1508,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1908,10 +1908,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2277,6 +2277,25 @@
       groupBox4.TabStop = false;
       groupBox4.Text = "共通・全般";
       // 
+      // label35
+      // 
+      label35.AutoSize = true;
+      label35.Location = new System.Drawing.Point(18, 85);
+      label35.Name = "label35";
+      label35.Size = new System.Drawing.Size(125, 15);
+      label35.TabIndex = 44;
+      label35.Text = "リストの最大保存項目数";
+      // 
+      // MaxListItems
+      // 
+      MaxListItems.Location = new System.Drawing.Point(148, 81);
+      MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
+      MaxListItems.Name = "MaxListItems";
+      MaxListItems.Size = new System.Drawing.Size(48, 23);
+      MaxListItems.TabIndex = 43;
+      MaxListItems.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      MaxListItems.Value = new decimal(new int[] { 20, 0, 0, 0 });
+      // 
       // CommandInvoker
       // 
       CommandInvoker.Enabled = false;
@@ -2610,25 +2629,6 @@
       // 
       PlaylistBindingSource.DataMember = "Item4";
       // 
-      // MaxListItems
-      // 
-      MaxListItems.Location = new System.Drawing.Point(148, 81);
-      MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
-      MaxListItems.Name = "MaxListItems";
-      MaxListItems.Size = new System.Drawing.Size(48, 23);
-      MaxListItems.TabIndex = 43;
-      MaxListItems.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      MaxListItems.Value = new decimal(new int[] { 20, 0, 0, 0 });
-      // 
-      // label35
-      // 
-      label35.AutoSize = true;
-      label35.Location = new System.Drawing.Point(18, 85);
-      label35.Name = "label35";
-      label35.Size = new System.Drawing.Size(125, 15);
-      label35.TabIndex = 44;
-      label35.Text = "リストの最大保存項目数";
-      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2709,6 +2709,7 @@
       PageSetting.ResumeLayout(false);
       groupBox4.ResumeLayout(false);
       groupBox4.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)MaxListItems).EndInit();
       groupBox3.ResumeLayout(false);
       groupBox3.PerformLayout();
       groupBox2.ResumeLayout(false);
@@ -2724,7 +2725,6 @@
       ((System.ComponentModel.ISupportInitialize)UrlBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)OutputFileFormatBindingSource).EndInit();
       ((System.ComponentModel.ISupportInitialize)PlaylistBindingSource).EndInit();
-      ((System.ComponentModel.ISupportInitialize)MaxListItems).EndInit();
       ResumeLayout(false);
       PerformLayout();
     }

@@ -215,7 +215,10 @@ namespace ffmpeg_ytdlp_gui
             var items = UrlBindingSource.DataSource as YtdlpItems;
             var item = items?.FirstOrDefault(item => item?.Item1 == downloader.Url);
             if (item != null)
+            {
               UrlBindingSource.Remove(item);
+              UrlBindingSource.ResetBindings(false);
+            }
           }
         });
 

@@ -106,6 +106,13 @@ namespace ffmpeg_ytdlp_gui
       DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
       HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
       MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
+
+      DeleteUrlAfterDownloaded.Checked = Settings.Default.deleteUrlAfterDownload;
+      MaxListItems.Value = Settings.Default.maxListItems;
+      HideThumbnail.Checked = Settings.Default.hideThumbnail;
+      IsOpenStderr.Checked = Settings.Default.openStderr;
+      Overwrite.Checked = Settings.Default.overwrite;
+      CookiePath.Text = Settings.Default.cookiePath;
     }
 
     private void InitializeDataSource()
@@ -484,6 +491,7 @@ namespace ffmpeg_ytdlp_gui
           return;
 
         FileListBindingSource.Remove(item);
+        FileListBindingSource.ResetBindings(false);
       });
       process.ProcessesDone += abnormal => Invoke(() =>
       {
