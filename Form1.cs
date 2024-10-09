@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ffmpeg_ytdlp_gui
@@ -32,6 +34,7 @@ namespace ffmpeg_ytdlp_gui
     private Size StdoutFormSize = new(0, 0);
     private FFmpegBatchList? BatchList;
     private PictureBoxSizeMode? SizeMode;
+    private List<Task> BatchTasks = new();
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -174,11 +177,20 @@ namespace ffmpeg_ytdlp_gui
         UseCookie.SelectedIndex = 0;
 
       VideoFrameRate.SelectedIndex = 0;
+
+      DeleteUrlAfterDownloaded.Checked = Settings.Default.deleteUrlAfterDownload;
+      MaxListItems.Value = Settings.Default.maxListItems;
+      HideThumbnail.Checked = Settings.Default.hideThumbnail;
+      IsOpenStderr.Checked = Settings.Default.openStderr;
+      Overwrite.Checked = Settings.Default.overwrite;
+      CookiePath.Text = Settings.Default.cookiePath;
+      BatExecWithConsole.Checked = Settings.Default.batExecWithConsole;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
-      if (Proceeding != null)
+      bool HasTaskRun = BatchTasks.Where(task => !task.IsCompleted).Count() > 0;
+      if (Proceeding != null || HasTaskRun)
       {
         e.Cancel = true;
         return;
@@ -439,7 +451,9 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitBatExecute_Click(object sender, EventArgs e)
     {
-      string filename = RedirectedProcess.GetTemporaryFileName("ffmpeg-process-bat", ".bat");
+      bool WithConsole = BatExecWithConsole.Checked; 
+
+      string filename = RedirectedProcess.GetTemporaryFileName(WithConsole ? "ffmpeg-convert-bat" : "ffmpeg-process-bat", ".bat");
 
       if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？", "警告", MessageBoxButtons.YesNo))
         return;
@@ -449,17 +463,31 @@ namespace ffmpeg_ytdlp_gui
 
       using (var sw = new StreamWriter(filename, false, Encoding.GetEncoding(932)))
       {
-        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting, false));
+        sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting, WithConsole));
       }
 
-      var form = OpenOutputView(filename, string.Empty,new UTF8Encoding(false),"BAT execution log");
-      var redirected = form?.Redirected;
-      if (form == null || redirected == null)
-        return;
+      if (WithConsole)
+      {
+        BatchTasks.Add(
+          Task.Run(() =>
+          {
+            using var process = Process.Start(filename);
+            process.WaitForExit();
+            File.Delete(filename);
+          })
+        );
+      }
+      else
+      {
+        var form = OpenOutputView(filename, string.Empty, new UTF8Encoding(false), "BAT execution log");
+        var redirected = form?.Redirected;
+        if (form == null || redirected == null)
+          return;
 
-      redirected.ProcessExited += (s, e) => File.Delete(filename);
+        redirected.ProcessExited += (s, e) => File.Delete(filename);
 
-      form?.Show();
+        form?.Show();
+      }
     }
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
@@ -501,7 +529,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitBatchClear_Click(object sender, EventArgs e)
     {
-      BatchList!.Clear();
+      BatchList?.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
     }
@@ -1327,11 +1355,6 @@ namespace ffmpeg_ytdlp_gui
     private void StatusBarMenuItemClearQueue_Click(object sender, EventArgs e)
     {
       YtdlpClearDequeue();
-    }
-
-    private void HideThumbnail_CheckStateChanged(object sender, EventArgs e)
-    {
-      Invoke(DownloadUrl_SelectedIndexChanged, [DownloadUrl, new EventArgs()]);
     }
   }
 }

@@ -424,5 +424,17 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["useCookie"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool batExecWithConsole {
+            get {
+                return ((bool)(this["batExecWithConsole"]));
+            }
+            set {
+                this["batExecWithConsole"] = value;
+            }
+        }
     }
 }

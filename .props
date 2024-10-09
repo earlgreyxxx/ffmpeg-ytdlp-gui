@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <WindowsSdkPackageVersion>10.0.19041.47</WindowsSdkPackageVersion>
+  </PropertyGroup>
+</Project>

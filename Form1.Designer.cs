@@ -227,6 +227,7 @@
       ytdlpFindInPath = new System.Windows.Forms.Button();
       btnYtdlp = new System.Windows.Forms.Button();
       groupBox2 = new System.Windows.Forms.GroupBox();
+      BatExecWithConsole = new System.Windows.Forms.CheckBox();
       ImageContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
       OutputBox = new System.Windows.Forms.GroupBox();
@@ -770,7 +771,7 @@
       // 
       // btnSubmitAddToBatch
       // 
-      btnSubmitAddToBatch.Location = new System.Drawing.Point(202, 12);
+      btnSubmitAddToBatch.Location = new System.Drawing.Point(279, 12);
       btnSubmitAddToBatch.Name = "btnSubmitAddToBatch";
       btnSubmitAddToBatch.Size = new System.Drawing.Size(93, 24);
       btnSubmitAddToBatch.TabIndex = 23;
@@ -1133,7 +1134,7 @@
       btnFindInPath.TabIndex = 38;
       btnFindInPath.TabStop = false;
       btnFindInPath.Tag = "ffmpeg";
-      btnFindInPath.Text = "環境変数PATHから探す";
+      btnFindInPath.Text = "環境変数PATHから検索";
       btnFindInPath.UseVisualStyleBackColor = true;
       btnFindInPath.Click += FindInPath_Click;
       // 
@@ -1381,7 +1382,7 @@
       // btnSubmitBatchClear
       // 
       btnSubmitBatchClear.Enabled = false;
-      btnSubmitBatchClear.Location = new System.Drawing.Point(307, 12);
+      btnSubmitBatchClear.Location = new System.Drawing.Point(384, 12);
       btnSubmitBatchClear.Name = "btnSubmitBatchClear";
       btnSubmitBatchClear.Size = new System.Drawing.Size(84, 24);
       btnSubmitBatchClear.TabIndex = 34;
@@ -1392,7 +1393,7 @@
       // btnSubmitSaveToFile
       // 
       btnSubmitSaveToFile.Enabled = false;
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(90, 12);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(167, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
       btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 24);
       btnSubmitSaveToFile.TabIndex = 33;
@@ -1436,10 +1437,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 22);
+      PageUtility.Location = new System.Drawing.Point(4, 27);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 424);
+      PageUtility.Size = new System.Drawing.Size(832, 419);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1508,7 +1509,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -2270,9 +2271,9 @@
       groupBox4.Controls.Add(Overwrite);
       groupBox4.Controls.Add(ClearLists);
       groupBox4.Controls.Add(IsOpenStderr);
-      groupBox4.Location = new System.Drawing.Point(11, 282);
+      groupBox4.Location = new System.Drawing.Point(11, 319);
       groupBox4.Name = "groupBox4";
-      groupBox4.Size = new System.Drawing.Size(812, 136);
+      groupBox4.Size = new System.Drawing.Size(812, 99);
       groupBox4.TabIndex = 43;
       groupBox4.TabStop = false;
       groupBox4.Text = "共通・全般";
@@ -2280,7 +2281,7 @@
       // label35
       // 
       label35.AutoSize = true;
-      label35.Location = new System.Drawing.Point(18, 85);
+      label35.Location = new System.Drawing.Point(18, 59);
       label35.Name = "label35";
       label35.Size = new System.Drawing.Size(125, 15);
       label35.TabIndex = 44;
@@ -2288,7 +2289,7 @@
       // 
       // MaxListItems
       // 
-      MaxListItems.Location = new System.Drawing.Point(148, 81);
+      MaxListItems.Location = new System.Drawing.Point(150, 55);
       MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
       MaxListItems.Name = "MaxListItems";
       MaxListItems.Size = new System.Drawing.Size(48, 23);
@@ -2311,17 +2312,16 @@
       // Overwrite
       // 
       Overwrite.AutoSize = true;
-      Overwrite.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      Overwrite.Location = new System.Drawing.Point(18, 55);
+      Overwrite.Location = new System.Drawing.Point(207, 27);
       Overwrite.Name = "Overwrite";
-      Overwrite.Size = new System.Drawing.Size(179, 19);
+      Overwrite.Size = new System.Drawing.Size(187, 19);
       Overwrite.TabIndex = 36;
-      Overwrite.Text = "既存ファイルの上書きを許可する";
+      Overwrite.Text = "既存ファイルの上書きを許可する。";
       Overwrite.UseVisualStyleBackColor = true;
       // 
       // ClearLists
       // 
-      ClearLists.Location = new System.Drawing.Point(562, 103);
+      ClearLists.Location = new System.Drawing.Point(562, 53);
       ClearLists.Name = "ClearLists";
       ClearLists.Size = new System.Drawing.Size(244, 27);
       ClearLists.TabIndex = 41;
@@ -2333,15 +2333,14 @@
       // IsOpenStderr
       // 
       IsOpenStderr.AutoSize = true;
-      IsOpenStderr.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
       IsOpenStderr.Checked = true;
       IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
       IsOpenStderr.Location = new System.Drawing.Point(18, 27);
       IsOpenStderr.Name = "IsOpenStderr";
-      IsOpenStderr.Size = new System.Drawing.Size(165, 19);
+      IsOpenStderr.Size = new System.Drawing.Size(173, 19);
       IsOpenStderr.TabIndex = 35;
       IsOpenStderr.TabStop = false;
-      IsOpenStderr.Text = "実行中の出力ウィンドウを開く";
+      IsOpenStderr.Text = "実行中の出力ウィンドウを開く。";
       IsOpenStderr.UseVisualStyleBackColor = true;
       // 
       // groupBox3
@@ -2359,9 +2358,9 @@
       groupBox3.Controls.Add(ytdlpFindInPath);
       groupBox3.Controls.Add(btnYtdlp);
       groupBox3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      groupBox3.Location = new System.Drawing.Point(11, 94);
+      groupBox3.Location = new System.Drawing.Point(11, 139);
       groupBox3.Name = "groupBox3";
-      groupBox3.Size = new System.Drawing.Size(812, 182);
+      groupBox3.Size = new System.Drawing.Size(812, 174);
       groupBox3.TabIndex = 40;
       groupBox3.TabStop = false;
       groupBox3.Text = "ダウンロード";
@@ -2369,14 +2368,12 @@
       // HideThumbnail
       // 
       HideThumbnail.AutoSize = true;
-      HideThumbnail.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      HideThumbnail.Location = new System.Drawing.Point(20, 151);
+      HideThumbnail.Location = new System.Drawing.Point(241, 126);
       HideThumbnail.Name = "HideThumbnail";
-      HideThumbnail.Size = new System.Drawing.Size(145, 19);
+      HideThumbnail.Size = new System.Drawing.Size(181, 19);
       HideThumbnail.TabIndex = 42;
-      HideThumbnail.Text = "サムネール画像を非表示";
+      HideThumbnail.Text = "サムネール画像を非表示にする。";
       HideThumbnail.UseVisualStyleBackColor = true;
-      HideThumbnail.CheckStateChanged += HideThumbnail_CheckStateChanged;
       // 
       // label24
       // 
@@ -2433,13 +2430,12 @@
       // DeleteUrlAfterDownloaded
       // 
       DeleteUrlAfterDownloaded.AutoSize = true;
-      DeleteUrlAfterDownloaded.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
       DeleteUrlAfterDownloaded.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(20, 126);
       DeleteUrlAfterDownloaded.Name = "DeleteUrlAfterDownloaded";
-      DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(201, 19);
+      DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(209, 19);
       DeleteUrlAfterDownloaded.TabIndex = 40;
-      DeleteUrlAfterDownloaded.Text = "ダウンロード完了後リストから削除する";
+      DeleteUrlAfterDownloaded.Text = "ダウンロード完了後リストから削除する。";
       DeleteUrlAfterDownloaded.UseVisualStyleBackColor = true;
       // 
       // label32
@@ -2484,7 +2480,7 @@
       ytdlpFindInPath.TabIndex = 38;
       ytdlpFindInPath.TabStop = false;
       ytdlpFindInPath.Tag = "yt-dlp";
-      ytdlpFindInPath.Text = "環境変数PATHから探す";
+      ytdlpFindInPath.Text = "環境変数PATHから検索";
       ytdlpFindInPath.UseVisualStyleBackColor = true;
       ytdlpFindInPath.Click += FindInPath_Click;
       // 
@@ -2502,6 +2498,7 @@
       // 
       // groupBox2
       // 
+      groupBox2.Controls.Add(BatExecWithConsole);
       groupBox2.Controls.Add(label8);
       groupBox2.Controls.Add(ffmpeg);
       groupBox2.Controls.Add(btnFFmpeg);
@@ -2509,10 +2506,20 @@
       groupBox2.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       groupBox2.Location = new System.Drawing.Point(11, 18);
       groupBox2.Name = "groupBox2";
-      groupBox2.Size = new System.Drawing.Size(812, 70);
+      groupBox2.Size = new System.Drawing.Size(812, 115);
       groupBox2.TabIndex = 40;
       groupBox2.TabStop = false;
       groupBox2.Text = "動画変換";
+      // 
+      // BatExecWithConsole
+      // 
+      BatExecWithConsole.AutoSize = true;
+      BatExecWithConsole.Location = new System.Drawing.Point(20, 64);
+      BatExecWithConsole.Name = "BatExecWithConsole";
+      BatExecWithConsole.Size = new System.Drawing.Size(235, 19);
+      BatExecWithConsole.TabIndex = 40;
+      BatExecWithConsole.Text = "バッチ実行はコンソールウィンドウで実行する。";
+      BatExecWithConsole.UseVisualStyleBackColor = true;
       // 
       // ImageContextMenu
       // 
@@ -2944,6 +2951,7 @@
     private System.Windows.Forms.Button btnSubmitBatExecute;
     private System.Windows.Forms.NumericUpDown MaxListItems;
     private System.Windows.Forms.Label label35;
+    private System.Windows.Forms.CheckBox BatExecWithConsole;
   }
 }
 

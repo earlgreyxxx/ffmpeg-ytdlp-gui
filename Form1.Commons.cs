@@ -106,13 +106,7 @@ namespace ffmpeg_ytdlp_gui
       DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
       HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
       MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
-
-      DeleteUrlAfterDownloaded.Checked = Settings.Default.deleteUrlAfterDownload;
-      MaxListItems.Value = Settings.Default.maxListItems;
-      HideThumbnail.Checked = Settings.Default.hideThumbnail;
-      IsOpenStderr.Checked = Settings.Default.openStderr;
-      Overwrite.Checked = Settings.Default.overwrite;
-      CookiePath.Text = Settings.Default.cookiePath;
+      BatExecWithConsole.DataBindings.Add("Checked", Settings.Default, "batExecWithConsole");
     }
 
     private void InitializeDataSource()
