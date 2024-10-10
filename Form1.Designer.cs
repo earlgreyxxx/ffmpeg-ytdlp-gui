@@ -243,6 +243,7 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
+      BatListCount = new System.Windows.Forms.ToolStripStatusLabel();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -771,7 +772,7 @@
       // 
       // btnSubmitAddToBatch
       // 
-      btnSubmitAddToBatch.Location = new System.Drawing.Point(279, 12);
+      btnSubmitAddToBatch.Location = new System.Drawing.Point(204, 12);
       btnSubmitAddToBatch.Name = "btnSubmitAddToBatch";
       btnSubmitAddToBatch.Size = new System.Drawing.Size(93, 24);
       btnSubmitAddToBatch.TabIndex = 23;
@@ -1152,7 +1153,7 @@
       // StatusBar
       // 
       StatusBar.ContextMenuStrip = StatusBarMenu;
-      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, DummyProgressBar, QueueCount });
+      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { BatListCount, OutputStderr, DummyProgressBar, QueueCount });
       StatusBar.Location = new System.Drawing.Point(3, 598);
       StatusBar.Name = "StatusBar";
       StatusBar.Size = new System.Drawing.Size(840, 23);
@@ -1179,7 +1180,7 @@
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(703, 18);
+      OutputStderr.Size = new System.Drawing.Size(634, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1382,7 +1383,7 @@
       // btnSubmitBatchClear
       // 
       btnSubmitBatchClear.Enabled = false;
-      btnSubmitBatchClear.Location = new System.Drawing.Point(384, 12);
+      btnSubmitBatchClear.Location = new System.Drawing.Point(309, 12);
       btnSubmitBatchClear.Name = "btnSubmitBatchClear";
       btnSubmitBatchClear.Size = new System.Drawing.Size(84, 24);
       btnSubmitBatchClear.TabIndex = 34;
@@ -1393,7 +1394,7 @@
       // btnSubmitSaveToFile
       // 
       btnSubmitSaveToFile.Enabled = false;
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(167, 12);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(92, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
       btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 24);
       btnSubmitSaveToFile.TabIndex = 33;
@@ -1909,10 +1910,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 419);
+      PageDownloader.Size = new System.Drawing.Size(832, 424);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2636,6 +2637,12 @@
       // 
       PlaylistBindingSource.DataMember = "Item4";
       // 
+      // BatListCount
+      // 
+      BatListCount.Name = "BatListCount";
+      BatListCount.Size = new System.Drawing.Size(69, 18);
+      BatListCount.Text = "Bat List: 0";
+      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2952,6 +2959,7 @@
     private System.Windows.Forms.NumericUpDown MaxListItems;
     private System.Windows.Forms.Label label35;
     private System.Windows.Forms.CheckBox BatExecWithConsole;
+    private System.Windows.Forms.ToolStripStatusLabel BatListCount;
   }
 }
 

@@ -227,16 +227,16 @@ namespace ffmpeg_ytdlp_gui
 
     private void ClearListItem_Click(object sender, EventArgs e)
     {
-      if (DialogResult.Yes == MessageBox.Show("本当に設定を全てリセットしていいですか？", "クリア確認", MessageBoxButtons.YesNo))
-      {
-        ffmpeg.Items.Clear();
-        DirectoryListBindingSource.Clear();
-        OutputFileFormatBindingSource.Clear();
-        UrlBindingSource.Clear();
-        Settings.Default.Reset();
+      if (DialogResult.Yes != MessageBox.Show("本当に設定を全てリセットしていいですか？", "クリア確認", MessageBoxButtons.YesNo))
+        return;
 
-        ToastPush("設定を全てリセットしました。");
-      }
+      ffmpeg.Items.Clear();
+      DirectoryListBindingSource.Clear();
+      OutputFileFormatBindingSource.Clear();
+      UrlBindingSource.Clear();
+      Settings.Default.Reset();
+
+      ToastPush("設定を全てリセットしました。");
     }
 
     private void btnSubmitInvoke_Click(object sender, EventArgs e)
@@ -447,6 +447,7 @@ namespace ffmpeg_ytdlp_gui
       BatchList.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+      WriteBatListStatus();
     }
 
     private void btnSubmitBatExecute_Click(object sender, EventArgs e)
@@ -492,26 +493,17 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
     {
-      if (BatchList == null)
-      {
-        BatchList = new FFmpegBatchList();
-        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = true;
-      }
-
       try
       {
         CheckDirectory(cbOutputDir.Text);
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show(ex.Message, "エラー");
-        return;
-      }
+        AddDirectoryListItem();
 
-      AddDirectoryListItem();
+        if (FileListBindingSource.Count == 0)
+          return;
 
-      if (FileListBindingSource.Count > 0)
-      {
+        if (BatchList == null)
+          BatchList = new FFmpegBatchList();
+
         var command = CreateCommand(chkAudioOnly.Checked);
         command.Overwrite = Overwrite.Checked;
 
@@ -524,6 +516,14 @@ namespace ffmpeg_ytdlp_gui
         );
 
         FileListBindingSource.Clear();
+
+        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = true;
+        WriteBatListStatus();
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "エラー");
+        return;
       }
     }
 
@@ -532,6 +532,7 @@ namespace ffmpeg_ytdlp_gui
       BatchList?.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+      WriteBatListStatus();
     }
 
     private void btnStop_Click(object sender, EventArgs e)

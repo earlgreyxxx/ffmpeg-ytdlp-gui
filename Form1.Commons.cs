@@ -419,6 +419,11 @@ namespace ffmpeg_ytdlp_gui
       toast.Show();
     }
 
+    private void WriteBatListStatus()
+    {
+      BatListCount.Text = $"Bat List: {BatchList?.Count ?? 0}";
+    }
+
     /// <summary>
     /// ffmpegpプロセス起動前に実行
     /// </summary>
