@@ -109,6 +109,7 @@
       StatusBar = new System.Windows.Forms.StatusStrip();
       StatusBarMenu = new System.Windows.Forms.ContextMenuStrip(components);
       StatusBarMenuItemClearQueue = new System.Windows.Forms.ToolStripMenuItem();
+      BatListCount = new System.Windows.Forms.ToolStripStatusLabel();
       OutputStderr = new System.Windows.Forms.ToolStripStatusLabel();
       DummyProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       QueueCount = new System.Windows.Forms.ToolStripStatusLabel();
@@ -243,7 +244,6 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
-      BatListCount = new System.Windows.Forms.ToolStripStatusLabel();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -1175,6 +1175,12 @@
       StatusBarMenuItemClearQueue.Text = "キューのクリア";
       StatusBarMenuItemClearQueue.Click += StatusBarMenuItemClearQueue_Click;
       // 
+      // BatListCount
+      // 
+      BatListCount.Name = "BatListCount";
+      BatListCount.Size = new System.Drawing.Size(69, 18);
+      BatListCount.Text = "Bat List: 0";
+      // 
       // OutputStderr
       // 
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -1438,10 +1444,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 419);
+      PageUtility.Size = new System.Drawing.Size(832, 424);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1510,7 +1516,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -1910,10 +1916,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2257,10 +2263,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 22);
+      PageSetting.Location = new System.Drawing.Point(4, 27);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 424);
+      PageSetting.Size = new System.Drawing.Size(832, 419);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
@@ -2636,12 +2642,6 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
-      // 
-      // BatListCount
-      // 
-      BatListCount.Name = "BatListCount";
-      BatListCount.Size = new System.Drawing.Size(69, 18);
-      BatListCount.Text = "Bat List: 0";
       // 
       // Form1
       // 

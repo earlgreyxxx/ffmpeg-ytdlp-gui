@@ -476,6 +476,7 @@ namespace ffmpeg_ytdlp_gui
     /// ffmpegプロセス
     /// </summary>
     private ffmpeg_process? Proceeding;
+    private StdoutForm? ffmpegfm;
 
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,string tabpageName)
     {
@@ -506,9 +507,18 @@ namespace ffmpeg_ytdlp_gui
 
       if (IsOpenStderr.Checked)
       {
-        var form = new StdoutForm();
-        form.FormClosing += StdoutFormClosingAction;
-        form.Load += StdoutFormLoadAction;
+        StdoutForm? form;
+        if(ffmpegfm == null)
+        {
+          ffmpegfm = form = new StdoutForm();
+          form.FormClosing += StdoutFormClosingAction;
+          form.FormClosing += (s, e) => ffmpegfm = null;
+          form.Load += StdoutFormLoadAction;
+        }
+        else
+        {
+          form = ffmpegfm;
+        }
 
         Action<string> dataReceiver = data =>
         {
@@ -520,7 +530,11 @@ namespace ffmpeg_ytdlp_gui
           else
             form.Invoke(() => form.WriteLine(data));
         };
-        Action<bool> processDone = b => form.Invoke(form.OnProcessExit);
+        Action<bool> processDone = b =>
+        {
+          if (Proceeding == null)
+            form.Invoke(form.OnProcessExit);
+        };
 
         process.ReceiveData += dataReceiver;
         process.ProcessesDone += processDone;
@@ -533,10 +547,11 @@ namespace ffmpeg_ytdlp_gui
           process.ProcessesDone -= processDone;
           form.Release();
           form.Close();
-          form = null;
+          ffmpegfm = form = null;
         };
-
-        form.Show();
+        
+        if(!form.Visible)
+          form.Show();
       }
 
       Proceeding = process;
