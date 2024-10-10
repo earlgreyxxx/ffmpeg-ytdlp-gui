@@ -62,7 +62,7 @@ namespace ffmpeg_ytdlp_gui.libs
         yield return "-hwaccel_output_format qsv";
       }
 
-      if (options.ContainsKey("hwdecoder") && !string.IsNullOrEmpty(options["hwdecoder"]))
+      if (options.ContainsKey("hwdecoder") && !string.IsNullOrEmpty(options["hwdecoder"]) && options["hwdecoder"] != "none")
         yield return $"-c:v {options["hwdecoder"]}";
 
       if (options.ContainsKey("ss") && !string.IsNullOrEmpty(options["ss"]))

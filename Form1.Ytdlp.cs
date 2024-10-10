@@ -60,8 +60,8 @@ namespace ffmpeg_ytdlp_gui
             else
             {
               ytdlp = null;
-              if (IsOpenStderr.Checked && ytdlpfm != null)
-                ytdlpfm = null;
+              //if (IsOpenStderr.Checked && ytdlpfm != null)
+              //  ytdlpfm = null;
 
               Invoke(OnDownloaded);
               ToastPush("ダウンロードキューが空になりました。", "PageDownloader");
@@ -230,15 +230,14 @@ namespace ffmpeg_ytdlp_gui
             ytdlpfm = new StdoutForm();
             ytdlpfm.Load += StdoutFormLoadAction;
             ytdlpfm.FormClosing += StdoutFormClosingAction;
-
-            ytdlpfm.FormClosed += (sender, e) =>
-            {
-              // 新しい StdoutForm が生成されていなければ NULL を代入
-              bool nextBegan = form != ytdlpfm;
-              Debug.WriteLine($"Next ytdlp process was began: {nextBegan}");
-              if (!nextBegan)
-                ytdlpfm = null;
-            };
+            ytdlpfm.FormClosed += (s, e) => ytdlpfm = null;
+            //{
+            //  // 新しい StdoutForm が生成されていなければ NULL を代入
+            //  bool nextBegan = form != ytdlpfm;
+            //  Debug.WriteLine($"Next ytdlp process was began: {nextBegan}");
+            //  if (!nextBegan)
+            //    ytdlpfm = null;
+            //};
           }
 
           Action<string> receiver = data =>

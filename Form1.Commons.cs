@@ -100,13 +100,13 @@ namespace ffmpeg_ytdlp_gui
       Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
       TileColumns.DataBindings.Add("Value", Settings.Default, "tileColumns");
       TileRows.DataBindings.Add("Value", Settings.Default, "tileRows");
-      chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
       chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
       resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
       DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
       HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
       MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
       BatExecWithConsole.DataBindings.Add("Checked", Settings.Default, "batExecWithConsole");
+      chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
     }
 
     private void InitializeDataSource()
@@ -176,6 +176,7 @@ namespace ffmpeg_ytdlp_gui
         {
           "nvidia",
           [
+            new CodecListItem(new Codec("none"),"不使用"),
             new CodecListItem(new Codec("vp9","cuvid"),"VP9"),
             new CodecListItem(new Codec("h264","cuvid"),"H264"),
             new CodecListItem(new Codec("hevc","cuvid"),"HEVC"),
@@ -191,6 +192,7 @@ namespace ffmpeg_ytdlp_gui
         {
           "intel",
           [
+            new CodecListItem(new Codec("none"),"不使用"),
             new CodecListItem(new Codec("vp9","qsv"),"VP9"),
             new CodecListItem(new Codec("h264","qsv"),"H264"),
             new CodecListItem(new Codec("hevc","qsv"),"HEVC"),
@@ -204,6 +206,7 @@ namespace ffmpeg_ytdlp_gui
         {
           "cpu",
           [
+            new CodecListItem(new Codec("none"),"不使用"),
             new CodecListItem(new Codec("h264","cpu","h264"),"H264"),
             new CodecListItem(new Codec("hevc","cpu","hevc"),"HEVC"),
             new CodecListItem(new Codec("mjpeg","cpu","mjpeg"),"MJPEG"),
@@ -419,6 +422,11 @@ namespace ffmpeg_ytdlp_gui
       toast.Show();
     }
 
+    private void WriteBatListStatus()
+    {
+      BatListCount.Text = $"Bat List: {BatchList?.Count ?? 0}";
+    }
+
     /// <summary>
     /// ffmpegpプロセス起動前に実行
     /// </summary>
@@ -471,6 +479,7 @@ namespace ffmpeg_ytdlp_gui
     /// ffmpegプロセス
     /// </summary>
     private ffmpeg_process? Proceeding;
+    private StdoutForm? ffmpegfm;
 
     private ffmpeg_process CreateFFmpegProcess(ffmpeg_command command,string tabpageName)
     {
@@ -487,10 +496,10 @@ namespace ffmpeg_ytdlp_gui
         FileListBindingSource.Remove(item);
         FileListBindingSource.ResetBindings(false);
       });
+
       process.ProcessesDone += abnormal => Invoke(() =>
       {
-        btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
-        OpenLogFile.Enabled = true;
+        OnEndFFmpegProcess();
         if (FileListBindingSource.Count > 0)
           btnSubmitInvoke.Enabled = true;
 
@@ -501,46 +510,61 @@ namespace ffmpeg_ytdlp_gui
 
       if (IsOpenStderr.Checked)
       {
-        var form = new StdoutForm();
-        form.FormClosing += StdoutFormClosingAction;
-        form.Load += StdoutFormLoadAction;
-
+        StdoutForm? form;
         Action<string> dataReceiver = data =>
         {
-          if (string.IsNullOrEmpty(data))
+          if (string.IsNullOrEmpty(data) || ffmpegfm == null)
             return;
 
-          if (form.Pause)
-            form.LogData.Add(data);
+          if (ffmpegfm.Pause)
+            ffmpegfm.LogData.Add(data);
           else
-            form.Invoke(() => form.WriteLine(data));
+            ffmpegfm.Invoke(() => ffmpegfm.WriteLine(data));
         };
-        Action<bool> processDone = b => form.Invoke(form.OnProcessExit);
+
+        Action<bool> processDone = b =>
+        {
+          if (Proceeding == null)
+          {
+            ffmpegfm?.Invoke(ffmpegfm.OnProcessExit);
+            ffmpegfm?.Release();
+          }
+        };
+
+        if(ffmpegfm == null)
+        {
+          ffmpegfm = form = new StdoutForm();
+          form.FormClosing += StdoutFormClosingAction;
+          form.FormClosing += (s, e) => ffmpegfm = null;
+          form.Load += StdoutFormLoadAction;
+
+          form.CustomButton.Visible = true;
+          form.CustomButton.Text = "出力を中断して閉じる";
+          form.CustomButtonClick += (sender, e) =>
+          {
+            process.ReceiveData -= dataReceiver;
+            process.ProcessesDone -= processDone;
+            form.Release();
+            form.Close();
+            ffmpegfm = form = null;
+          };
+        }
+        else
+        {
+          form = ffmpegfm;
+          form.Lock();
+          form.Pause = false;
+        }
 
         process.ReceiveData += dataReceiver;
         process.ProcessesDone += processDone;
-
-        form.CustomButton.Visible = true;
-        form.CustomButton.Text = "出力を中断して閉じる";
-        form.CustomButtonClick += (sender, e) =>
-        {
-          process.ReceiveData -= dataReceiver;
-          process.ProcessesDone -= processDone;
-          form.Release();
-          form.Close();
-          form = null;
-        };
-
-        form.Show();
+        
+        if(!form.Visible)
+          form.Show();
       }
 
       Proceeding = process;
       return process;
-    }
-
-    private void Form_CloseWindow()
-    {
-      throw new NotImplementedException();
     }
 
     private ffmpeg_command CreateFFMpegCommandInstance()
@@ -820,12 +844,18 @@ namespace ffmpeg_ytdlp_gui
       }
     }
 
-    private void OnBeginProcess()
+    private void OnBeginFFmpegProcess()
     {
       btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = true;
       OpenLogFile.Enabled = false;
 
       AddDirectoryListItem();
+    }
+
+    private void OnEndFFmpegProcess()
+    {
+      btnStop.Enabled = btnStopAll.Enabled = btnStopUtil.Enabled = btnStopAllUtil.Enabled = false;
+      OpenLogFile.Enabled = true;
     }
 
     private void AddDirectoryListItem()

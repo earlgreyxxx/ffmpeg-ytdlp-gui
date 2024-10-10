@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -185,6 +184,7 @@ namespace ffmpeg_ytdlp_gui
       Overwrite.Checked = Settings.Default.overwrite;
       CookiePath.Text = Settings.Default.cookiePath;
       BatExecWithConsole.Checked = Settings.Default.batExecWithConsole;
+      resizeTo.Value = Settings.Default.resizeTo;
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -205,8 +205,8 @@ namespace ffmpeg_ytdlp_gui
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
       if (set != null)
       {
-        Settings.Default.outputFolders = [.. GetOutputFolders(set.Item1)];
-        Settings.Default.downloadFolders = [.. GetOutputFolders(set.Item2)];
+        Settings.Default.outputFolders = [.. GetOutputFolders(set.Item1).Order()];
+        Settings.Default.downloadFolders = [.. GetOutputFolders(set.Item2).Order()];
       }
 
       // ffmpegパス
@@ -218,7 +218,7 @@ namespace ffmpeg_ytdlp_gui
 
       // 出力ファイル名形式
       var formats = OutputFileFormatBindingSource.DataSource as List<string>;
-      Settings.Default.downloadFileNames = [.. formats?.TakeLast(Convert.ToInt32(MaxListItems.Value)).Reverse()];
+      Settings.Default.downloadFileNames = [.. formats?.TakeLast(Convert.ToInt32(MaxListItems.Value)).Order()];
 
       Settings.Default.useCookie = UseCookie.SelectedValue as string ?? "none";
 
@@ -227,16 +227,16 @@ namespace ffmpeg_ytdlp_gui
 
     private void ClearListItem_Click(object sender, EventArgs e)
     {
-      if (DialogResult.Yes == MessageBox.Show("本当に設定を全てリセットしていいですか？", "クリア確認", MessageBoxButtons.YesNo))
-      {
-        ffmpeg.Items.Clear();
-        DirectoryListBindingSource.Clear();
-        OutputFileFormatBindingSource.Clear();
-        UrlBindingSource.Clear();
-        Settings.Default.Reset();
+      if (DialogResult.Yes != MessageBox.Show("本当に設定を全てリセットしていいですか？", "クリア確認", MessageBoxButtons.YesNo))
+        return;
 
-        ToastPush("設定を全てリセットしました。");
-      }
+      ffmpeg.Items.Clear();
+      DirectoryListBindingSource.Clear();
+      OutputFileFormatBindingSource.Clear();
+      UrlBindingSource.Clear();
+      Settings.Default.Reset();
+
+      ToastPush("設定を全てリセットしました。");
     }
 
     private void btnSubmitInvoke_Click(object sender, EventArgs e)
@@ -258,7 +258,7 @@ namespace ffmpeg_ytdlp_gui
         if (FileName.Text.Trim() != "元ファイル名")
           command.OutputBaseName(FileName.Text);
 
-        OnBeginProcess();
+        OnBeginFFmpegProcess();
         var process = CreateFFmpegProcess(command, "PageConvert");
         if (process == null)
           return;
@@ -447,11 +447,12 @@ namespace ffmpeg_ytdlp_gui
       BatchList.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+      WriteBatListStatus();
     }
 
     private void btnSubmitBatExecute_Click(object sender, EventArgs e)
     {
-      bool WithConsole = BatExecWithConsole.Checked; 
+      bool WithConsole = BatExecWithConsole.Checked;
 
       string filename = RedirectedProcess.GetTemporaryFileName(WithConsole ? "ffmpeg-convert-bat" : "ffmpeg-process-bat", ".bat");
 
@@ -492,26 +493,17 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitAddToFile_Click(object sender, EventArgs e)
     {
-      if (BatchList == null)
-      {
-        BatchList = new FFmpegBatchList();
-        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = true;
-      }
-
       try
       {
         CheckDirectory(cbOutputDir.Text);
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show(ex.Message, "エラー");
-        return;
-      }
+        AddDirectoryListItem();
 
-      AddDirectoryListItem();
+        if (FileListBindingSource.Count == 0)
+          return;
 
-      if (FileListBindingSource.Count > 0)
-      {
+        if (BatchList == null)
+          BatchList = new FFmpegBatchList();
+
         var command = CreateCommand(chkAudioOnly.Checked);
         command.Overwrite = Overwrite.Checked;
 
@@ -524,6 +516,14 @@ namespace ffmpeg_ytdlp_gui
         );
 
         FileListBindingSource.Clear();
+
+        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = true;
+        WriteBatListStatus();
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "エラー");
+        return;
       }
     }
 
@@ -532,6 +532,7 @@ namespace ffmpeg_ytdlp_gui
       BatchList?.Clear();
       BatchList = null;
       btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+      WriteBatListStatus();
     }
 
     private void btnStop_Click(object sender, EventArgs e)
@@ -739,7 +740,7 @@ namespace ffmpeg_ytdlp_gui
 
         command.MultiFileProcess = InputFileList!.Count > 1;
 
-        OnBeginProcess();
+        OnBeginFFmpegProcess();
         CreateFFmpegProcess(command, "PageUtility")?.Begin();
       }
     }
@@ -781,7 +782,7 @@ namespace ffmpeg_ytdlp_gui
           .OutputSuffix(FileSuffix.Text)
           .OutputContainer(FileContainer.SelectedValue?.ToString()!);
 
-        OnBeginProcess();
+        OnBeginFFmpegProcess();
         CreateFFmpegProcess(command, "PageUtility")?.One(listfile);
       }
       catch (Exception ex)
@@ -844,7 +845,7 @@ namespace ffmpeg_ytdlp_gui
 
         command.MultiFileProcess = InputFileList.Count > 1;
 
-        OnBeginProcess();
+        OnBeginFFmpegProcess();
         var process = CreateFFmpegProcess(command, "PageUtility");
         if (process == null)
           return;
@@ -1005,20 +1006,19 @@ namespace ffmpeg_ytdlp_gui
 
     private void DownloadUrl_SelectedIndexChanged(object sender, EventArgs e)
     {
+      ThumbnailBox.ContextMenuStrip = null;
+      ThumbnailBox.Image = null;
+      DurationTime.Text = "00:00:00.0000";
+      DurationTime.Visible = false;
+      MediaTitle.Text = string.Empty;
+      VideoOnlyFormatSource.Clear();
+      AudioOnlyFormatSource.Clear();
+      MovieFormatSource.Clear();
+      AddDownloadQueue.Enabled = false;
+      SubmitDownloadDequeue.Enabled = false;
+
       if (DownloadUrl.SelectedIndex < 0)
-      {
-        ThumbnailBox.ContextMenuStrip = null;
-        ThumbnailBox.Image = null;
-        DurationTime.Text = "00:00:00.0000";
-        DurationTime.Visible = false;
-        MediaTitle.Text = string.Empty;
-        VideoOnlyFormatSource.Clear();
-        AudioOnlyFormatSource.Clear();
-        MovieFormatSource.Clear();
-        AddDownloadQueue.Enabled = false;
-        SubmitDownloadDequeue.Enabled = false;
         return;
-      }
 
       var item = DownloadUrl.SelectedItem as YtdlpItem;
 

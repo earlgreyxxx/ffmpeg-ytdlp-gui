@@ -89,7 +89,7 @@ namespace ffmpeg_ytdlp_gui.libs
         yield return "-hwaccel_output_format cuda";
       }
 
-      if (options.ContainsKey("hwdecoder") && !string.IsNullOrEmpty(options["hwdecoder"]))
+      if (options.ContainsKey("hwdecoder") && !string.IsNullOrEmpty(options["hwdecoder"]) && options["hwdecoder"] != "none")
       {
         yield return $"-c:v {options["hwdecoder"]}";
 

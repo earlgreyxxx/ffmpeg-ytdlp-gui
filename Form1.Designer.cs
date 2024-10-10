@@ -109,6 +109,7 @@
       StatusBar = new System.Windows.Forms.StatusStrip();
       StatusBarMenu = new System.Windows.Forms.ContextMenuStrip(components);
       StatusBarMenuItemClearQueue = new System.Windows.Forms.ToolStripMenuItem();
+      BatListCount = new System.Windows.Forms.ToolStripStatusLabel();
       OutputStderr = new System.Windows.Forms.ToolStripStatusLabel();
       DummyProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       QueueCount = new System.Windows.Forms.ToolStripStatusLabel();
@@ -771,7 +772,7 @@
       // 
       // btnSubmitAddToBatch
       // 
-      btnSubmitAddToBatch.Location = new System.Drawing.Point(279, 12);
+      btnSubmitAddToBatch.Location = new System.Drawing.Point(204, 12);
       btnSubmitAddToBatch.Name = "btnSubmitAddToBatch";
       btnSubmitAddToBatch.Size = new System.Drawing.Size(93, 24);
       btnSubmitAddToBatch.TabIndex = 23;
@@ -1152,7 +1153,7 @@
       // StatusBar
       // 
       StatusBar.ContextMenuStrip = StatusBarMenu;
-      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { OutputStderr, DummyProgressBar, QueueCount });
+      StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { BatListCount, OutputStderr, DummyProgressBar, QueueCount });
       StatusBar.Location = new System.Drawing.Point(3, 598);
       StatusBar.Name = "StatusBar";
       StatusBar.Size = new System.Drawing.Size(840, 23);
@@ -1174,12 +1175,18 @@
       StatusBarMenuItemClearQueue.Text = "キューのクリア";
       StatusBarMenuItemClearQueue.Click += StatusBarMenuItemClearQueue_Click;
       // 
+      // BatListCount
+      // 
+      BatListCount.Name = "BatListCount";
+      BatListCount.Size = new System.Drawing.Size(69, 18);
+      BatListCount.Text = "Bat List: 0";
+      // 
       // OutputStderr
       // 
       OutputStderr.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       OutputStderr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       OutputStderr.Name = "OutputStderr";
-      OutputStderr.Size = new System.Drawing.Size(703, 18);
+      OutputStderr.Size = new System.Drawing.Size(634, 18);
       OutputStderr.Spring = true;
       OutputStderr.Text = "stderr";
       OutputStderr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1382,7 +1389,7 @@
       // btnSubmitBatchClear
       // 
       btnSubmitBatchClear.Enabled = false;
-      btnSubmitBatchClear.Location = new System.Drawing.Point(384, 12);
+      btnSubmitBatchClear.Location = new System.Drawing.Point(309, 12);
       btnSubmitBatchClear.Name = "btnSubmitBatchClear";
       btnSubmitBatchClear.Size = new System.Drawing.Size(84, 24);
       btnSubmitBatchClear.TabIndex = 34;
@@ -1393,7 +1400,7 @@
       // btnSubmitSaveToFile
       // 
       btnSubmitSaveToFile.Enabled = false;
-      btnSubmitSaveToFile.Location = new System.Drawing.Point(167, 12);
+      btnSubmitSaveToFile.Location = new System.Drawing.Point(92, 12);
       btnSubmitSaveToFile.Name = "btnSubmitSaveToFile";
       btnSubmitSaveToFile.Size = new System.Drawing.Size(112, 24);
       btnSubmitSaveToFile.TabIndex = 33;
@@ -1909,10 +1916,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 419);
+      PageDownloader.Size = new System.Drawing.Size(832, 424);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2081,8 +2088,6 @@
       // chkAfterDownload
       // 
       chkAfterDownload.AutoSize = true;
-      chkAfterDownload.Checked = true;
-      chkAfterDownload.CheckState = System.Windows.Forms.CheckState.Checked;
       chkAfterDownload.Location = new System.Drawing.Point(441, 337);
       chkAfterDownload.Name = "chkAfterDownload";
       chkAfterDownload.Size = new System.Drawing.Size(107, 19);
@@ -2134,7 +2139,7 @@
       // FmtWhole
       // 
       FmtWhole.AutoSize = true;
-      FmtWhole.Location = new System.Drawing.Point(14, 78);
+      FmtWhole.Location = new System.Drawing.Point(14, 82);
       FmtWhole.Name = "FmtWhole";
       FmtWhole.Size = new System.Drawing.Size(14, 13);
       FmtWhole.TabIndex = 11;
@@ -2147,7 +2152,7 @@
       MovieFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       MovieFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       MovieFormat.FormattingEnabled = true;
-      MovieFormat.Location = new System.Drawing.Point(73, 75);
+      MovieFormat.Location = new System.Drawing.Point(73, 77);
       MovieFormat.Name = "MovieFormat";
       MovieFormat.Size = new System.Drawing.Size(304, 23);
       MovieFormat.TabIndex = 10;
@@ -2166,7 +2171,7 @@
       // label34
       // 
       label34.AutoSize = true;
-      label34.Location = new System.Drawing.Point(40, 80);
+      label34.Location = new System.Drawing.Point(40, 81);
       label34.Name = "label34";
       label34.Size = new System.Drawing.Size(31, 15);
       label34.TabIndex = 5;
@@ -2290,7 +2295,6 @@
       // MaxListItems
       // 
       MaxListItems.Location = new System.Drawing.Point(150, 55);
-      MaxListItems.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
       MaxListItems.Name = "MaxListItems";
       MaxListItems.Size = new System.Drawing.Size(48, 23);
       MaxListItems.TabIndex = 43;
@@ -2333,8 +2337,6 @@
       // IsOpenStderr
       // 
       IsOpenStderr.AutoSize = true;
-      IsOpenStderr.Checked = true;
-      IsOpenStderr.CheckState = System.Windows.Forms.CheckState.Checked;
       IsOpenStderr.Location = new System.Drawing.Point(18, 27);
       IsOpenStderr.Name = "IsOpenStderr";
       IsOpenStderr.Size = new System.Drawing.Size(173, 19);
@@ -2952,6 +2954,7 @@
     private System.Windows.Forms.NumericUpDown MaxListItems;
     private System.Windows.Forms.Label label35;
     private System.Windows.Forms.CheckBox BatExecWithConsole;
+    private System.Windows.Forms.ToolStripStatusLabel BatListCount;
   }
 }
 
