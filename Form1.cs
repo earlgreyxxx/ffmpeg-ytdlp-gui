@@ -9,7 +9,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -1355,6 +1358,50 @@ namespace ffmpeg_ytdlp_gui
     private void StatusBarMenuItemClearQueue_Click(object sender, EventArgs e)
     {
       YtdlpClearDequeue();
+    }
+
+    private void SaveToJson_Click(object sender, EventArgs e)
+    {
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+      if(set == null)
+        return;
+
+      StringCollection formats = new();
+      formats.AddRange((OutputFileFormatBindingSource.DataSource as List<string>)!.ToArray()!);
+
+      StringCollection folders1 = new();
+      StringCollection folders2 = new();
+
+      folders1.AddRange(set.Item1.Select(item => item.Value).ToArray());
+      folders2.AddRange(set.Item2.Select(item => item.Value).ToArray());
+
+      ApplicationSettingsBackup backup = new()
+      {
+        DownloadFormats = formats,
+        OutputDirectories = folders1,
+        DownloadDirectories = folders2
+      };
+
+      using SaveFileDialog dlg = new()
+      {
+        OverwritePrompt = true,
+        Title = "保存するファイル名を指定してください",
+        CheckFileExists = false,
+        DefaultExt = "json",
+        Filter = "JSONファイル (*.json)|*.json"
+      };
+
+      var result = dlg.ShowDialog();
+      if (result == DialogResult.Cancel || string.IsNullOrEmpty(dlg.FileName))
+        return;
+
+      var options = new JsonSerializerOptions()
+      {
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+        WriteIndented = true
+      };
+
+      File.WriteAllText(dlg.FileName,JsonSerializer.Serialize<ApplicationSettingsBackup>(backup,options));
     }
   }
 }

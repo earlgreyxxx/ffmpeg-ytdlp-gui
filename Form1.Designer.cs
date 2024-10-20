@@ -208,6 +208,7 @@
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       PageSetting = new System.Windows.Forms.TabPage();
       groupBox4 = new System.Windows.Forms.GroupBox();
+      SaveToJson = new System.Windows.Forms.Button();
       label35 = new System.Windows.Forms.Label();
       MaxListItems = new System.Windows.Forms.NumericUpDown();
       CommandInvoker = new System.Windows.Forms.Button();
@@ -1327,7 +1328,7 @@
       Tab.Controls.Add(PageUtility);
       Tab.Controls.Add(PageDownloader);
       Tab.Controls.Add(PageSetting);
-      Tab.Location = new System.Drawing.Point(3, 13);
+      Tab.Location = new System.Drawing.Point(3, 14);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
       Tab.Padding = new System.Drawing.Point(0, 0);
@@ -1916,10 +1917,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2270,6 +2271,7 @@
       // 
       // groupBox4
       // 
+      groupBox4.Controls.Add(SaveToJson);
       groupBox4.Controls.Add(label35);
       groupBox4.Controls.Add(MaxListItems);
       groupBox4.Controls.Add(CommandInvoker);
@@ -2282,6 +2284,16 @@
       groupBox4.TabIndex = 43;
       groupBox4.TabStop = false;
       groupBox4.Text = "共通・全般";
+      // 
+      // SaveToJson
+      // 
+      SaveToJson.Location = new System.Drawing.Point(562, 19);
+      SaveToJson.Name = "SaveToJson";
+      SaveToJson.Size = new System.Drawing.Size(244, 27);
+      SaveToJson.TabIndex = 45;
+      SaveToJson.Text = "出力フォルダとフォーマット名の保存";
+      SaveToJson.UseVisualStyleBackColor = true;
+      SaveToJson.Click += SaveToJson_Click;
       // 
       // label35
       // 
@@ -2304,7 +2316,7 @@
       // CommandInvoker
       // 
       CommandInvoker.Enabled = false;
-      CommandInvoker.Location = new System.Drawing.Point(696, 17);
+      CommandInvoker.Location = new System.Drawing.Point(443, 55);
       CommandInvoker.Name = "CommandInvoker";
       CommandInvoker.Size = new System.Drawing.Size(110, 26);
       CommandInvoker.TabIndex = 42;
@@ -2955,6 +2967,7 @@
     private System.Windows.Forms.Label label35;
     private System.Windows.Forms.CheckBox BatExecWithConsole;
     private System.Windows.Forms.ToolStripStatusLabel BatListCount;
+    private System.Windows.Forms.Button SaveToJson;
   }
 }
 
