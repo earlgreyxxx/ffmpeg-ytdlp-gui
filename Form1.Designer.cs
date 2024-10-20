@@ -31,7 +31,6 @@
       components = new System.ComponentModel.Container();
       Commandlines = new System.Windows.Forms.TextBox();
       txtSS = new System.Windows.Forms.TextBox();
-      FindFolder = new System.Windows.Forms.FolderBrowserDialog();
       label1 = new System.Windows.Forms.Label();
       label2 = new System.Windows.Forms.Label();
       txtTo = new System.Windows.Forms.TextBox();
@@ -39,7 +38,6 @@
       linkLabel1 = new System.Windows.Forms.LinkLabel();
       btnClearSS = new System.Windows.Forms.Button();
       btnClearTo = new System.Windows.Forms.Button();
-      FindSaveBatchFile = new System.Windows.Forms.SaveFileDialog();
       CodecBox = new System.Windows.Forms.GroupBox();
       label7 = new System.Windows.Forms.Label();
       chkUseHWDecoder = new System.Windows.Forms.CheckBox();
@@ -91,9 +89,10 @@
       chkConstantQuality = new System.Windows.Forms.CheckBox();
       vUnit = new System.Windows.Forms.Label();
       btnApply = new System.Windows.Forms.Button();
-      OpenInputFile = new System.Windows.Forms.OpenFileDialog();
       FileList = new System.Windows.Forms.ListBox();
       FileListMenu = new System.Windows.Forms.ContextMenuStrip(components);
+      FileListMenuItemOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       FileListMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
       FileListMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
       btnStop = new System.Windows.Forms.Button();
@@ -103,7 +102,6 @@
       InputBox = new System.Windows.Forms.Panel();
       btnFFmpeg = new System.Windows.Forms.Button();
       label8 = new System.Windows.Forms.Label();
-      OpenCommandFileDlg = new System.Windows.Forms.OpenFileDialog();
       btnFindInPath = new System.Windows.Forms.Button();
       ffmpeg = new System.Windows.Forms.ComboBox();
       StatusBar = new System.Windows.Forms.StatusStrip();
@@ -208,6 +206,8 @@
       SubmitConfirmFormat = new System.Windows.Forms.Button();
       PageSetting = new System.Windows.Forms.TabPage();
       groupBox4 = new System.Windows.Forms.GroupBox();
+      LoadFromJson = new System.Windows.Forms.Button();
+      SaveToJson = new System.Windows.Forms.Button();
       label35 = new System.Windows.Forms.Label();
       MaxListItems = new System.Windows.Forms.NumericUpDown();
       CommandInvoker = new System.Windows.Forms.Button();
@@ -237,15 +237,12 @@
       FileSuffix = new System.Windows.Forms.ComboBox();
       settingsPropertyValueBindingSource = new System.Windows.Forms.BindingSource(components);
       DirectoryListBindingSource = new System.Windows.Forms.BindingSource(components);
-      OpenCookieFileDialog = new System.Windows.Forms.OpenFileDialog();
       VideoOnlyFormatSource = new System.Windows.Forms.BindingSource(components);
       AudioOnlyFormatSource = new System.Windows.Forms.BindingSource(components);
       MovieFormatSource = new System.Windows.Forms.BindingSource(components);
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
-      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-      FileListMenuItemOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -325,10 +322,6 @@
       txtSS.TabStop = false;
       txtSS.Validating += TimeFormatValidating;
       // 
-      // FindFolder
-      // 
-      FindFolder.Description = "出力先フォルダを選択してください。";
-      // 
       // label1
       // 
       label1.AutoSize = true;
@@ -405,12 +398,6 @@
       btnClearTo.Text = "クリア";
       btnClearTo.UseVisualStyleBackColor = true;
       btnClearTo.Click += btnClearTo_Click;
-      // 
-      // FindSaveBatchFile
-      // 
-      FindSaveBatchFile.CheckPathExists = false;
-      FindSaveBatchFile.DefaultExt = "cmd";
-      FindSaveBatchFile.FileName = "ffmpeg-batch.cmd";
       // 
       // CodecBox
       // 
@@ -995,13 +982,6 @@
       btnApply.UseVisualStyleBackColor = true;
       btnApply.Click += btnApply_Click;
       // 
-      // OpenInputFile
-      // 
-      OpenInputFile.DefaultExt = "mp4";
-      OpenInputFile.Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*";
-      OpenInputFile.Multiselect = true;
-      OpenInputFile.Title = "動画ファイルを選択してください。";
-      // 
       // FileList
       // 
       FileList.AllowDrop = true;
@@ -1026,7 +1006,19 @@
       FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemOpenFolder, toolStripSeparator1, FileListMenuItemDelete, FileListMenuItemClear });
       FileListMenu.Name = "FileListMenu";
       FileListMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      FileListMenu.Size = new System.Drawing.Size(269, 98);
+      FileListMenu.Size = new System.Drawing.Size(269, 76);
+      // 
+      // FileListMenuItemOpenFolder
+      // 
+      FileListMenuItemOpenFolder.Name = "FileListMenuItemOpenFolder";
+      FileListMenuItemOpenFolder.Size = new System.Drawing.Size(268, 22);
+      FileListMenuItemOpenFolder.Text = "選択済みファイルのフォルダを開く";
+      FileListMenuItemOpenFolder.Click += FileListMenuItemOpenFolder_Click;
+      // 
+      // toolStripSeparator1
+      // 
+      toolStripSeparator1.Name = "toolStripSeparator1";
+      toolStripSeparator1.Size = new System.Drawing.Size(265, 6);
       // 
       // FileListMenuItemDelete
       // 
@@ -1121,12 +1113,6 @@
       label8.Size = new System.Drawing.Size(106, 15);
       label8.TabIndex = 37;
       label8.Text = "ffmpeg実行ファイル";
-      // 
-      // OpenCommandFileDlg
-      // 
-      OpenCommandFileDlg.DefaultExt = "exe";
-      OpenCommandFileDlg.FileName = "ffmpeg";
-      OpenCommandFileDlg.Filter = "実行ファイル|*.exe";
       // 
       // btnFindInPath
       // 
@@ -1329,7 +1315,7 @@
       Tab.Controls.Add(PageUtility);
       Tab.Controls.Add(PageDownloader);
       Tab.Controls.Add(PageSetting);
-      Tab.Location = new System.Drawing.Point(3, 13);
+      Tab.Location = new System.Drawing.Point(3, 14);
       Tab.Margin = new System.Windows.Forms.Padding(0);
       Tab.Name = "Tab";
       Tab.Padding = new System.Drawing.Point(0, 0);
@@ -1446,10 +1432,10 @@
       PageUtility.Controls.Add(CommonButtonBox);
       PageUtility.Controls.Add(groupBox8);
       PageUtility.Controls.Add(Image2Box);
-      PageUtility.Location = new System.Drawing.Point(4, 27);
+      PageUtility.Location = new System.Drawing.Point(4, 22);
       PageUtility.Name = "PageUtility";
       PageUtility.Padding = new System.Windows.Forms.Padding(3);
-      PageUtility.Size = new System.Drawing.Size(832, 419);
+      PageUtility.Size = new System.Drawing.Size(832, 424);
       PageUtility.TabIndex = 1;
       PageUtility.Text = "ユーティリティ";
       // 
@@ -1518,7 +1504,7 @@
       CommonButtonBox.Controls.Add(btnStopAllUtil);
       CommonButtonBox.Controls.Add(button2);
       CommonButtonBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      CommonButtonBox.Location = new System.Drawing.Point(3, 386);
+      CommonButtonBox.Location = new System.Drawing.Point(3, 391);
       CommonButtonBox.Name = "CommonButtonBox";
       CommonButtonBox.Size = new System.Drawing.Size(826, 30);
       CommonButtonBox.TabIndex = 27;
@@ -2272,6 +2258,8 @@
       // 
       // groupBox4
       // 
+      groupBox4.Controls.Add(LoadFromJson);
+      groupBox4.Controls.Add(SaveToJson);
       groupBox4.Controls.Add(label35);
       groupBox4.Controls.Add(MaxListItems);
       groupBox4.Controls.Add(CommandInvoker);
@@ -2284,6 +2272,26 @@
       groupBox4.TabIndex = 43;
       groupBox4.TabStop = false;
       groupBox4.Text = "共通・全般";
+      // 
+      // LoadFromJson
+      // 
+      LoadFromJson.Location = new System.Drawing.Point(443, 19);
+      LoadFromJson.Name = "LoadFromJson";
+      LoadFromJson.Size = new System.Drawing.Size(156, 27);
+      LoadFromJson.TabIndex = 46;
+      LoadFromJson.Text = "JSONファイルからロード";
+      LoadFromJson.UseVisualStyleBackColor = true;
+      LoadFromJson.Click += LoadFromJson_Click;
+      // 
+      // SaveToJson
+      // 
+      SaveToJson.Location = new System.Drawing.Point(605, 19);
+      SaveToJson.Name = "SaveToJson";
+      SaveToJson.Size = new System.Drawing.Size(201, 27);
+      SaveToJson.TabIndex = 45;
+      SaveToJson.Text = "出力フォルダとフォーマット名の保存";
+      SaveToJson.UseVisualStyleBackColor = true;
+      SaveToJson.Click += SaveToJson_Click;
       // 
       // label35
       // 
@@ -2306,7 +2314,7 @@
       // CommandInvoker
       // 
       CommandInvoker.Enabled = false;
-      CommandInvoker.Location = new System.Drawing.Point(696, 17);
+      CommandInvoker.Location = new System.Drawing.Point(443, 55);
       CommandInvoker.Name = "CommandInvoker";
       CommandInvoker.Size = new System.Drawing.Size(110, 26);
       CommandInvoker.TabIndex = 42;
@@ -2606,12 +2614,6 @@
       DirectoryListBindingSource.DataMemberChanged += DirectoryListBindingSource_DataMemberChanged;
       DirectoryListBindingSource.ListChanged += DirectoryListBindingSource_ListChanged;
       // 
-      // OpenCookieFileDialog
-      // 
-      OpenCookieFileDialog.FileName = "cookie.txt";
-      OpenCookieFileDialog.Filter = "Cookieファイル|*.txt";
-      OpenCookieFileDialog.Title = "既存のCookieファイルを選択してください";
-      // 
       // VideoOnlyFormatSource
       // 
       VideoOnlyFormatSource.DataSourceChanged += VideoOnlyFormatSource_DataSourceChanged;
@@ -2639,18 +2641,6 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
-      // 
-      // toolStripSeparator1
-      // 
-      toolStripSeparator1.Name = "toolStripSeparator1";
-      toolStripSeparator1.Size = new System.Drawing.Size(265, 6);
-      // 
-      // FileListMenuItemOpenFolder
-      // 
-      FileListMenuItemOpenFolder.Name = "FileListMenuItemOpenFolder";
-      FileListMenuItemOpenFolder.Size = new System.Drawing.Size(268, 22);
-      FileListMenuItemOpenFolder.Text = "選択済みファイルのフォルダを開く";
-      FileListMenuItemOpenFolder.Click += FileListMenuItemOpenFolder_Click;
       // 
       // Form1
       // 
@@ -2756,12 +2746,10 @@
 
     private System.Windows.Forms.TextBox Commandlines;
     private System.Windows.Forms.TextBox txtSS;
-    private System.Windows.Forms.FolderBrowserDialog FindFolder;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox txtTo;
     private System.Windows.Forms.GroupBox CuttingBox;
-    private System.Windows.Forms.SaveFileDialog FindSaveBatchFile;
     private System.Windows.Forms.GroupBox CodecBox;
     private System.Windows.Forms.CheckBox chkFilterDeInterlace;
     private System.Windows.Forms.RadioButton rbResizeHD;
@@ -2792,7 +2780,6 @@
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Button OpenFolder;
-    private System.Windows.Forms.OpenFileDialog OpenInputFile;
     private System.Windows.Forms.ListBox FileList;
     private System.Windows.Forms.Button btnStop;
     private System.Windows.Forms.Button btnStopAll;
@@ -2803,7 +2790,6 @@
     private System.Windows.Forms.Panel InputBox;
     private System.Windows.Forms.Button btnFFmpeg;
     private System.Windows.Forms.Label label8;
-    private System.Windows.Forms.OpenFileDialog OpenCommandFileDlg;
     private System.Windows.Forms.Button btnFindInPath;
     private System.Windows.Forms.LinkLabel linkLabel1;
     private System.Windows.Forms.ComboBox ffmpeg;
@@ -2894,7 +2880,6 @@
     private System.Windows.Forms.ComboBox MovieFormat;
     private System.Windows.Forms.Label label28;
     private System.Windows.Forms.LinkLabel LinkYdlOutputTemplate;
-    private System.Windows.Forms.OpenFileDialog OpenCookieFileDialog;
     private System.Windows.Forms.ComboBox VideoFrameRate;
     private System.Windows.Forms.Label label27;
     private System.Windows.Forms.Label label30;
@@ -2971,6 +2956,8 @@
     private System.Windows.Forms.ToolStripStatusLabel BatListCount;
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemOpenFolder;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+    private System.Windows.Forms.Button SaveToJson;
+    private System.Windows.Forms.Button LoadFromJson;
   }
 }
 

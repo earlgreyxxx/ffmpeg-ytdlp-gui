@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,6 +35,7 @@ namespace ffmpeg_ytdlp_gui
     private FFmpegBatchList? BatchList;
     private PictureBoxSizeMode? SizeMode;
     private List<Task> BatchTasks = new();
+    private CancellationTokenSource cancelTokenSource = new();
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -195,6 +197,7 @@ namespace ffmpeg_ytdlp_gui
         e.Cancel = true;
         return;
       }
+      cancelTokenSource.Dispose();
 
       Settings.Default.outputFolders = null;
       Settings.Default.ffmpeg = null;
@@ -270,17 +273,22 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitOpenDlg_Click(object sender, EventArgs e)
     {
-      if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text))
-        FindFolder.SelectedPath = cbOutputDir.Text;
+      var dlg = new FolderBrowserDialog()
+      {
+        Description = "出力先フォルダを選択してください。",
+      };
 
-      if (DialogResult.Cancel == FindFolder.ShowDialog())
+      if (!string.IsNullOrEmpty(cbOutputDir.Text) && Directory.Exists(cbOutputDir.Text))
+        dlg.SelectedPath = cbOutputDir.Text;
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      var selectedItem = OutputDirectoryList!.FirstOrDefault(item => item.Value == FindFolder.SelectedPath);
+      var selectedItem = OutputDirectoryList!.FirstOrDefault(item => item.Value == dlg.SelectedPath);
       if (selectedItem != null)
         cbOutputDir.SelectedItem = selectedItem;
       else
-        cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(FindFolder.SelectedPath, DateTime.Now));
+        cbOutputDir.SelectedIndex = DirectoryListBindingSource.Add(new StringListItem(dlg.SelectedPath, DateTime.Now));
     }
 
     private void btnApply_Click(object sender, EventArgs e)
@@ -418,10 +426,17 @@ namespace ffmpeg_ytdlp_gui
 
     private void DropArea_MouseDoubleClick(object sender, MouseEventArgs e)
     {
-      if (DialogResult.Cancel == OpenInputFile.ShowDialog())
+      var dlg = new OpenFileDialog()
+      {
+        DefaultExt = "mp4",
+        Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*",
+        Title = "動画ファイルを選択してください。"
+      };
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      foreach (var filename in OpenInputFile.FileNames)
+      foreach (var filename in dlg.FileNames)
         FileListBindingSource.Add(new StringListItem(filename));
 
       btnSubmitInvoke.Enabled = true;
@@ -429,10 +444,17 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitSaveToFile_Click(object sender, EventArgs e)
     {
-      if (DialogResult.Cancel == FindSaveBatchFile.ShowDialog())
+      var dlg = new SaveFileDialog()
+      {
+        CheckPathExists = false,
+        DefaultExt = "cmd",
+        FileName = "ffmpeg-batch.cmd",
+      };
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      string filename = FindSaveBatchFile.FileName;
+      string filename = dlg.FileName;
       if (File.Exists(filename) && DialogResult.No == MessageBox.Show("ファイルを上書きしてもよろしいですか？", "警告", MessageBoxButtons.YesNo))
         return;
 
@@ -572,22 +594,36 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnFFmpeg_Click(object sender, EventArgs e)
     {
-      OpenCommandFileDlg.Title = "ffmpeg実行ファイルを指定してください。";
-      if (DialogResult.Cancel == OpenCommandFileDlg.ShowDialog())
+      var dlg = new OpenFileDialog()
+      {
+        DefaultExt = "exe",
+        Filter = "実行ファイル|*.exe",
+        Title = "ffmpeg実行ファイルを指定してください。",
+        FileName = "ffmpeg",
+      };
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      ffmpeg.Text = OpenCommandFileDlg.FileName;
+      ffmpeg.Text = dlg.FileName;
       if (!ffmpeg.Items.Contains(ffmpeg.Text))
         ffmpeg.Items.Add(ffmpeg.Text);
     }
 
     private void btnYtdlp_Click(object sender, EventArgs e)
     {
-      OpenCommandFileDlg.Title = "yt-dlp実行ファイルを指定してください。";
-      if (DialogResult.Cancel == OpenCommandFileDlg.ShowDialog())
+      var dlg = new OpenFileDialog()
+      {
+        DefaultExt = "exe",
+        Filter = "実行ファイル|*.exe",
+        Title = "yt-dlp実行ファイルを指定してください。",
+        FileName = "yt-dlp",
+      };
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      YtdlpPath.Text = OpenCommandFileDlg.FileName;
+      YtdlpPath.Text = dlg.FileName;
       if (!YtdlpPath.Items.Contains(YtdlpPath.Text))
         YtdlpPath.Items.Add(YtdlpPath.Text);
     }
@@ -1040,37 +1076,43 @@ namespace ffmpeg_ytdlp_gui
     private void Tab_SelectedIndexChanged(object sender, EventArgs e)
     {
       string tabname = Tab.TabPages[Tab.SelectedIndex].Name;
-      bool IsDownloader = tabname == "PageDownloader";
-      bool IsConverter = tabname == "PageConvert" || tabname == "PageUtility";
-      bool IsSetting = tabname == "PageSetting";
+      InputBox.Enabled = FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = false;
 
-      InputBox.Enabled = IsConverter;
-      FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = IsConverter;
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+      if(set == null)
+        throw new Exception("DataSource is not initialize yet");
 
-      var set = DirectoryListBindingSource.DataSource as StringListItemsSet ?? throw new Exception("DataSource is not initialize yet");
-      if (IsConverter)
+      switch(tabname)
       {
-        DirectoryListBindingSource.DataMember = "Item1";
-        OutputDirectoryList = set?.Item1 ?? throw new Exception("Item not initialize");
-        cbOutputDir.SelectedIndex = set.Item4[0];
-        OutputBox.Enabled = true;
-      }
-      else if (IsDownloader)
-      {
-        DirectoryListBindingSource.DataMember = "Item2";
-        OutputDirectoryList = set?.Item2 ?? throw new Exception("Item not initialize");
-        cbOutputDir.SelectedIndex = set.Item4[1];
-        OutputBox.Enabled = true;
+        case "PageConvert":
+        case "PageUtility":
+          InputBox.Enabled = FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = true;
 
-        DownloadUrl.Focus();
-      }
-      else if (IsSetting)
-      {
-        DirectoryListBindingSource.DataMember = "Item3";
-        OutputDirectoryList = [];
-        cbOutputDir.SelectedIndex = -1;
+          DirectoryListBindingSource.DataMember = "Item1";
+          OutputDirectoryList = set.Item1;
+          cbOutputDir.SelectedIndex = set.Item4[0];
+          OutputBox.Enabled = true;
+          break;
 
-        OutputBox.Enabled = false;
+        case "PageDownloader":
+          DirectoryListBindingSource.DataMember = "Item2";
+          OutputDirectoryList = set.Item2;
+          cbOutputDir.SelectedIndex = set.Item4[1];
+          OutputBox.Enabled = true;
+
+          DownloadUrl.Focus();
+          break;
+
+        case "PageSetting":
+          DirectoryListBindingSource.DataMember = "Item3";
+          OutputDirectoryList = [];
+          cbOutputDir.SelectedIndex = -1;
+
+          OutputBox.Enabled = false;
+          break;
+
+        default:
+          throw new Exception("Tab page not defined.");
       }
     }
 
@@ -1088,10 +1130,16 @@ namespace ffmpeg_ytdlp_gui
 
     private void SubmitOpenCookie_Click(object sender, EventArgs e)
     {
-      if (DialogResult.Cancel == OpenCookieFileDialog.ShowDialog())
+      var dlg = new OpenFileDialog()
+      {
+        FileName = "cookie.txt",
+        Filter = "Cookieファイル|*.txt",
+        Title = "既存のCookieファイルを選択してください",
+      };
+      if (DialogResult.Cancel == dlg.ShowDialog())
         return;
 
-      Settings.Default.cookiePath = OpenCookieFileDialog.FileName;
+      Settings.Default.cookiePath = dlg.FileName;
     }
 
     private void CommandSaveImage_Click(object sender, EventArgs e)
@@ -1231,11 +1279,24 @@ namespace ffmpeg_ytdlp_gui
     private void cbOutputDir_SelectedIndexChanged(object sender, EventArgs e)
     {
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+      var page = Tab.TabPages[Tab.SelectedIndex];
+      int index = -1;
+      switch(page.Name)
+      {
+        case "PageConvert":
+        case "PageUtility":
+          index = 0;
+          break;
 
-      set?.Item4.SetValue(
-        cbOutputDir.SelectedIndex,
-        Tab.TabPages[Tab.SelectedIndex].Name != "PageDownloader" ? 0 : 1
-      );
+        case "PageDownloader":
+          index = 1;
+          break;
+
+        default:
+          return;
+      }
+
+      set?.Item4.SetValue( cbOutputDir.SelectedIndex, index );
     }
 
     private void Playlist_SelectedIndexChanged(object sender, EventArgs e)
@@ -1366,6 +1427,114 @@ namespace ffmpeg_ytdlp_gui
     private void StatusBarMenuItemClearQueue_Click(object sender, EventArgs e)
     {
       YtdlpClearDequeue();
+    }
+
+    private async void SaveToJson_Click(object sender, EventArgs e)
+    {
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+      if (set == null)
+        return;
+
+      var formats = OutputFileFormatBindingSource.DataSource as List<string>;
+
+      var folders1 = set.Item1.Select(item => item.Value).ToList();
+      var folders2 = set.Item2.Select(item => item.Value).ToList();
+
+      ApplicationSettingsBackup backup = new()
+      {
+        DownloadFormats = formats,
+        OutputDirectories = folders1,
+        DownloadDirectories = folders2
+      };
+
+      using SaveFileDialog dlg = new()
+      {
+        OverwritePrompt = true,
+        Title = "保存するファイル名を指定してください",
+        CheckFileExists = false,
+        DefaultExt = "json",
+        Filter = "JSONファイル (*.json)|*.json"
+      };
+
+      var result = dlg.ShowDialog();
+      if (result == DialogResult.Cancel || string.IsNullOrEmpty(dlg.FileName))
+        return;
+
+      await backup.Save(dlg.FileName);
+
+      if (DialogResult.OK == MessageBox.Show("保存したフォルダを開きますか？", "確認", MessageBoxButtons.OKCancel))
+      {
+        string dir = Path.GetDirectoryName(dlg.FileName) ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        CustomProcess.ShellExecute(dir)?.Dispose();
+      }
+    }
+
+    private async void LoadFromJson_Click(object sender, EventArgs e)
+    {
+      using OpenFileDialog dlg = new()
+      {
+        Title = "設定ファイルを選択してください。",
+        DefaultExt = "json",
+        Filter = "JSONファイル (*.json)|*.json"
+      };
+
+      var result = dlg.ShowDialog();
+      if (result == DialogResult.Cancel || string.IsNullOrEmpty(dlg.FileName))
+        return;
+
+      var backup = await ApplicationSettingsBackup.Load(dlg.FileName);
+      if (backup == null)
+        return;
+
+      string DlgTitle = "データ反映";
+      string DlgMessage = "各データ項目を追加しますか、それとも置換えますか？\n追加する場合はYes、置換える場合はNoをクリックしてください。";
+
+      bool isClear = true;
+      switch (MessageBox.Show(DlgMessage,DlgTitle,MessageBoxButtons.YesNoCancel))
+      {
+        case DialogResult.Yes:
+          isClear = false;
+          break;
+
+        case DialogResult.No:
+          isClear = true;
+          break;
+
+        case DialogResult.Cancel:
+          return;
+      }
+
+      var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
+      if (set == null)
+        return;
+
+      var outputDirs = set.Item1;
+      var downloadDirs = set.Item2;
+
+      if (isClear)
+      {
+        OutputFileFormatBindingSource.Clear();
+        outputDirs.Clear();
+        downloadDirs.Clear();
+      }
+
+      foreach (var item in backup.DownloadFormats ?? [])
+      {
+        if (isClear || !OutputFileFormatBindingSource.List.Cast<string>().Any(s => s == item))
+          OutputFileFormatBindingSource.Add(item);
+      }
+
+      foreach (var item in backup.OutputDirectories ?? [])
+      {
+        if(isClear || !outputDirs.Any(sitem => sitem.Value == item))
+          outputDirs.Add(new StringListItem(item, DateTime.Now));
+      }
+
+      foreach (var item in backup.DownloadDirectories ?? [])
+      {
+        if(isClear || !outputDirs.Any(sitem => sitem.Value == item))
+          downloadDirs.Add(new StringListItem(item, DateTime.Now));
+      }
     }
   }
 }
