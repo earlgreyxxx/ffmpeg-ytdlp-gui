@@ -79,7 +79,7 @@ namespace ffmpeg_ytdlp_gui
           break;
 
         case ListItemType.FileOrDirectory:
-          if (DataObject.GetDataPresent(DataFormats.FileDrop))
+          if (DataObject.GetDataPresent(DataFormats.FileDrop) || DataObject.GetDataPresent(DataFormats.UnicodeText))
             e.Effect = DragDropEffects.Copy;
           break;
       }
@@ -96,14 +96,14 @@ namespace ffmpeg_ytdlp_gui
           break;
 
         case ListItemType.FileOrDirectory:
-          MenuItemDirectoryPaste.Enabled = DataObject.GetDataPresent(DataFormats.FileDrop);
+          MenuItemDirectoryPaste.Enabled = DataObject.GetDataPresent(DataFormats.FileDrop) || DataObject.GetDataPresent(DataFormats.UnicodeText);
           break;
       }
     }
 
     private Func<string, bool> IsValidDirectory = path => !string.IsNullOrEmpty(path) &&
-                                                          File.GetAttributes(path).HasFlag(FileAttributes.Directory) &&
-                                                          Directory.Exists(path);
+                                                          (Directory.Exists(path) || File.Exists(path) ) &&
+                                                          File.GetAttributes(path).HasFlag(FileAttributes.Directory);
 
     private async Task AddItems(IDataObject? dataObject)
     {
@@ -167,18 +167,31 @@ namespace ffmpeg_ytdlp_gui
             break;
 
           case ListItemType.FileOrDirectory:
+            IEnumerable<string>? pathes = null;
             if (dataObject.GetDataPresent(DataFormats.FileDrop))
             {
-              var pathes = dataObject.GetData(DataFormats.FileDrop) as string[];
-              if (pathes == null || pathes?.Length <= 0)
-                throw new Exception("Data length is zero");
+              pathes = dataObject.GetData(DataFormats.FileDrop) as string[];
+            }
+            else if(dataObject.GetDataPresent(DataFormats.UnicodeText))
+            {
+              var lines = dataObject.GetData(DataFormats.UnicodeText) as string;
+              if (string.IsNullOrEmpty(lines))
+                throw new Exception("Data is empty or null");
 
-              var srclist = items?.List;
-              foreach (var path in pathes!.Where(IsValidDirectory))
-              {
-                if (false == srclist?.Cast<StringListItem>().Any(item => item.Value == path))
-                  items?.Add(new StringListItem(path, DateTime.Now));
-              }
+              pathes = lines.Split(Environment.NewLine.ToCharArray()).Select(path => path.Trim());
+            }
+
+            if (pathes == null)
+              return;
+
+            if (pathes.Count() <= 0)
+              throw new Exception("Data length is zero");
+
+            var srclist = items?.List;
+            foreach (var path in pathes.Where(IsValidDirectory))
+            {
+              if (false == srclist?.Cast<StringListItem>().Any(item => item.Value == path))
+                items?.Add(new StringListItem(path, DateTime.Now));
             }
             break;
 
