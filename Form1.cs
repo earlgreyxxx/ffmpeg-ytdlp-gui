@@ -13,6 +13,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,6 +38,7 @@ namespace ffmpeg_ytdlp_gui
     private FFmpegBatchList? BatchList;
     private PictureBoxSizeMode? SizeMode;
     private List<Task> BatchTasks = new();
+    private CancellationTokenSource cancelTokenSource = new();
 
     [GeneratedRegex(@"\.(?:mp4|mpg|avi|mkv|webm|m4v|wmv|ts|m2ts)$", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex RegexMovieFile();
@@ -198,6 +200,7 @@ namespace ffmpeg_ytdlp_gui
         e.Cancel = true;
         return;
       }
+      cancelTokenSource.Dispose();
 
       Settings.Default.outputFolders = null;
       Settings.Default.ffmpeg = null;
@@ -1360,20 +1363,16 @@ namespace ffmpeg_ytdlp_gui
       YtdlpClearDequeue();
     }
 
-    private void SaveToJson_Click(object sender, EventArgs e)
+    private async void SaveToJson_Click(object sender, EventArgs e)
     {
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
-      if(set == null)
+      if (set == null)
         return;
 
-      StringCollection formats = new();
-      formats.AddRange((OutputFileFormatBindingSource.DataSource as List<string>)!.ToArray()!);
+      var formats = OutputFileFormatBindingSource.DataSource as List<string>;
 
-      StringCollection folders1 = new();
-      StringCollection folders2 = new();
-
-      folders1.AddRange(set.Item1.Select(item => item.Value).ToArray());
-      folders2.AddRange(set.Item2.Select(item => item.Value).ToArray());
+      var folders1 = set.Item1.Select(item => item.Value).ToList();
+      var folders2 = set.Item2.Select(item => item.Value).ToList();
 
       ApplicationSettingsBackup backup = new()
       {
@@ -1401,7 +1400,39 @@ namespace ffmpeg_ytdlp_gui
         WriteIndented = true
       };
 
-      File.WriteAllText(dlg.FileName,JsonSerializer.Serialize<ApplicationSettingsBackup>(backup,options));
+      using var sw = File.OpenWrite(dlg.FileName);
+      await JsonSerializer.SerializeAsync<ApplicationSettingsBackup>(sw, backup, options,cancelTokenSource.Token);
+
+      if (DialogResult.OK == MessageBox.Show("保存したフォルダを開きますか？", "確認", MessageBoxButtons.OKCancel))
+      {
+        string dir = Path.GetDirectoryName(dlg.FileName) ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        CustomProcess.ShellExecute(dir)?.Dispose();
+      }
+    }
+
+    private async void LoadFromJson_Click(object sender, EventArgs e)
+    {
+      using OpenFileDialog dlg = new()
+      {
+        Title = "設定ファイルを選択してください。",
+        DefaultExt = "json",
+        Filter = "JSONファイル (*.json)|*.json"
+      };
+
+      var result = dlg.ShowDialog();
+      if (result == DialogResult.Cancel || string.IsNullOrEmpty(dlg.FileName))
+        return;
+
+      var sr = File.OpenRead(dlg.FileName);
+      var backup = await JsonSerializer.DeserializeAsync<ApplicationSettingsBackup>(sr);
+
+      foreach (var items in backup)
+      {
+        foreach (var format in items?.DownloadFormats ?? new List<string>())
+        {
+          Debug.WriteLine(format);
+        }
+      }
     }
   }
 }

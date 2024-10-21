@@ -245,6 +245,7 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
+      LoadFromJson = new System.Windows.Forms.Button();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -2271,6 +2272,7 @@
       // 
       // groupBox4
       // 
+      groupBox4.Controls.Add(LoadFromJson);
       groupBox4.Controls.Add(SaveToJson);
       groupBox4.Controls.Add(label35);
       groupBox4.Controls.Add(MaxListItems);
@@ -2287,9 +2289,9 @@
       // 
       // SaveToJson
       // 
-      SaveToJson.Location = new System.Drawing.Point(562, 19);
+      SaveToJson.Location = new System.Drawing.Point(605, 19);
       SaveToJson.Name = "SaveToJson";
-      SaveToJson.Size = new System.Drawing.Size(244, 27);
+      SaveToJson.Size = new System.Drawing.Size(201, 27);
       SaveToJson.TabIndex = 45;
       SaveToJson.Text = "出力フォルダとフォーマット名の保存";
       SaveToJson.UseVisualStyleBackColor = true;
@@ -2650,6 +2652,16 @@
       // 
       PlaylistBindingSource.DataMember = "Item4";
       // 
+      // LoadFromJson
+      // 
+      LoadFromJson.Location = new System.Drawing.Point(443, 19);
+      LoadFromJson.Name = "LoadFromJson";
+      LoadFromJson.Size = new System.Drawing.Size(156, 27);
+      LoadFromJson.TabIndex = 46;
+      LoadFromJson.Text = "JSONファイルからロード";
+      LoadFromJson.UseVisualStyleBackColor = true;
+      LoadFromJson.Click += LoadFromJson_Click;
+      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2968,6 +2980,7 @@
     private System.Windows.Forms.CheckBox BatExecWithConsole;
     private System.Windows.Forms.ToolStripStatusLabel BatListCount;
     private System.Windows.Forms.Button SaveToJson;
+    private System.Windows.Forms.Button LoadFromJson;
   }
 }
 
