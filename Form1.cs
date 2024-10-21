@@ -1426,11 +1426,15 @@ namespace ffmpeg_ytdlp_gui
       var sr = File.OpenRead(dlg.FileName);
       var backup = await JsonSerializer.DeserializeAsync<ApplicationSettingsBackup>(sr);
 
+      if(backup == null)
+        return;
+
       foreach (var items in backup)
       {
-        foreach (var format in items?.DownloadFormats ?? new List<string>())
+        foreach (var item in items ?? new List<string>())
         {
-          Debug.WriteLine(format);
+          if(item != null)
+            Debug.WriteLine(item);
         }
       }
     }

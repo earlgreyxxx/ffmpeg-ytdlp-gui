@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -24,7 +25,27 @@ namespace ffmpeg_ytdlp_gui.libs
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-      throw new NotImplementedException();
+      return (IEnumerator)GetEnumerator();
+    }
+
+    public void Save(string jsonFile)
+    {
+
+    }
+
+    public void Save(StreamWriter sr)
+    {
+
+    }
+
+    public void Load(string jsonFile)
+    {
+
+    }
+
+    public void Load(StreamReader sr)
+    {
+
     }
   }
 }
