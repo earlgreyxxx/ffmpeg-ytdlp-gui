@@ -55,6 +55,7 @@
     <Compile Remove="GlobalTypeAliaes.cs" />
     <Compile Remove="libs\AppSettingsBackup.cs" />
     <Compile Remove="libs\ComboBoxBindingSource.cs" />
+    <Compile Remove="Properties\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Form1.Commons.resx" />

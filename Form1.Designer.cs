@@ -1904,10 +1904,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 27);
+      PageDownloader.Location = new System.Drawing.Point(4, 22);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 419);
+      PageDownloader.Size = new System.Drawing.Size(832, 424);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2249,10 +2249,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 27);
+      PageSetting.Location = new System.Drawing.Point(4, 22);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 419);
+      PageSetting.Size = new System.Drawing.Size(832, 424);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
