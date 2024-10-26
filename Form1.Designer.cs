@@ -244,6 +244,8 @@
       UrlBindingSource = new System.Windows.Forms.BindingSource(components);
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
+      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      FileListMenuItemOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -1021,22 +1023,22 @@
       // 
       // FileListMenu
       // 
-      FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemDelete, FileListMenuItemClear });
+      FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemOpenFolder, toolStripSeparator1, FileListMenuItemDelete, FileListMenuItemClear });
       FileListMenu.Name = "FileListMenu";
       FileListMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      FileListMenu.Size = new System.Drawing.Size(233, 48);
+      FileListMenu.Size = new System.Drawing.Size(269, 98);
       // 
       // FileListMenuItemDelete
       // 
       FileListMenuItemDelete.Name = "FileListMenuItemDelete";
-      FileListMenuItemDelete.Size = new System.Drawing.Size(232, 22);
+      FileListMenuItemDelete.Size = new System.Drawing.Size(268, 22);
       FileListMenuItemDelete.Text = "選択済みのファイルをクリア";
       FileListMenuItemDelete.Click += FileListMenuItemDelete_Click;
       // 
       // FileListMenuItemClear
       // 
       FileListMenuItemClear.Name = "FileListMenuItemClear";
-      FileListMenuItemClear.Size = new System.Drawing.Size(232, 22);
+      FileListMenuItemClear.Size = new System.Drawing.Size(268, 22);
       FileListMenuItemClear.Text = "全てのファイルをクリア";
       FileListMenuItemClear.Click += FileListMenuItemClear_Click;
       // 
@@ -1916,10 +1918,10 @@
       PageDownloader.Controls.Add(label28);
       PageDownloader.Controls.Add(SubmitConfirmFormat);
       PageDownloader.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageDownloader.Location = new System.Drawing.Point(4, 22);
+      PageDownloader.Location = new System.Drawing.Point(4, 27);
       PageDownloader.Name = "PageDownloader";
       PageDownloader.Padding = new System.Windows.Forms.Padding(3);
-      PageDownloader.Size = new System.Drawing.Size(832, 424);
+      PageDownloader.Size = new System.Drawing.Size(832, 419);
       PageDownloader.TabIndex = 2;
       PageDownloader.Text = "ダウンロード";
       // 
@@ -2261,10 +2263,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 22);
+      PageSetting.Location = new System.Drawing.Point(4, 27);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 424);
+      PageSetting.Size = new System.Drawing.Size(832, 419);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
@@ -2638,6 +2640,18 @@
       // 
       PlaylistBindingSource.DataMember = "Item4";
       // 
+      // toolStripSeparator1
+      // 
+      toolStripSeparator1.Name = "toolStripSeparator1";
+      toolStripSeparator1.Size = new System.Drawing.Size(265, 6);
+      // 
+      // FileListMenuItemOpenFolder
+      // 
+      FileListMenuItemOpenFolder.Name = "FileListMenuItemOpenFolder";
+      FileListMenuItemOpenFolder.Size = new System.Drawing.Size(268, 22);
+      FileListMenuItemOpenFolder.Text = "選択済みファイルのフォルダを開く";
+      FileListMenuItemOpenFolder.Click += FileListMenuItemOpenFolder_Click;
+      // 
       // Form1
       // 
       AllowDrop = true;
@@ -2955,6 +2969,8 @@
     private System.Windows.Forms.Label label35;
     private System.Windows.Forms.CheckBox BatExecWithConsole;
     private System.Windows.Forms.ToolStripStatusLabel BatListCount;
+    private System.Windows.Forms.ToolStripMenuItem FileListMenuItemOpenFolder;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
   }
 }
 

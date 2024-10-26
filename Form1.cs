@@ -1151,6 +1151,17 @@ namespace ffmpeg_ytdlp_gui
       }
     }
 
+    private void FileListMenuItemOpenFolder_Click(object sender, EventArgs e)
+    {
+      var item = FileList.SelectedItems[0] as StringListItem;
+      if (item?.Value != null)
+      {
+        var dir = Path.GetDirectoryName(item.Value);
+        if(dir != null)
+          CustomProcess.ShellExecute(dir);
+      }
+    }
+
     private void EditListItems(object sender, LinkLabelLinkClickedEventArgs e)
     {
       string? target = (sender as LinkLabel)?.Tag?.ToString();
