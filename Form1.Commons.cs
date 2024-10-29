@@ -107,6 +107,9 @@ namespace ffmpeg_ytdlp_gui
       MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
       BatExecWithConsole.DataBindings.Add("Checked", Settings.Default, "batExecWithConsole");
       chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
+      PrimaryVideoFormatId.DataBindings.Add("Text", Settings.Default, "primaryVideoFormatId");
+      PrimaryAudioFormatId.DataBindings.Add("Text", Settings.Default, "primaryAudioFormatId");
+      PrimaryMovieFormatId.DataBindings.Add("Text", Settings.Default, "primaryMovieFormatId");
     }
 
     private void InitializeDataSource()
@@ -933,6 +936,48 @@ namespace ffmpeg_ytdlp_gui
             continue;
 
           cb.SelectedValue = item.Value;
+        }
+      }
+
+      Func<string,IEnumerable<string>> Split = src => Regex.Split(src, @"[,;:\s]+").Where(str => !string.IsNullOrEmpty(str));
+
+      // 優先するフォーマットに選択しなおし。
+      if (!string.IsNullOrEmpty(PrimaryVideoFormatId.Text))
+      {
+        foreach (var div in Split(PrimaryVideoFormatId.Text))
+        {
+          var selectedItem = VideoOnlyFormatSource.List.Cast<StringListItem>().FirstOrDefault(item => item.Value == div);
+          if (selectedItem != null)
+          {
+            VideoOnlyFormat.SelectedItem = selectedItem;
+            break;
+          }
+        }
+      }
+
+      if (!string.IsNullOrEmpty(PrimaryAudioFormatId.Text))
+      {
+        foreach (var div in Split(PrimaryAudioFormatId.Text))
+        {
+          var selectedItem = AudioOnlyFormatSource.List.Cast<StringListItem>().FirstOrDefault(item => item.Value == div);
+          if (selectedItem != null)
+          {
+            AudioOnlyFormat.SelectedItem = selectedItem;
+            break;
+          }
+        }
+      }
+
+      if (!string.IsNullOrEmpty(PrimaryMovieFormatId.Text))
+      {
+        foreach (var div in Split(PrimaryMovieFormatId.Text))
+        {
+          var selectedItem = MovieFormatSource.List.Cast<StringListItem>().FirstOrDefault(item => item.Value == div);
+          if (selectedItem != null)
+          {
+            MovieFormat.SelectedItem = selectedItem;
+            break;
+          }
         }
       }
 

@@ -436,5 +436,41 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["batExecWithConsole"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string primaryVideoFormatId {
+            get {
+                return ((string)(this["primaryVideoFormatId"]));
+            }
+            set {
+                this["primaryVideoFormatId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string primaryAudioFormatId {
+            get {
+                return ((string)(this["primaryAudioFormatId"]));
+            }
+            set {
+                this["primaryAudioFormatId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string primaryMovieFormatId {
+            get {
+                return ((string)(this["primaryMovieFormatId"]));
+            }
+            set {
+                this["primaryMovieFormatId"] = value;
+            }
+        }
     }
 }

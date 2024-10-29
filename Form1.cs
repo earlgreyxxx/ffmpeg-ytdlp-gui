@@ -187,6 +187,16 @@ namespace ffmpeg_ytdlp_gui
       CookiePath.Text = Settings.Default.cookiePath;
       BatExecWithConsole.Checked = Settings.Default.batExecWithConsole;
       resizeTo.Value = Settings.Default.resizeTo;
+      PrimaryVideoFormatId.Text = Settings.Default.primaryVideoFormatId;
+      PrimaryAudioFormatId.Text = Settings.Default.primaryAudioFormatId;
+      PrimaryMovieFormatId.Text = Settings.Default.primaryMovieFormatId;
+
+      string text = "複数指定する場合は、カンマ、セミコロン、空白で区切ってください。";
+      TooltipHintStringInput.ShowAlways = true;
+      TooltipHintStringInput.InitialDelay = 0;
+      TooltipHintStringInput.SetToolTip(PrimaryVideoFormatId, text);
+      TooltipHintStringInput.SetToolTip(PrimaryAudioFormatId, text);
+      TooltipHintStringInput.SetToolTip(PrimaryMovieFormatId, text);
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -1079,10 +1089,10 @@ namespace ffmpeg_ytdlp_gui
       InputBox.Enabled = FilePrefix.Enabled = FileSuffix.Enabled = FileName.Enabled = FileContainer.Enabled = false;
 
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
-      if(set == null)
+      if (set == null)
         throw new Exception("DataSource is not initialize yet");
 
-      switch(tabname)
+      switch (tabname)
       {
         case "PageConvert":
         case "PageUtility":
@@ -1205,7 +1215,7 @@ namespace ffmpeg_ytdlp_gui
       if (item?.Value != null)
       {
         var dir = Path.GetDirectoryName(item.Value);
-        if(dir != null)
+        if (dir != null)
           CustomProcess.ShellExecute(dir);
       }
     }
@@ -1281,7 +1291,7 @@ namespace ffmpeg_ytdlp_gui
       var set = DirectoryListBindingSource.DataSource as StringListItemsSet;
       var page = Tab.TabPages[Tab.SelectedIndex];
       int index = -1;
-      switch(page.Name)
+      switch (page.Name)
       {
         case "PageConvert":
         case "PageUtility":
@@ -1296,7 +1306,7 @@ namespace ffmpeg_ytdlp_gui
           return;
       }
 
-      set?.Item4.SetValue( cbOutputDir.SelectedIndex, index );
+      set?.Item4.SetValue(cbOutputDir.SelectedIndex, index);
     }
 
     private void Playlist_SelectedIndexChanged(object sender, EventArgs e)
@@ -1490,7 +1500,7 @@ namespace ffmpeg_ytdlp_gui
       string DlgMessage = "各データ項目を追加しますか、それとも置換えますか？\n追加する場合はYes、置換える場合はNoをクリックしてください。";
 
       bool isClear = true;
-      switch (MessageBox.Show(DlgMessage,DlgTitle,MessageBoxButtons.YesNoCancel))
+      switch (MessageBox.Show(DlgMessage, DlgTitle, MessageBoxButtons.YesNoCancel))
       {
         case DialogResult.Yes:
           isClear = false;
@@ -1526,13 +1536,13 @@ namespace ffmpeg_ytdlp_gui
 
       foreach (var item in backup.OutputDirectories ?? [])
       {
-        if(isClear || !outputDirs.Any(sitem => sitem.Value == item))
+        if (isClear || !outputDirs.Any(sitem => sitem.Value == item))
           outputDirs.Add(new StringListItem(item, DateTime.Now));
       }
 
       foreach (var item in backup.DownloadDirectories ?? [])
       {
-        if(isClear || !outputDirs.Any(sitem => sitem.Value == item))
+        if (isClear || !outputDirs.Any(sitem => sitem.Value == item))
           downloadDirs.Add(new StringListItem(item, DateTime.Now));
       }
     }
