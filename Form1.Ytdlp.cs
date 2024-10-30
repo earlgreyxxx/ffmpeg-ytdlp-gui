@@ -87,7 +87,7 @@ namespace ffmpeg_ytdlp_gui
     /// </summary>
     /// <param name="url"></param>
     /// <returns></returns>
-    public async Task<YtdlpItem?> YtdlpParseDownloadUrl(string url)
+    public async Task<YtdlpItem?> YtdlpParseDownloadUrl(string url,string? confDir = null)
     {
       YtdlpItem? ytdlpItem = null;
       MediaInformation? mediaInfo;
@@ -100,6 +100,7 @@ namespace ffmpeg_ytdlp_gui
         var parser = new ytdlp_process(YtdlpPath.Text)
         {
           Url = url,
+          ConfigDir = confDir,
         };
 
         parser.CookieBrowser = UseCookie.SelectedValue?.ToString();

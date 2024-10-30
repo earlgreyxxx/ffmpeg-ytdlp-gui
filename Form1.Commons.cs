@@ -82,7 +82,13 @@ namespace ffmpeg_ytdlp_gui
       tooltip.AutomaticDelay = 10;
       tooltip.Show("正しいURLを入力してください。", control);
       control.Focus();
-      Task.Delay(delay).ContinueWith(_ => form?.Invoke(() => tooltip.Hide(control)));
+      Task.Delay(delay).ContinueWith(
+        _ => form?.Invoke(() =>
+        {
+          tooltip.Hide(control);
+          tooltip.Dispose();
+        })
+      );
     }
 
     // Instance members
@@ -110,6 +116,11 @@ namespace ffmpeg_ytdlp_gui
       PrimaryVideoFormatId.DataBindings.Add("Text", Settings.Default, "primaryVideoFormatId");
       PrimaryAudioFormatId.DataBindings.Add("Text", Settings.Default, "primaryAudioFormatId");
       PrimaryMovieFormatId.DataBindings.Add("Text", Settings.Default, "primaryMovieFormatId");
+      UseCustomConfig.DataBindings.Add("Checked", Settings.Default, "useCustomConfig");
+      ConfigDirectory.DataBindings.Add("Text", Settings.Default, "configDirectory");
+
+      SubmitConfigDirDlg.DataBindings.Add("Enabled", UseCustomConfig, "Checked");
+      ConfigDirectory.DataBindings.Add("Enabled", UseCustomConfig, "Checked");
     }
 
     private void InitializeDataSource()

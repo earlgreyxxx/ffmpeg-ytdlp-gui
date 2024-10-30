@@ -215,6 +215,9 @@
       ClearLists = new System.Windows.Forms.Button();
       IsOpenStderr = new System.Windows.Forms.CheckBox();
       groupBox3 = new System.Windows.Forms.GroupBox();
+      ConfigDirectory = new System.Windows.Forms.Label();
+      SubmitConfigDirDlg = new System.Windows.Forms.Button();
+      UseCustomConfig = new System.Windows.Forms.CheckBox();
       PrimaryMovieFormatId = new System.Windows.Forms.TextBox();
       PrimaryAudioFormatId = new System.Windows.Forms.TextBox();
       label39 = new System.Windows.Forms.Label();
@@ -1104,7 +1107,7 @@
       // btnFFmpeg
       // 
       btnFFmpeg.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnFFmpeg.Location = new System.Drawing.Point(605, 22);
+      btnFFmpeg.Location = new System.Drawing.Point(605, 21);
       btnFFmpeg.Name = "btnFFmpeg";
       btnFFmpeg.Size = new System.Drawing.Size(49, 28);
       btnFFmpeg.TabIndex = 36;
@@ -1125,7 +1128,7 @@
       // btnFindInPath
       // 
       btnFindInPath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      btnFindInPath.Location = new System.Drawing.Point(655, 22);
+      btnFindInPath.Location = new System.Drawing.Point(655, 21);
       btnFindInPath.Name = "btnFindInPath";
       btnFindInPath.Size = new System.Drawing.Size(144, 28);
       btnFindInPath.TabIndex = 38;
@@ -1568,7 +1571,7 @@
       // label22
       // 
       label22.AutoSize = true;
-      label22.Location = new System.Drawing.Point(188, 77);
+      label22.Location = new System.Drawing.Point(183, 78);
       label22.Name = "label22";
       label22.Size = new System.Drawing.Size(243, 12);
       label22.TabIndex = 1;
@@ -1577,7 +1580,7 @@
       // label21
       // 
       label21.AutoSize = true;
-      label21.Location = new System.Drawing.Point(188, 37);
+      label21.Location = new System.Drawing.Point(183, 38);
       label21.Name = "label21";
       label21.Size = new System.Drawing.Size(349, 12);
       label21.TabIndex = 1;
@@ -1585,7 +1588,7 @@
       // 
       // SubmitCopy
       // 
-      SubmitCopy.Location = new System.Drawing.Point(18, 66);
+      SubmitCopy.Location = new System.Drawing.Point(13, 67);
       SubmitCopy.Name = "SubmitCopy";
       SubmitCopy.Size = new System.Drawing.Size(154, 32);
       SubmitCopy.TabIndex = 0;
@@ -1595,7 +1598,7 @@
       // 
       // SubmitConcat
       // 
-      SubmitConcat.Location = new System.Drawing.Point(18, 27);
+      SubmitConcat.Location = new System.Drawing.Point(13, 28);
       SubmitConcat.Name = "SubmitConcat";
       SubmitConcat.Size = new System.Drawing.Size(154, 32);
       SubmitConcat.TabIndex = 0;
@@ -2283,7 +2286,7 @@
       // 
       // LoadFromJson
       // 
-      LoadFromJson.Location = new System.Drawing.Point(436, 19);
+      LoadFromJson.Location = new System.Drawing.Point(436, 23);
       LoadFromJson.Name = "LoadFromJson";
       LoadFromJson.Size = new System.Drawing.Size(156, 27);
       LoadFromJson.TabIndex = 46;
@@ -2293,7 +2296,7 @@
       // 
       // SaveToJson
       // 
-      SaveToJson.Location = new System.Drawing.Point(598, 19);
+      SaveToJson.Location = new System.Drawing.Point(598, 23);
       SaveToJson.Name = "SaveToJson";
       SaveToJson.Size = new System.Drawing.Size(201, 27);
       SaveToJson.TabIndex = 45;
@@ -2304,7 +2307,7 @@
       // label35
       // 
       label35.AutoSize = true;
-      label35.Location = new System.Drawing.Point(18, 59);
+      label35.Location = new System.Drawing.Point(18, 62);
       label35.Name = "label35";
       label35.Size = new System.Drawing.Size(125, 15);
       label35.TabIndex = 44;
@@ -2312,7 +2315,7 @@
       // 
       // MaxListItems
       // 
-      MaxListItems.Location = new System.Drawing.Point(150, 55);
+      MaxListItems.Location = new System.Drawing.Point(150, 58);
       MaxListItems.Name = "MaxListItems";
       MaxListItems.Size = new System.Drawing.Size(48, 23);
       MaxListItems.TabIndex = 43;
@@ -2321,8 +2324,7 @@
       // 
       // CommandInvoker
       // 
-      CommandInvoker.Enabled = false;
-      CommandInvoker.Location = new System.Drawing.Point(436, 55);
+      CommandInvoker.Location = new System.Drawing.Point(436, 56);
       CommandInvoker.Name = "CommandInvoker";
       CommandInvoker.Size = new System.Drawing.Size(110, 26);
       CommandInvoker.TabIndex = 42;
@@ -2343,7 +2345,7 @@
       // 
       // ClearLists
       // 
-      ClearLists.Location = new System.Drawing.Point(555, 53);
+      ClearLists.Location = new System.Drawing.Point(555, 56);
       ClearLists.Name = "ClearLists";
       ClearLists.Size = new System.Drawing.Size(244, 27);
       ClearLists.TabIndex = 41;
@@ -2365,6 +2367,9 @@
       // 
       // groupBox3
       // 
+      groupBox3.Controls.Add(ConfigDirectory);
+      groupBox3.Controls.Add(SubmitConfigDirDlg);
+      groupBox3.Controls.Add(UseCustomConfig);
       groupBox3.Controls.Add(PrimaryMovieFormatId);
       groupBox3.Controls.Add(PrimaryAudioFormatId);
       groupBox3.Controls.Add(label39);
@@ -2391,6 +2396,33 @@
       groupBox3.TabIndex = 40;
       groupBox3.TabStop = false;
       groupBox3.Text = "ダウンロード";
+      // 
+      // ConfigDirectory
+      // 
+      ConfigDirectory.AutoEllipsis = true;
+      ConfigDirectory.Location = new System.Drawing.Point(565, 68);
+      ConfigDirectory.Name = "ConfigDirectory";
+      ConfigDirectory.Size = new System.Drawing.Size(234, 15);
+      ConfigDirectory.TabIndex = 49;
+      // 
+      // SubmitConfigDirDlg
+      // 
+      SubmitConfigDirDlg.Location = new System.Drawing.Point(380, 61);
+      SubmitConfigDirDlg.Name = "SubmitConfigDirDlg";
+      SubmitConfigDirDlg.Size = new System.Drawing.Size(179, 28);
+      SubmitConfigDirDlg.TabIndex = 48;
+      SubmitConfigDirDlg.Text = "設定ファイルのディレクトリを指定";
+      SubmitConfigDirDlg.UseVisualStyleBackColor = true;
+      SubmitConfigDirDlg.Click += SubmitConfigDirDlg_Click;
+      // 
+      // UseCustomConfig
+      // 
+      UseCustomConfig.AutoSize = true;
+      UseCustomConfig.Location = new System.Drawing.Point(356, 68);
+      UseCustomConfig.Name = "UseCustomConfig";
+      UseCustomConfig.Size = new System.Drawing.Size(15, 14);
+      UseCustomConfig.TabIndex = 47;
+      UseCustomConfig.UseVisualStyleBackColor = true;
       // 
       // PrimaryMovieFormatId
       // 
@@ -2455,11 +2487,11 @@
       // HideThumbnail
       // 
       HideThumbnail.AutoSize = true;
-      HideThumbnail.Location = new System.Drawing.Point(261, 64);
+      HideThumbnail.Location = new System.Drawing.Point(189, 66);
       HideThumbnail.Name = "HideThumbnail";
-      HideThumbnail.Size = new System.Drawing.Size(181, 19);
+      HideThumbnail.Size = new System.Drawing.Size(145, 19);
       HideThumbnail.TabIndex = 42;
-      HideThumbnail.Text = "サムネール画像を非表示にする。";
+      HideThumbnail.Text = "サムネール画像を非表示";
       HideThumbnail.UseVisualStyleBackColor = true;
       // 
       // label24
@@ -2467,7 +2499,7 @@
       label24.AutoSize = true;
       label24.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
       label24.ForeColor = System.Drawing.Color.Red;
-      label24.Location = new System.Drawing.Point(20, 162);
+      label24.Location = new System.Drawing.Point(17, 162);
       label24.Name = "label24";
       label24.Size = new System.Drawing.Size(236, 15);
       label24.TabIndex = 41;
@@ -2477,7 +2509,7 @@
       // 
       label29.AutoSize = true;
       label29.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      label29.Location = new System.Drawing.Point(352, 135);
+      label29.Location = new System.Drawing.Point(336, 135);
       label29.Name = "label29";
       label29.Size = new System.Drawing.Size(99, 15);
       label29.TabIndex = 5;
@@ -2486,7 +2518,7 @@
       // SubmitOpenCookie
       // 
       SubmitOpenCookie.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      SubmitOpenCookie.Location = new System.Drawing.Point(748, 129);
+      SubmitOpenCookie.Location = new System.Drawing.Point(732, 129);
       SubmitOpenCookie.Name = "SubmitOpenCookie";
       SubmitOpenCookie.Size = new System.Drawing.Size(51, 28);
       SubmitOpenCookie.TabIndex = 36;
@@ -2499,7 +2531,7 @@
       // 
       CookiePath.BackColor = System.Drawing.SystemColors.ButtonHighlight;
       CookiePath.Font = new System.Drawing.Font("Meiryo UI", 9F);
-      CookiePath.Location = new System.Drawing.Point(457, 132);
+      CookiePath.Location = new System.Drawing.Point(441, 132);
       CookiePath.Name = "CookiePath";
       CookiePath.PlaceholderText = "Netscape形式のcookieファイル";
       CookiePath.Size = new System.Drawing.Size(289, 23);
@@ -2519,11 +2551,11 @@
       // 
       DeleteUrlAfterDownloaded.AutoSize = true;
       DeleteUrlAfterDownloaded.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(21, 64);
+      DeleteUrlAfterDownloaded.Location = new System.Drawing.Point(21, 66);
       DeleteUrlAfterDownloaded.Name = "DeleteUrlAfterDownloaded";
-      DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(209, 19);
+      DeleteUrlAfterDownloaded.Size = new System.Drawing.Size(149, 19);
       DeleteUrlAfterDownloaded.TabIndex = 40;
-      DeleteUrlAfterDownloaded.Text = "ダウンロード完了後リストから削除する。";
+      DeleteUrlAfterDownloaded.Text = "ダウンロード後URLを削除";
       DeleteUrlAfterDownloaded.UseVisualStyleBackColor = true;
       // 
       // label32
@@ -2542,9 +2574,9 @@
       UseCookie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       UseCookie.Font = new System.Drawing.Font("Meiryo UI", 9F);
       UseCookie.FormattingEnabled = true;
-      UseCookie.Location = new System.Drawing.Point(152, 132);
+      UseCookie.Location = new System.Drawing.Point(155, 132);
       UseCookie.Name = "UseCookie";
-      UseCookie.Size = new System.Drawing.Size(162, 23);
+      UseCookie.Size = new System.Drawing.Size(159, 23);
       UseCookie.TabIndex = 13;
       UseCookie.ValueMember = "Value";
       // 
@@ -3042,6 +3074,9 @@
     private System.Windows.Forms.TextBox PrimaryMovieFormatId;
     private System.Windows.Forms.Label label39;
     private System.Windows.Forms.ToolTip TooltipHintStringInput;
+    private System.Windows.Forms.CheckBox UseCustomConfig;
+    private System.Windows.Forms.Label ConfigDirectory;
+    private System.Windows.Forms.Button SubmitConfigDirDlg;
   }
 }
 

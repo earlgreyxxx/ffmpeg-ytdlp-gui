@@ -26,6 +26,25 @@ namespace ffmpeg_ytdlp_gui.libs
     public string? MovieFormat { private get; set; }
     public string? JsonText {  get; set; }
 
+    private string? _config_dir;
+    public string? ConfigDir
+    {
+      get => _config_dir;
+      set {
+        string v = value ?? string.Empty;
+        if (string.IsNullOrEmpty(v))
+          throw new Exception("argument is empty");
+          
+        if(v.Any(c => c == '%'))
+          v = Environment.ExpandEnvironmentVariables(v);
+
+        if (!Directory.Exists(v))
+          throw new Exception("Directory is not exists");
+
+        _config_dir = v;
+      }
+    }
+
     private string[]? _downloadfiles;
     public string? DownloadFile
     {
@@ -70,6 +89,7 @@ namespace ffmpeg_ytdlp_gui.libs
         VideoFormat = VideoFormat,
         MovieFormat = MovieFormat,
         Separated = Separated,
+        ConfigDir = ConfigDir,
       };
     }
 
@@ -99,6 +119,9 @@ namespace ffmpeg_ytdlp_gui.libs
 
       if(additionalOptions != null && additionalOptions.Length > 0)
         options.AddRange(additionalOptions);
+
+      if (!string.IsNullOrEmpty(ConfigDir) && Directory.Exists(ConfigDir))
+        options.Add($"--config-locations \"{ConfigDir}\"");
 
       return options;
     }

@@ -190,6 +190,8 @@ namespace ffmpeg_ytdlp_gui
       PrimaryVideoFormatId.Text = Settings.Default.primaryVideoFormatId;
       PrimaryAudioFormatId.Text = Settings.Default.primaryAudioFormatId;
       PrimaryMovieFormatId.Text = Settings.Default.primaryMovieFormatId;
+      UseCustomConfig.Checked = Settings.Default.useCustomConfig;
+      ConfigDirectory.Text = Settings.Default.configDirectory;
 
       string text = "複数指定する場合は、カンマ、セミコロン、空白で区切ってください。";
       TooltipHintStringInput.ShowAlways = true;
@@ -283,7 +285,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitOpenDlg_Click(object sender, EventArgs e)
     {
-      var dlg = new FolderBrowserDialog()
+      using var dlg = new FolderBrowserDialog()
       {
         Description = "出力先フォルダを選択してください。",
       };
@@ -436,7 +438,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void DropArea_MouseDoubleClick(object sender, MouseEventArgs e)
     {
-      var dlg = new OpenFileDialog()
+      using var dlg = new OpenFileDialog()
       {
         DefaultExt = "mp4",
         Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*",
@@ -454,7 +456,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitSaveToFile_Click(object sender, EventArgs e)
     {
-      var dlg = new SaveFileDialog()
+      using var dlg = new SaveFileDialog()
       {
         CheckPathExists = false,
         DefaultExt = "cmd",
@@ -604,7 +606,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnFFmpeg_Click(object sender, EventArgs e)
     {
-      var dlg = new OpenFileDialog()
+      using var dlg = new OpenFileDialog()
       {
         DefaultExt = "exe",
         Filter = "実行ファイル|*.exe",
@@ -622,7 +624,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnYtdlp_Click(object sender, EventArgs e)
     {
-      var dlg = new OpenFileDialog()
+      using var dlg = new OpenFileDialog()
       {
         DefaultExt = "exe",
         Filter = "実行ファイル|*.exe",
@@ -1038,6 +1040,9 @@ namespace ffmpeg_ytdlp_gui
     private async void SubmitParseUrl_Click(object sender, EventArgs e)
     {
       var url = DownloadUrl.Text;
+      if (!Regex.IsMatch(url, @"^https?://", RegexOptions.IgnoreCase))
+        return;
+
       var list = UrlBindingSource.DataSource as YtdlpItems ?? throw new NullReferenceException("YtdlpItems is null");
       if (false == list.Any(item => item?.Item1 == url))
       {
@@ -1545,6 +1550,26 @@ namespace ffmpeg_ytdlp_gui
         if (isClear || !outputDirs.Any(sitem => sitem.Value == item))
           downloadDirs.Add(new StringListItem(item, DateTime.Now));
       }
+    }
+
+    private void SubmitConfigDirDlg_Click(object sender, EventArgs e)
+    {
+      using var dlg = new FolderBrowserDialog()
+      {
+        Description = "設定ファイルがあるフォルダを選択してください。",
+      };
+      string path = ConfigDirectory.Text;
+
+      if (path.Any(c => c == '%'))
+        path = Environment.ExpandEnvironmentVariables(path);
+
+      if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+        dlg.SelectedPath = path;
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
+        return;
+
+      Settings.Default.configDirectory = dlg.SelectedPath;
     }
   }
 }

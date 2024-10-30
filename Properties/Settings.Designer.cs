@@ -472,5 +472,29 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["primaryMovieFormatId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string configDirectory {
+            get {
+                return ((string)(this["configDirectory"]));
+            }
+            set {
+                this["configDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool useCustomConfig {
+            get {
+                return ((bool)(this["useCustomConfig"]));
+            }
+            set {
+                this["useCustomConfig"] = value;
+            }
+        }
     }
 }
