@@ -60,8 +60,6 @@ namespace ffmpeg_ytdlp_gui
             else
             {
               ytdlp = null;
-              //if (IsOpenStderr.Checked && ytdlpfm != null)
-              //  ytdlpfm = null;
 
               Invoke(OnDownloaded);
               ToastPush("ダウンロードキューが空になりました。", "PageDownloader");
@@ -141,7 +139,7 @@ namespace ffmpeg_ytdlp_gui
       return ytdlpItem;
     }
 
-    private async void YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,bool separatedDownload = false,bool isDefaultDownload = false)
+    private async void YtdlpAddDownloadQueue(YtdlpItem? ytdlpItem,string? confDir,bool separatedDownload = false,bool isDefaultDownload = false)
     {
       var url = ytdlpItem?.Item1;
       var mediaInfo = ytdlpItem?.Item2;
@@ -169,7 +167,8 @@ namespace ffmpeg_ytdlp_gui
           AudioFormat = string.Empty,
           MovieFormat = string.Empty,
           Separated = separatedDownload,
-          JsonText = mediaInfo.JsonText
+          JsonText = mediaInfo.JsonText,
+          ConfigDir = confDir,
         };
         if (isDefaultDownload)
         {
@@ -368,7 +367,9 @@ namespace ffmpeg_ytdlp_gui
 
     private void OnDownloaded()
     {
-      SubmitDownloadDequeue.Enabled = true;
+      if(0 < (ytdlps?.Count ?? 0))
+        SubmitDownloadDequeue.Enabled = true;
+
       StopDownload.Enabled = false;
     }
 

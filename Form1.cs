@@ -1024,7 +1024,7 @@ namespace ffmpeg_ytdlp_gui
       if (false == list.Any(item => item == format))
         OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
 
-      YtdlpAddDownloadQueue(ytdlpItem, FmtSeparated.Checked);
+      YtdlpAddDownloadQueue(ytdlpItem, ConfigDirectory.Text,FmtSeparated.Checked);
     }
 
     private void BeginDequeue_Click(object sender, EventArgs e)
@@ -1046,7 +1046,7 @@ namespace ffmpeg_ytdlp_gui
       var list = UrlBindingSource.DataSource as YtdlpItems ?? throw new NullReferenceException("YtdlpItems is null");
       if (false == list.Any(item => item?.Item1 == url))
       {
-        var ytdlpItem = await YtdlpParseDownloadUrl(url);
+        var ytdlpItem = await YtdlpParseDownloadUrl(url,ConfigDirectory.Text);
         if (ytdlpItem == null)
           return;
 
@@ -1359,7 +1359,7 @@ namespace ffmpeg_ytdlp_gui
           continue;
 
         var item = new YtdlpItem(mediaInfo.webpage_url, mediaInfo, mediaInfo.image, null);
-        YtdlpAddDownloadQueue(item, false, true);
+        YtdlpAddDownloadQueue(item, ConfigDirectory.Text, false, true);
       }
     }
 

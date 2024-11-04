@@ -33,9 +33,12 @@ namespace ffmpeg_ytdlp_gui.libs
       set {
         string v = value ?? string.Empty;
         if (string.IsNullOrEmpty(v))
-          throw new Exception("argument is empty");
-          
-        if(v.Any(c => c == '%'))
+        {
+          _config_dir = null;
+          return;
+        }
+
+        if (v.Any(c => c == '%'))
           v = Environment.ExpandEnvironmentVariables(v);
 
         if (!Directory.Exists(v))
@@ -173,7 +176,8 @@ namespace ffmpeg_ytdlp_gui.libs
       var options = new List<string>()
       {
         $"\"{Url}\"",
-        "-j"
+        "-j",
+        "--encoding UTF-8",
       };
 
       if (CookieBrowser == "file" && !string.IsNullOrEmpty(CookiePath) && File.Exists(CookiePath))
