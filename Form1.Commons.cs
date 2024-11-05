@@ -96,31 +96,57 @@ namespace ffmpeg_ytdlp_gui
 
     private void InitializeSettingsBinding()
     {
+      BatExecWithConsole.DataBindings.Add("Checked", Settings.Default, "batExecWithConsole");
+      ConfigDirectory.DataBindings.Add("Text", Settings.Default, "configDirectory");
       CookiePath.DataBindings.Add("Text", Settings.Default, "cookiePath");
+      DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
       FrameRate.DataBindings.Add("Value", Settings.Default, "fps");
       FreeOptions.DataBindings.Add("Text", Settings.Default, "free");
+      HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
       ImageHeight.DataBindings.Add("Value", Settings.Default, "imageHeight");
       ImageWidth.DataBindings.Add("Value", Settings.Default, "imageWidth");
       IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
       LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
-      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
-      TileColumns.DataBindings.Add("Value", Settings.Default, "tileColumns");
-      TileRows.DataBindings.Add("Value", Settings.Default, "tileRows");
-      chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
-      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
-      DeleteUrlAfterDownloaded.DataBindings.Add("Checked", Settings.Default, "deleteUrlAfterDownload");
-      HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
       MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
-      BatExecWithConsole.DataBindings.Add("Checked", Settings.Default, "batExecWithConsole");
-      chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
-      PrimaryVideoFormatId.DataBindings.Add("Text", Settings.Default, "primaryVideoFormatId");
+      Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
       PrimaryAudioFormatId.DataBindings.Add("Text", Settings.Default, "primaryAudioFormatId");
       PrimaryMovieFormatId.DataBindings.Add("Text", Settings.Default, "primaryMovieFormatId");
+      PrimaryVideoFormatId.DataBindings.Add("Text", Settings.Default, "primaryVideoFormatId");
+      TileColumns.DataBindings.Add("Value", Settings.Default, "tileColumns");
+      TileRows.DataBindings.Add("Value", Settings.Default, "tileRows");
       UseCustomConfig.DataBindings.Add("Checked", Settings.Default, "useCustomConfig");
-      ConfigDirectory.DataBindings.Add("Text", Settings.Default, "configDirectory");
+      chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
+      chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
+      resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
 
       SubmitConfigDirDlg.DataBindings.Add("Enabled", UseCustomConfig, "Checked");
       ConfigDirectory.DataBindings.Add("Enabled", UseCustomConfig, "Checked");
+    }
+
+    private void InitializeSettingsApply()
+    {
+      BatExecWithConsole.Checked = Settings.Default.batExecWithConsole;
+      ConfigDirectory.Text = Settings.Default.configDirectory;
+      CookiePath.Text = Settings.Default.cookiePath;
+      DeleteUrlAfterDownloaded.Checked = Settings.Default.deleteUrlAfterDownload;
+      FrameRate.Value = Settings.Default.fps;
+      FreeOptions.Text = Settings.Default.free;
+      HideThumbnail.Checked = Settings.Default.hideThumbnail;
+      ImageHeight.Value = Settings.Default.imageHeight;
+      ImageWidth.Value = Settings.Default.imageWidth;
+      IsOpenStderr.Checked = Settings.Default.openStderr;
+      LookAhead.Value = Settings.Default.lookAhead;
+      MaxListItems.Value = Settings.Default.maxListItems;
+      Overwrite.Checked = Settings.Default.overwrite;
+      PrimaryAudioFormatId.Text = Settings.Default.primaryAudioFormatId;
+      PrimaryMovieFormatId.Text = Settings.Default.primaryMovieFormatId;
+      PrimaryVideoFormatId.Text = Settings.Default.primaryVideoFormatId;
+      TileColumns.Value = Settings.Default.tileColumns;
+      TileRows.Value = Settings.Default.tileRows;
+      UseCustomConfig.Checked = Settings.Default.useCustomConfig;
+      chkAfterDownload.Checked = Settings.Default.downloadCompleted;
+      chkConstantQuality.Checked = Settings.Default.cq;
+      resizeTo.Value = Settings.Default.resizeTo;
     }
 
     private void InitializeDataSource()

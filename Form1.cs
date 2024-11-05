@@ -46,6 +46,7 @@ namespace ffmpeg_ytdlp_gui
     public Form1()
     {
       InitializeComponent();
+      InitializeSettingsApply();
       InitializeSettingsBinding();
       InitializeDataSource();
       InitializeYtdlpQueue();
@@ -178,20 +179,6 @@ namespace ffmpeg_ytdlp_gui
         UseCookie.SelectedIndex = 0;
 
       VideoFrameRate.SelectedIndex = 0;
-
-      DeleteUrlAfterDownloaded.Checked = Settings.Default.deleteUrlAfterDownload;
-      MaxListItems.Value = Settings.Default.maxListItems;
-      HideThumbnail.Checked = Settings.Default.hideThumbnail;
-      IsOpenStderr.Checked = Settings.Default.openStderr;
-      Overwrite.Checked = Settings.Default.overwrite;
-      CookiePath.Text = Settings.Default.cookiePath;
-      BatExecWithConsole.Checked = Settings.Default.batExecWithConsole;
-      resizeTo.Value = Settings.Default.resizeTo;
-      PrimaryVideoFormatId.Text = Settings.Default.primaryVideoFormatId;
-      PrimaryAudioFormatId.Text = Settings.Default.primaryAudioFormatId;
-      PrimaryMovieFormatId.Text = Settings.Default.primaryMovieFormatId;
-      UseCustomConfig.Checked = Settings.Default.useCustomConfig;
-      ConfigDirectory.Text = Settings.Default.configDirectory;
 
       string text = "複数指定する場合は、カンマ、セミコロン、空白で区切ってください。";
       TooltipHintStringInput.ShowAlways = true;
@@ -327,7 +314,10 @@ namespace ffmpeg_ytdlp_gui
 
       if (chkConstantQuality.Checked)
       {
-        var codec = UseVideoEncoder.SelectedValue as Codec ?? throw new NullReferenceException("codec is null");
+        var codec = UseVideoEncoder.SelectedValue as Codec;
+        if (codec == null)
+          return;
+
         vQualityLabel.Text = codec.GpuSuffix == "qsv" ? "ICQ" : "CQ";
       }
       else
