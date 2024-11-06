@@ -91,6 +91,8 @@
       btnApply = new System.Windows.Forms.Button();
       FileList = new System.Windows.Forms.ListBox();
       FileListMenu = new System.Windows.Forms.ContextMenuStrip(components);
+      FileListMenuItemAddFolder = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       FileListMenuItemOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
       toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       FileListMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
@@ -996,6 +998,7 @@
       // FileList
       // 
       FileList.AllowDrop = true;
+      FileList.ContextMenuStrip = FileListMenu;
       FileList.DisplayMember = "Label";
       FileList.Dock = System.Windows.Forms.DockStyle.Bottom;
       FileList.FormattingEnabled = true;
@@ -1014,10 +1017,22 @@
       // 
       // FileListMenu
       // 
-      FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemOpenFolder, toolStripSeparator1, FileListMenuItemDelete, FileListMenuItemClear });
+      FileListMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { FileListMenuItemAddFolder, toolStripSeparator2, FileListMenuItemOpenFolder, toolStripSeparator1, FileListMenuItemDelete, FileListMenuItemClear });
       FileListMenu.Name = "FileListMenu";
       FileListMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      FileListMenu.Size = new System.Drawing.Size(269, 76);
+      FileListMenu.Size = new System.Drawing.Size(269, 104);
+      // 
+      // FileListMenuItemAddFolder
+      // 
+      FileListMenuItemAddFolder.Name = "FileListMenuItemAddFolder";
+      FileListMenuItemAddFolder.Size = new System.Drawing.Size(268, 22);
+      FileListMenuItemAddFolder.Text = "フォルダを選択";
+      FileListMenuItemAddFolder.Click += FileListMenuItemAddFolder_Click;
+      // 
+      // toolStripSeparator2
+      // 
+      toolStripSeparator2.Name = "toolStripSeparator2";
+      toolStripSeparator2.Size = new System.Drawing.Size(265, 6);
       // 
       // FileListMenuItemOpenFolder
       // 
@@ -2260,10 +2275,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 22);
+      PageSetting.Location = new System.Drawing.Point(4, 27);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 424);
+      PageSetting.Size = new System.Drawing.Size(832, 419);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
@@ -3077,6 +3092,8 @@
     private System.Windows.Forms.CheckBox UseCustomConfig;
     private System.Windows.Forms.Label ConfigDirectory;
     private System.Windows.Forms.Button SubmitConfigDirDlg;
+    private System.Windows.Forms.ToolStripMenuItem FileListMenuItemAddFolder;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
   }
 }
 

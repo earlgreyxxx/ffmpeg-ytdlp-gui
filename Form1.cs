@@ -428,20 +428,16 @@ namespace ffmpeg_ytdlp_gui
 
     private void DropArea_MouseDoubleClick(object sender, MouseEventArgs e)
     {
-      using var dlg = new OpenFileDialog()
-      {
-        DefaultExt = "mp4",
-        Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*",
-        Title = "動画ファイルを選択してください。"
-      };
-
-      if (DialogResult.Cancel == dlg.ShowDialog())
+      var listbox = sender as ListBox;
+      if (listbox == null)
         return;
 
-      foreach (var filename in dlg.FileNames)
-        FileListBindingSource.Add(new StringListItem(filename));
+      var item = listbox.SelectedItem as StringListItem;
+      if(item == null)
+        return;
 
-      btnSubmitInvoke.Enabled = true;
+      if(File.Exists(item.Value))
+        CustomProcess.ShellExecute(item.Value);
     }
 
     private void btnSubmitSaveToFile_Click(object sender, EventArgs e)
@@ -1014,7 +1010,7 @@ namespace ffmpeg_ytdlp_gui
       if (false == list.Any(item => item == format))
         OutputFileFormat.SelectedIndex = OutputFileFormatBindingSource.Add(format);
 
-      YtdlpAddDownloadQueue(ytdlpItem, ConfigDirectory.Text,FmtSeparated.Checked);
+      YtdlpAddDownloadQueue(ytdlpItem, ConfigDirectory.Text, FmtSeparated.Checked);
     }
 
     private void BeginDequeue_Click(object sender, EventArgs e)
@@ -1036,7 +1032,7 @@ namespace ffmpeg_ytdlp_gui
       var list = UrlBindingSource.DataSource as YtdlpItems ?? throw new NullReferenceException("YtdlpItems is null");
       if (false == list.Any(item => item?.Item1 == url))
       {
-        var ytdlpItem = await YtdlpParseDownloadUrl(url,ConfigDirectory.Text);
+        var ytdlpItem = await YtdlpParseDownloadUrl(url, ConfigDirectory.Text);
         if (ytdlpItem == null)
           return;
 
@@ -1184,10 +1180,18 @@ namespace ffmpeg_ytdlp_gui
     private void FileListBindingSource_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
     {
       var bs = sender as BindingSource;
-      if (bs?.Count > 0 && FileList.ContextMenuStrip == null)
-        FileList.ContextMenuStrip = FileListMenu;
-      else if (bs?.Count == 0 && FileList.ContextMenuStrip != null)
-        FileList.ContextMenuStrip = null;
+      if (bs?.Count > 0)
+      {
+        FileListMenuItemOpenFolder.Enabled = true;
+        FileListMenuItemClear.Enabled = true;
+        FileListMenuItemDelete.Enabled = true;
+      }
+      else if (bs?.Count == 0)
+      {
+        FileListMenuItemOpenFolder.Enabled = false;
+        FileListMenuItemClear.Enabled = false;
+        FileListMenuItemDelete.Enabled = false;
+      }
     }
 
     private void FileListMenuItemClear_Click(object sender, EventArgs e)
@@ -1560,6 +1564,24 @@ namespace ffmpeg_ytdlp_gui
         return;
 
       Settings.Default.configDirectory = dlg.SelectedPath;
+    }
+
+    private void FileListMenuItemAddFolder_Click(object sender, EventArgs e)
+    {
+      using var dlg = new OpenFileDialog()
+      {
+        DefaultExt = "mp4",
+        Filter = "動画ファイル|*.mpg;*.mp4;*.mkv;*.ts;*.avi;*.webm;*.m4v;*.wmv|すべてのファイル|*.*",
+        Title = "動画ファイルを選択してください。"
+      };
+
+      if (DialogResult.Cancel == dlg.ShowDialog())
+        return;
+
+      foreach (var filename in dlg.FileNames)
+        FileListBindingSource.Add(new StringListItem(filename));
+
+      btnSubmitInvoke.Enabled = true;
     }
   }
 }
