@@ -256,6 +256,7 @@
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
       TooltipHintStringInput = new System.Windows.Forms.ToolTip(components);
+      RemoveBatListAfterDone = new System.Windows.Forms.CheckBox();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -2275,10 +2276,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 27);
+      PageSetting.Location = new System.Drawing.Point(4, 22);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 419);
+      PageSetting.Size = new System.Drawing.Size(832, 424);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
@@ -2633,6 +2634,7 @@
       // 
       // groupBox2
       // 
+      groupBox2.Controls.Add(RemoveBatListAfterDone);
       groupBox2.Controls.Add(BatExecWithConsole);
       groupBox2.Controls.Add(label8);
       groupBox2.Controls.Add(ffmpeg);
@@ -2764,6 +2766,18 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
+      // 
+      // RemoveBatListAfterDone
+      // 
+      RemoveBatListAfterDone.AutoSize = true;
+      RemoveBatListAfterDone.Checked = true;
+      RemoveBatListAfterDone.CheckState = System.Windows.Forms.CheckState.Checked;
+      RemoveBatListAfterDone.Location = new System.Drawing.Point(274, 64);
+      RemoveBatListAfterDone.Name = "RemoveBatListAfterDone";
+      RemoveBatListAfterDone.Size = new System.Drawing.Size(222, 19);
+      RemoveBatListAfterDone.TabIndex = 41;
+      RemoveBatListAfterDone.Text = "バッチ実行完了後バッチリストを削除する。";
+      RemoveBatListAfterDone.UseVisualStyleBackColor = true;
       // 
       // Form1
       // 
@@ -3094,6 +3108,7 @@
     private System.Windows.Forms.Button SubmitConfigDirDlg;
     private System.Windows.Forms.ToolStripMenuItem FileListMenuItemAddFolder;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+    private System.Windows.Forms.CheckBox RemoveBatListAfterDone;
   }
 }
 

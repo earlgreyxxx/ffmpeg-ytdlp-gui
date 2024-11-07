@@ -496,5 +496,17 @@ namespace ffmpeg_ytdlp_gui.Properties {
                 this["useCustomConfig"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool removeBatListAfterDone {
+            get {
+                return ((bool)(this["removeBatListAfterDone"]));
+            }
+            set {
+                this["removeBatListAfterDone"] = value;
+            }
+        }
     }
 }

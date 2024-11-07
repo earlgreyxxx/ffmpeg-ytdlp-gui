@@ -118,6 +118,7 @@ namespace ffmpeg_ytdlp_gui
       chkAfterDownload.DataBindings.Add("Checked", Settings.Default, "downloadCompleted");
       chkConstantQuality.DataBindings.Add("Checked", Settings.Default, "cq");
       resizeTo.DataBindings.Add("Value", Settings.Default, "resizeTo");
+      RemoveBatListAfterDone.DataBindings.Add("Checked", Settings.Default, "removeBatListAfterDone");
 
       SubmitConfigDirDlg.DataBindings.Add("Enabled", UseCustomConfig, "Checked");
       ConfigDirectory.DataBindings.Add("Enabled", UseCustomConfig, "Checked");
@@ -147,6 +148,7 @@ namespace ffmpeg_ytdlp_gui
       chkAfterDownload.Checked = Settings.Default.downloadCompleted;
       chkConstantQuality.Checked = Settings.Default.cq;
       resizeTo.Value = Settings.Default.resizeTo;
+      RemoveBatListAfterDone.Checked = Settings.Default.removeBatListAfterDone;
     }
 
     private void InitializeDataSource()

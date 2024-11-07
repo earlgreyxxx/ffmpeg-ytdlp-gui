@@ -43,10 +43,11 @@ namespace ffmpeg_ytdlp_gui
     [GeneratedRegex("^(Intel|Nvidia)", RegexOptions.IgnoreCase, "ja-JP")]
     private static partial Regex IsIntelOrNvidia();
 
+    private Action OnBatchDone;
+
     public Form1()
     {
       InitializeComponent();
-      InitializeSettingsApply();
       InitializeSettingsBinding();
       InitializeDataSource();
       InitializeYtdlpQueue();
@@ -57,6 +58,15 @@ namespace ffmpeg_ytdlp_gui
       CommandInvoker.Enabled = true;
       CommandInvoker.Visible = true;
 #endif
+      InitializeSettingsApply();
+
+      OnBatchDone += () =>
+      {
+        BatchList?.Clear();
+        BatchList = null;
+        btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+        WriteBatListStatus();
+      };
     }
 
     /// <summary>
@@ -495,6 +505,8 @@ namespace ffmpeg_ytdlp_gui
             using var process = Process.Start(filename);
             process.WaitForExit();
             File.Delete(filename);
+            if(RemoveBatListAfterDone.Checked && process.ExitCode == 0)
+              Invoke(OnBatchDone);
           })
         );
       }
@@ -505,7 +517,12 @@ namespace ffmpeg_ytdlp_gui
         if (form == null || redirected == null)
           return;
 
-        redirected.ProcessExited += (s, e) => File.Delete(filename);
+        redirected.ProcessExited += (s, e) =>
+        {
+          File.Delete(filename);
+          if (RemoveBatListAfterDone.Checked && redirected.ExitCode == 0)
+            Invoke(OnBatchDone);
+        };
 
         form?.Show();
       }
@@ -549,10 +566,7 @@ namespace ffmpeg_ytdlp_gui
 
     private void btnSubmitBatchClear_Click(object sender, EventArgs e)
     {
-      BatchList?.Clear();
-      BatchList = null;
-      btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
-      WriteBatListStatus();
+      OnBatchDone.Invoke();
     }
 
     private void btnStop_Click(object sender, EventArgs e)
