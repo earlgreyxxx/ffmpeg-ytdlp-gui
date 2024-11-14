@@ -417,13 +417,13 @@ namespace ffmpeg_ytdlp_gui
       };
     }
 
-    private void ToastPush(string message,string pageName = "PageConvert")
+    private void ToastPush(string message,string? pageName = "PageConvert")
     {
       var lines = message.Split(['\n', '\r']);
       if (lines.Length > 1)
       {
         var title = lines.First();
-        ToastPush(title, lines.Skip(1), pageName);
+        ToastPush(title, lines.Skip(1), pageName ?? "PageConvert");
         return;
       }
 
@@ -434,8 +434,11 @@ namespace ffmpeg_ytdlp_gui
         .Show();
     }
 
-    private void ToastPush(string title,string message,string pageName = "PageConvert")
+    private void ToastPush(string title,string message,string? pageName)
     {
+      if (pageName == null)
+        pageName = "PageConvert";
+
       var lines = message.Split(['\n', '\r']);
       if (lines.Length > 1)
       {

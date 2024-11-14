@@ -15,6 +15,19 @@ namespace ffmpeg_ytdlp_gui.libs
 
     const string YTDLPNAME = "yt-dlp";
 
+    public static Task DeleteTemporaries()
+    {
+      string tempDir = Path.GetTempPath();
+      return Task.Run(() =>
+      {
+        foreach (var dir in Directory.EnumerateDirectories(tempDir, "_MEI*").Select(dir => Path.Combine(tempDir,dir)))
+        {
+          Debug.WriteLine(dir);
+          //Directory.Delete(dir, true);
+        }
+      });
+    }
+
     public string? Url { get; set; }
     public string? CookieBrowser { get; set; } = "none";
     public string? CookiePath { get; set; }
