@@ -15,17 +15,20 @@ namespace ffmpeg_ytdlp_gui.libs
 
     const string YTDLPNAME = "yt-dlp";
 
-    public static Task DeleteTemporaries()
+    public static string[]? DeleteTemporaries()
     {
       string tempDir = Path.GetTempPath();
-      return Task.Run(() =>
+      List<string> failed = new();
+      foreach (var dir in Directory.EnumerateDirectories(tempDir, "_MEI*").Select(dir => Path.Combine(tempDir, dir)))
       {
-        foreach (var dir in Directory.EnumerateDirectories(tempDir, "_MEI*").Select(dir => Path.Combine(tempDir,dir)))
-        {
-          Debug.WriteLine(dir);
-          //Directory.Delete(dir, true);
+        try {
+          Directory.Delete(dir, true);
+        } catch {
+          failed.Add(dir);
         }
-      });
+      }
+
+      return failed.Count > 0 ? failed.ToArray() : null;
     }
 
     public string? Url { get; set; }

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ffmpeg_ytdlp_gui.libs;
 
 namespace ffmpeg_ytdlp_gui
 {
@@ -67,6 +68,7 @@ namespace ffmpeg_ytdlp_gui
         Application.Run(new Form1());
 
         ToastNotificationManagerCompat.Uninstall();
+        ytdlp_process.DeleteTemporaries();
       }
       finally
       {

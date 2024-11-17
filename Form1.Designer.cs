@@ -240,6 +240,7 @@
       ytdlpFindInPath = new System.Windows.Forms.Button();
       btnYtdlp = new System.Windows.Forms.Button();
       groupBox2 = new System.Windows.Forms.GroupBox();
+      RemoveBatListAfterDone = new System.Windows.Forms.CheckBox();
       BatExecWithConsole = new System.Windows.Forms.CheckBox();
       ImageContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       CommandSaveImage = new System.Windows.Forms.ToolStripMenuItem();
@@ -256,7 +257,6 @@
       OutputFileFormatBindingSource = new System.Windows.Forms.BindingSource(components);
       PlaylistBindingSource = new System.Windows.Forms.BindingSource(components);
       TooltipHintStringInput = new System.Windows.Forms.ToolTip(components);
-      RemoveBatListAfterDone = new System.Windows.Forms.CheckBox();
       CuttingBox.SuspendLayout();
       CodecBox.SuspendLayout();
       ResizeBox.SuspendLayout();
@@ -668,7 +668,7 @@
       rbRotateLeft.Size = new System.Drawing.Size(79, 16);
       rbRotateLeft.TabIndex = 18;
       rbRotateLeft.Tag = "2";
-      rbRotateLeft.Text = "半時計周り";
+      rbRotateLeft.Text = "反時計周り";
       // 
       // rbRotateRight
       // 
@@ -2276,10 +2276,10 @@
       PageSetting.Controls.Add(groupBox3);
       PageSetting.Controls.Add(groupBox2);
       PageSetting.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128);
-      PageSetting.Location = new System.Drawing.Point(4, 22);
+      PageSetting.Location = new System.Drawing.Point(4, 27);
       PageSetting.Name = "PageSetting";
       PageSetting.Padding = new System.Windows.Forms.Padding(3);
-      PageSetting.Size = new System.Drawing.Size(832, 424);
+      PageSetting.Size = new System.Drawing.Size(832, 419);
       PageSetting.TabIndex = 3;
       PageSetting.Text = "設定";
       // 
@@ -2648,6 +2648,18 @@
       groupBox2.TabStop = false;
       groupBox2.Text = "動画変換";
       // 
+      // RemoveBatListAfterDone
+      // 
+      RemoveBatListAfterDone.AutoSize = true;
+      RemoveBatListAfterDone.Checked = true;
+      RemoveBatListAfterDone.CheckState = System.Windows.Forms.CheckState.Checked;
+      RemoveBatListAfterDone.Location = new System.Drawing.Point(274, 64);
+      RemoveBatListAfterDone.Name = "RemoveBatListAfterDone";
+      RemoveBatListAfterDone.Size = new System.Drawing.Size(222, 19);
+      RemoveBatListAfterDone.TabIndex = 41;
+      RemoveBatListAfterDone.Text = "バッチ実行完了後バッチリストを削除する。";
+      RemoveBatListAfterDone.UseVisualStyleBackColor = true;
+      // 
       // BatExecWithConsole
       // 
       BatExecWithConsole.AutoSize = true;
@@ -2766,18 +2778,6 @@
       // PlaylistBindingSource
       // 
       PlaylistBindingSource.DataMember = "Item4";
-      // 
-      // RemoveBatListAfterDone
-      // 
-      RemoveBatListAfterDone.AutoSize = true;
-      RemoveBatListAfterDone.Checked = true;
-      RemoveBatListAfterDone.CheckState = System.Windows.Forms.CheckState.Checked;
-      RemoveBatListAfterDone.Location = new System.Drawing.Point(274, 64);
-      RemoveBatListAfterDone.Name = "RemoveBatListAfterDone";
-      RemoveBatListAfterDone.Size = new System.Drawing.Size(222, 19);
-      RemoveBatListAfterDone.TabIndex = 41;
-      RemoveBatListAfterDone.Text = "バッチ実行完了後バッチリストを削除する。";
-      RemoveBatListAfterDone.UseVisualStyleBackColor = true;
       // 
       // Form1
       // 
