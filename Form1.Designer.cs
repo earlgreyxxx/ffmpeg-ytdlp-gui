@@ -2797,6 +2797,7 @@
       SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
       Text = "ffmpeg & yt-dlp GUI";
       FormClosing += Form1_FormClosing;
+      FormClosed += Form1_FormClosed;
       Load += Form1_Load;
       CuttingBox.ResumeLayout(false);
       CuttingBox.PerformLayout();

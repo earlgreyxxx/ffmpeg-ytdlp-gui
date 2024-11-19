@@ -237,6 +237,16 @@ namespace ffmpeg_ytdlp_gui
       Settings.Default.Save();
     }
 
+    private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+    {
+      if (e.CloseReason == CloseReason.UserClosing)
+      {
+        var failed = ytdlp_process.DeleteTemporaries();
+        if (failed != null)
+          ToastPush($"ytdlpの作業フォルダ({failed.Length}件)を削除できませんでした");
+      }
+    }
+
     private void ClearListItem_Click(object sender, EventArgs e)
     {
       if (DialogResult.Yes != MessageBox.Show("本当に設定を全てリセットしていいですか？", "クリア確認", MessageBoxButtons.YesNo))
@@ -443,10 +453,10 @@ namespace ffmpeg_ytdlp_gui
         return;
 
       var item = listbox.SelectedItem as StringListItem;
-      if(item == null)
+      if (item == null)
         return;
 
-      if(File.Exists(item.Value))
+      if (File.Exists(item.Value))
         CustomProcess.ShellExecute(item.Value);
     }
 
@@ -505,7 +515,7 @@ namespace ffmpeg_ytdlp_gui
             using var process = Process.Start(filename);
             process.WaitForExit();
             File.Delete(filename);
-            if(RemoveBatListAfterDone.Checked && process.ExitCode == 0)
+            if (RemoveBatListAfterDone.Checked && process.ExitCode == 0)
               Invoke(OnBatchDone);
           })
         );

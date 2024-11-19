@@ -434,26 +434,6 @@ namespace ffmpeg_ytdlp_gui
         .Show();
     }
 
-    private void ToastPush(string title,string message,string? pageName)
-    {
-      if (pageName == null)
-        pageName = "PageConvert";
-
-      var lines = message.Split(['\n', '\r']);
-      if (lines.Length > 1)
-      {
-        ToastPush(title, lines, pageName);
-        return;
-      }
-
-      new ToastContentBuilder()
-        .AddArgument("page", pageName)
-        .AddArgument("conversationId",TOAST_ID)
-        .AddText(title, AdaptiveTextStyle.Title)
-        .AddText(message)
-        .Show();
-    }
-
     private void ToastPush(string title,IEnumerable<string> messages,string pageName = "pageConvert")
     {
       var toast = new ToastContentBuilder()

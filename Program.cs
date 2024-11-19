@@ -68,7 +68,6 @@ namespace ffmpeg_ytdlp_gui
         Application.Run(new Form1());
 
         ToastNotificationManagerCompat.Uninstall();
-        ytdlp_process.DeleteTemporaries();
       }
       finally
       {
