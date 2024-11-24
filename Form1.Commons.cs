@@ -105,7 +105,7 @@ namespace ffmpeg_ytdlp_gui
       HideThumbnail.DataBindings.Add("Checked", Settings.Default, "hideThumbnail");
       ImageHeight.DataBindings.Add("Value", Settings.Default, "imageHeight");
       ImageWidth.DataBindings.Add("Value", Settings.Default, "imageWidth");
-      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "OpenStderr");
+      IsOpenStderr.DataBindings.Add("Checked", Settings.Default, "openStderr");
       LookAhead.DataBindings.Add("Value", Settings.Default, "lookAhead");
       MaxListItems.DataBindings.Add("Value", Settings.Default, "maxListItems");
       Overwrite.DataBindings.Add("Checked", Settings.Default, "overwrite");
