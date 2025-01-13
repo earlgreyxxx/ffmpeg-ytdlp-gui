@@ -58,7 +58,6 @@ namespace ffmpeg_ytdlp_gui
       CommandInvoker.Enabled = true;
       CommandInvoker.Visible = true;
 #endif
-      InitializeSettingsApply();
 
       OnBatchDone += () =>
       {
@@ -121,6 +120,8 @@ namespace ffmpeg_ytdlp_gui
 
     private void Form1_Load(object sender, EventArgs e)
     {
+      InitializeSettingsApply();
+
       SizeMode = ThumbnailBox.SizeMode;
       ActiveControl = ffmpeg;
 
