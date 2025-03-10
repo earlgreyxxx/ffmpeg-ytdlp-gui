@@ -64,6 +64,7 @@ namespace ffmpeg_ytdlp_gui
         BatchList?.Clear();
         BatchList = null;
         btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = btnSubmitBatExecute.Enabled = false;
+        btnSubmitAddToBatch.Enabled = true;
         WriteBatListStatus();
       };
     }
@@ -508,6 +509,7 @@ namespace ffmpeg_ytdlp_gui
         sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting, WithConsole));
       }
 
+      btnSubmitAddToBatch.Enabled = false;
       if (WithConsole)
       {
         BatchTasks.Add(
