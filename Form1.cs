@@ -232,7 +232,7 @@ namespace ffmpeg_ytdlp_gui
 
       // 出力ファイル名形式
       var formats = OutputFileFormatBindingSource.DataSource as List<string>;
-      Settings.Default.downloadFileNames = [.. formats?.TakeLast(Convert.ToInt32(MaxListItems.Value)).Order()];
+      Settings.Default.downloadFileNames = [.. formats?.TakeLast(Convert.ToInt32(MaxListItems.Value)).Order()! ];
 
       Settings.Default.useCookie = UseCookie.SelectedValue as string ?? "none";
 
@@ -509,7 +509,7 @@ namespace ffmpeg_ytdlp_gui
         sw.WriteLine(ffmpeg_command.CreateBatch(BatchList, RuntimeSetting, WithConsole));
       }
 
-      btnSubmitAddToBatch.Enabled = false;
+      btnSubmitAddToBatch.Enabled = btnSubmitBatchClear.Enabled = btnSubmitSaveToFile.Enabled = false;
       if (WithConsole)
       {
         BatchTasks.Add(
